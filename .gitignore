@@ -30,7 +30,6 @@
 # Gradle
 .idea/**/gradle.xml
 .idea/**/libraries
-.gradle
 
 # Gradle and Maven with auto-import
 # When using Gradle or Maven with auto-import, you should exclude module files,
@@ -117,4 +116,11 @@ fabric.properties
 
 # End of https://www.toptal.com/developers/gitignore/api/intellij
 
-.idea/misc.xml
+.gradle/
+.idea/
+build/
+HELP.md
+.DS_Store
+
+#querydsl
+src/main/generated/ 
