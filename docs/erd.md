@@ -160,32 +160,34 @@ erDiagram
 
     user {
         bigint user_id PK
-        varchar platform "GOOGLE | NAVER | KAKAO"
-        varchar nick_name
-        varchar email
+        varchar10 platform "GOOGLE | NAVER | KAKAO"
+        varchar30 nick_name "소셜 닉네임"
+        varchar320 email "소셜 이메일"
+        varchar2048 avatar_url "NULL 소셜 프로필"
         datetime created_date_time
         datetime updated_date_time
         datetime deleted_date_time "NULL"
-    }
+    }    
 
     study {
         bigint study_id PK
         bigint owner_id FK
         bigint topic_id FK
-        varchar status "enum: PENDING | RECRUITING | PROGRESS | COMPLETED"
-        varchar title
-        varchar way "ONLINE | OFFLINE"
+        varchar20 status "enum: RECRUITING | PROGRESS | COMPLETED"
+        varchar50 title
+        varchar20 way "ONLINE | OFFLINE"
         datetime start_date_time
         datetime end_date_time
         datetime enrollment_end_date_time
         int enrollment_count "unsigned"
-        varchar content
+        varchar2000 content
         datetime created_date_time
         datetime updated_date_time
         datetime deleted_date_time "NULL"
     }
 
     study_participant_lnk {
+        bigint study_participant_id PK "(study_id, user_id)"
         bigint study_id FK
         bigint user_id FK
         datetime created_date_time
@@ -194,9 +196,10 @@ erDiagram
     }
 
     study_applicant_lnk {
-        bigint user_id FK
+        bigint study_applicant_id PK "(study_id, user_id)"
         bigint study_id FK
-        varchar status "UNCHECKED | ACCEPTED | REJECTED | REMOVED | CANCELLED"
+        bigint user_id FK
+        varchar20 status "UNCHECKED | ACCEPTED | REJECTED | REMOVED | CANCELLED"
         datetime created_date_time
         datetime updated_date_time
         datetime deleted_date_time "NULL"
@@ -204,13 +207,14 @@ erDiagram
 
     topic {
         bigint topic_id PK
-        varchar name
+        varchar50 name
         datetime created_date_time
         datetime updated_date_time
         datetime deleted_date_time "NULL"
     }
 
     study_position_lnk {
+        bigint study_position_id PK "(study_id, position_id)"
         bitint study_id FK
         bitint position_id FK
         datetime created_date_time
@@ -220,7 +224,7 @@ erDiagram
 
     position {
         bigint position_id PK
-        varchar name
+        varchar50 name
         datetime created_date_time
         datetime updated_date_time
         datetime deleted_date_time "NULL"
@@ -238,7 +242,7 @@ erDiagram
     stack_category {
         bigint stack_id PK
         bigint study_category_id FK
-        varchar name
+        varchar50 name
         datetime created_date_time
         datetime updated_date_time
         datetime deleted_date_time "NULL"
@@ -246,13 +250,13 @@ erDiagram
 
     stack {
         bigint stack_category_id PK
-        varchar name
-        varchar image_url "NULL"
+        varchar50 name
+        varchar2048 image_url "NULL"
         datetime created_date_time
         datetime updated_date_time
         datetime deleted_date_time "NULL"
     }
-
+    
     USERTERM {
         info INFO "모든 테이블 소프트 딜리트 적용"
         info UNCHECKED "사용자가 지원한 상태 → 지원한 스터디 목록에 지원중으로 표시"
@@ -260,6 +264,9 @@ erDiagram
         info REJECTED "스터디장이 거절한 상태 → 지원한 스터디 목록에 거절됨으로 표시"
         info REMOVED "스터디장이 스터디 시작 전 스터디를 삭제한 상태 → 지원한 스터디 목록에 삭제됨으로 표시"
         info CANCELLED "지원자가 지원을 취소한 상태 → 소프트 딜리트 상태로 DB에만 남아있음"
+        info RECRUITING "스터디 원 모집중 → 모집 인원 다 찰 경우 PROGRESS 상태로 변경 됨"
+        info PROGRESS "스터디 진행중"
+        info COMPLETED "스터디 완료"
     }
 
 ```
