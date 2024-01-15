@@ -173,9 +173,9 @@ erDiagram
         bigint study_id PK
         bigint owner_id FK
         bigint topic_id FK
-        varchar20 status "enum: RECRUITING | PROGRESS | COMPLETED"
+        char10 status "enum: RECRUITING | RECRUITED | PROGRESS | COMPLETED"
         varchar50 title
-        varchar20 way "ONLINE | OFFLINE"
+        char10 way "ONLINE | OFFLINE"
         datetime start_date_time
         datetime end_date_time
         datetime enrollment_end_date_time
@@ -199,7 +199,7 @@ erDiagram
         bigint study_applicant_id PK "(study_id, user_id)"
         bigint study_id FK
         bigint user_id FK
-        varchar20 status "UNCHECKED | ACCEPTED | REJECTED | REMOVED | CANCELLED"
+        char10 status "UNCHECKED | ACCEPTED | REJECTED | REMOVED | CANCELLED"
         datetime created_date_time
         datetime updated_date_time
         datetime deleted_date_time "NULL"
