@@ -141,23 +141,30 @@ asdasd
 ]
 
 ## 조회수
+
 ```mermaid
 
 %%{init: {'theme': 'neutral' } }%%
 erDiagram
-    owner_id
-    study_user_id
 
-    user ||--o{ study_applicant_lnk: ""
-    study_applicant_lnk }|--|| study: ""
-    user ||--o{ study_participant_lnk: ""
-    study_participant_lnk }|--|| study: ""
-    study ||--|{ study_stack_lnk: ""
-    study_stack_lnk }|--|| stack: ""
-    stack }|--|| stack_category: ""
+    user ||--o{ recruitment_user_lnk: ""
+    recruitment_user_lnk }|--|| recruitment: ""
+    
+    user ||--o{ study_user_lnk: ""
+    study_user_lnk }|--|| study: ""
+    
+    user ||--o{ study_user_lnk: ""
+    study_user_lnk }|--|| study: ""
+
     study }|--|| topic: ""
-    study ||--|{ study_position_lnk: ""
-    study_position_lnk }|--|| position: ""
+    study ||--o| recruitment: ""
+
+    recruitment ||--|{ recruitment_stack_lnk: ""
+    recruitment_stack_lnk }|--|| stack: ""
+    stack }|--|| stack_category: ""
+    
+    recruitment ||--|{ recruitment_position_lnk: ""
+    recruitment_position_lnk }|--|| position: ""
 
     user {
         bigint user_id PK
@@ -168,27 +175,40 @@ erDiagram
         datetime created_date_time
         datetime updated_date_time
         datetime deleted_date_time "NULL"
-    }    
+    }
 
     study {
         bigint study_id PK
-        bigint owner_id FK
         bigint topic_id FK
+        bigint recruitment_id FK
+        
         char10 status "enum: RECRUITING | RECRUITED | PROGRESS | COMPLETED"
         varchar50 title
         char10 way "ONLINE | OFFLINE"
         datetime start_date_time
         datetime end_date_time
-        datetime enrollment_end_date_time
-        int enrollment_count "unsigned"
-        varchar2000 content
+        int participant_count "unsigned"
+        int participant_limit "unsigned"
+
         datetime created_date_time
         datetime updated_date_time
         datetime deleted_date_time "NULL"
     }
 
-    study_participant_lnk {
-        bigint study_participant_id PK "(study_id, user_id)"
+    recruitment {
+        bigint recruitment_id PK
+        int recruitment_count "unsigned"
+        varchar2048 call_url "연락방법"
+        varchar50 title
+        varchar2000 content
+        datetime recruitment_end_date_time
+        datetime created_date_time
+        datetime updated_date_time
+        datetime deleted_date_time "NULL"
+    }
+
+    study_user_lnk {
+        bigint study_user_id PK "(study_id, user_id)"
         bigint study_id FK
         bigint user_id FK
         datetime created_date_time
@@ -196,9 +216,9 @@ erDiagram
         datetime deleted_date_time "NULL"
     }
 
-    study_applicant_lnk {
-        bigint study_applicant_id PK "(study_id, user_id)"
-        bigint study_id FK
+    recruitment_user_lnk {
+        bigint recruitment_user_id PK "(recruitment_id, user_id)"
+        bigint recruitment_id FK
         bigint user_id FK
         char10 status "UNCHECKED | ACCEPTED | REJECTED | REMOVED | CANCELLED"
         datetime created_date_time
@@ -214,9 +234,9 @@ erDiagram
         datetime deleted_date_time "NULL"
     }
 
-    study_position_lnk {
-        bigint study_position_id PK "(study_id, position_id)"
-        bitint study_id FK
+    recruitment_position_lnk {
+        bigint recruitment_position_id PK "(recruitment_id, position_id)"
+        bitint recruitment_id FK
         bitint position_id FK
         datetime created_date_time
         datetime updated_date_time
@@ -231,28 +251,28 @@ erDiagram
         datetime deleted_date_time "NULL"
     }
 
-    study_stack_lnk {
-        bigint study_stack_id PK "(study_id, stack_id)"
-        bigint study_id FK
+    recruitment_stack_lnk {
+        bigint recruitment_stack_id PK "(recruitment_id, stack_id)"
+        bigint recruitment_id FK
         bigint stack_id FK
         datetime created_date_time
         datetime updated_date_time
         datetime deleted_date_time "NULL"
     }
 
-    stack_category {
+    stack {
         bigint stack_id PK
-        bigint study_category_id FK
+        bigint stack_category_id FK
         varchar50 name
+        varchar2048 image_url "NULL"
         datetime created_date_time
         datetime updated_date_time
         datetime deleted_date_time "NULL"
     }
 
-    stack {
+    stack_category {
         bigint stack_category_id PK
         varchar50 name
-        varchar2048 image_url "NULL"
         datetime created_date_time
         datetime updated_date_time
         datetime deleted_date_time "NULL"
