@@ -181,7 +181,8 @@ erDiagram
         bigint study_id PK
         bigint topic_id FK
         bigint recruitment_id FK
-        
+        bigint owner_id
+
         char10 status "enum: RECRUITING | RECRUITED | PROGRESS | COMPLETED"
         varchar50 title
         char10 way "ONLINE | OFFLINE"
