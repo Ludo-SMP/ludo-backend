@@ -202,6 +202,7 @@ erDiagram
         varchar2048 call_url "연락방법"
         varchar50 title
         varchar2000 content
+        int hits "unsigned"
         datetime recruitment_end_date_time
         datetime created_date_time
         datetime updated_date_time
