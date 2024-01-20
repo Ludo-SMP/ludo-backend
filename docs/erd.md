@@ -135,10 +135,9 @@ erDiagram
 
     user {
         bigint user_id PK
-        varchar10 platform "GOOGLE | NAVER | KAKAO"
-        varchar30 nick_name "소셜 닉네임"
+        varchar10 social "GOOGLE | NAVER | KAKAO"
+        varchar12 nickname "소셜 닉네임"
         varchar320 email "소셜 이메일"
-        varchar2048 avatar_url "NULL 소셜 프로필"
         datetime created_date_time
         datetime updated_date_time
         datetime deleted_date_time "NULL"
@@ -150,14 +149,13 @@ erDiagram
         bigint recruitment_id FK
         bigint owner_id
 
-        char10 status "enum: RECRUITING | RECRUITED | PROGRESS | COMPLETED"
+        char10 study_status "enum: RECRUITING | RECRUITED | PROGRESS | COMPLETED"
         varchar50 title
         char10 way "ONLINE | OFFLINE"
         datetime start_date_time
         datetime end_date_time
-        int participant_count "unsigned"
         int participant_limit "unsigned"
-
+        int participant_count "unsigned"
         datetime created_date_time
         datetime updated_date_time
         datetime deleted_date_time "NULL"
@@ -165,7 +163,7 @@ erDiagram
 
     recruitment {
         bigint recruitment_id PK
-        int recruitment_count "unsigned"
+        int applicant_count "unsigned"
         varchar2048 call_url "연락방법"
         varchar50 title
         varchar2000 content
@@ -189,7 +187,7 @@ erDiagram
         bigint recruitment_user_id PK "(recruitment_id, user_id)"
         bigint recruitment_id FK
         bigint user_id FK
-        char10 status "UNCHECKED | ACCEPTED | REJECTED | REMOVED | CANCELLED"
+        char10 applicant_status "UNCHECKED | ACCEPTED | REJECTED | REMOVED | CANCELED"
         datetime created_date_time
         datetime updated_date_time
         datetime deleted_date_time "NULL"
