@@ -15,6 +15,11 @@ public class RecruitmentRepository {
 
 	private final EntityManager entityManager;
 
+	public Recruitment save(final Recruitment recruitment) {
+		entityManager.persist(recruitment);
+		return recruitment;
+	}
+
 	public Recruitment findById(final Long id) {
 		return entityManager.find(Recruitment.class, id);
 	}
