@@ -15,7 +15,7 @@ public class RecruitmentDetailsResponse {
 
 	private final Long id;
 	private final String title;
-	private List<String> stacks = new ArrayList<>();
+	private final List<String> stacks = new ArrayList<>();
 	private final List<String> positions = new ArrayList<>();
 	private final String platformUrl;
 	private final int applicantCount;
