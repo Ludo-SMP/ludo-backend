@@ -1,4 +1,4 @@
-package com.ludo.study.studymatchingplatform.study.persistence;
+package com.ludo.study.studymatchingplatform.study.repository;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 @Repository
 @Transactional
 @RequiredArgsConstructor
-public class RecruitmentRepository {
+public class RecruitmentRepositoryImpl implements RecruitmentRepository {
 
 	private final EntityManager entityManager;
 
