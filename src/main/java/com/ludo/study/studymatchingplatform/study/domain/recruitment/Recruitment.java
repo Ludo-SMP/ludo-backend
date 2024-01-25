@@ -21,9 +21,11 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @Getter
+@SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class Recruitment extends BaseEntity {
@@ -40,7 +42,6 @@ public class Recruitment extends BaseEntity {
 		fetch = LAZY,
 		mappedBy = "recruitment"
 	)
-
 	private List<Applicant> applicants = new ArrayList<>();
 
 	public Integer getApplicantCount() {
@@ -51,14 +52,12 @@ public class Recruitment extends BaseEntity {
 		fetch = LAZY,
 		mappedBy = "recruitment"
 	)
-
 	private List<RecruitmentStack> recruitmentStacks = new ArrayList<>();
 
 	@OneToMany(
 		fetch = LAZY,
 		mappedBy = "recruitment"
 	)
-
 	private List<RecruitmentPosition> recruitmentPositions = new ArrayList<>();
 
 	private String callUrl;
@@ -67,7 +66,7 @@ public class Recruitment extends BaseEntity {
 
 	private int hits = 0;
 	private LocalDateTime recruitmentEndDateTime;
-	private int recruitmentCount;
+	private int recruitmentLimit;
 
 	public void connectToStudy(Study study) {
 		this.study = study;
@@ -80,4 +79,9 @@ public class Recruitment extends BaseEntity {
 	public void addPosition(RecruitmentPosition recruitmentPosition) {
 		this.recruitmentPositions.add(recruitmentPosition);
 	}
+
+	public void upHit() {
+		hits++;
+	}
+
 }
