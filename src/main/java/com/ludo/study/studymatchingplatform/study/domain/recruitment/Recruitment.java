@@ -84,4 +84,20 @@ public class Recruitment extends BaseEntity {
 		hits++;
 	}
 
+	public List<String> getStackNames() {
+		List<String> stacks = new ArrayList<>();
+		for (RecruitmentStack recruitmentStack : recruitmentStacks) {
+			stacks.add(recruitmentStack.getStack().getName());
+		}
+		return stacks;
+	}
+
+	public List<String> getPositionNames() {
+		List<String> positions = new ArrayList<>();
+		for (RecruitmentPosition recruitmentPosition : recruitmentPositions) {
+			positions.add(recruitmentPosition.getPosition().getName());
+		}
+		return positions;
+	}
+
 }
