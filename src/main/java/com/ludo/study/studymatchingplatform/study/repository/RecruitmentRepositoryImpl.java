@@ -1,7 +1,8 @@
 package com.ludo.study.studymatchingplatform.study.repository;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
 
@@ -9,7 +10,6 @@ import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 
 @Repository
-@Transactional
 @RequiredArgsConstructor
 public class RecruitmentRepositoryImpl implements RecruitmentRepository {
 
@@ -20,8 +20,8 @@ public class RecruitmentRepositoryImpl implements RecruitmentRepository {
 		return recruitment;
 	}
 
-	public Recruitment findById(final Long id) {
-		return entityManager.find(Recruitment.class, id);
+	public Optional<Recruitment> findById(final Long id) {
+		return Optional.ofNullable(entityManager.find(Recruitment.class, id));
 	}
 
 }
