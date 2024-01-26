@@ -24,8 +24,9 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class Participant extends BaseEntity {
+
 	@EmbeddedId
-	private ParticipantId id;
+	private ParticipantId id = new ParticipantId();
 
 	@ManyToOne(fetch = LAZY)
 	@MapsId("studyId")
@@ -42,10 +43,5 @@ public class Participant extends BaseEntity {
 		nullable = false
 	)
 	private User user;
-
-	public Participant(Study study, User user) {
-		this.study = study;
-		this.user = user;
-	}
 
 }

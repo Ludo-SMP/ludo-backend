@@ -116,4 +116,5 @@ public class Study extends BaseEntity {
 	public String getOwnerNickname() {
 		return owner.getNickname();
 	}
+
 }

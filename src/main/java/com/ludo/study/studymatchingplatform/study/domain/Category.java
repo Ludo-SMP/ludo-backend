@@ -42,4 +42,5 @@ public class Category extends BaseEntity {
 		fetch = LAZY
 	)
 	private List<Study> studies = new ArrayList<>();
+
 }

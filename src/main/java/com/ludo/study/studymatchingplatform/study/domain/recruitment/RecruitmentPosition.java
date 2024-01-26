@@ -10,6 +10,7 @@ import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -29,21 +30,13 @@ public class RecruitmentPosition extends BaseEntity {
 	private RecruitmentPositionId id;
 
 	@ManyToOne(fetch = LAZY)
-	@JoinColumn(
-		name = "recruitment_id",
-		insertable = false,
-		updatable = false,
-		nullable = false
-	)
+	@MapsId("recruitmentId")
+	@JoinColumn(name = "recruitment_id")
 	private Recruitment recruitment;
 
 	@ManyToOne(fetch = LAZY)
-	@JoinColumn(
-		name = "position_id",
-		insertable = false,
-		updatable = false,
-		nullable = false
-	)
+	@MapsId("positionId")
+	@JoinColumn(name = "position_id")
 	private Position position;
 
 }

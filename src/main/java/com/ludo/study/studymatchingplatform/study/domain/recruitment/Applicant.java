@@ -13,6 +13,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -28,24 +29,16 @@ import lombok.experimental.SuperBuilder;
 public class Applicant extends BaseEntity {
 
 	@EmbeddedId
-	private ApplicantId id;
+	private ApplicantId id = new ApplicantId();
 
 	@OneToOne(fetch = LAZY)
-	@JoinColumn(
-		name = "user_id",
-		insertable = false,
-		updatable = false,
-		nullable = false
-	)
+	@MapsId("userId")
+	@JoinColumn(name = "user_id")
 	private User user;
 
 	@ManyToOne(fetch = LAZY)
-	@JoinColumn(
-		name = "recruitment_id",
-		insertable = false,
-		updatable = false,
-		nullable = false
-	)
+	@MapsId("recruitmentId")
+	@JoinColumn(name = "recruitment_id")
 	private Recruitment recruitment;
 
 	@Enumerated(EnumType.STRING)
@@ -53,6 +46,7 @@ public class Applicant extends BaseEntity {
 		nullable = false,
 		columnDefinition = "char(10)"
 	)
-	private ApplicantStatus status;
+  
+	private ApplicantStatus applicantStatus;
 
 }
