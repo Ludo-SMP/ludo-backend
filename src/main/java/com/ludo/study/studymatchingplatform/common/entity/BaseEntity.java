@@ -10,14 +10,16 @@ import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
+import lombok.experimental.SuperBuilder;
 
+@Getter
+@SuperBuilder
 @EntityListeners(AuditingEntityListener.class)
 @MappedSuperclass
-@Getter
-public class BaseEntity {
+public abstract class BaseEntity {
 
 	@CreatedDate
-	@Column(nullable = false)
+	@Column(nullable = false, updatable = false)
 	private LocalDateTime createdDateTime;
 
 	@LastModifiedDate
@@ -26,5 +28,8 @@ public class BaseEntity {
 
 	@Column(nullable = true)
 	private LocalDateTime deletedDateTime = null;
+
+	protected BaseEntity() {
+	}
 
 }

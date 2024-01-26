@@ -3,7 +3,6 @@ package com.ludo.study.studymatchingplatform.study.domain.recruitment;
 import static jakarta.persistence.FetchType.*;
 
 import com.ludo.study.studymatchingplatform.common.entity.BaseEntity;
-import com.ludo.study.studymatchingplatform.study.domain.Status;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.id.ApplicantId;
 import com.ludo.study.studymatchingplatform.user.domain.User;
 
@@ -19,12 +18,13 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Entity
+@Getter
+@SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Getter
-
 public class Applicant extends BaseEntity {
 
 	@EmbeddedId
@@ -34,7 +34,8 @@ public class Applicant extends BaseEntity {
 	@JoinColumn(
 		name = "user_id",
 		insertable = false,
-		updatable = false
+		updatable = false,
+		nullable = false
 	)
 	private User user;
 
@@ -42,7 +43,8 @@ public class Applicant extends BaseEntity {
 	@JoinColumn(
 		name = "recruitment_id",
 		insertable = false,
-		updatable = false
+		updatable = false,
+		nullable = false
 	)
 	private Recruitment recruitment;
 
@@ -51,6 +53,6 @@ public class Applicant extends BaseEntity {
 		nullable = false,
 		columnDefinition = "char(10)"
 	)
-	private Status status;
+	private ApplicantStatus status;
 
 }

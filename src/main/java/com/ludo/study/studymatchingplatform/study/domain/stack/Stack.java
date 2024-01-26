@@ -17,12 +17,13 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Entity
+@Getter
+@SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Getter
-
 public class Stack extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,11 +31,19 @@ public class Stack extends BaseEntity {
 	private Long id;
 
 	@OneToOne
-	@JoinColumn(name = "stack_category_id")
+	@JoinColumn(
+		name = "stack_category_id",
+		nullable = false
+	)
 	private StackCategory stackCategory;
 
+	@Column(
+		nullable = false,
+		length = 50
+	)
 	private String name;
 
+	@Column(length = 2048)
 	private String imageUrl;
 
 	@OneToMany(mappedBy = "stack")

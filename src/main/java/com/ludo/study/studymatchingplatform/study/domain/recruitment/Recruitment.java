@@ -35,7 +35,10 @@ public class Recruitment extends BaseEntity {
 	private Long id;
 
 	@OneToOne(fetch = LAZY)
-	@JoinColumn(name = "study_id")
+	@JoinColumn(
+		name = "study_id",
+		nullable = false
+	)
 	private Study study;
 
 	@OneToMany(
@@ -60,12 +63,30 @@ public class Recruitment extends BaseEntity {
 	)
 	private List<RecruitmentPosition> recruitmentPositions = new ArrayList<>();
 
+	@Column(
+		nullable = false,
+		length = 2048
+	)
 	private String callUrl;
+
+	@Column(nullable = false,
+		length = 50
+	)
 	private String title;
+
+	@Column(
+		nullable = false,
+		length = 2000
+	)
 	private String content;
 
-	private int hits = 0;
+	@Column(nullable = false)
+	private int hits = 1;
+
+	@Column(nullable = false)
 	private LocalDateTime recruitmentEndDateTime;
+
+	@Column(nullable = false)
 	private int recruitmentLimit;
 
 	public void connectToStudy(Study study) {

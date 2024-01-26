@@ -15,14 +15,16 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Entity
+@Getter
+@SuperBuilder
 @Table(name = "recruitment_position_lnk")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Getter
-
 public class RecruitmentPosition extends BaseEntity {
+
 	@EmbeddedId
 	private RecruitmentPositionId id;
 
@@ -30,7 +32,8 @@ public class RecruitmentPosition extends BaseEntity {
 	@JoinColumn(
 		name = "recruitment_id",
 		insertable = false,
-		updatable = false
+		updatable = false,
+		nullable = false
 	)
 	private Recruitment recruitment;
 
@@ -38,7 +41,8 @@ public class RecruitmentPosition extends BaseEntity {
 	@JoinColumn(
 		name = "position_id",
 		insertable = false,
-		updatable = false
+		updatable = false,
+		nullable = false
 	)
 	private Position position;
 
