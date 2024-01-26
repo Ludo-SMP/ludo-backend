@@ -10,6 +10,7 @@ import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -21,28 +22,18 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 public class Participant extends BaseEntity {
+
 	@EmbeddedId
-	private ParticipantId id;
+	private ParticipantId id = new ParticipantId();
 
 	@ManyToOne(fetch = LAZY)
-	@JoinColumn(
-		name = "study_id",
-		insertable = false,
-		updatable = false
-	)
+	@MapsId("studyId")
+	@JoinColumn(name = "study_id")
 	private Study study;
 
 	@OneToOne(fetch = LAZY)
-	@JoinColumn(
-		name = "user_id",
-		insertable = false,
-		updatable = false
-	)
+	@MapsId("userId")
+	@JoinColumn(name = "user_id")
 	private User user;
-
-	public Participant(Study study, User user) {
-		this.study = study;
-		this.user = user;
-	}
 
 }

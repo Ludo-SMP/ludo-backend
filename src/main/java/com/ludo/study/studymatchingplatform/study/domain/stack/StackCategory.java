@@ -16,12 +16,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Getter
-
 public class StackCategory extends BaseEntity {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "stack_category_id")
 	private Long id;
 
+	@Column(nullable = false)
 	private String name;
+
 }

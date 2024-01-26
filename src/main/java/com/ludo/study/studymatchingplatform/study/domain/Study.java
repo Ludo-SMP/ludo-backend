@@ -8,7 +8,6 @@ import java.util.List;
 
 import com.ludo.study.studymatchingplatform.common.entity.BaseEntity;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
-import com.ludo.study.studymatchingplatform.user.domain.User;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -38,50 +37,39 @@ public class Study extends BaseEntity {
 	private Long id;
 
 	@Enumerated(EnumType.STRING)
-	private Status status;
+	private StudyStatus status;
 
 	@ManyToOne(fetch = LAZY)
 	@JoinColumn(name = "category_id")
 	private Category category;
 
-	@OneToOne(fetch = LAZY)
-	@JoinColumn(name = "owner_id")
-	private User owner;
+	@Column(nullable = false)
+	private String owner;
 
 	private String title;
 
 	@OneToOne(
-		mappedBy = "study",
-		fetch = LAZY
+			mappedBy = "study",
+			fetch = LAZY
 	)
 	private Recruitment recruitment;
 
 	@OneToMany(
-		mappedBy = "study",
-		fetch = LAZY
+			mappedBy = "study",
+			fetch = LAZY
 	)
-
 	private List<Participant> participants = new ArrayList<>();
 
 	@Enumerated(EnumType.STRING)
 	private Way way;
 
+	@Column(nullable = false)
 	private int participantLimit;
 
+	@Column(nullable = false)
 	private LocalDateTime startDateTime;
 
+	@Column(nullable = false)
 	private LocalDateTime endDateTime;
 
-	public void registerRecruitment(final Recruitment recruitment) {
-		this.recruitment = recruitment;
-		this.recruitment.connectToStudy(this);
-	}
-
-	public void addRecruitment(Recruitment recruitment) {
-		this.recruitment = recruitment;
-	}
-
-	public Integer getParticipantCount() {
-		return participants.size();
-	}
 }

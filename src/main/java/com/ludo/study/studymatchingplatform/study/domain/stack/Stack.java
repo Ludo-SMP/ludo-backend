@@ -24,6 +24,7 @@ import lombok.NoArgsConstructor;
 @Getter
 
 public class Stack extends BaseEntity {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "stack_id")
@@ -33,19 +34,13 @@ public class Stack extends BaseEntity {
 	@JoinColumn(name = "stack_category_id")
 	private StackCategory stackCategory;
 
+	@Column(nullable = false)
 	private String name;
 
-	private String imageUrl;
+	@Column(nullable = true)
+	private String imageUrl = null;
 
 	@OneToMany(mappedBy = "stack")
 	private Collection<RecruitmentStack> recruitmentStack;
 
-	public Collection<RecruitmentStack> getRecruitmentStack() {
-		return recruitmentStack;
-	}
-
-	public void setRecruitmentStack(
-		Collection<RecruitmentStack> recruitmentStack) {
-		this.recruitmentStack = recruitmentStack;
-	}
 }

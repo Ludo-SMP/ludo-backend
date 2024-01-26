@@ -20,8 +20,10 @@ import lombok.NoArgsConstructor;
 public class Position extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "_id")
+	@Column(name = "position_id")
 	private Long id;
 
+	@Column(nullable = false)
 	private String name;
+
 }

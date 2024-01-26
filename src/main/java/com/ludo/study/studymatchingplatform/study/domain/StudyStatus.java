@@ -1,8 +1,10 @@
 package com.ludo.study.studymatchingplatform.study.domain;
 
-public enum Status {
+public enum StudyStatus {
+
 	PENDING,
 	READY,
 	PROGRESS,
 	COMPLETED
+
 }
