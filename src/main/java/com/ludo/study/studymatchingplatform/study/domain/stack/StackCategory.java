@@ -11,11 +11,13 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Entity
+@Getter
+@SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Getter
 public class StackCategory extends BaseEntity {
 
 	@Id
@@ -23,7 +25,11 @@ public class StackCategory extends BaseEntity {
 	@Column(name = "stack_category_id")
 	private Long id;
 
-	@Column(nullable = false)
+	@Column(
+		nullable = false,
+		length = 50
+	)
+  @Size(max = 50)
 	private String name;
 
 }

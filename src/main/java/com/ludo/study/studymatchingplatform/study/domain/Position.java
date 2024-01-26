@@ -11,19 +11,24 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Entity
+@Getter
+@SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-
-@Getter
 public class Position extends BaseEntity {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "position_id")
 	private Long id;
 
-	@Column(nullable = false)
+	@Column(
+		nullable = false,
+		columnDefinition = "char(50)"
+	)
 	private String name;
 
 }

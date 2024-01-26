@@ -16,11 +16,13 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Entity
+@Getter
+@SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Getter
 public class Participant extends BaseEntity {
 
 	@EmbeddedId
@@ -28,12 +30,19 @@ public class Participant extends BaseEntity {
 
 	@ManyToOne(fetch = LAZY)
 	@MapsId("studyId")
-	@JoinColumn(name = "study_id")
+
+	@JoinColumn(
+		name = "study_id",
+		nullable = false
+	)
 	private Study study;
 
 	@OneToOne(fetch = LAZY)
 	@MapsId("userId")
-	@JoinColumn(name = "user_id")
+	@JoinColumn(
+		name = "user_id",
+		nullable = false
+	)
 	private User user;
 
 }

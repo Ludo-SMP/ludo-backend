@@ -24,11 +24,15 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 
 @Entity
+@Getter
+@ToString
+@SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Getter
 public class Study extends BaseEntity {
 
 	@Id
@@ -37,15 +41,31 @@ public class Study extends BaseEntity {
 	private Long id;
 
 	@Enumerated(EnumType.STRING)
+	@Column(
+		nullable = false,
+		columnDefinition = "char(10)"
+	)
 	private StudyStatus status;
 
 	@ManyToOne(fetch = LAZY)
-	@JoinColumn(name = "category_id")
+	@JoinColumn(
+		name = "category_id",
+		nullable = false
+	)
 	private Category category;
 
-	@Column(nullable = false)
-	private String owner;
+	@OneToOne(fetch = LAZY)
+	@JoinColumn(
+		name = "owner_id",
+		nullable = false
+	)
+	private User owner;
 
+
+	@Column(
+		nullable = false,
+		length = 50
+	)
 	private String title;
 
 	@OneToOne(
@@ -61,6 +81,10 @@ public class Study extends BaseEntity {
 	private List<Participant> participants = new ArrayList<>();
 
 	@Enumerated(EnumType.STRING)
+	@Column(
+		nullable = false,
+		columnDefinition = "char(10)"
+	)
 	private Way way;
 
 	@Column(nullable = false)
@@ -71,5 +95,26 @@ public class Study extends BaseEntity {
 
 	@Column(nullable = false)
 	private LocalDateTime endDateTime;
+
+	public void registerRecruitment(final Recruitment recruitment) {
+		this.recruitment = recruitment;
+		this.recruitment.connectToStudy(this);
+	}
+
+	public void addRecruitment(Recruitment recruitment) {
+		this.recruitment = recruitment;
+	}
+
+	public Integer getParticipantCount() {
+		return participants.size();
+	}
+
+	public String getCategoryByName() {
+		return category.getName();
+	}
+
+	public String getOwnerNickname() {
+		return owner.getNickname();
+	}
 
 }

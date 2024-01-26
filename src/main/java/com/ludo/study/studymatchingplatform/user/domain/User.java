@@ -16,12 +16,14 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Entity
-@Table(name = "user")
+@Table(name = "`user`")
+@Getter
+@SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Getter
 public class User extends BaseEntity {
 
 	@Id
@@ -44,7 +46,10 @@ public class User extends BaseEntity {
 	)
 	private String nickname;
 
-	@Column()
+	@Column(
+		nullable = false,
+		length = 320
+	)
 	@Email
 	private String email;
 
