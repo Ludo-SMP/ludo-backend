@@ -14,6 +14,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -22,7 +23,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Getter
-
+@Builder
 public class User extends BaseEntity {
 
 	@Id
@@ -36,7 +37,7 @@ public class User extends BaseEntity {
 		updatable = false,
 		columnDefinition = "char(10)"
 	)
-	private Platform platform;
+	private Social social;
 
 	@Column(nullable = false)
 	@Size(
