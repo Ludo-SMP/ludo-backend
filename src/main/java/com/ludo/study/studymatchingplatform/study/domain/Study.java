@@ -8,7 +8,6 @@ import java.util.List;
 
 import com.ludo.study.studymatchingplatform.common.entity.BaseEntity;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
-import com.ludo.study.studymatchingplatform.user.domain.User;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -62,6 +61,7 @@ public class Study extends BaseEntity {
 	)
 	private User owner;
 
+
 	@Column(
 		nullable = false,
 		length = 50
@@ -69,14 +69,14 @@ public class Study extends BaseEntity {
 	private String title;
 
 	@OneToOne(
-		mappedBy = "study",
-		fetch = LAZY
+			mappedBy = "study",
+			fetch = LAZY
 	)
 	private Recruitment recruitment;
 
 	@OneToMany(
-		mappedBy = "study",
-		fetch = LAZY
+			mappedBy = "study",
+			fetch = LAZY
 	)
 	private List<Participant> participants = new ArrayList<>();
 
@@ -116,4 +116,5 @@ public class Study extends BaseEntity {
 	public String getOwnerNickname() {
 		return owner.getNickname();
 	}
+
 }

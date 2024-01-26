@@ -19,6 +19,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class StackCategory extends BaseEntity {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "stack_category_id")
@@ -28,5 +29,7 @@ public class StackCategory extends BaseEntity {
 		nullable = false,
 		length = 50
 	)
+  @Size(max = 50)
 	private String name;
+
 }
