@@ -6,10 +6,10 @@
    를 찾아야 되는 수가 생길 수도 있음.
 4. 네이밍 컨벤션
 
-   - study_user_participants
-   - study_user_applicants
-   - study_participants
-   - study_applicants
+    - study_user_participants
+    - study_user_applicants
+    - study_participants
+    - study_applicants
 
 5. M:N을 풀기 위해 중간테이블이 들어갔을 때, 네이밍 전략 조사 및 컨벤션 합의 필
    요
@@ -35,17 +35,17 @@
 
 - **case1. 이메일로 사용자를 특정하는 경우**
 
-  - 모든 소셜 계정의 이메일이 같지 않을 수 있음. 사람의 행동 패턴마다 다름.
-  - 특정 이메일로 가입된 사용자를 구분한다면, 사용자는 다른 이메일을 사용해서 가
-    입한 계정이 있다는 사실을 인지하지 못하여 불완전.
-  - 애플의 경우, hide my mail 기능을 사용해서 fake 메일을 사용하기 때문에 구현
-    불가. 구현이 되더라도 해커가 특정 사용자의 가입된 계정을 한번에 볼 수 있어서
-    오히려 부작용이 있을 가능성.
+    - 모든 소셜 계정의 이메일이 같지 않을 수 있음. 사람의 행동 패턴마다 다름.
+    - 특정 이메일로 가입된 사용자를 구분한다면, 사용자는 다른 이메일을 사용해서 가
+      입한 계정이 있다는 사실을 인지하지 못하여 불완전.
+    - 애플의 경우, hide my mail 기능을 사용해서 fake 메일을 사용하기 때문에 구현
+      불가. 구현이 되더라도 해커가 특정 사용자의 가입된 계정을 한번에 볼 수 있어서
+      오히려 부작용이 있을 가능성.
 
 - **case2. 전화번호로 사용자를 특정하는 경우**
-  - 전화 번호는 바뀔 수 있음.
-  - 이전 사용자의 정보가 보이거나, 내가 전화 번호를 바꾸고 갱신하는 법을 잊어버
-    린 경우 정보가 노출될 수 있음.
+    - 전화 번호는 바뀔 수 있음.
+    - 이전 사용자의 정보가 보이거나, 내가 전화 번호를 바꾸고 갱신하는 법을 잊어버
+      린 경우 정보가 노출될 수 있음.
 
 ## 소셜 로그인을 통한 "연동"
 
@@ -135,10 +135,9 @@ erDiagram
 
     user {
         bigint user_id PK
-        varchar10 platform "GOOGLE | NAVER | KAKAO"
-        varchar30 nick_name "소셜 닉네임"
+        varchar10 social "GOOGLE | NAVER | KAKAO"
+        varchar12 nickname "소셜 닉네임"
         varchar320 email "소셜 이메일"
-        varchar2048 avatar_url "NULL 소셜 프로필"
         datetime created_date_time
         datetime updated_date_time
         datetime deleted_date_time "NULL"
@@ -147,17 +146,15 @@ erDiagram
     study {
         bigint study_id PK
         bigint category_id FK
-        bigint recruitment_id FK
         bigint owner_id
 
-        char10 status "enum: RECRUITING | RECRUITED | PROGRESS | COMPLETED"
+        char10 study_status "enum: RECRUITING | RECRUITED | PROGRESS | COMPLETED"
         varchar50 title
         char10 way "ONLINE | OFFLINE"
         datetime start_date_time
         datetime end_date_time
-        int participant_count "unsigned"
         int participant_limit "unsigned"
-
+        int participant_count "unsigned"
         datetime created_date_time
         datetime updated_date_time
         datetime deleted_date_time "NULL"
@@ -165,7 +162,8 @@ erDiagram
 
     recruitment {
         bigint recruitment_id PK
-        int recruitment_count "unsigned"
+        bigint study_id FK
+        int applicant_count "unsigned"
         varchar2048 call_url "연락방법"
         varchar50 title
         varchar2000 content
@@ -189,7 +187,7 @@ erDiagram
         bigint recruitment_user_id PK "(recruitment_id, user_id)"
         bigint recruitment_id FK
         bigint user_id FK
-        char10 status "UNCHECKED | ACCEPTED | REJECTED | REMOVED | CANCELLED"
+        char10 applicant_status "UNCHECKED | ACCEPTED | REJECTED | REMOVED | CANCELED"
         datetime created_date_time
         datetime updated_date_time
         datetime deleted_date_time "NULL"
