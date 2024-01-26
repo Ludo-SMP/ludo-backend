@@ -10,14 +10,21 @@ import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment
 
 public class RecruitmentFixture {
 
-	public static Recruitment createRecruitment(String title, Study study, RecruitmentStack... recruitmentStacks) {
+	public static Recruitment createRecruitment(Study study, String title, String content,
+		int hits, String callUrl,
+		RecruitmentStack... recruitmentStacks
+	) {
+
 		return Recruitment.builder()
 			.study(study)
 			.applicants(new ArrayList<>())
+			.callUrl(callUrl)
+			.content(content)
 			.recruitmentStacks(List.of(recruitmentStacks))
 			.recruitmentPositions(new ArrayList<>())
 			.recruitmentEndDateTime(LocalDateTime.now())
 			.title(title)
+			.hits(hits)
 			.build();
 	}
 

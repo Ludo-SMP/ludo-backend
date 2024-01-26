@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ludo.study.studymatchingplatform.study.domain.Category;
 import com.ludo.study.studymatchingplatform.study.domain.Study;
+import com.ludo.study.studymatchingplatform.study.domain.StudyStatus;
 import com.ludo.study.studymatchingplatform.study.domain.Way;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.RecruitmentStack;
@@ -17,9 +19,13 @@ import com.ludo.study.studymatchingplatform.study.fixture.RecruitmentStackFixtur
 import com.ludo.study.studymatchingplatform.study.fixture.StackFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.StudyFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.UserFixture;
-import com.ludo.study.studymatchingplatform.study.repository.RecruitmentRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.repository.CategoryRepository;
+import com.ludo.study.studymatchingplatform.study.repository.RecruitmentRepository;
+import com.ludo.study.studymatchingplatform.study.repository.StudyRepository;
+import com.ludo.study.studymatchingplatform.study.repository.UserRepository;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.RecruitmentDetailsResponse;
 import com.ludo.study.studymatchingplatform.user.domain.Platform;
+import com.ludo.study.studymatchingplatform.user.domain.User;
 
 @SpringBootTest
 class RecruitmentDetailsFindServiceTest {
@@ -28,54 +34,72 @@ class RecruitmentDetailsFindServiceTest {
 	RecruitmentDetailsFindService recruitmentDetailsFindService;
 
 	@Autowired
-	RecruitmentRepositoryImpl recruitmentRepositoryImpl;
+	RecruitmentRepository recruitmentRepository;
+
+	@Autowired
+	StudyRepository studyRepository;
+
+	@Autowired
+	UserRepository userRepository;
+
+	@Autowired
+	CategoryRepository categoryRepository;
+
+	private static final String CATEGORY = "프로젝트";
+	private static final String STUDY_TITLE = "스터디1";
+	private static final String RECRUITMENT_TITLE = "지원공고 입니다.";
+	private static final String NICKNAME = "아카";
+	private static final String EMAIL = "archa@naver.com";
+	private static final String STACK_SPRING = "spring";
+	private static final String STACK_REACT = "react";
+	private static final String CALL_URL = "call_url";
+	private static final String CONTENT = "내용";
 
 	@Test
 	@Transactional
 	void 모집공고_상세를_조회한다() {
-		Study study = createStudy("스터디 A", Way.ONLINE, Platform.NAVER, "아카", "archa@naver.com", "프로젝트");
-		RecruitmentStack spring = RecruitmentStackFixture.createRecruitmentStack(
-			StackFixture.createStack("spring"));
-		RecruitmentStack react = RecruitmentStackFixture.createRecruitmentStack(
-			StackFixture.createStack("react"));
-		Recruitment recruitment = createRecruitment("지원공고 입니다.", study, spring, react);
-
-		Recruitment save = recruitmentRepositoryImpl.save(recruitment);
+		// given
+		Recruitment saveRecruitment = saveRecruitment();
+		// when
 		RecruitmentDetailsResponse recruitmentDetailsResponse = recruitmentDetailsFindService.findRecruitmentDetails(
-			save.getId());
-
-		assertThat(recruitmentDetailsResponse.title()).isEqualTo("지원공고 입니다.");
-		assertThat(recruitmentDetailsResponse.ownerNickname()).isEqualTo("아카");
+			saveRecruitment.getId());
+		// then
+		assertThat(recruitmentDetailsResponse.title()).isEqualTo(RECRUITMENT_TITLE);
+		assertThat(recruitmentDetailsResponse.ownerNickname()).isEqualTo(NICKNAME);
 		assertThat(recruitmentDetailsResponse.way()).isEqualTo(Way.ONLINE.toString());
-		assertThat(recruitmentDetailsResponse.category()).isEqualTo("프로젝트");
+		assertThat(recruitmentDetailsResponse.category()).isEqualTo(CATEGORY);
 	}
 
 	@Test
 	@Transactional
 	void 모집공고_상세를_조회하면_조회수_증가() {
-		Study study = createStudy("스터디 A", Way.ONLINE, Platform.NAVER, "아카", "archa@naver.com", "프로젝트");
+		// given
+		Recruitment saveRecruitment = saveRecruitment();
+		int expectedHits = 6;
+		// when
+		recruitmentDetailsFindService.findRecruitmentDetails(saveRecruitment.getId());
+		// then
+		Recruitment find = recruitmentRepository.findById(saveRecruitment.getId());
+		assertThat(find.getHits()).isEqualTo(expectedHits);
+	}
+
+	private Recruitment saveRecruitment() {
+		Category category = CategoryFixture.createCategory(CATEGORY);
+		User user = UserFixture.createUser(Platform.NAVER, NICKNAME, EMAIL);
+		Study study = StudyFixture.createStudy(StudyStatus.RECRUITING, STUDY_TITLE, Way.ONLINE, category, user);
+
 		RecruitmentStack spring = RecruitmentStackFixture.createRecruitmentStack(
-			StackFixture.createStack("spring"));
+			StackFixture.createStack(STACK_SPRING));
 		RecruitmentStack react = RecruitmentStackFixture.createRecruitmentStack(
-			StackFixture.createStack("react"));
-		Recruitment recruitment = createRecruitment("지원공고 입니다.", study, spring, react);
+			StackFixture.createStack(STACK_REACT));
 
-		Recruitment save = recruitmentRepositoryImpl.save(recruitment);
-		recruitmentDetailsFindService.findRecruitmentDetails(save.getId());
-		Recruitment find = recruitmentRepositoryImpl.findById(save.getId());
-		assertThat(find.getHits()).isEqualTo(1);
-	}
+		Recruitment recruitment = RecruitmentFixture.createRecruitment(study, RECRUITMENT_TITLE, CONTENT, 5, CALL_URL,
+			spring, react);
 
-	private Study createStudy(String title, Way way, Platform platform,
-		String nickname, String email, String category
-	) {
-		return StudyFixture.createStudy(title, way,
-			UserFixture.createUser(platform, nickname, email),
-			CategoryFixture.createCategory(category));
-	}
-
-	private Recruitment createRecruitment(String title, Study study, RecruitmentStack... recruitmentStacks) {
-		return RecruitmentFixture.createRecruitment(title, study, recruitmentStacks);
+		userRepository.save(user);
+		categoryRepository.save(category);
+		studyRepository.save(study);
+		return recruitmentRepository.save(recruitment);
 	}
 
 	@Test
@@ -87,8 +111,8 @@ class RecruitmentDetailsFindServiceTest {
 	}
 
 	void assertStudyInfo(RecruitmentDetailsResponse recruitmentDetailsResponse) {
-		assertThat(recruitmentDetailsResponse.ownerNickname()).isEqualTo("아카");
-		assertThat(recruitmentDetailsResponse.category()).isEqualTo("프로젝트");
+		assertThat(recruitmentDetailsResponse.ownerNickname()).isEqualTo(NICKNAME);
+		assertThat(recruitmentDetailsResponse.category()).isEqualTo(CATEGORY);
 		assertThat(recruitmentDetailsResponse.way()).isEqualTo(Way.ONLINE.toString());
 		assertThat(recruitmentDetailsResponse.startDateTime()).isEqualTo("2024-03-01T18:00");
 		assertThat(recruitmentDetailsResponse.endDateTime()).isEqualTo("2024-03-20T18:00");
