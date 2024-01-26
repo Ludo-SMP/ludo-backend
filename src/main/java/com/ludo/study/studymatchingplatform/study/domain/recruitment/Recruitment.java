@@ -21,9 +21,11 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @Getter
+@SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class Recruitment extends BaseEntity {
@@ -33,14 +35,16 @@ public class Recruitment extends BaseEntity {
 	private Long id;
 
 	@OneToOne(fetch = LAZY)
-	@JoinColumn(name = "study_id")
+	@JoinColumn(
+		name = "study_id",
+		nullable = false
+	)
 	private Study study;
 
 	@OneToMany(
 		fetch = LAZY,
 		mappedBy = "recruitment"
 	)
-
 	private List<Applicant> applicants = new ArrayList<>();
 
 	public Integer getApplicantCount() {
@@ -51,23 +55,39 @@ public class Recruitment extends BaseEntity {
 		fetch = LAZY,
 		mappedBy = "recruitment"
 	)
-
 	private List<RecruitmentStack> recruitmentStacks = new ArrayList<>();
 
 	@OneToMany(
 		fetch = LAZY,
 		mappedBy = "recruitment"
 	)
-
 	private List<RecruitmentPosition> recruitmentPositions = new ArrayList<>();
 
+	@Column(
+		nullable = false,
+		length = 2048
+	)
 	private String callUrl;
+
+	@Column(nullable = false,
+		length = 50
+	)
 	private String title;
+
+	@Column(
+		nullable = false,
+		length = 2000
+	)
 	private String content;
 
-	private int hits = 0;
+	@Column(nullable = false)
+	private int hits = 1;
+
+	@Column(nullable = false)
 	private LocalDateTime recruitmentEndDateTime;
-	private int recruitmentCount;
+
+	@Column(nullable = false)
+	private int recruitmentLimit;
 
 	public void connectToStudy(Study study) {
 		this.study = study;
@@ -80,4 +100,25 @@ public class Recruitment extends BaseEntity {
 	public void addPosition(RecruitmentPosition recruitmentPosition) {
 		this.recruitmentPositions.add(recruitmentPosition);
 	}
+
+	public void upHit() {
+		hits++;
+	}
+
+	public List<String> getStackNames() {
+		List<String> stacks = new ArrayList<>();
+		for (RecruitmentStack recruitmentStack : recruitmentStacks) {
+			stacks.add(recruitmentStack.getStack().getName());
+		}
+		return stacks;
+	}
+
+	public List<String> getPositionNames() {
+		List<String> positions = new ArrayList<>();
+		for (RecruitmentPosition recruitmentPosition : recruitmentPositions) {
+			positions.add(recruitmentPosition.getPosition().getName());
+		}
+		return positions;
+	}
+
 }

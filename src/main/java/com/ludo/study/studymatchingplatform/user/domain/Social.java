@@ -1,6 +1,6 @@
 package com.ludo.study.studymatchingplatform.user.domain;
 
-public enum Platform {
+public enum Social {
 	GOOGLE,
 	NAVER,
 	KAKAO,
