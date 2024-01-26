@@ -43,8 +43,8 @@ public class Applicant extends BaseEntity {
 
 	@Enumerated(EnumType.STRING)
 	@Column(
-			nullable = false,
-			columnDefinition = "char(10)"
+		nullable = false,
+		columnDefinition = "char(10)"
 	)
 	private ApplicantStatus applicantStatus;
 

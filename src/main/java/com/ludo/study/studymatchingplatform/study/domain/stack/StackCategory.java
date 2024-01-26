@@ -7,6 +7,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,7 +30,7 @@ public class StackCategory extends BaseEntity {
 		nullable = false,
 		length = 50
 	)
-  @Size(max = 50)
+	@Size(max = 50)
 	private String name;
 
 }

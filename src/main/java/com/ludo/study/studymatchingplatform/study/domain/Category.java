@@ -1,5 +1,10 @@
 package com.ludo.study.studymatchingplatform.study.domain;
 
+import static jakarta.persistence.FetchType.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import com.ludo.study.studymatchingplatform.common.entity.BaseEntity;
 
 import jakarta.persistence.Column;
@@ -7,6 +12,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -36,8 +42,5 @@ public class Category extends BaseEntity {
 		fetch = LAZY
 	)
 	private List<Study> studies = new ArrayList<>();
-
-	@Column(nullable = false)
-	private String name;
 
 }

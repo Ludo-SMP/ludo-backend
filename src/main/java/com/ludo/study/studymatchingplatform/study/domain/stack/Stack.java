@@ -13,6 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -42,11 +43,11 @@ public class Stack extends BaseEntity {
 		nullable = false,
 		length = 50
 	)
-  @Size(max = 50)
+	@Size(max = 50)
 	private String name;
 
 	@Column(length = 2048)
-  @Size(max = 2048)
+	@Size(max = 2048)
 	private String imageUrl;
 
 	@OneToMany(mappedBy = "stack")

@@ -51,20 +51,20 @@ public class Recruitment extends BaseEntity {
 	private Study study;
 
 	@OneToMany(
-			fetch = LAZY,
-			mappedBy = "recruitment"
+		fetch = LAZY,
+		mappedBy = "recruitment"
 	)
 	private List<Applicant> applicants = new ArrayList<>();
 
 	@OneToMany(
-			fetch = LAZY,
-			mappedBy = "recruitment"
+		fetch = LAZY,
+		mappedBy = "recruitment"
 	)
 	private List<RecruitmentStack> recruitmentStacks = new ArrayList<>();
 
 	@OneToMany(
-			fetch = LAZY,
-			mappedBy = "recruitment"
+		fetch = LAZY,
+		mappedBy = "recruitment"
 	)
 	private List<RecruitmentPosition> recruitmentPositions = new ArrayList<>();
 
@@ -72,33 +72,33 @@ public class Recruitment extends BaseEntity {
 		nullable = false,
 		length = 2048
 	)
-  @Size(max = 2048)
+	@Size(max = 2048)
 	private String callUrl;
 
 	@Column(
-    nullable = false,
+		nullable = false,
 		length = 50
 	)
-  @Size(max = 50)
+	@Size(max = 50)
 	private String title;
 
 	@Column(
 		nullable = false,
 		length = 2000
 	)
-  @Size(max = 2000)
+	@Size(max = 2000)
 	private String content;
 
 	@Column(nullable = false)
-  @PositiveOrZero
+	@PositiveOrZero
 	private int hits = 0;
 
 	@Column(nullable = false)
-  @FutureOrPresent
+	@FutureOrPresent
 	private LocalDateTime recruitmentEndDateTime;
 
 	@Column(nullable = false)
-  @PositiveOrZero
+	@PositiveOrZero
 	private int recruitmentLimit;
 
 	public void connectToStudy(Study study) {
@@ -112,14 +112,13 @@ public class Recruitment extends BaseEntity {
 	 */
 	public void addStack(RecruitmentStack recruitmentStack) {
 		this.recruitmentStacks
-				.add(recruitmentStack);
+			.add(recruitmentStack);
 	}
 
 	public void addPosition(RecruitmentPosition recruitmentPosition) {
 		this.recruitmentPositions
-				.add(recruitmentPosition);
+			.add(recruitmentPosition);
 	}
-
 
 	public void upHit() {
 		hits++;

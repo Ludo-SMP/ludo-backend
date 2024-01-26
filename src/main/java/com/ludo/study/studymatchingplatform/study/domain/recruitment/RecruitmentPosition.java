@@ -30,7 +30,7 @@ public class RecruitmentPosition extends BaseEntity {
 	private RecruitmentPositionId id;
 
 	@ManyToOne(fetch = LAZY)
-  @MapsId("recruitmentId")
+	@MapsId("recruitmentId")
 	@JoinColumn(name = "recruitment_id")
 	private Recruitment recruitment;
 
