@@ -46,6 +46,7 @@ public class Applicant extends BaseEntity {
 		nullable = false,
 		columnDefinition = "char(10)"
 	)
+  
 	private ApplicantStatus applicantStatus;
 
 }

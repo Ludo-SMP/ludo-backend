@@ -30,7 +30,6 @@ public class Participant extends BaseEntity {
 
 	@ManyToOne(fetch = LAZY)
 	@MapsId("studyId")
-
 	@JoinColumn(
 		name = "study_id",
 		nullable = false

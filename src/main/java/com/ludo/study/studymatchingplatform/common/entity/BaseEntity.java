@@ -32,4 +32,7 @@ public abstract class BaseEntity {
 	@Column(nullable = true)
 	private LocalDateTime deletedDateTime = null;
 
+	protected BaseEntity() {
+	}
+
 }

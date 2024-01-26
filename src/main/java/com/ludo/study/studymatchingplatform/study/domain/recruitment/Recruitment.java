@@ -123,7 +123,7 @@ public class Recruitment extends BaseEntity {
 	public void upHit() {
 		hits++;
 	}
-
+  
 	public List<String> getStackNames() {
 		List<String> stacks = new ArrayList<>();
 		for (RecruitmentStack recruitmentStack : recruitmentStacks) {
