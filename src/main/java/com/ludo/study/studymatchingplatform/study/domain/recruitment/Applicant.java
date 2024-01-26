@@ -14,6 +14,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -31,6 +32,7 @@ public class Applicant extends BaseEntity {
 	private ApplicantId id;
 
 	@OneToOne(fetch = LAZY)
+	@MapsId("userId")
 	@JoinColumn(
 		name = "user_id",
 		insertable = false,
