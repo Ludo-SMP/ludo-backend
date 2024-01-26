@@ -6,13 +6,13 @@ import java.util.Optional;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
 
 public interface RecruitmentRepository {
+	Optional<Recruitment> findById(long id);
 
-	Recruitment save(final Recruitment recruitment);
+	Recruitment save(Recruitment recruitment);
 
 	Optional<Recruitment> findById(final Long id);
 
 	void deleteById(Long id);
 
 	List<Recruitment> findAll();
-
 }

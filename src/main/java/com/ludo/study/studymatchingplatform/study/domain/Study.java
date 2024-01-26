@@ -8,7 +8,6 @@ import java.util.List;
 
 import com.ludo.study.studymatchingplatform.common.entity.BaseEntity;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
-import com.ludo.study.studymatchingplatform.user.domain.User;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -25,11 +24,15 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 
 @Entity
+@Getter
+@ToString
+@SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Getter
 public class Study extends BaseEntity {
 
 	@Id
@@ -38,38 +41,59 @@ public class Study extends BaseEntity {
 	private Long id;
 
 	@Enumerated(EnumType.STRING)
-	private Status status;
+	@Column(
+		nullable = false,
+		columnDefinition = "char(10)"
+	)
+	private StudyStatus status;
 
 	@ManyToOne(fetch = LAZY)
-	@JoinColumn(name = "category_id")
+	@JoinColumn(
+		name = "category_id",
+		nullable = false
+	)
 	private Category category;
 
 	@OneToOne(fetch = LAZY)
-	@JoinColumn(name = "owner_id")
+	@JoinColumn(
+		name = "owner_id",
+		nullable = false
+	)
 	private User owner;
 
+
+	@Column(
+		nullable = false,
+		length = 50
+	)
 	private String title;
 
 	@OneToOne(
-		mappedBy = "study",
-		fetch = LAZY
+			mappedBy = "study",
+			fetch = LAZY
 	)
 	private Recruitment recruitment;
 
 	@OneToMany(
-		mappedBy = "study",
-		fetch = LAZY
+			mappedBy = "study",
+			fetch = LAZY
 	)
-
 	private List<Participant> participants = new ArrayList<>();
 
 	@Enumerated(EnumType.STRING)
+	@Column(
+		nullable = false,
+		columnDefinition = "char(10)"
+	)
 	private Way way;
 
+	@Column(nullable = false)
 	private int participantLimit;
 
+	@Column(nullable = false)
 	private LocalDateTime startDateTime;
 
+	@Column(nullable = false)
 	private LocalDateTime endDateTime;
 
 	public void registerRecruitment(final Recruitment recruitment) {
@@ -84,4 +108,13 @@ public class Study extends BaseEntity {
 	public Integer getParticipantCount() {
 		return participants.size();
 	}
+
+	public String getCategoryByName() {
+		return category.getName();
+	}
+
+	public String getOwnerNickname() {
+		return owner.getNickname();
+	}
+
 }

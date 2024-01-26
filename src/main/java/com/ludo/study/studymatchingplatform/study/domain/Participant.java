@@ -10,39 +10,39 @@ import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Entity
+@Getter
+@SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Getter
 public class Participant extends BaseEntity {
+
 	@EmbeddedId
-	private ParticipantId id;
+	private ParticipantId id = new ParticipantId();
 
 	@ManyToOne(fetch = LAZY)
+	@MapsId("studyId")
+
 	@JoinColumn(
 		name = "study_id",
-		insertable = false,
-		updatable = false
+		nullable = false
 	)
 	private Study study;
 
 	@OneToOne(fetch = LAZY)
+	@MapsId("userId")
 	@JoinColumn(
 		name = "user_id",
-		insertable = false,
-		updatable = false
+		nullable = false
 	)
 	private User user;
-
-	public Participant(Study study, User user) {
-		this.study = study;
-		this.user = user;
-	}
 
 }
