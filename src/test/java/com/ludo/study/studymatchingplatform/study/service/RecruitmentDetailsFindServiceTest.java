@@ -79,7 +79,7 @@ class RecruitmentDetailsFindServiceTest {
 		// when
 		recruitmentDetailsFindService.findRecruitmentDetails(saveRecruitment.getId());
 		// then
-		Recruitment find = recruitmentRepository.findById(saveRecruitment.getId());
+		Recruitment find = recruitmentRepository.findById(saveRecruitment.getId()).get();
 		assertThat(find.getHits()).isEqualTo(expectedHits);
 	}
 

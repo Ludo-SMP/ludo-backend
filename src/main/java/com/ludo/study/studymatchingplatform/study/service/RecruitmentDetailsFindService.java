@@ -9,8 +9,10 @@ import com.ludo.study.studymatchingplatform.study.repository.RecruitmentReposito
 import com.ludo.study.studymatchingplatform.study.service.dto.response.RecruitmentDetailsResponse;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class RecruitmentDetailsFindService {
 
@@ -18,10 +20,12 @@ public class RecruitmentDetailsFindService {
 
 	@Transactional
 	public RecruitmentDetailsResponse findRecruitmentDetails(final Long id) {
-		Recruitment recruitment = recruitmentRepository.findById(id);
-		recruitment.upHit();
+		Recruitment recruitment = recruitmentRepository.findById(id)
+			.orElseThrow(() -> new IllegalArgumentException("지원 공고가 없습니다."));
 
+		recruitment.upHit();
 		Study study = recruitment.getStudy();
+
 		return new RecruitmentDetailsResponse(recruitment, study);
 	}
 
