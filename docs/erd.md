@@ -162,7 +162,6 @@ erDiagram
 
     recruitment {
         bigint recruitment_id PK
-        bigint study_id FK
         int applicant_count "unsigned"
         varchar2048 call_url "연락방법"
         varchar50 title
