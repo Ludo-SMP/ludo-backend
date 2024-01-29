@@ -140,4 +140,11 @@ public class Recruitment extends BaseEntity {
 		return positions;
 	}
 
+	public void addRecruitmentStacks(final List<RecruitmentStack> recruitmentStacks) {
+		this.recruitmentStacks.addAll(recruitmentStacks);
+	}
+
+	public void addRecruitmentPositions(final List<RecruitmentPosition> recruitmentPositions) {
+		this.recruitmentPositions.addAll(recruitmentPositions);
+	}
 }

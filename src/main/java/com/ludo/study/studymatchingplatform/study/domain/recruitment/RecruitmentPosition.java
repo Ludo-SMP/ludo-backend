@@ -39,4 +39,14 @@ public class RecruitmentPosition extends BaseEntity {
 	@JoinColumn(name = "position_id")
 	private Position position;
 
+	public static RecruitmentPosition from(
+		final Recruitment recruitment,
+		final Position position
+	) {
+		final RecruitmentPosition recruitmentPosition = new RecruitmentPosition();
+		recruitmentPosition.recruitment = recruitment;
+		recruitmentPosition.position = position;
+
+		return recruitmentPosition;
+	}
 }

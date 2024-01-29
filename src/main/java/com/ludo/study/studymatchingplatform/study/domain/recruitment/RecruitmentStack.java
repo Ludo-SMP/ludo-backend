@@ -39,4 +39,14 @@ public class RecruitmentStack extends BaseEntity {
 	@JoinColumn(name = "stack_id")
 	private Stack stack;
 
+	public static RecruitmentStack from(
+		final Recruitment recruitment,
+		final Stack stack
+	) {
+		final RecruitmentStack recruitmentStack = new RecruitmentStack();
+		recruitmentStack.recruitment = recruitment;
+		recruitmentStack.stack = stack;
+
+		return recruitmentStack;
+	}
 }
