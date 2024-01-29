@@ -22,10 +22,10 @@ import com.ludo.study.studymatchingplatform.study.fixture.UserFixture;
 import com.ludo.study.studymatchingplatform.study.repository.CategoryRepository;
 import com.ludo.study.studymatchingplatform.study.repository.RecruitmentRepository;
 import com.ludo.study.studymatchingplatform.study.repository.StudyRepository;
-import com.ludo.study.studymatchingplatform.study.repository.UserRepository;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.RecruitmentDetailsResponse;
-import com.ludo.study.studymatchingplatform.user.domain.Platform;
+import com.ludo.study.studymatchingplatform.user.domain.Social;
 import com.ludo.study.studymatchingplatform.user.domain.User;
+import com.ludo.study.studymatchingplatform.user.repository.UserRepository;
 
 @SpringBootTest
 class RecruitmentDetailsFindServiceTest {
@@ -85,7 +85,7 @@ class RecruitmentDetailsFindServiceTest {
 
 	private Recruitment saveRecruitment() {
 		Category category = CategoryFixture.createCategory(CATEGORY);
-		User user = UserFixture.createUser(Platform.NAVER, NICKNAME, EMAIL);
+		User user = UserFixture.createUser(Social.NAVER, NICKNAME, EMAIL);
 		Study study = StudyFixture.createStudy(StudyStatus.RECRUITING, STUDY_TITLE, Way.ONLINE, category, user);
 
 		RecruitmentStack spring = RecruitmentStackFixture.createRecruitmentStack(
@@ -114,8 +114,8 @@ class RecruitmentDetailsFindServiceTest {
 		assertThat(recruitmentDetailsResponse.ownerNickname()).isEqualTo(NICKNAME);
 		assertThat(recruitmentDetailsResponse.category()).isEqualTo(CATEGORY);
 		assertThat(recruitmentDetailsResponse.way()).isEqualTo(Way.ONLINE.toString());
-		assertThat(recruitmentDetailsResponse.startDateTime()).isEqualTo("2024-03-01T18:00");
-		assertThat(recruitmentDetailsResponse.endDateTime()).isEqualTo("2024-03-20T18:00");
+		assertThat(recruitmentDetailsResponse.startDateTime()).isEqualTo("2025-03-01T18:00");
+		assertThat(recruitmentDetailsResponse.endDateTime()).isEqualTo("2025-03-20T18:00");
 	}
 
 	void assertRecruitmentInfo(RecruitmentDetailsResponse recruitmentDetailsResponse) {
@@ -125,8 +125,8 @@ class RecruitmentDetailsFindServiceTest {
 		assertThat(recruitmentDetailsResponse.positions()).contains("백엔드", "프론트엔드");
 		assertThat(recruitmentDetailsResponse.platformUrl()).isEqualTo("https://example.com/call1");
 		assertThat(recruitmentDetailsResponse.applicantCount()).isSameAs(5);
-		assertThat(recruitmentDetailsResponse.recruitmentEndDateTime()).isEqualTo("2024-02-10T18:00");
-		assertThat(recruitmentDetailsResponse.createdDateTime()).isEqualTo("2024-01-20T12:30");
+		assertThat(recruitmentDetailsResponse.recruitmentEndDateTime()).isEqualTo("2025-02-10T18:00");
+		assertThat(recruitmentDetailsResponse.createdDateTime()).isEqualTo("2025-01-20T12:30");
 	}
 
 }

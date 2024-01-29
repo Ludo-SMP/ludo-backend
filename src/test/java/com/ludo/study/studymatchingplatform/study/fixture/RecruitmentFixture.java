@@ -22,7 +22,7 @@ public class RecruitmentFixture {
 			.content(content)
 			.recruitmentStacks(List.of(recruitmentStacks))
 			.recruitmentPositions(new ArrayList<>())
-			.recruitmentEndDateTime(LocalDateTime.now())
+			.recruitmentEndDateTime(LocalDateTime.now().plusDays(5))
 			.title(title)
 			.hits(hits)
 			.build();
