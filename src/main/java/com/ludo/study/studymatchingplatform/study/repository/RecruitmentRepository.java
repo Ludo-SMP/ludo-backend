@@ -1,6 +1,9 @@
 package com.ludo.study.studymatchingplatform.study.repository;
 
+import java.util.List;
 import java.util.Optional;
+
+import org.springframework.data.domain.Pageable;
 
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
 
@@ -10,6 +13,8 @@ public interface RecruitmentRepository {
 	Recruitment save(Recruitment recruitment);
 
 	Optional<Recruitment> findById(final Long id);
+
+	List<Recruitment> findPopularRecruitments(String category, Pageable pageable);
 
 	// void deleteById(Long id);
 	//
