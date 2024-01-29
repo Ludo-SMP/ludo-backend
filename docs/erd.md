@@ -6,10 +6,10 @@
    를 찾아야 되는 수가 생길 수도 있음.
 4. 네이밍 컨벤션
 
-   - study_user_participants
-   - study_user_applicants
-   - study_participants
-   - study_applicants
+    - study_user_participants
+    - study_user_applicants
+    - study_participants
+    - study_applicants
 
 5. M:N을 풀기 위해 중간테이블이 들어갔을 때, 네이밍 전략 조사 및 컨벤션 합의 필
    요
@@ -35,17 +35,17 @@
 
 - **case1. 이메일로 사용자를 특정하는 경우**
 
-  - 모든 소셜 계정의 이메일이 같지 않을 수 있음. 사람의 행동 패턴마다 다름.
-  - 특정 이메일로 가입된 사용자를 구분한다면, 사용자는 다른 이메일을 사용해서 가
-    입한 계정이 있다는 사실을 인지하지 못하여 불완전.
-  - 애플의 경우, hide my mail 기능을 사용해서 fake 메일을 사용하기 때문에 구현
-    불가. 구현이 되더라도 해커가 특정 사용자의 가입된 계정을 한번에 볼 수 있어서
-    오히려 부작용이 있을 가능성.
+    - 모든 소셜 계정의 이메일이 같지 않을 수 있음. 사람의 행동 패턴마다 다름.
+    - 특정 이메일로 가입된 사용자를 구분한다면, 사용자는 다른 이메일을 사용해서 가
+      입한 계정이 있다는 사실을 인지하지 못하여 불완전.
+    - 애플의 경우, hide my mail 기능을 사용해서 fake 메일을 사용하기 때문에 구현
+      불가. 구현이 되더라도 해커가 특정 사용자의 가입된 계정을 한번에 볼 수 있어서
+      오히려 부작용이 있을 가능성.
 
 - **case2. 전화번호로 사용자를 특정하는 경우**
-  - 전화 번호는 바뀔 수 있음.
-  - 이전 사용자의 정보가 보이거나, 내가 전화 번호를 바꾸고 갱신하는 법을 잊어버
-    린 경우 정보가 노출될 수 있음.
+    - 전화 번호는 바뀔 수 있음.
+    - 이전 사용자의 정보가 보이거나, 내가 전화 번호를 바꾸고 갱신하는 법을 잊어버
+      린 경우 정보가 노출될 수 있음.
 
 ## 소셜 로그인을 통한 "연동"
 
@@ -146,7 +146,6 @@ erDiagram
     study {
         bigint study_id PK
         bigint category_id FK
-        bigint recruitment_id FK
         bigint owner_id
 
         char10 study_status "enum: RECRUITING | RECRUITED | PROGRESS | COMPLETED"
