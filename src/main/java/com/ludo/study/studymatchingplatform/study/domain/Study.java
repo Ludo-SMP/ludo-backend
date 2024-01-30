@@ -117,4 +117,19 @@ public class Study extends BaseEntity {
 		return owner.getNickname();
 	}
 
+	public void ensureRecruitmentWritable() {
+		if (recruitment == null || recruitment.isDeleted()) {
+			return;
+		}
+		throw new IllegalArgumentException("이미 작성된 모집 공고가 존재합니다.");
+	}
+
+	public void ensureRecruitmentEditable(final User user) {
+		if (owner != user) {
+			throw new IllegalArgumentException("모집 공고를 수정할 권한이 없습니다.");
+		}
+		if (recruitment == null || recruitment.isDeleted()) {
+			throw new IllegalArgumentException("존재하지 않는 모집 공고입니다.");
+		}
+	}
 }

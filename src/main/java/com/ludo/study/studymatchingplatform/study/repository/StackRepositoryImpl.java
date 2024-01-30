@@ -1,5 +1,7 @@
 package com.ludo.study.studymatchingplatform.study.repository;
 
+import static com.ludo.study.studymatchingplatform.study.domain.stack.QStack.*;
+
 import java.util.List;
 import java.util.Set;
 
@@ -20,7 +22,14 @@ public class StackRepositoryImpl {
 	private final StackJpaRepository stackJpaRepository;
 
 	public Set<Stack> findByIdIn(final List<Long> stackIds) {
+
 		return stackJpaRepository.findByIdIn(stackIds);
+	}
+
+	public List<Stack> findAllByIds(final List<Long> stackIds) {
+		return q.selectFrom(stack)
+			.where(stack.id.in(stackIds))
+			.fetch();
 	}
 
 }

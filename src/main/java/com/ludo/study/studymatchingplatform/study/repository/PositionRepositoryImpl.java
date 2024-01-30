@@ -1,5 +1,7 @@
 package com.ludo.study.studymatchingplatform.study.repository;
 
+import static com.ludo.study.studymatchingplatform.study.domain.QPosition.*;
+
 import java.util.List;
 import java.util.Set;
 
@@ -21,5 +23,11 @@ public class PositionRepositoryImpl {
 
 	public Set<Position> findByIdIn(final List<Long> positionIds) {
 		return positionJpaRepository.findByIdIn(positionIds);
+	}
+
+	public List<Position> findAllByIds(final List<Long> ids) {
+		return q.selectFrom(position)
+			.where(position.id.in(ids))
+			.fetch();
 	}
 }

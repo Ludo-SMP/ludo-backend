@@ -26,7 +26,8 @@ public class RecruitmentRepositoryImpl {
 		return recruitmentJpaRepository.findById(id);
 	}
 
-	public boolean existsByStudyId(final long id) {
+	public boolean existsById(final long id) {
 		return recruitmentJpaRepository.existsById(id);
 	}
+
 }

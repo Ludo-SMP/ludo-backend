@@ -1,0 +1,48 @@
+package com.ludo.study.studymatchingplatform.study.repository;
+
+import static com.ludo.study.studymatchingplatform.study.domain.QStudy.*;
+
+import java.util.Optional;
+
+import org.springframework.stereotype.Repository;
+
+import com.ludo.study.studymatchingplatform.study.domain.Study;
+import com.ludo.study.studymatchingplatform.study.repository.jpa.StudyJpaRepository;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+
+import lombok.RequiredArgsConstructor;
+
+@Repository
+@RequiredArgsConstructor
+public class StudyRepositoryImpl {
+
+	private final JPAQueryFactory q;
+
+	private final StudyJpaRepository studyJpaRepository;
+
+	public Optional<Study> findById(final long id) {
+		return studyJpaRepository.findById(id);
+	}
+
+	public boolean hasRecruitment(final long id) {
+		final Long recruitmentId = q.select(study.recruitment.id)
+			.from(study)
+			.where(study.id.eq(id))
+			.fetchOne();
+
+		return recruitmentId != null;
+	}
+
+	public Study save(final Study study) {
+		return studyJpaRepository.save(study);
+	}
+
+	public Optional<Study> findByIdWithRecruitment(final long id) {
+		return Optional.ofNullable(
+			q.selectFrom(study)
+				.where(study.id.eq(id))
+				.leftJoin(study.recruitment).fetchJoin()
+				.fetchFirst()
+		);
+	}
+}

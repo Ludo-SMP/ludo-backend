@@ -14,7 +14,6 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -34,16 +33,16 @@ public class User extends BaseEntity {
 
 	@Enumerated(EnumType.STRING)
 	@Column(
-			nullable = false,
-			updatable = false,
-			columnDefinition = "char(10)"
+		nullable = false,
+		updatable = false,
+		columnDefinition = "char(10)"
 	)
 	private Social social;
 
 	@Column(nullable = false)
 	@Size(
-			min = 1,
-			max = 20
+		min = 1,
+		max = 20
 	)
 	private String nickname;
 

@@ -4,13 +4,19 @@ import static jakarta.persistence.FetchType.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
 import com.ludo.study.studymatchingplatform.common.entity.BaseEntity;
+import com.ludo.study.studymatchingplatform.study.domain.Position;
 import com.ludo.study.studymatchingplatform.study.domain.Study;
+import com.ludo.study.studymatchingplatform.study.domain.stack.Stack;
+import com.ludo.study.studymatchingplatform.user.domain.User;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -54,19 +60,19 @@ public class Recruitment extends BaseEntity {
 		fetch = LAZY,
 		mappedBy = "recruitment"
 	)
-	private List<Applicant> applicants = new ArrayList<>();
+	private Set<Applicant> applicants = new HashSet<>();
 
 	@OneToMany(
 		fetch = LAZY,
 		mappedBy = "recruitment"
 	)
-	private List<RecruitmentStack> recruitmentStacks = new ArrayList<>();
+	private Set<RecruitmentStack> recruitmentStacks = new HashSet<>();
 
 	@OneToMany(
 		fetch = LAZY,
 		mappedBy = "recruitment"
 	)
-	private List<RecruitmentPosition> recruitmentPositions = new ArrayList<>();
+	private Set<RecruitmentPosition> recruitmentPositions = new HashSet<>();
 
 	@Column(
 		nullable = false,
@@ -101,6 +107,23 @@ public class Recruitment extends BaseEntity {
 	@PositiveOrZero
 	private int recruitmentLimit;
 
+	public static Recruitment of(
+		final String title,
+		final String content,
+		final int recruitmentLimit,
+		final LocalDateTime recruitmentEndDateTime,
+		final Study study
+	) {
+		return Recruitment.builder()
+			.title(title)
+			.content(content)
+			.recruitmentLimit(recruitmentLimit)
+			.recruitmentEndDateTime(recruitmentEndDateTime)
+			.study(study)
+			.build();
+	}
+
+	@Deprecated
 	public void connectToStudy(Study study) {
 		this.study = study;
 	}
@@ -146,5 +169,54 @@ public class Recruitment extends BaseEntity {
 
 	public void addRecruitmentPositions(final List<RecruitmentPosition> recruitmentPositions) {
 		this.recruitmentPositions.addAll(recruitmentPositions);
+	}
+
+	public void edit(
+		final String title,
+		final String content,
+		final String callUrl,
+		final int hits,
+		final int recruitmentLimit,
+		final LocalDateTime recruitmentEndDateTime
+	) {
+		this.title = title;
+		this.content = content;
+		this.callUrl = callUrl;
+		this.hits = hits;
+		this.recruitmentLimit = recruitmentLimit;
+		this.recruitmentEndDateTime = recruitmentEndDateTime;
+	}
+
+	public Optional<RecruitmentStack> getRecruitmentStack(final Stack stack) {
+		return recruitmentStacks.stream()
+			.filter(r -> r.getStack() == stack)
+			.findFirst();
+	}
+
+	public Optional<RecruitmentPosition> getRecruitmentPosition(final Position position) {
+		return recruitmentPositions.stream()
+			.filter(r -> r.getPosition() == position)
+			.findFirst();
+	}
+
+	public void removeRecruitmentStack(final RecruitmentStack recruitmentStack) {
+		recruitmentStacks.remove(recruitmentStack);
+	}
+
+	public void removeRecruitmentPosition(final RecruitmentPosition recruitmentPosition) {
+		recruitmentPositions.remove(recruitmentPosition);
+	}
+
+	public boolean hasStack(final Stack stack) {
+		return recruitmentStacks.stream()
+			.anyMatch(r -> r.getStack() == stack);
+	}
+
+	public boolean hasPosition(final List<Position> positions) {
+		return recruitmentPositions.stream()
+			.anyMatch(r -> r.getPosition() == positions);
+	}
+
+	public void ensureEditable(final User user) {
 	}
 }

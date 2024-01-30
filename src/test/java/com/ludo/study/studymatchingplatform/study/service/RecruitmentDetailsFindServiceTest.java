@@ -20,8 +20,8 @@ import com.ludo.study.studymatchingplatform.study.fixture.StackFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.StudyFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.UserFixture;
 import com.ludo.study.studymatchingplatform.study.repository.CategoryRepository;
-import com.ludo.study.studymatchingplatform.study.repository.RecruitmentRepository;
-import com.ludo.study.studymatchingplatform.study.repository.StudyRepository;
+import com.ludo.study.studymatchingplatform.study.repository.RecruitmentRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.repository.StudyRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.RecruitmentDetailsResponse;
 import com.ludo.study.studymatchingplatform.user.domain.Social;
 import com.ludo.study.studymatchingplatform.user.domain.User;
@@ -34,10 +34,10 @@ class RecruitmentDetailsFindServiceTest {
 	RecruitmentDetailsFindService recruitmentDetailsFindService;
 
 	@Autowired
-	RecruitmentRepository recruitmentRepository;
+	RecruitmentRepositoryImpl recruitmentRepository;
 
 	@Autowired
-	StudyRepository studyRepository;
+	StudyRepositoryImpl studyRepositoryImpl;
 
 	@Autowired
 	UserRepository userRepository;
@@ -98,7 +98,7 @@ class RecruitmentDetailsFindServiceTest {
 
 		userRepository.save(user);
 		categoryRepository.save(category);
-		studyRepository.save(study);
+		studyRepositoryImpl.save(study);
 		return recruitmentRepository.save(recruitment);
 	}
 
