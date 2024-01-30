@@ -19,13 +19,13 @@ import com.ludo.study.studymatchingplatform.study.fixture.RecruitmentStackFixtur
 import com.ludo.study.studymatchingplatform.study.fixture.StackFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.StudyFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.UserFixture;
-import com.ludo.study.studymatchingplatform.study.repository.CategoryRepository;
-import com.ludo.study.studymatchingplatform.study.repository.RecruitmentRepository;
-import com.ludo.study.studymatchingplatform.study.repository.StudyRepository;
+import com.ludo.study.studymatchingplatform.study.repository.CategoryRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.repository.StudyRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.repository.recruitment.RecruitmentRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.RecruitmentDetailsResponse;
 import com.ludo.study.studymatchingplatform.user.domain.Social;
 import com.ludo.study.studymatchingplatform.user.domain.User;
-import com.ludo.study.studymatchingplatform.user.repository.UserRepository;
+import com.ludo.study.studymatchingplatform.user.repository.UserRepositoryImpl;
 
 @SpringBootTest
 class RecruitmentDetailsFindServiceTest {
@@ -34,16 +34,16 @@ class RecruitmentDetailsFindServiceTest {
 	RecruitmentDetailsFindService recruitmentDetailsFindService;
 
 	@Autowired
-	RecruitmentRepository recruitmentRepository;
+	RecruitmentRepositoryImpl recruitmentRepository;
 
 	@Autowired
-	StudyRepository studyRepository;
+	StudyRepositoryImpl studyRepository;
 
 	@Autowired
-	UserRepository userRepository;
+	UserRepositoryImpl userRepository;
 
 	@Autowired
-	CategoryRepository categoryRepository;
+	CategoryRepositoryImpl categoryRepository;
 
 	private static final String CATEGORY = "프로젝트";
 	private static final String STUDY_TITLE = "스터디1";
@@ -60,6 +60,8 @@ class RecruitmentDetailsFindServiceTest {
 	void 모집공고_상세를_조회한다() {
 		// given
 		Recruitment saveRecruitment = saveRecruitment();
+		System.out.println(saveRecruitment);
+		System.out.println(saveRecruitment.getId());
 		// when
 		RecruitmentDetailsResponse recruitmentDetailsResponse = recruitmentDetailsFindService.findRecruitmentDetails(
 			saveRecruitment.getId());
