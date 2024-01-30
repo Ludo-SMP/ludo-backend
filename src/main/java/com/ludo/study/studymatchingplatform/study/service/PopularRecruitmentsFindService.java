@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
-import com.ludo.study.studymatchingplatform.study.repository.RecruitmentRepository;
+import com.ludo.study.studymatchingplatform.study.repository.recruitment.RecruitmentRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.service.dto.mapper.RecruitmentPreviewResponseMapper;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.PopularRecruitmentsResponse;
 
@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class PopularRecruitmentsFindService {
 
-	private final RecruitmentRepository recruitmentRepository;
+	private final RecruitmentRepositoryImpl recruitmentRepository;
 	private final RecruitmentPreviewResponseMapper recruitmentPreviewResponseMapper;
 
 	@Transactional
