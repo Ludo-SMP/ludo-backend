@@ -1,5 +1,5 @@
 package com.ludo.study.studymatchingplatform.study.repository;
 
-public interface StackCategoryRepository {
-	
+public class StudyRepositoryImpl implements StudyRepository {
+
 }
