@@ -4,6 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
 
-public interface RecruitmentJpaRepository extends JpaRepository<Recruitment, Long>, RecruitmentRepository {
+public interface RecruitmentJpaRepository extends JpaRepository<Recruitment, Long> {
 
 }
