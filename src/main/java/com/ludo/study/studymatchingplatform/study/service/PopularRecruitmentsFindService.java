@@ -21,14 +21,10 @@ public class PopularRecruitmentsFindService {
 
 	@Transactional
 	public PopularRecruitmentsResponse findPopularRecruitments() {
-		PopularRecruitmentCondition popularRecruitmentCondition = new PopularRecruitmentCondition();
 
-		List<Recruitment> popularCoding = recruitmentRepository.findPopularRecruitments("코딩테스트",
-			popularRecruitmentCondition.getCondition());
-		List<Recruitment> popularInterview = recruitmentRepository.findPopularRecruitments("모의면접",
-			popularRecruitmentCondition.getCondition());
-		List<Recruitment> popularProject = recruitmentRepository.findPopularRecruitments("프로젝트",
-			popularRecruitmentCondition.getCondition());
+		List<Recruitment> popularCoding = recruitmentRepository.findPopularRecruitments("코딩테스트");
+		List<Recruitment> popularInterview = recruitmentRepository.findPopularRecruitments("모의면접");
+		List<Recruitment> popularProject = recruitmentRepository.findPopularRecruitments("프로젝트");
 
 		return new PopularRecruitmentsResponse(
 			recruitmentPreviewResponseMapper.mapBy(popularCoding),
