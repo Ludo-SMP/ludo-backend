@@ -10,10 +10,8 @@ import lombok.Builder;
 public record StudyCreateDto(
 
 		String title,
-		Long categoryId,
 		Way way,
 		Integer participantLimit,
-		Integer participantCount,
 		LocalDateTime startDateTime,
 		LocalDateTime endDateTime
 

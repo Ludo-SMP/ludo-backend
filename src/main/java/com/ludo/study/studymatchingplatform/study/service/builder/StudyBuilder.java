@@ -12,10 +12,8 @@ public final class StudyBuilder {
 	public static StudyCreateDto convertToStudyCreateDto(final StudyCreateRequest request) {
 		return StudyCreateDto.builder()
 				.title(request.title())
-				.categoryId(request.categoryId())
 				.way(request.way())
 				.participantLimit(request.participantLimit())
-				.participantCount(request.participantCount())
 				.startDateTime(request.startDateTime())
 				.endDateTime(request.endDateTime())
 				.build();

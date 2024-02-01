@@ -9,20 +9,18 @@ import jakarta.validation.constraints.NotNull;
 
 public record StudyCreateRequest(
 
-		Long userId,
+		Integer userId,
 
 		@NotBlank(message = "스터디의 제목을 입력해주세요.")
 		String title,
 
 		@NotNull(message = "스터디의 카테고리를 입력해주세요.")
-		Long categoryId,
+		Integer categoryId,
 
 		Way way,
 
 		@NotNull(message = "스터디의 최대 참여자를 입력해주세요.")
 		Integer participantLimit,
-
-		Integer participantCount,
 
 		LocalDateTime startDateTime,
 
