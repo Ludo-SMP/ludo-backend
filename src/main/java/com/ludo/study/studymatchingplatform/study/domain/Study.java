@@ -114,7 +114,7 @@ public class Study extends BaseEntity {
 
 	public void addParticipant(final Participant participant) {
 		getParticipants().add(participant);
-		this.participantCount = participants.size();
+		this.participantCount = getParticipantCount();
 	}
 
 	public void registerRecruitment(final Recruitment recruitment) {
