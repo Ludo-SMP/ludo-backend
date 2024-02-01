@@ -14,7 +14,6 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -48,8 +47,8 @@ public class User extends BaseEntity {
 	private String nickname;
 
 	@Column(
-		nullable = false,
-		length = 320
+			nullable = false,
+			length = 320
 	)
 	@Email
 	private String email;

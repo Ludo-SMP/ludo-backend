@@ -14,8 +14,12 @@ public class StudyRepositoryImpl {
 
 	private final StudyJpaRepository studyJpaRepository;
 
-	public Optional<Study> findById(final Long id) {
-		return studyJpaRepository.findById(id);
+	public void save(final Study study) {
+		studyJpaRepository.save(study);
+	}
+
+	public Optional<Study> findById(final Long studyId) {
+		return studyJpaRepository.findById(studyId);
 	}
 
 }
