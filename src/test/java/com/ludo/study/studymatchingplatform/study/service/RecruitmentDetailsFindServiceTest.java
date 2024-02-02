@@ -60,8 +60,6 @@ class RecruitmentDetailsFindServiceTest {
 	void 모집공고_상세를_조회한다() {
 		// given
 		Recruitment saveRecruitment = saveRecruitment();
-		System.out.println(saveRecruitment);
-		System.out.println(saveRecruitment.getId());
 		// when
 		RecruitmentDetailsResponse recruitmentDetailsResponse = recruitmentDetailsFindService.findRecruitmentDetails(
 			saveRecruitment.getId());
@@ -102,33 +100,6 @@ class RecruitmentDetailsFindServiceTest {
 		categoryRepository.save(category);
 		studyRepository.save(study);
 		return recruitmentRepository.save(recruitment);
-	}
-
-	@Test
-	void 모집공고_상세_테스트데이터를_조회한다() {
-		RecruitmentDetailsResponse recruitmentDetailsResponse = recruitmentDetailsFindService.findRecruitmentDetails(
-			1L);
-		assertStudyInfo(recruitmentDetailsResponse);
-		assertRecruitmentInfo(recruitmentDetailsResponse);
-	}
-
-	void assertStudyInfo(RecruitmentDetailsResponse recruitmentDetailsResponse) {
-		assertThat(recruitmentDetailsResponse.ownerNickname()).isEqualTo(NICKNAME);
-		assertThat(recruitmentDetailsResponse.category()).isEqualTo(CATEGORY);
-		assertThat(recruitmentDetailsResponse.way()).isEqualTo(Way.ONLINE.toString());
-		assertThat(recruitmentDetailsResponse.startDateTime()).isEqualTo("2025-03-01T18:00");
-		assertThat(recruitmentDetailsResponse.endDateTime()).isEqualTo("2025-03-20T18:00");
-	}
-
-	void assertRecruitmentInfo(RecruitmentDetailsResponse recruitmentDetailsResponse) {
-		assertThat(recruitmentDetailsResponse.title()).isEqualTo("Recruitment Title 1");
-		assertThat(recruitmentDetailsResponse.content()).isEqualTo("Content 1");
-		assertThat(recruitmentDetailsResponse.stacks()).contains("spring", "react");
-		assertThat(recruitmentDetailsResponse.positions()).contains("백엔드", "프론트엔드");
-		assertThat(recruitmentDetailsResponse.platformUrl()).isEqualTo("https://example.com/call1");
-		assertThat(recruitmentDetailsResponse.applicantCount()).isSameAs(5);
-		assertThat(recruitmentDetailsResponse.recruitmentEndDateTime()).isEqualTo("2025-02-10T18:00");
-		assertThat(recruitmentDetailsResponse.createdDateTime()).isEqualTo("2025-01-20T12:30");
 	}
 
 }

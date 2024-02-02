@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ludo.study.studymatchingplatform.study.domain.Category;
 import com.ludo.study.studymatchingplatform.study.domain.Study;
@@ -59,18 +60,22 @@ class RecruitmentsFindServiceTest {
 	}
 
 	@Test
+	@Transactional
 	void 모집공고를_20개씩_조회한다() {
 		List<RecruitmentPreviewResponse> firstSearchResults = recruitmentsFindService.findRecruitments(null, 20);
 		assertThat(firstSearchResults).hasSize(DEFAULT_PAGING_SIZE);
 
-		List<RecruitmentPreviewResponse> secondSearchResults = recruitmentsFindService.findRecruitments(26, 20);
+		Long lastId = getLastId(firstSearchResults);
+		List<RecruitmentPreviewResponse> secondSearchResults = recruitmentsFindService.findRecruitments(lastId, 20);
 		assertThat(secondSearchResults).hasSize(DEFAULT_PAGING_SIZE);
 
-		List<RecruitmentPreviewResponse> thirdSearchResults = recruitmentsFindService.findRecruitments(6, 20);
+		lastId = getLastId(secondSearchResults);
+		List<RecruitmentPreviewResponse> thirdSearchResults = recruitmentsFindService.findRecruitments(lastId, 20);
 		assertThat(thirdSearchResults).hasSize(REMAIN_PAGING_SIZE);
 	}
 
 	@Test
+	@Transactional
 	void 모집공고를_생성날짜기준_내림차순_조회한다() {
 		List<RecruitmentPreviewResponse> firstSearchResults = recruitmentsFindService.findRecruitments(null, 20);
 		assertThat(firstSearchResults)
@@ -81,7 +86,8 @@ class RecruitmentsFindServiceTest {
 				"모집공고35", "모집공고34", "모집공고33", "모집공고32", "모집공고31",
 				"모집공고30", "모집공고29", "모집공고28", "모집공고27", "모집공고26");
 
-		List<RecruitmentPreviewResponse> secondSearchResults = recruitmentsFindService.findRecruitments(26, 20);
+		Long lastId = getLastId(firstSearchResults);
+		List<RecruitmentPreviewResponse> secondSearchResults = recruitmentsFindService.findRecruitments(lastId, 20);
 		assertThat(secondSearchResults)
 			.extracting("title")
 			.containsExactly("모집공고25", "모집공고24", "모집공고23", "모집공고22", "모집공고21",
@@ -89,10 +95,15 @@ class RecruitmentsFindServiceTest {
 				"모집공고15", "모집공고14", "모집공고13", "모집공고12", "모집공고11",
 				"모집공고10", "모집공고9", "모집공고8", "모집공고7", "모집공고6");
 
-		List<RecruitmentPreviewResponse> thirdSearchResults = recruitmentsFindService.findRecruitments(6, 20);
+		lastId = getLastId(secondSearchResults);
+		List<RecruitmentPreviewResponse> thirdSearchResults = recruitmentsFindService.findRecruitments(lastId, 20);
 		assertThat(thirdSearchResults)
 			.extracting("title")
 			.containsExactly("모집공고5", "모집공고4", "모집공고3", "모집공고2", "모집공고1");
+	}
+
+	private Long getLastId(List<RecruitmentPreviewResponse> searchResults) {
+		return searchResults.get(searchResults.size() - 1).id();
 	}
 
 	private User saveUser() {
