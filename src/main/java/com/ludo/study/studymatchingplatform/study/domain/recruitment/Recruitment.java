@@ -27,6 +27,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 @Entity
@@ -36,6 +37,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @SQLDelete(sql = "UPDATE recruitment SET deleted_date_time = NOW() WHERE recruitment_id = ?")
 @SQLRestriction("deleted_date_time is null")
+@ToString(of = {"id", "title"}, callSuper = true)
 public class Recruitment extends BaseEntity {
 
 	@Id
