@@ -29,7 +29,7 @@ public class RecruitmentRepositoryImpl {
 		return recruitmentJpaRepository.findById(id);
 	}
 
-	public List<Recruitment> findRecruitments(final Integer recruitmentId, final Integer count) {
+	public List<Recruitment> findRecruitments(final Long recruitmentId, final Integer count) {
 		return queryFactory
 			.select(recruitment)
 			.from(recruitment)
@@ -39,7 +39,7 @@ public class RecruitmentRepositoryImpl {
 			.fetch();
 	}
 
-	private BooleanExpression lessThan(Integer recruitmentId) {
+	private BooleanExpression lessThan(Long recruitmentId) {
 		return recruitmentId != null ? recruitment.id.lt(recruitmentId) : null;
 	}
 

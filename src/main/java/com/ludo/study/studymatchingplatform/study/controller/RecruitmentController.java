@@ -30,7 +30,7 @@ public class RecruitmentController {
 
 	@GetMapping
 	public ResponseEntity<RecruitmentPreviewResponses> readRecruitments(
-		@RequestParam(required = false) Integer after, @RequestParam Integer count
+		@RequestParam(required = false) Long after, @RequestParam Integer count
 	) {
 		List<RecruitmentPreviewResponse> recruitments = recruitmentsFindService.findRecruitments(after, count);
 

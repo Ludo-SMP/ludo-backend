@@ -20,7 +20,7 @@ public class RecruitmentsFindService {
 	private final RecruitmentPreviewResponseMapper recruitmentPreviewResponseMapper;
 
 	@Transactional
-	public List<RecruitmentPreviewResponse> findRecruitments(final Integer recruitmentId, final Integer count) {
+	public List<RecruitmentPreviewResponse> findRecruitments(final Long recruitmentId, final Integer count) {
 		List<Recruitment> recruitments = recruitmentRepository.findRecruitments(recruitmentId, count);
 
 		return recruitmentPreviewResponseMapper.mapBy(recruitments);
