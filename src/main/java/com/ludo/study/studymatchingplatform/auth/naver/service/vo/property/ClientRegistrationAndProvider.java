@@ -5,7 +5,7 @@ import lombok.ToString;
 
 @Getter
 @ToString
-public class OAuthProvider {
+public class ClientRegistrationAndProvider {
 
 	private final String clientId;
 	private final String clientSecret;
@@ -16,7 +16,7 @@ public class OAuthProvider {
 	private final String tokenUri;
 	private final String userInfoUri;
 
-	public OAuthProvider(OAuthProperties.Registration registration, OAuthProperties.Provider provider) {
+	public ClientRegistrationAndProvider(OAuthProperties.Registration registration, OAuthProperties.Provider provider) {
 		this.clientId = registration.getClientId();
 		this.clientSecret = registration.getClientSecret();
 		this.loginRedirectUri = registration.getLoginRedirectUri();

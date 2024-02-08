@@ -7,9 +7,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.ludo.study.studymatchingplatform.auth.naver.repository.OAuthProviderRepository;
+import com.ludo.study.studymatchingplatform.auth.naver.service.vo.property.ClientRegistrationAndProvider;
+import com.ludo.study.studymatchingplatform.auth.naver.service.vo.property.ClientRegistrationAndProviderMapper;
 import com.ludo.study.studymatchingplatform.auth.naver.service.vo.property.OAuthProperties;
-import com.ludo.study.studymatchingplatform.auth.naver.service.vo.property.OAuthProvider;
-import com.ludo.study.studymatchingplatform.auth.naver.service.vo.property.OAuthProviderMapper;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,7 +26,8 @@ public class OAuthConfig {
 
 	@Bean
 	public OAuthProviderRepository oAuthProviderRepository() {
-		Map<String, OAuthProvider> providers = OAuthProviderMapper.mapBy(oAuthProperties);
+		Map<String, ClientRegistrationAndProvider> providers
+			= ClientRegistrationAndProviderMapper.mapBy(oAuthProperties);
 		return new OAuthProviderRepository(providers);
 	}
 
