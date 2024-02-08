@@ -55,7 +55,7 @@ public class Study extends BaseEntity {
 	)
 	private Category category;
 
-	@OneToOne(fetch = LAZY)
+	@ManyToOne(fetch = LAZY)
 	@JoinColumn(
 			name = "owner_id",
 			nullable = false
@@ -120,6 +120,10 @@ public class Study extends BaseEntity {
 	public void registerRecruitment(final Recruitment recruitment) {
 		this.recruitment = recruitment;
 		this.recruitment.connectToStudy(this);
+	}
+
+	public void changeStatus(final Study study, final StudyStatus status) {
+		study.status = status;
 	}
 
 	public void addRecruitment(Recruitment recruitment) {

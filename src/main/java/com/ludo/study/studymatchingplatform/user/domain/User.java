@@ -53,4 +53,21 @@ public class User extends BaseEntity {
 	@Email
 	private String email;
 
+	@Column(nullable = false)
+	private String refreshToken;
+
+	@Column(nullable = false)
+	private String accessToken;
+
+	public User(
+			final Social social,
+			final String nickname, final String email,
+			final String refreshToken, final String accessToken) {
+		this.social = social;
+		this.nickname = nickname;
+		this.email = email;
+		this.refreshToken = refreshToken;
+		this.accessToken = accessToken;
+	}
+
 }
