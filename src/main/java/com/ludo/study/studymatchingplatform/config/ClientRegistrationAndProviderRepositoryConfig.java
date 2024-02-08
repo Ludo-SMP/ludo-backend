@@ -16,11 +16,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Configuration
 @EnableConfigurationProperties(OAuthProperties.class)
-public class OAuthConfig {
+public class ClientRegistrationAndProviderRepositoryConfig {
 
 	private final OAuthProperties oAuthProperties;
 
-	public OAuthConfig(OAuthProperties oAuthProperties) {
+	public ClientRegistrationAndProviderRepositoryConfig(OAuthProperties oAuthProperties) {
 		this.oAuthProperties = oAuthProperties;
 	}
 
