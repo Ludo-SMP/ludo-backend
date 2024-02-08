@@ -20,3 +20,16 @@ spring:
         format_sql: true
     show-sql: true
 
+oauth2:
+  registration:
+    naver:
+      client-id: ${NAVER_CLIENT_ID}
+      client-secret: ${NAVER_CLIENT_SECRET}
+      login-callback-url: ${NAVER_LOGIN_CALLBACK_URL}
+      signup-callback-url: ${NAVER_SIGNUP_CALLBACK_URL}
+
+  provider:
+    naver:
+      login-url: ${NAVER_LOGIN_API}
+      token-url: ${NAVER_TOKEN_API}
+      user-profile-url: ${NAVER_USER_PROFILE_API}
