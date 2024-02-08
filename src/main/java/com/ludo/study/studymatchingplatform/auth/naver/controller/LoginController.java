@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.ludo.study.studymatchingplatform.auth.naver.repository.OAuthProviderRepository;
+import com.ludo.study.studymatchingplatform.auth.naver.repository.InMemoryClientRegistrationAndProviderRepository;
 import com.ludo.study.studymatchingplatform.auth.naver.service.NaverLoginService;
 import com.ludo.study.studymatchingplatform.user.domain.Social;
 
@@ -19,17 +19,20 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/auth/login")
 public class LoginController {
 
-	private final OAuthProviderRepository oAuthProviderRepository;
+	private final InMemoryClientRegistrationAndProviderRepository clientRegistrationAndProviderRepository;
 	private final NaverLoginService naverLoginService;
 
 	@GetMapping("/naver")
 	public String naverLogin(RedirectAttributes redirectAttributes) {
 
-		redirectAttributes.addAttribute("response_type", "code");
-		redirectAttributes.addAttribute("client_id", oAuthProviderRepository.findClientId(Social.NAVER));
-		redirectAttributes.addAttribute("redirect_uri", oAuthProviderRepository.findLoginRedirectUri(Social.NAVER));
+		redirectAttributes.addAttribute(
+			"response_type", "code");
+		redirectAttributes.addAttribute(
+			"client_id", clientRegistrationAndProviderRepository.findClientId(Social.NAVER));
+		redirectAttributes.addAttribute(
+			"redirect_uri", clientRegistrationAndProviderRepository.findLoginRedirectUri(Social.NAVER));
 
-		return "redirect:" + oAuthProviderRepository.findAuthorizationUri(Social.NAVER);
+		return "redirect:" + clientRegistrationAndProviderRepository.findAuthorizationUri(Social.NAVER);
 	}
 
 	@GetMapping("/naver/callback")

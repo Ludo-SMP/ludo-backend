@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.ludo.study.studymatchingplatform.auth.naver.repository.OAuthProviderRepository;
+import com.ludo.study.studymatchingplatform.auth.naver.repository.InMemoryClientRegistrationAndProviderRepository;
 import com.ludo.study.studymatchingplatform.auth.naver.service.vo.property.ClientRegistrationAndProvider;
 import com.ludo.study.studymatchingplatform.auth.naver.service.vo.property.ClientRegistrationAndProviderMapper;
 import com.ludo.study.studymatchingplatform.auth.naver.service.vo.property.OAuthProperties;
@@ -25,10 +25,10 @@ public class OAuthConfig {
 	}
 
 	@Bean
-	public OAuthProviderRepository oAuthProviderRepository() {
+	public InMemoryClientRegistrationAndProviderRepository oAuthProviderRepository() {
 		Map<String, ClientRegistrationAndProvider> providers
 			= ClientRegistrationAndProviderMapper.mapBy(oAuthProperties);
-		return new OAuthProviderRepository(providers);
+		return new InMemoryClientRegistrationAndProviderRepository(providers);
 	}
 
 }

@@ -10,7 +10,7 @@ import lombok.ToString;
 
 @ToString
 @RequiredArgsConstructor
-public class OAuthProviderRepository {
+public class InMemoryClientRegistrationAndProviderRepository {
 
 	private final Map<String, ClientRegistrationAndProvider> providers;
 

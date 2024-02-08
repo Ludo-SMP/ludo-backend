@@ -8,7 +8,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import com.ludo.study.studymatchingplatform.auth.naver.repository.OAuthProviderRepository;
+import com.ludo.study.studymatchingplatform.auth.naver.repository.InMemoryClientRegistrationAndProviderRepository;
 import com.ludo.study.studymatchingplatform.auth.naver.service.vo.response.NaverOAuthToken;
 import com.ludo.study.studymatchingplatform.user.domain.Social;
 
@@ -21,10 +21,10 @@ import lombok.extern.slf4j.Slf4j;
 public class NaverOAuthTokenRequestService {
 
 	private final RestTemplate restTemplate;
-	private final OAuthProviderRepository oAuthProviderRepository;
+	private final InMemoryClientRegistrationAndProviderRepository clientRegistrationAndProviderRepository;
 
 	public NaverOAuthToken createOAuthToken(final String authorizationCode) {
-		final String tokenUri = oAuthProviderRepository.findTokenUri(Social.NAVER);
+		final String tokenUri = clientRegistrationAndProviderRepository.findTokenUri(Social.NAVER);
 		final HttpHeaders headers = createHeaders();
 		final MultiValueMap<String, String> body = createBody(authorizationCode);
 
@@ -39,8 +39,8 @@ public class NaverOAuthTokenRequestService {
 	}
 
 	private MultiValueMap<String, String> createBody(final String authorizationCode) {
-		String clientId = oAuthProviderRepository.findClientId(Social.NAVER);
-		String clientSecret = oAuthProviderRepository.findClientSecret(Social.NAVER);
+		String clientId = clientRegistrationAndProviderRepository.findClientId(Social.NAVER);
+		String clientSecret = clientRegistrationAndProviderRepository.findClientSecret(Social.NAVER);
 
 		MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
 		body.add("grant_type", "authorization_code");
