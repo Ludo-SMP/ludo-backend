@@ -1,4 +1,4 @@
-package com.ludo.study.studymatchingplatform.auth.naver.service.naver.vo;
+package com.ludo.study.studymatchingplatform.auth.naver.service.vo.property;
 
 import lombok.Getter;
 import lombok.ToString;

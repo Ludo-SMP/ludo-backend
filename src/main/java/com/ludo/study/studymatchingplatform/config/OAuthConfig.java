@@ -7,9 +7,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.ludo.study.studymatchingplatform.auth.naver.repository.OAuthProviderRepository;
-import com.ludo.study.studymatchingplatform.auth.naver.service.naver.vo.OAuthProperties;
-import com.ludo.study.studymatchingplatform.auth.naver.service.naver.vo.OAuthProvider;
-import com.ludo.study.studymatchingplatform.auth.naver.service.naver.vo.OAuthProviderMapper;
+import com.ludo.study.studymatchingplatform.auth.naver.service.vo.property.OAuthProperties;
+import com.ludo.study.studymatchingplatform.auth.naver.service.vo.property.OAuthProvider;
+import com.ludo.study.studymatchingplatform.auth.naver.service.vo.property.OAuthProviderMapper;
 
 import lombok.extern.slf4j.Slf4j;
 
