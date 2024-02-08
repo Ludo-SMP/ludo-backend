@@ -9,22 +9,22 @@ public class OAuthProvider {
 
 	private final String clientId;
 	private final String clientSecret;
-	private final String loginCallbackUrl;
-	private final String signupCallbackUrl;
+	private final String loginRedirectUri;
+	private final String signupRedirectUri;
 
-	private final String loginUrl;
-	private final String tokenUrl;
-	private final String userProfileUrl;
+	private final String authorizationUri;
+	private final String tokenUri;
+	private final String userInfoUri;
 
 	public OAuthProvider(OAuthProperties.Registration registration, OAuthProperties.Provider provider) {
 		this.clientId = registration.getClientId();
 		this.clientSecret = registration.getClientSecret();
-		this.loginCallbackUrl = registration.getLoginCallbackUrl();
-		this.signupCallbackUrl = registration.getSignupCallbackUrl();
+		this.loginRedirectUri = registration.getLoginRedirectUri();
+		this.signupRedirectUri = registration.getSignupRedirectUri();
 
-		this.loginUrl = provider.getLoginUrl();
-		this.tokenUrl = provider.getTokenUrl();
-		this.userProfileUrl = provider.getUserProfileUrl();
+		this.authorizationUri = provider.getAuthorizationUri();
+		this.tokenUri = provider.getTokenUri();
+		this.userInfoUri = provider.getUserInfoUri();
 	}
 
 }

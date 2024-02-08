@@ -23,17 +23,17 @@ public class OAuthProperties {
 	public static class Registration {
 		private String clientId;
 		private String clientSecret;
-		private String loginCallbackUrl;
-		private String signupCallbackUrl;
+		private String loginRedirectUri;
+		private String signupRedirectUri;
 	}
 
 	@Setter
 	@Getter
 	@ToString
 	public static class Provider {
-		private String loginUrl;
-		private String tokenUrl;
-		private String userProfileUrl;
+		private String authorizationUri;
+		private String tokenUri;
+		private String userInfoUri;
 	}
 
 }

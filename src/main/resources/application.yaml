@@ -25,11 +25,11 @@ oauth2:
     naver:
       client-id: ${NAVER_CLIENT_ID}
       client-secret: ${NAVER_CLIENT_SECRET}
-      login-callback-url: ${NAVER_LOGIN_CALLBACK_URL}
-      signup-callback-url: ${NAVER_SIGNUP_CALLBACK_URL}
+      login-redirect-uri: ${NAVER_LOGIN_CALLBACK_URL}
+      signup-redirect-uri: ${NAVER_SIGNUP_CALLBACK_URL}
 
   provider:
     naver:
-      login-url: ${NAVER_LOGIN_API}
-      token-url: ${NAVER_TOKEN_API}
-      user-profile-url: ${NAVER_USER_PROFILE_API}
+      authorization-uri: ${NAVER_LOGIN_API}
+      token-uri: ${NAVER_TOKEN_API}
+      user-info-uri: ${NAVER_USER_PROFILE_API}
