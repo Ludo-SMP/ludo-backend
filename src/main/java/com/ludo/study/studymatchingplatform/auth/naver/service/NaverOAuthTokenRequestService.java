@@ -39,8 +39,8 @@ public class NaverOAuthTokenRequestService {
 	}
 
 	private MultiValueMap<String, String> createBody(final String authorizationCode) {
-		String clientId = oAuthProviderRepository.findByName(Social.NAVER.getName()).getClientId();
-		String clientSecret = oAuthProviderRepository.findByName(Social.NAVER.getName()).getClientSecret();
+		String clientId = oAuthProviderRepository.findClientId(Social.NAVER);
+		String clientSecret = oAuthProviderRepository.findClientSecret(Social.NAVER);
 
 		MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
 		body.add("grant_type", "authorization_code");
