@@ -30,22 +30,20 @@ oauth2:
         signup-redirect-uri: ${NAVER_SIGNUP_CALLBACK_URL}
         authorization-grant-type: code
       kakao:
-        client-id: "ed54c5ca30a1f77a6a017194159af556"
-        client-secret: "0lortXKR3XPY1KUSsRnrWVMdyl0Csz9O"
-        signup-redirect-uri: "http://localhost:8080/auth/signup/kakao/callback"
-        login-redirect-uri: "http://localhost:8080/auth/login/kakao/callback"
+        client-id: ${KAKAO_CLIENT_ID}
+        client-secret: ${KAKAO_CLIENT_SECRET}
+        login-redirect-uri: ${KAKAO_LOGIN_CALLBACK_URL}
+        signup-redirect-uri: ${KAKAO_SIGNUP_CALLBACK_URL}
         authorization-grant-type: code
-
     provider:
       naver:
         authorization-uri: ${NAVER_LOGIN_API}
         token-uri: ${NAVER_TOKEN_API}
         user-info-uri: ${NAVER_USER_PROFILE_API}
       kakao:
-        authorization-uri: "https://kauth.kakao.com/oauth/authorize?response_type=%s&client_id=%s&redirect_uri=%s"
-        token-uri: "https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id=%s&redirect_uri=%s&code=%s&client_secret=%s"
-        user-info-uri: "https://kapi.kakao.com/v2/user/me"
-
+        authorization-uri: ${KAKAO_LOGIN_API}
+        token-uri: ${KAKAO_TOKEN_API}
+        user-info-uri: ${KAKAO_USER_PROFILE_API}
 
 jwt:
   token:

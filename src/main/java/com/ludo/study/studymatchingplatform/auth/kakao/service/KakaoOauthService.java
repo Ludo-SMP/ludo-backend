@@ -10,10 +10,12 @@ import com.ludo.study.studymatchingplatform.auth.kakao.service.dto.KakaoOauthTok
 import com.ludo.study.studymatchingplatform.auth.kakao.service.dto.KakaoUserAccountDto;
 import com.ludo.study.studymatchingplatform.auth.kakao.service.dto.KakaoUserProfileDto;
 import com.ludo.study.studymatchingplatform.auth.kakao.service.dto.KakaoUserPropertiesDto;
+import com.ludo.study.studymatchingplatform.auth.kakao.service.dto.OauthUserSignupDto;
 import com.ludo.study.studymatchingplatform.auth.kakao.service.dto.response.AuthenticationResponse;
 import com.ludo.study.studymatchingplatform.auth.kakao.service.dto.response.KakaoOauthRedirectResponse;
 import com.ludo.study.studymatchingplatform.study.service.exception.AuthenticationException;
 import com.ludo.study.studymatchingplatform.study.service.exception.NotFoundException;
+import com.ludo.study.studymatchingplatform.user.domain.Social;
 import com.ludo.study.studymatchingplatform.user.domain.User;
 import com.ludo.study.studymatchingplatform.user.repository.UserRepositoryImpl;
 
@@ -57,7 +59,7 @@ public class KakaoOauthService {
 	}
 
 	@Transactional
-	public void signup(final Map<String, String> queryParams) {
+	public AuthenticationResponse signup(final Map<String, String> queryParams) {
 		final KakaoOauthTokenDto kakaoOauthTokenDto = oauthNetworkService.requestSignupToken(KakaoOauthTokenDto.class,
 				queryParams).getBody();
 		final KakaoUserProfileDto kakaoUserProfileDto = getKakaoUserProfileDto(kakaoOauthTokenDto.accessToken());
@@ -70,7 +72,8 @@ public class KakaoOauthService {
 		}
 
 		// 가입되지 않은 사용자인 경우 회원가입 진행
-
+		return authService.oauthJoin(new OauthUserSignupDto(Social.KAKAO,
+				kakaoUserPropertiesDto.nickname(), kakaoUserAccountDto.email()));
 	}
 
 	private KakaoUserProfileDto getKakaoUserProfileDto(final String accessToken) {
