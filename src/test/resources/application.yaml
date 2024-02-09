@@ -1,0 +1,21 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/ludo
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        format_sql: true
+    show-sql: true
+
+jwt:
+  token:
+    secret-key: ${JWT_SECRET_KEY}
+    access-token-expiresin: ${JWT_ACCESS_TOKEN_EXPIRES_IN}

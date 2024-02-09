@@ -1,0 +1,43 @@
+spring:
+
+  devtools:
+    livereload:
+      enabled: true
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/ludo
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        format_sql: true
+    show-sql: true
+
+  security:
+    oauth2:
+      client:
+        registration:
+          naver:
+            client-id: ${NAVER_CLIENT_ID}
+            client-secret: ${NAVER_CLIENT_SECRET}
+            login-redirect-uri: ${NAVER_LOGIN_CALLBACK_URL}
+            signup-redirect-uri: ${NAVER_SIGNUP_CALLBACK_URL}
+            authorization-grant-type: code
+
+        provider:
+          naver:
+            authorization-uri: ${NAVER_LOGIN_API}
+            token-uri: ${NAVER_TOKEN_API}
+            user-info-uri: ${NAVER_USER_PROFILE_API}
+
+jwt:
+  token:
+    secret-key: ${JWT_SECRET_KEY}
+    access-token-expiresin: ${JWT_ACCESS_TOKEN_EXPIRES_IN}
