@@ -9,9 +9,8 @@ import lombok.NoArgsConstructor;
 public class AuthBuilder {
 
 	public static AuthenticationResponse convertToAuthenticationResponse(
-			final String refreshToken,
 			final String accessToken) {
-		return new AuthenticationResponse(refreshToken, accessToken);
+		return new AuthenticationResponse(accessToken);
 	}
 
 }

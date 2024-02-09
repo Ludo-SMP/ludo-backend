@@ -19,14 +19,14 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class KakaoOauthNetwordService implements OauthNetworkService {
 
-	private static final String CALLBACK_URL_PROPERTY = "oauth.kakao.callback-url";
-	private static final String RESPONSE_TYPE_PROPERTY = "oauth.kakao.response-type";
-	private static final String CLIENT_ID_PROPERTY = "oauth.kakao.client-id";
-	private static final String CLIENT_SECRET_PROPERTY = "oauth.kakao.client-secret";
-	private static final String TOKEN_URL_PROPERTY = "oauth.kakao.token-url";
-	private static final String SIGNUP_REDIRECT_URL_PROPERTY = "oauth.kakao.signup-redirect-url";
-	private static final String LOGIN_REDIRECT_URL_PROPERTY = "oauth.kakao.login-redirect-url";
-	private static final String USER_INFO_URL_PROPERTY = "oauth.kakao.user-info-url";
+	private static final String CALLBACK_URL_PROPERTY = "oauth2.client.provider.kakao.authorization-uri";
+	private static final String RESPONSE_TYPE_PROPERTY = "oauth2.client.registration.kakao.authorization-grant-type";
+	private static final String CLIENT_ID_PROPERTY = "oauth2.client.registration.kakao.client-id";
+	private static final String CLIENT_SECRET_PROPERTY = "oauth2.client.registration.kakao.client-secret";
+	private static final String TOKEN_URL_PROPERTY = "oauth2.client.provider.kakao.token-uri";
+	private static final String SIGNUP_REDIRECT_URL_PROPERTY = "oauth2.client.registration.kakao.signup-redirect-uri";
+	private static final String LOGIN_REDIRECT_URL_PROPERTY = "oauth2.client.registration.kakao.login-redirect-uri";
+	private static final String USER_INFO_URL_PROPERTY = "oauth2.client.provider.kakao.user-info-uri";
 
 	private final RestTemplate restTemplate;
 	private final Environment environment;

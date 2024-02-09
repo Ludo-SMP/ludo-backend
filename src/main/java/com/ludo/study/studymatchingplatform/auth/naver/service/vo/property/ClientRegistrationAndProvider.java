@@ -25,6 +25,7 @@ public class ClientRegistrationAndProvider {
 		this.authorizationUri = provider.getAuthorizationUri();
 		this.tokenUri = provider.getTokenUri();
 		this.userInfoUri = provider.getUserInfoUri();
+		System.out.println("여기까지 옴");
 	}
 
 }

@@ -30,13 +30,13 @@ public class KakaoOauthController {
 	}
 
 	@GetMapping("/signup/kakao/callback")
-	public ResponseEntity<AuthenticationResponse> signupOauth(
+	public ResponseEntity<Void> signupOauth(
 			@RequestParam(value = "code") final String code) {
 		final Map<String, String> queryParams = Map.of(
 				"code", code
 		);
-		final AuthenticationResponse response = kakaoOauthService.signup(queryParams);
-		return ResponseEntity.ok(response);
+		kakaoOauthService.signup(queryParams);
+		return ResponseEntity.ok(null);
 	}
 
 	@GetMapping("/login/kakao")

@@ -26,13 +26,14 @@ public class SignUpController {
 
 	@GetMapping("/naver")
 	public String naverSignup(RedirectAttributes redirectAttributes) {
+		System.out.println("네이버 회원가입 시작");
 		redirectAttributes.addAttribute(
-			"response_type", "code");
+				"response_type", "code");
 		redirectAttributes.addAttribute(
-			"client_id", clientRegistrationAndProviderRepository.findClientId(Social.NAVER));
+				"client_id", clientRegistrationAndProviderRepository.findClientId(Social.NAVER));
 		redirectAttributes.addAttribute(
-			"redirect_uri", clientRegistrationAndProviderRepository.findSignupRedirectUri(Social.NAVER));
-
+				"redirect_uri", clientRegistrationAndProviderRepository.findSignupRedirectUri(Social.NAVER));
+		System.out.println("끝");
 		return "redirect:" + clientRegistrationAndProviderRepository.findAuthorizationUri(Social.NAVER);
 	}
 
@@ -41,6 +42,6 @@ public class SignUpController {
 		SignupResponse signupResponse = naverSignUpService.naverSignUp(authorizationCode);
 
 		return ResponseEntity.ok()
-			.body(signupResponse);
+				.body(signupResponse);
 	}
 }

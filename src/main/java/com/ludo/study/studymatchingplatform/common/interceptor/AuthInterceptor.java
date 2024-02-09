@@ -31,7 +31,6 @@ public class AuthInterceptor implements HandlerInterceptor {
 			checkHeader(authorizationHeader);
 			final String token = authorizationHeader.substring(BEARER.length());
 			System.out.println(token);
-			checkTokenCertify(token);
 		}
 		return true;
 	}
@@ -39,12 +38,6 @@ public class AuthInterceptor implements HandlerInterceptor {
 	private void checkHeader(final String authorizationHeader) {
 		if (authorizationHeader == null || !authorizationHeader.startsWith(BEARER)) {
 			throw new AuthenticationException("인증 헤더가 적절하지 않습니다.");
-		}
-	}
-
-	private void checkTokenCertify(final String token) {
-		if (!authService.isCertified(token)) {
-			throw new AuthenticationException("토큰이 유효하지 않습니다.");
 		}
 	}
 
