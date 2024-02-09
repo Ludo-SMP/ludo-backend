@@ -19,7 +19,6 @@ public class StudyStatusService {
 
 	public StudyResponse changeStatus(final Long studyId, final StudyStatus status) {
 		final Study study = findById(studyId);
-		System.out.println(study);
 		study.changeStatus(study, status);
 		return StudyBuilder.convertToStudyResponse(study);
 	}

@@ -100,8 +100,8 @@ public class Study extends BaseEntity {
 	private LocalDateTime endDateTime;
 
 	public Study(final Category category, final User owner, final String title,
-			final Way way, final Integer participantLimit,
-			final LocalDateTime startDateTime, final LocalDateTime endDateTime) {
+				 final Way way, final Integer participantLimit,
+				 final LocalDateTime startDateTime, final LocalDateTime endDateTime) {
 		this.status = StudyStatus.RECRUITING;
 		this.category = category;
 		this.owner = owner;
