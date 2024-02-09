@@ -36,3 +36,8 @@ spring:
             authorization-uri: ${NAVER_LOGIN_API}
             token-uri: ${NAVER_TOKEN_API}
             user-info-uri: ${NAVER_USER_PROFILE_API}
+
+jwt:
+  token:
+    secret-key: ${JWT_SECRET_KEY}
+    access-token-expiresin: ${JWT_ACCESS_TOKEN_EXPIRES_IN}
