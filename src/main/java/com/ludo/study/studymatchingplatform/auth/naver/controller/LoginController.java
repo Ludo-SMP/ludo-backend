@@ -1,15 +1,20 @@
 package com.ludo.study.studymatchingplatform.auth.naver.controller;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.ludo.study.studymatchingplatform.auth.naver.jwt.JwtTokenProvider;
 import com.ludo.study.studymatchingplatform.auth.naver.repository.InMemoryClientRegistrationAndProviderRepository;
 import com.ludo.study.studymatchingplatform.auth.naver.service.NaverLoginService;
+import com.ludo.study.studymatchingplatform.auth.naver.service.dto.response.LoginResponse;
 import com.ludo.study.studymatchingplatform.user.domain.Social;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -21,6 +26,7 @@ public class LoginController {
 
 	private final InMemoryClientRegistrationAndProviderRepository clientRegistrationAndProviderRepository;
 	private final NaverLoginService naverLoginService;
+	private final JwtTokenProvider jwtTokenProvider;
 
 	@GetMapping("/naver")
 	public String naverLogin(RedirectAttributes redirectAttributes) {
@@ -36,11 +42,21 @@ public class LoginController {
 	}
 
 	@GetMapping("/naver/callback")
-	public String naverLoginCallback(@RequestParam(name = "code") String authorizationCode) {
-		naverLoginService.login(authorizationCode);
+	public ResponseEntity<LoginResponse> naverLoginCallback(
+		@RequestParam(name = "code") String authorizationCode,
+		HttpServletResponse response
+	) {
+		LoginResponse loginResponse = naverLoginService.login(authorizationCode);
+		String accessToken = jwtTokenProvider.createAccessToken(loginResponse.id());
 
-		//TODO: API 명세에 맞게 수정
-		return "login success";
+		Cookie cookie = new Cookie("Authorization", accessToken);
+		cookie.setPath("/");
+		cookie.setMaxAge(Integer.parseInt(jwtTokenProvider.getAccessTokenExpiresIn()));
+		cookie.setHttpOnly(true);
+		response.addCookie(cookie);
+		
+		return ResponseEntity.ok()
+			.body(loginResponse);
 	}
 
 }
