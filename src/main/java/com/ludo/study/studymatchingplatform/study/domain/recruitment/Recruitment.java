@@ -45,46 +45,46 @@ public class Recruitment extends BaseEntity {
 
 	@OneToOne(fetch = LAZY)
 	@JoinColumn(
-		name = "study_id",
-		nullable = false
+			name = "study_id",
+			nullable = false
 	)
 	private Study study;
 
 	@OneToMany(
-		fetch = LAZY,
-		mappedBy = "recruitment"
+			fetch = LAZY,
+			mappedBy = "recruitment"
 	)
 	private List<Applicant> applicants = new ArrayList<>();
 
 	@OneToMany(
-		fetch = LAZY,
-		mappedBy = "recruitment"
+			fetch = LAZY,
+			mappedBy = "recruitment"
 	)
 	private List<RecruitmentStack> recruitmentStacks = new ArrayList<>();
 
 	@OneToMany(
-		fetch = LAZY,
-		mappedBy = "recruitment"
+			fetch = LAZY,
+			mappedBy = "recruitment"
 	)
 	private List<RecruitmentPosition> recruitmentPositions = new ArrayList<>();
 
 	@Column(
-		nullable = false,
-		length = 2048
+			nullable = false,
+			length = 2048
 	)
 	@Size(max = 2048)
 	private String callUrl;
 
 	@Column(
-		nullable = false,
-		length = 50
+			nullable = false,
+			length = 50
 	)
 	@Size(max = 50)
 	private String title;
 
 	@Column(
-		nullable = false,
-		length = 2000
+			nullable = false,
+			length = 2000
 	)
 	@Size(max = 2000)
 	private String content;
@@ -112,12 +112,12 @@ public class Recruitment extends BaseEntity {
 	 */
 	public void addStack(RecruitmentStack recruitmentStack) {
 		this.recruitmentStacks
-			.add(recruitmentStack);
+				.add(recruitmentStack);
 	}
 
 	public void addPosition(RecruitmentPosition recruitmentPosition) {
 		this.recruitmentPositions
-			.add(recruitmentPosition);
+				.add(recruitmentPosition);
 	}
 
 	public void upHit() {

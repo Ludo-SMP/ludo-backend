@@ -25,10 +25,10 @@ public class UserRepositoryImpl {
 
 	public Optional<User> findByEmail(final String email) {
 		return Optional.ofNullable(
-			queryFactory.select(user)
-				.from(user)
-				.where(user.email.eq(email))
-				.fetchOne());
+				queryFactory.select(user)
+						.from(user)
+						.where(user.email.eq(email))
+						.fetchOne());
 	}
 
 }

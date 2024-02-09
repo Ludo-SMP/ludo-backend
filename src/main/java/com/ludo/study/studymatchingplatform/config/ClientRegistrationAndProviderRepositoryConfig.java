@@ -27,7 +27,7 @@ public class ClientRegistrationAndProviderRepositoryConfig {
 	@Bean
 	public InMemoryClientRegistrationAndProviderRepository oAuthProviderRepository() {
 		Map<String, ClientRegistrationAndProvider> providers
-			= ClientRegistrationAndProviderMapper.mapBy(oAuthProperties);
+				= ClientRegistrationAndProviderMapper.mapBy(oAuthProperties);
 		return new InMemoryClientRegistrationAndProviderRepository(providers);
 	}
 

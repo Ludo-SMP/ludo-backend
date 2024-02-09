@@ -27,14 +27,14 @@ public class NaverLoginService {
 		final User user = validateNotSignUp(profileResponse);
 
 		return new LoginResponse(
-			String.valueOf(user.getId()),
-			user.getNickname(),
-			user.getEmail());
+				String.valueOf(user.getId()),
+				user.getNickname(),
+				user.getEmail());
 	}
 
 	private User validateNotSignUp(final UserProfile profileResponse) {
 		return userRepository.findByEmail(profileResponse.getEmail())
-			.orElseThrow(() -> new IllegalArgumentException("가입되어 있지 않은 회원입니다."));
+				.orElseThrow(() -> new IllegalArgumentException("가입되어 있지 않은 회원입니다."));
 	}
 
 }

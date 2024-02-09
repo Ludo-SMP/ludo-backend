@@ -52,9 +52,9 @@ public class NaverOAuthTokenRequestService {
 	}
 
 	private NaverOAuthToken requestOAuthToken(
-		final String tokenUri,
-		final HttpHeaders headers,
-		final MultiValueMap<String, String> body
+			final String tokenUri,
+			final HttpHeaders headers,
+			final MultiValueMap<String, String> body
 	) {
 		return restTemplate.postForObject(tokenUri, new HttpEntity<>(body, headers), NaverOAuthToken.class);
 	}

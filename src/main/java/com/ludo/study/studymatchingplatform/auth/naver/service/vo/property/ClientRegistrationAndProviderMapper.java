@@ -12,10 +12,10 @@ public class ClientRegistrationAndProviderMapper {
 		Map<String, ClientRegistrationAndProvider> clientRegistrationAndProviders = new HashMap<>();
 
 		oAuthProperties.getRegistration()
-			.forEach(
-				(social, registration) -> clientRegistrationAndProviders.put(
-					social, new ClientRegistrationAndProvider(registration, oAuthProperties.getProvider().get(social)))
-			);
+				.forEach((social, registration) -> clientRegistrationAndProviders.put(
+						social, new ClientRegistrationAndProvider(registration,
+								oAuthProperties.getProvider().get(social)))
+				);
 		return clientRegistrationAndProviders;
 	}
 }

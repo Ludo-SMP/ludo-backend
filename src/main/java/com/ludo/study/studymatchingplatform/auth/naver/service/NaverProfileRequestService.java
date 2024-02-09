@@ -38,12 +38,13 @@ public class NaverProfileRequestService {
 
 	private UserProfile requestUserProfile(final String userInfoUri, final HttpHeaders headers) {
 
-		return restTemplate.exchange(
-				userInfoUri,
-				HttpMethod.GET,
-				new HttpEntity<>(headers),
-				UserProfile.class)
-			.getBody();
+		return restTemplate
+				.exchange(
+						userInfoUri,
+						HttpMethod.GET,
+						new HttpEntity<>(headers),
+						UserProfile.class)
+				.getBody();
 	}
 
 }

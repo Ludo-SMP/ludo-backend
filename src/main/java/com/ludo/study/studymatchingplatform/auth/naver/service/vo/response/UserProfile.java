@@ -32,10 +32,10 @@ public class UserProfile {
 
 	public User toUser() {
 		return User.builder()
-			.social(Social.NAVER)
-			.nickname(response.nickname)
-			.email(response.email)
-			.build();
+				.social(Social.NAVER)
+				.nickname(response.nickname)
+				.email(response.email)
+				.build();
 	}
 
 }

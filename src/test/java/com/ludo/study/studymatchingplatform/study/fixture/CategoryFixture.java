@@ -6,8 +6,8 @@ public class CategoryFixture {
 
 	public static Category createCategory(String name) {
 		return Category.builder()
-			.name(name)
-			.build();
+				.name(name)
+				.build();
 	}
 
 }
