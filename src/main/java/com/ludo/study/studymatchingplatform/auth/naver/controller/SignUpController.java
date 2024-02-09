@@ -1,5 +1,6 @@
 package com.ludo.study.studymatchingplatform.auth.naver.controller;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -8,6 +9,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.ludo.study.studymatchingplatform.auth.naver.repository.InMemoryClientRegistrationAndProviderRepository;
 import com.ludo.study.studymatchingplatform.auth.naver.service.NaverSignUpService;
+import com.ludo.study.studymatchingplatform.auth.naver.service.dto.response.SignupResponse;
 import com.ludo.study.studymatchingplatform.user.domain.Social;
 
 import lombok.RequiredArgsConstructor;
@@ -35,10 +37,10 @@ public class SignUpController {
 	}
 
 	@GetMapping("/naver/callback")
-	public String naverSignupback(@RequestParam(name = "code") String authorizationCode) {
-		naverSignUpService.naverSignUp(authorizationCode);
+	public ResponseEntity<SignupResponse> naverSignupback(@RequestParam(name = "code") String authorizationCode) {
+		SignupResponse signupResponse = naverSignUpService.naverSignUp(authorizationCode);
 
-		// TODO: API 응답 명세에 맞게 수정
-		return "signup success";
+		return ResponseEntity.ok()
+			.body(signupResponse);
 	}
 }

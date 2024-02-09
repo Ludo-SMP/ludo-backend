@@ -1,9 +1,8 @@
 package com.ludo.study.studymatchingplatform.auth.naver.service;
 
-import java.util.Optional;
-
 import org.springframework.stereotype.Service;
 
+import com.ludo.study.studymatchingplatform.auth.naver.service.dto.response.LoginResponse;
 import com.ludo.study.studymatchingplatform.auth.naver.service.vo.response.NaverOAuthToken;
 import com.ludo.study.studymatchingplatform.auth.naver.service.vo.response.UserProfile;
 import com.ludo.study.studymatchingplatform.user.domain.User;
@@ -21,20 +20,21 @@ public class NaverLoginService {
 	private final NaverProfileRequestService naverProfileRequestService;
 	private final UserRepositoryImpl userRepository;
 
-	public void login(final String authorizationCode) {
+	public LoginResponse login(final String authorizationCode) {
 		final NaverOAuthToken oAuthToken = naverOAuthTokenRequestService.createOAuthToken(authorizationCode);
 		final UserProfile profileResponse = naverProfileRequestService.createNaverProfile(oAuthToken);
-		validateNotSignUp(profileResponse);
 
-		// TODO: 로그인 상태 유지 로직 구현 (session vs jwt)
-		// TODO: 로그인 API response 응답
+		final User user = validateNotSignUp(profileResponse);
+
+		return new LoginResponse(
+			String.valueOf(user.getId()),
+			user.getNickname(),
+			user.getEmail());
 	}
 
-	private void validateNotSignUp(final UserProfile profileResponse) {
-		Optional<User> findUser = userRepository.findByEmail(profileResponse.getEmail());
-		if (findUser.isEmpty()) {
-			throw new IllegalArgumentException("가입되어 있지 않은 회원입니다.");
-		}
+	private User validateNotSignUp(final UserProfile profileResponse) {
+		return userRepository.findByEmail(profileResponse.getEmail())
+			.orElseThrow(() -> new IllegalArgumentException("가입되어 있지 않은 회원입니다."));
 	}
 
 }
