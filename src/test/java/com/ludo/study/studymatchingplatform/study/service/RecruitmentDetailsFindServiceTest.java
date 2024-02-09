@@ -20,12 +20,12 @@ import com.ludo.study.studymatchingplatform.study.fixture.StackFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.StudyFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.UserFixture;
 import com.ludo.study.studymatchingplatform.study.repository.CategoryRepository;
-import com.ludo.study.studymatchingplatform.study.repository.RecruitmentRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.StudyRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.repository.recruitment.RecruitmentRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.RecruitmentDetailsResponse;
 import com.ludo.study.studymatchingplatform.user.domain.Social;
 import com.ludo.study.studymatchingplatform.user.domain.User;
-import com.ludo.study.studymatchingplatform.user.repository.UserRepository;
+import com.ludo.study.studymatchingplatform.user.repository.UserRepositoryImpl;
 
 @SpringBootTest
 class RecruitmentDetailsFindServiceTest {
@@ -40,7 +40,7 @@ class RecruitmentDetailsFindServiceTest {
 	StudyRepositoryImpl studyRepositoryImpl;
 
 	@Autowired
-	UserRepository userRepository;
+	UserRepositoryImpl userRepository;
 
 	@Autowired
 	CategoryRepository categoryRepository;

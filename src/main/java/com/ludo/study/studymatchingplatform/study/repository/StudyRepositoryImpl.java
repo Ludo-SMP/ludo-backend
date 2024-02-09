@@ -7,7 +7,6 @@ import java.util.Optional;
 import org.springframework.stereotype.Repository;
 
 import com.ludo.study.studymatchingplatform.study.domain.Study;
-import com.ludo.study.studymatchingplatform.study.repository.jpa.StudyJpaRepository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;

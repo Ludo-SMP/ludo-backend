@@ -8,7 +8,6 @@ import java.util.Set;
 import org.springframework.stereotype.Repository;
 
 import com.ludo.study.studymatchingplatform.study.domain.Position;
-import com.ludo.study.studymatchingplatform.study.repository.jpa.PositionJpaRepository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
@@ -30,4 +29,5 @@ public class PositionRepositoryImpl {
 			.where(position.id.in(ids))
 			.fetch();
 	}
+
 }

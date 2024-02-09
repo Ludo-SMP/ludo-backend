@@ -5,7 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ludo.study.studymatchingplatform.study.domain.Study;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
-import com.ludo.study.studymatchingplatform.study.repository.RecruitmentRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.repository.recruitment.RecruitmentRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.RecruitmentDetailsResponse;
 
 import lombok.RequiredArgsConstructor;

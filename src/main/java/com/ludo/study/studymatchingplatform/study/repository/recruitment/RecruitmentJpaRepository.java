@@ -1,4 +1,4 @@
-package com.ludo.study.studymatchingplatform.study.repository.jpa;
+package com.ludo.study.studymatchingplatform.study.repository.recruitment;
 
 import java.util.List;
 

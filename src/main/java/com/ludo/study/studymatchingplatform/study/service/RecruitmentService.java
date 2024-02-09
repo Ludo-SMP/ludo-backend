@@ -8,19 +8,20 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ludo.study.studymatchingplatform.study.domain.Position;
 import com.ludo.study.studymatchingplatform.study.domain.Study;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.Applicant;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.RecruitmentPosition;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.RecruitmentStack;
 import com.ludo.study.studymatchingplatform.study.domain.stack.Stack;
+import com.ludo.study.studymatchingplatform.study.repository.ApplicantRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.PositionRepositoryImpl;
-import com.ludo.study.studymatchingplatform.study.repository.RecruitmentPositionRepositoryImpl;
-import com.ludo.study.studymatchingplatform.study.repository.RecruitmentRepositoryImpl;
-import com.ludo.study.studymatchingplatform.study.repository.RecruitmentStackRepositoryImpl;
-import com.ludo.study.studymatchingplatform.study.repository.StackRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.StudyRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.repository.recruitment.RecruitmentPositionRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.repository.recruitment.RecruitmentRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.repository.recruitment.RecruitmentStackRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.repository.stack.StackRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.service.dto.EditRecruitmentRequest;
 import com.ludo.study.studymatchingplatform.study.service.dto.WriteRecruitmentRequest;
-import com.ludo.study.studymatchingplatform.study.service.dto.request.ApplyRecruitmentRequest;
 import com.ludo.study.studymatchingplatform.user.domain.User;
 
 import lombok.RequiredArgsConstructor;
@@ -38,6 +39,7 @@ public class RecruitmentService {
 	private final RecruitmentPositionService recruitmentPositionService;
 	private final StackRepositoryImpl stackRepository;
 	private final PositionRepositoryImpl positionRepository;
+	private final ApplicantRepositoryImpl applicantRepository;
 
 	public Recruitment write(final WriteRecruitmentRequest request) {
 		final Study study = studyRepository.findByIdWithRecruitment(request.getStudyId())
@@ -61,15 +63,14 @@ public class RecruitmentService {
 
 	public Recruitment edit(
 		final User user,
+		final Long recruitmentId,
 		final EditRecruitmentRequest request
 	) {
 
-		final Study study = studyRepository.findByIdWithRecruitment(request.getStudyId())
+		final Recruitment recruitment = recruitmentRepository.findByIdWithStudy(recruitmentId)
 			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 스터디입니다."));
 
-		study.ensureRecruitmentEditable(user);
-
-		final Recruitment recruitment = study.getRecruitment();
+		recruitment.ensureEditable(user);
 
 		recruitmentStackService.update(recruitment, request.getStackIds());
 		recruitmentPositionService.update(recruitment, request.getPositionIds());
@@ -105,6 +106,21 @@ public class RecruitmentService {
 		return recruitment;
 	}
 
-	public void apply(final ApplyRecruitmentRequest request) {
+	public Applicant apply(
+		final User user,
+		final long recruitmentId
+	) {
+		final Recruitment recruitment = recruitmentRepository.findByIdWithStudy(recruitmentId)
+			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 모집 공고입니다."));
+
+		final Applicant applicant = recruitment.findApplicant(user)
+			.orElseGet(() -> {
+				final Applicant newApplicant = Applicant.of(recruitment, user);
+				return applicantRepository.save(newApplicant);
+			});
+
+		applicant.applyOrThrow();
+
+		return applicant;
 	}
 }

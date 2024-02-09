@@ -1,4 +1,4 @@
-package com.ludo.study.studymatchingplatform.study.repository;
+package com.ludo.study.studymatchingplatform.study.repository.recruitment;
 
 import static com.ludo.study.studymatchingplatform.study.domain.recruitment.QRecruitmentStack.*;
 
@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.RecruitmentStack;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.id.RecruitmentStackId;
-import com.ludo.study.studymatchingplatform.study.repository.jpa.RecruitmentStackJpaRepository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;

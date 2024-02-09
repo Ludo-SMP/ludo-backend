@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.ludo.study.studymatchingplatform.study.domain.stack.Stack;
-import com.ludo.study.studymatchingplatform.study.repository.StackRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.repository.stack.StackRepositoryImpl;
 
 import lombok.RequiredArgsConstructor;
 

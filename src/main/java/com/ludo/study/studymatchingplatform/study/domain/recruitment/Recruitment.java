@@ -218,5 +218,28 @@ public class Recruitment extends BaseEntity {
 	}
 
 	public void ensureEditable(final User user) {
+		if (!isOwner(user)) {
+			throw new IllegalArgumentException("모집 공고를 작성할 권한이 없습니다.");
+		}
+	}
+
+	public void ensureApplicable(final User user) {
+		if (study.isOwner(user)) {
+			throw new IllegalArgumentException("스터디장은 자신의 스터디에 지원할 수 없습니다.");
+		}
+		applicants.stream()
+			.filter(a -> a.equals(user))
+			.findFirst()
+			.ifPresent(Applicant::applyOrThrow);
+	}
+
+	public Optional<Applicant> findApplicant(final User user) {
+		return applicants.stream()
+			.filter(a -> a.equals(user))
+			.findFirst();
+	}
+
+	public boolean isOwner(final User user) {
+		return study.isOwner(user);
 	}
 }

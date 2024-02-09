@@ -55,7 +55,7 @@ public class Study extends BaseEntity {
 	)
 	private Category category;
 
-	@OneToOne(fetch = LAZY)
+	@ManyToOne(fetch = LAZY)
 	@JoinColumn(
 		name = "owner_id",
 		nullable = false
@@ -131,5 +131,9 @@ public class Study extends BaseEntity {
 		if (recruitment == null || recruitment.isDeleted()) {
 			throw new IllegalArgumentException("존재하지 않는 모집 공고입니다.");
 		}
+	}
+
+	public boolean isOwner(final User user) {
+		return owner == user;
 	}
 }

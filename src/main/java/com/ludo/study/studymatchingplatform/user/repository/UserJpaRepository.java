@@ -1,4 +1,4 @@
-package com.ludo.study.studymatchingplatform.repo;
+package com.ludo.study.studymatchingplatform.user.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
