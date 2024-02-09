@@ -18,6 +18,11 @@ public class RecruitmentRepositoryImpl {
 		return recruitmentJpaRepository.findById(recruitmentId);
 	}
 
+	public Recruitment save(Recruitment recruitment) {
+		recruitmentJpaRepository.save(recruitment);
+		return recruitment;
+	}
+
 	public void delete(final Recruitment recruitment) {
 		recruitmentJpaRepository.delete(recruitment);
 	}

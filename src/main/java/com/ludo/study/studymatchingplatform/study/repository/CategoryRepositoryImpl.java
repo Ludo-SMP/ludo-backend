@@ -14,6 +14,11 @@ public class CategoryRepositoryImpl {
 
 	private final CategoryJpaRepository categoryJpaRepository;
 
+	public Category save(Category category) {
+		categoryJpaRepository.save(category);
+		return category;
+	}
+
 	public Optional<Category> findById(final Long categoryId) {
 		return categoryJpaRepository.findById(categoryId);
 	}
