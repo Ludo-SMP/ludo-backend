@@ -9,8 +9,6 @@ import jakarta.validation.constraints.NotNull;
 
 public record StudyCreateRequest(
 
-		Integer userId,
-
 		@NotBlank(message = "스터디의 제목을 입력해주세요.")
 		String title,
 

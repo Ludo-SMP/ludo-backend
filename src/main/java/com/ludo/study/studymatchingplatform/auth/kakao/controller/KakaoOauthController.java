@@ -1,4 +1,4 @@
-package com.ludo.study.studymatchingplatform.user.controller;
+package com.ludo.study.studymatchingplatform.auth.kakao.controller;
 
 import java.util.Map;
 
@@ -8,10 +8,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ludo.study.studymatchingplatform.user.service.KakaoOauthService;
-import com.ludo.study.studymatchingplatform.user.service.UserJoinService;
-import com.ludo.study.studymatchingplatform.user.service.dto.response.AuthenticationResponse;
-import com.ludo.study.studymatchingplatform.user.service.dto.response.KakaoOauthRedirectResponse;
+import com.ludo.study.studymatchingplatform.auth.kakao.service.KakaoOauthService;
+import com.ludo.study.studymatchingplatform.auth.kakao.service.dto.response.AuthenticationResponse;
+import com.ludo.study.studymatchingplatform.auth.kakao.service.dto.response.KakaoOauthRedirectResponse;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,15 +22,6 @@ import lombok.extern.slf4j.Slf4j;
 public class KakaoOauthController {
 
 	private final KakaoOauthService kakaoOauthService;
-	private final UserJoinService userJoinService;
-
-	// @GetMapping("/signup/kakao/callback")
-	// public void signupCallback(@RequestParam("code") String code) {
-	// 	log.info("인가 코드를 이용하여 토큰을 받습니다.");
-	// 	final KakaoTokenResponse kakaoTokenResponse = kakaoOauthService.getToken(code);
-	// 	final UserCreateDto userCreateDto = kakaoOauthService.getUserInfo(kakaoTokenResponse.access_token());
-	// 	userService.create(userCreateDto);
-	// }
 
 	@GetMapping("/signup/kakao")
 	public ResponseEntity<KakaoOauthRedirectResponse> signupOauth() {

@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ludo.study.studymatchingplatform.auth.common.interceptor.Authenticated;
+import com.ludo.study.studymatchingplatform.common.resolver.UserIdentifier;
 import com.ludo.study.studymatchingplatform.study.domain.StudyStatus;
 import com.ludo.study.studymatchingplatform.study.service.RecruitmentDeleteService;
 import com.ludo.study.studymatchingplatform.study.service.StudyCreateService;
@@ -30,9 +32,10 @@ public class StudyController {
 	private final StudyStatusService studyStatusService;
 
 	@PostMapping
-	public ResponseEntity<Void> create(final StudyCreateRequest request) {
-		studyCreateService.create(request);
-		return ResponseEntity.created(URI.create("/api")).build();
+	@Authenticated
+	public ResponseEntity<Void> create(final StudyCreateRequest request, @UserIdentifier final String email) {
+		final Long studyId = studyCreateService.create(request, email);
+		return ResponseEntity.created(URI.create("/api/studies/" + studyId)).build();
 	}
 
 	@DeleteMapping("/{studyId}/recruitments")

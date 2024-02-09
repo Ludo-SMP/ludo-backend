@@ -1,13 +1,14 @@
-package com.ludo.study.studymatchingplatform.user.service;
+package com.ludo.study.studymatchingplatform.auth.kakao.service;
 
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ludo.study.studymatchingplatform.auth.common.TokenProvider;
+import com.ludo.study.studymatchingplatform.auth.kakao.service.dto.builder.AuthBuilder;
+import com.ludo.study.studymatchingplatform.auth.kakao.service.dto.response.AuthenticationResponse;
 import com.ludo.study.studymatchingplatform.user.domain.User;
-import com.ludo.study.studymatchingplatform.user.service.builder.AuthBuilder;
-import com.ludo.study.studymatchingplatform.user.service.dto.response.AuthenticationResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -26,6 +27,10 @@ public class AuthService {
 		final String refreshToken = tokenProvider.createRefreshToken(user.getEmail(), Map.of());
 		final String accessToken = tokenProvider.createRefreshToken(user.getEmail(), Map.of());
 		return AuthBuilder.convertToAuthenticationResponse(refreshToken, accessToken);
+	}
+
+	public boolean isCertified(final String token) {
+		return tokenProvider.isValidToken(token);
 	}
 
 }

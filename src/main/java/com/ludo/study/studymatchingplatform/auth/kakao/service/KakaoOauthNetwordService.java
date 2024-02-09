@@ -1,4 +1,4 @@
-package com.ludo.study.studymatchingplatform.infra;
+package com.ludo.study.studymatchingplatform.auth.kakao.service;
 
 import java.util.Map;
 
@@ -10,9 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import com.ludo.study.studymatchingplatform.user.service.OauthNetworkService;
-import com.ludo.study.studymatchingplatform.user.service.builder.KakaoOauthBuilder;
-import com.ludo.study.studymatchingplatform.user.service.dto.response.KakaoOauthRedirectResponse;
+import com.ludo.study.studymatchingplatform.auth.kakao.service.dto.builder.KakaoOauthBuilder;
+import com.ludo.study.studymatchingplatform.auth.kakao.service.dto.response.KakaoOauthRedirectResponse;
 
 import lombok.RequiredArgsConstructor;
 

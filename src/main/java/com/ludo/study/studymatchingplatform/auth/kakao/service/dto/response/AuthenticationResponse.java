@@ -1,4 +1,4 @@
-package com.ludo.study.studymatchingplatform.user.service.dto.response;
+package com.ludo.study.studymatchingplatform.auth.kakao.service.dto.response;
 
 public record AuthenticationResponse(
 

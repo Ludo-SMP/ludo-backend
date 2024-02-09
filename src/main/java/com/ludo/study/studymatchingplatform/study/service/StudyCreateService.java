@@ -23,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @Transactional
 @RequiredArgsConstructor
+// 캐시 제거 적용 필요
 public class StudyCreateService {
 
 	private final UserRepositoryImpl userRepository;
@@ -30,19 +31,23 @@ public class StudyCreateService {
 	private final CategoryRepositoryImpl categoryRepository;
 	private final ParticipantRepositoryImpl participantRepository;
 
-	public void create(final StudyCreateRequest request) {
-		final User owner = findUserById(Long.valueOf(request.userId()));
+	public Long create(final StudyCreateRequest request, final String email) {
+		final User owner = findUserByEmail(email);
 		final Category category = findCategoryById(Long.valueOf(request.categoryId()));
 		final StudyCreateDto studyCreateDto = StudyBuilder.convertToStudyCreateDto(request);
 		final Study study = createStudy(owner, studyCreateDto, category);
 		final Participant participant = createParticipant(study, owner);
+
+		// 스터디 생성자도 참여자로 포함
 		study.addParticipant(participant);
-		studyRepository.save(study);
+		final Study savedStudy = studyRepository.save(study);
 		participantRepository.save(participant);
+
+		return savedStudy.getId();
 	}
 
-	private User findUserById(final Long userId) {
-		return userRepository.findById(userId)
+	private User findUserByEmail(final String email) {
+		return userRepository.findByEmail(email)
 				.orElseThrow(() -> new AuthenticationException("존재하지 않는 회원입니다."));
 	}
 

@@ -1,4 +1,4 @@
-package com.ludo.study.studymatchingplatform.user.service;
+package com.ludo.study.studymatchingplatform.auth.common;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;

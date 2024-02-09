@@ -1,4 +1,4 @@
-package com.ludo.study.studymatchingplatform.user.service;
+package com.ludo.study.studymatchingplatform.auth.kakao.service;
 
 import java.util.Map;
 

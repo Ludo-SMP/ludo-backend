@@ -1,4 +1,4 @@
-package com.ludo.study.studymatchingplatform.user.service.dto;
+package com.ludo.study.studymatchingplatform.auth.kakao.service.dto;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;

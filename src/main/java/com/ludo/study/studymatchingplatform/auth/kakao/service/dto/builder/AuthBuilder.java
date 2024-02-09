@@ -1,6 +1,6 @@
-package com.ludo.study.studymatchingplatform.user.service.builder;
+package com.ludo.study.studymatchingplatform.auth.kakao.service.dto.builder;
 
-import com.ludo.study.studymatchingplatform.user.service.dto.response.AuthenticationResponse;
+import com.ludo.study.studymatchingplatform.auth.kakao.service.dto.response.AuthenticationResponse;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
