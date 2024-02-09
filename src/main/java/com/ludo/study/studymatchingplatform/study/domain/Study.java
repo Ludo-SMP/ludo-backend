@@ -39,56 +39,59 @@ public class Study extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "study_id")
-	private Long id;
+	protected Long id;
 
 	@Enumerated(EnumType.STRING)
 	@Column(
-		nullable = false,
-		columnDefinition = "char(10)"
+			nullable = false,
+			columnDefinition = "char(10)"
 	)
 	private StudyStatus status;
 
 	@ManyToOne(fetch = LAZY)
 	@JoinColumn(
-		name = "category_id",
-		nullable = false
+			name = "category_id",
+			nullable = false
 	)
 	private Category category;
 
-	@OneToOne(fetch = LAZY)
+	@ManyToOne(fetch = LAZY)
 	@JoinColumn(
-		name = "owner_id",
-		nullable = false
+			name = "owner_id",
+			nullable = false
 	)
 	private User owner;
 
 	@Column(
-		nullable = false,
-		length = 50
+			nullable = false,
+			length = 50
 	)
 	private String title;
 
 	@OneToOne(
-		mappedBy = "study",
-		fetch = LAZY
+			mappedBy = "study",
+			fetch = LAZY
 	)
 	private Recruitment recruitment;
 
 	@OneToMany(
-		mappedBy = "study",
-		fetch = LAZY
+			mappedBy = "study",
+			fetch = LAZY
 	)
 	private List<Participant> participants = new ArrayList<>();
 
 	@Enumerated(EnumType.STRING)
 	@Column(
-		nullable = false,
-		columnDefinition = "char(10)"
+			nullable = false,
+			columnDefinition = "char(10)"
 	)
 	private Way way;
 
 	@Column(nullable = false)
-	private int participantLimit;
+	private Integer participantLimit;
+
+	@Column(nullable = false)
+	private Integer participantCount;
 
 	@Column(nullable = false)
 	private LocalDateTime startDateTime;
@@ -96,9 +99,31 @@ public class Study extends BaseEntity {
 	@Column(nullable = false)
 	private LocalDateTime endDateTime;
 
+	public Study(final Category category, final User owner, final String title,
+			final Way way, final Integer participantLimit,
+			final LocalDateTime startDateTime, final LocalDateTime endDateTime) {
+		this.status = StudyStatus.RECRUITING;
+		this.category = category;
+		this.owner = owner;
+		this.title = title;
+		this.way = way;
+		this.participantLimit = participantLimit;
+		this.startDateTime = startDateTime;
+		this.endDateTime = endDateTime;
+	}
+
+	public void addParticipant(final Participant participant) {
+		getParticipants().add(participant);
+		this.participantCount = getParticipantCount();
+	}
+
 	public void registerRecruitment(final Recruitment recruitment) {
 		this.recruitment = recruitment;
 		this.recruitment.connectToStudy(this);
+	}
+
+	public void changeStatus(final Study study, final StudyStatus status) {
+		study.status = status;
 	}
 
 	public void addRecruitment(Recruitment recruitment) {
