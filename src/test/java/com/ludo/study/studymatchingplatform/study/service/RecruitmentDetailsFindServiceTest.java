@@ -25,7 +25,7 @@ import com.ludo.study.studymatchingplatform.study.repository.StudyRepository;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.RecruitmentDetailsResponse;
 import com.ludo.study.studymatchingplatform.user.domain.Social;
 import com.ludo.study.studymatchingplatform.user.domain.User;
-import com.ludo.study.studymatchingplatform.user.repository.UserRepository;
+import com.ludo.study.studymatchingplatform.user.repository.UserRepositoryImpl;
 
 @SpringBootTest
 class RecruitmentDetailsFindServiceTest {
@@ -40,7 +40,7 @@ class RecruitmentDetailsFindServiceTest {
 	StudyRepository studyRepository;
 
 	@Autowired
-	UserRepository userRepository;
+	UserRepositoryImpl userRepository;
 
 	@Autowired
 	CategoryRepository categoryRepository;
