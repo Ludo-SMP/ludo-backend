@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ludo.study.studymatchingplatform.auth.common.interceptor.Authenticated;
+import com.ludo.study.studymatchingplatform.common.interceptor.Authenticated;
 import com.ludo.study.studymatchingplatform.common.resolver.UserIdentifier;
 import com.ludo.study.studymatchingplatform.study.domain.StudyStatus;
 import com.ludo.study.studymatchingplatform.study.service.RecruitmentDeleteService;

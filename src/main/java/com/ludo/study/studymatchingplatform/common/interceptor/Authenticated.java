@@ -1,4 +1,4 @@
-package com.ludo.study.studymatchingplatform.auth.common.interceptor;
+package com.ludo.study.studymatchingplatform.common.interceptor;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

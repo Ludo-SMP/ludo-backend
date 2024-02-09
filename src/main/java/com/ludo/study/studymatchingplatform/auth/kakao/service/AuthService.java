@@ -25,12 +25,16 @@ public class AuthService {
 
 	private AuthenticationResponse makeAuthenticationResponse(final User user) {
 		final String refreshToken = tokenProvider.createRefreshToken(user.getEmail(), Map.of());
-		final String accessToken = tokenProvider.createRefreshToken(user.getEmail(), Map.of());
+		final String accessToken = tokenProvider.createAccessToken(user.getEmail(), Map.of());
 		return AuthBuilder.convertToAuthenticationResponse(refreshToken, accessToken);
 	}
 
 	public boolean isCertified(final String token) {
 		return tokenProvider.isValidToken(token);
+	}
+
+	public String findIdentifierByToken(final String token) {
+		return tokenProvider.findSubject(token);
 	}
 
 }

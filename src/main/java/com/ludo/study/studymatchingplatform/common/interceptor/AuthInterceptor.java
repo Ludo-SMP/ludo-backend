@@ -1,4 +1,4 @@
-package com.ludo.study.studymatchingplatform.auth.common.interceptor;
+package com.ludo.study.studymatchingplatform.common.interceptor;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
@@ -16,10 +16,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuthInterceptor implements HandlerInterceptor {
 
-	private static final String BEARER = "Bearer";
+	private static final String BEARER = "Bearer ";
 
 	private final AuthService authService;
 
+	@Override
 	public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response,
 			final Object handler) {
 		if (!(handler instanceof final HandlerMethod handlerMethod)) {
@@ -29,6 +30,7 @@ public class AuthInterceptor implements HandlerInterceptor {
 			final String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 			checkHeader(authorizationHeader);
 			final String token = authorizationHeader.substring(BEARER.length());
+			System.out.println(token);
 			checkTokenCertify(token);
 		}
 		return true;
@@ -41,7 +43,7 @@ public class AuthInterceptor implements HandlerInterceptor {
 	}
 
 	private void checkTokenCertify(final String token) {
-		if (authService.isCertified(token)) {
+		if (!authService.isCertified(token)) {
 			throw new AuthenticationException("토큰이 유효하지 않습니다.");
 		}
 	}
