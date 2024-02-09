@@ -26,15 +26,15 @@ public class NaverSignUpService {
 
 		validateAlreadySignUp(userProfile);
 		signup(userProfile);
-		
+
 		return new SignupResponse(true, "회원가입을 완료했습니다.");
 	}
 
 	private void validateAlreadySignUp(final UserProfile userProfile) {
 		userRepository.findByEmail(userProfile.getEmail())
-			.ifPresent(user -> {
-				throw new IllegalArgumentException("이미 가입되어 있는 회원입니다.");
-			});
+				.ifPresent(user -> {
+					throw new IllegalArgumentException("이미 가입되어 있는 회원입니다.");
+				});
 	}
 
 	private void signup(final UserProfile userProfile) {

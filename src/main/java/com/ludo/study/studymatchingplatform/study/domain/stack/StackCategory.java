@@ -27,8 +27,8 @@ public class StackCategory extends BaseEntity {
 	private Long id;
 
 	@Column(
-		nullable = false,
-		length = 50
+			nullable = false,
+			length = 50
 	)
 	@Size(max = 50)
 	private String name;

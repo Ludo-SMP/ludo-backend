@@ -26,8 +26,8 @@ public class Position extends BaseEntity {
 	private Long id;
 
 	@Column(
-		nullable = false,
-		columnDefinition = "char(50)"
+			nullable = false,
+			columnDefinition = "char(50)"
 	)
 	private String name;
 
