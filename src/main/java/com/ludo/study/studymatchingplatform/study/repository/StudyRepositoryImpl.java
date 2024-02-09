@@ -1,5 +1,7 @@
 package com.ludo.study.studymatchingplatform.study.repository;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Repository;
 
 import com.ludo.study.studymatchingplatform.study.domain.Study;
@@ -13,8 +15,11 @@ public class StudyRepositoryImpl {
 	private final StudyJpaRepository studyJpaRepository;
 
 	public Study save(final Study study) {
-		studyJpaRepository.save(study);
-		return study;
+		return studyJpaRepository.save(study);
+	}
+
+	public Optional<Study> findById(final Long studyId) {
+		return studyJpaRepository.findById(studyId);
 	}
 
 }

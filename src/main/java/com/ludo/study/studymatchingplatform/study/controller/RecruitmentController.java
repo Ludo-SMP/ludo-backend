@@ -23,18 +23,19 @@ public class RecruitmentController {
 
 	@GetMapping("/{recruitment-id}")
 	public ResponseEntity<RecruitmentDetailsResponse> readRecruitmentDetails(
-		@PathVariable("recruitment-id") final Long recruitmentId
+			@PathVariable("recruitment-id") final Long recruitmentId
 	) {
 		try {
 			RecruitmentDetailsResponse recruitmentDetails = recruitmentDetailsFindService.findRecruitmentDetails(
-				recruitmentId);
+					recruitmentId);
 
 			return ResponseEntity.ok(recruitmentDetails);
 		} catch (IllegalArgumentException exception) {
 
 			return ResponseEntity
-				.status(HttpStatus.NOT_FOUND)
-				.build();
+					.status(HttpStatus.NOT_FOUND)
+					.build();
 		}
 	}
+
 }

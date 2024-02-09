@@ -1,8 +1,13 @@
 package com.ludo.study.studymatchingplatform.study.repository;
 
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
-@Component
+import lombok.RequiredArgsConstructor;
+
+@Repository
+@RequiredArgsConstructor
 public class PositionRepositoryImpl {
+
+	private final PositionJpaRepository positionJpaRepository;
 
 }

@@ -64,7 +64,7 @@ class RecruitmentDetailsFindServiceTest {
 		System.out.println(saveRecruitment.getId());
 		// when
 		RecruitmentDetailsResponse recruitmentDetailsResponse = recruitmentDetailsFindService.findRecruitmentDetails(
-			saveRecruitment.getId());
+				saveRecruitment.getId());
 		// then
 		assertThat(recruitmentDetailsResponse.title()).isEqualTo(RECRUITMENT_TITLE);
 		assertThat(recruitmentDetailsResponse.ownerNickname()).isEqualTo(NICKNAME);
@@ -91,12 +91,12 @@ class RecruitmentDetailsFindServiceTest {
 		Study study = StudyFixture.createStudy(StudyStatus.RECRUITING, STUDY_TITLE, Way.ONLINE, category, user);
 
 		RecruitmentStack spring = RecruitmentStackFixture.createRecruitmentStack(
-			StackFixture.createStack(STACK_SPRING));
+				StackFixture.createStack(STACK_SPRING));
 		RecruitmentStack react = RecruitmentStackFixture.createRecruitmentStack(
-			StackFixture.createStack(STACK_REACT));
+				StackFixture.createStack(STACK_REACT));
 
 		Recruitment recruitment = RecruitmentFixture.createRecruitment(study, RECRUITMENT_TITLE, CONTENT, 5, CALL_URL,
-			spring, react);
+				spring, react);
 
 		userRepository.save(user);
 		categoryRepository.save(category);
@@ -107,7 +107,7 @@ class RecruitmentDetailsFindServiceTest {
 	@Test
 	void 모집공고_상세_테스트데이터를_조회한다() {
 		RecruitmentDetailsResponse recruitmentDetailsResponse = recruitmentDetailsFindService.findRecruitmentDetails(
-			1L);
+				1L);
 		assertStudyInfo(recruitmentDetailsResponse);
 		assertRecruitmentInfo(recruitmentDetailsResponse);
 	}
