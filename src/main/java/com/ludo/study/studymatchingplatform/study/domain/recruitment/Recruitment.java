@@ -184,7 +184,7 @@ public class Recruitment extends BaseEntity {
 		recruitmentPositions.remove(recruitmentPosition);
 	}
 
-	public boolean hasStack(final Stack stack) {
+	public boolean hasStacks(final Stack stack) {
 		return recruitmentStacks.stream()
 				.anyMatch(r -> r.getStack().equals(stack));
 	}

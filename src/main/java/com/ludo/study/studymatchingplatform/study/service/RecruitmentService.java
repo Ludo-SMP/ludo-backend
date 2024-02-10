@@ -13,9 +13,9 @@ import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.RecruitmentPosition;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.RecruitmentStack;
 import com.ludo.study.studymatchingplatform.study.domain.stack.Stack;
-import com.ludo.study.studymatchingplatform.study.repository.ApplicantRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.PositionRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.StudyRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.repository.recruitment.ApplicantRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.recruitment.RecruitmentPositionRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.recruitment.RecruitmentRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.recruitment.RecruitmentStackRepositoryImpl;
