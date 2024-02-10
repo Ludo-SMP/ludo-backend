@@ -19,16 +19,8 @@ public class RecruitmentRepositoryImpl {
 
 	private final RecruitmentJpaRepository recruitmentJpaRepository;
 
-	public Recruitment save(final Recruitment recruitment) {
-		return recruitmentJpaRepository.save(recruitment);
-	}
-
-	public Optional<Recruitment> findById(final long id) {
-		return recruitmentJpaRepository.findById(id);
-	}
-
-	public boolean existsById(final long id) {
-		return recruitmentJpaRepository.existsById(id);
+	public Optional<Recruitment> findById(final Long recruitmentId) {
+		return recruitmentJpaRepository.findById(recruitmentId);
 	}
 
 	public Optional<Recruitment> findByIdWithStudy(final long id) {
@@ -39,4 +31,17 @@ public class RecruitmentRepositoryImpl {
 						.fetchOne()
 		);
 	}
+
+	public boolean existsById(final long id) {
+		return recruitmentJpaRepository.existsById(id);
+	}
+
+	public Recruitment save(final Recruitment recruitment) {
+		return recruitmentJpaRepository.save(recruitment);
+	}
+
+	public void delete(final Recruitment recruitment) {
+		recruitmentJpaRepository.delete(recruitment);
+	}
+
 }

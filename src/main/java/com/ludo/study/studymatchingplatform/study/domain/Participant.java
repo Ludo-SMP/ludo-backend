@@ -44,4 +44,9 @@ public class Participant extends BaseEntity {
 	)
 	private User user;
 
+	public Participant(final Study study, final User user) {
+		this.study = study;
+		this.user = user;
+	}
+
 }

@@ -152,3 +152,5 @@ src/main/generated/
 
 # React App for Client Test
 front-test-app/
+
+.env

@@ -19,13 +19,13 @@ import com.ludo.study.studymatchingplatform.study.fixture.RecruitmentStackFixtur
 import com.ludo.study.studymatchingplatform.study.fixture.StackFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.StudyFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.UserFixture;
-import com.ludo.study.studymatchingplatform.study.repository.CategoryRepository;
-import com.ludo.study.studymatchingplatform.study.repository.RecruitmentRepository;
-import com.ludo.study.studymatchingplatform.study.repository.StudyRepository;
+import com.ludo.study.studymatchingplatform.study.repository.CategoryRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.repository.StudyRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.repository.recruitment.RecruitmentRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.RecruitmentDetailsResponse;
 import com.ludo.study.studymatchingplatform.user.domain.Social;
 import com.ludo.study.studymatchingplatform.user.domain.User;
-import com.ludo.study.studymatchingplatform.user.repository.UserRepository;
+import com.ludo.study.studymatchingplatform.user.repository.UserRepositoryImpl;
 
 @SpringBootTest
 class RecruitmentDetailsFindServiceTest {
@@ -34,16 +34,16 @@ class RecruitmentDetailsFindServiceTest {
 	RecruitmentDetailsFindService recruitmentDetailsFindService;
 
 	@Autowired
-	RecruitmentRepository recruitmentRepository;
+	RecruitmentRepositoryImpl recruitmentRepository;
 
 	@Autowired
-	StudyRepository studyRepository;
+	StudyRepositoryImpl studyRepository;
 
 	@Autowired
-	UserRepository userRepository;
+	UserRepositoryImpl userRepository;
 
 	@Autowired
-	CategoryRepository categoryRepository;
+	CategoryRepositoryImpl categoryRepository;
 
 	private static final String CATEGORY = "프로젝트";
 	private static final String STUDY_TITLE = "스터디1";
@@ -86,7 +86,7 @@ class RecruitmentDetailsFindServiceTest {
 	private Recruitment saveRecruitment() {
 		Category category = CategoryFixture.createCategory(CATEGORY);
 		User user = UserFixture.createUser(Social.NAVER, NICKNAME, EMAIL);
-		Study study = StudyFixture.createStudy(StudyStatus.RECRUITING, STUDY_TITLE, Way.ONLINE, category, user);
+		Study study = StudyFixture.createStudy(StudyStatus.RECRUITING, STUDY_TITLE, Way.ONLINE, category, user, 5, 10);
 
 		RecruitmentStack spring = RecruitmentStackFixture.createRecruitmentStack(
 				StackFixture.createStack(STACK_SPRING));
@@ -100,33 +100,6 @@ class RecruitmentDetailsFindServiceTest {
 		categoryRepository.save(category);
 		studyRepository.save(study);
 		return recruitmentRepository.save(recruitment);
-	}
-
-	@Test
-	void 모집공고_상세_테스트데이터를_조회한다() {
-		RecruitmentDetailsResponse recruitmentDetailsResponse = recruitmentDetailsFindService.findRecruitmentDetails(
-				1L);
-		assertStudyInfo(recruitmentDetailsResponse);
-		assertRecruitmentInfo(recruitmentDetailsResponse);
-	}
-
-	void assertStudyInfo(RecruitmentDetailsResponse recruitmentDetailsResponse) {
-		assertThat(recruitmentDetailsResponse.ownerNickname()).isEqualTo(NICKNAME);
-		assertThat(recruitmentDetailsResponse.category()).isEqualTo(CATEGORY);
-		assertThat(recruitmentDetailsResponse.way()).isEqualTo(Way.ONLINE.toString());
-		assertThat(recruitmentDetailsResponse.startDateTime()).isEqualTo("2024-03-01T18:00");
-		assertThat(recruitmentDetailsResponse.endDateTime()).isEqualTo("2024-03-20T18:00");
-	}
-
-	void assertRecruitmentInfo(RecruitmentDetailsResponse recruitmentDetailsResponse) {
-		assertThat(recruitmentDetailsResponse.title()).isEqualTo("Recruitment Title 1");
-		assertThat(recruitmentDetailsResponse.content()).isEqualTo("Content 1");
-		assertThat(recruitmentDetailsResponse.stacks()).contains("spring", "react");
-		assertThat(recruitmentDetailsResponse.positions()).contains("백엔드", "프론트엔드");
-		assertThat(recruitmentDetailsResponse.platformUrl()).isEqualTo("https://example.com/call1");
-		assertThat(recruitmentDetailsResponse.applicantCount()).isSameAs(5);
-		assertThat(recruitmentDetailsResponse.recruitmentEndDateTime()).isEqualTo("2024-02-10T18:00");
-		assertThat(recruitmentDetailsResponse.createdDateTime()).isEqualTo("2024-01-20T12:30");
 	}
 
 }

@@ -4,6 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.ludo.study.studymatchingplatform.study.domain.Category;
 
-public interface CategoryJpaRepository extends CategoryRepository, JpaRepository<Category, Long> {
+public interface CategoryJpaRepository extends JpaRepository<Category, Long> {
 
 }

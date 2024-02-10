@@ -25,10 +25,7 @@ public class Position extends BaseEntity {
 	@Column(name = "position_id")
 	private Long id;
 
-	@Column(
-			nullable = false,
-			columnDefinition = "char(50)"
-	)
+	@Column(nullable = false, columnDefinition = "char(50)")
 	private String name;
 
 }

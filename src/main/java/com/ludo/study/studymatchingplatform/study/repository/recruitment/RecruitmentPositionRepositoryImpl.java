@@ -31,4 +31,5 @@ public class RecruitmentPositionRepositoryImpl {
 				.where(recruitmentPosition.id.eq(id))
 				.execute();
 	}
+
 }

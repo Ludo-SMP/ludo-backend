@@ -19,11 +19,20 @@ public class StudyRepositoryImpl {
 
 	private final StudyJpaRepository studyJpaRepository;
 
-	public Optional<Study> findById(final long id) {
-		return studyJpaRepository.findById(id);
+	public Optional<Study> findById(final Long studyId) {
+		return studyJpaRepository.findById(studyId);
 	}
 
-	public boolean hasRecruitment(final long id) {
+	public Optional<Study> findByIdWithRecruitment(final Long id) {
+		return Optional.ofNullable(
+				q.selectFrom(study)
+						.where(study.id.eq(id))
+						.leftJoin(study.recruitment).fetchJoin()
+						.fetchFirst()
+		);
+	}
+
+	public boolean hasRecruitment(final Long id) {
 		final Long recruitmentId = q.select(study.recruitment.id)
 				.from(study)
 				.where(study.id.eq(id))
@@ -36,12 +45,4 @@ public class StudyRepositoryImpl {
 		return studyJpaRepository.save(study);
 	}
 
-	public Optional<Study> findByIdWithRecruitment(final long id) {
-		return Optional.ofNullable(
-				q.selectFrom(study)
-						.where(study.id.eq(id))
-						.leftJoin(study.recruitment).fetchJoin()
-						.fetchFirst()
-		);
-	}
 }

@@ -1,11 +1,11 @@
 package com.ludo.study.studymatchingplatform.config;
 
-import jakarta.servlet.http.HttpServletRequest;
-
 import java.util.List;
 
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 public class CorsConfig implements CorsConfigurationSource {
 
