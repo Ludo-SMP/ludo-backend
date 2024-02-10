@@ -32,7 +32,6 @@ public class StudyCreateService {
 	private final ParticipantRepositoryImpl participantRepository;
 
 	public Long create(final StudyCreateRequest request, final String email) {
-		System.out.println(request);
 		final User owner = findUserByEmail(email);
 		final Category category = findCategoryById(Long.valueOf(request.categoryId()));
 		final StudyCreateDto studyCreateDto = StudyBuilder.convertToStudyCreateDto(request);

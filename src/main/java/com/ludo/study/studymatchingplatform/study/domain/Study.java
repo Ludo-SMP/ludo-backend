@@ -39,52 +39,31 @@ public class Study extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "study_id")
-	protected Long id;
+	private Long id;
 
 	@Enumerated(EnumType.STRING)
-	@Column(
-			nullable = false,
-			columnDefinition = "char(10)"
-	)
+	@Column(nullable = false, columnDefinition = "char(10)")
 	private StudyStatus status;
 
 	@ManyToOne(fetch = LAZY)
-	@JoinColumn(
-			name = "category_id",
-			nullable = false
-	)
+	@JoinColumn(name = "category_id", nullable = false)
 	private Category category;
 
-	@ManyToOne(fetch = LAZY)
-	@JoinColumn(
-			name = "owner_id",
-			nullable = false
-	)
+	@OneToOne(fetch = LAZY)
+	@JoinColumn(name = "owner_id", nullable = false)
 	private User owner;
 
-	@Column(
-			nullable = false,
-			length = 50
-	)
+	@Column(nullable = false, length = 50)
 	private String title;
 
-	@OneToOne(
-			mappedBy = "study",
-			fetch = LAZY
-	)
+	@OneToOne(mappedBy = "study", fetch = LAZY)
 	private Recruitment recruitment;
 
-	@OneToMany(
-			mappedBy = "study",
-			fetch = LAZY
-	)
+	@OneToMany(mappedBy = "study", fetch = LAZY)
 	private List<Participant> participants = new ArrayList<>();
 
 	@Enumerated(EnumType.STRING)
-	@Column(
-			nullable = false,
-			columnDefinition = "char(10)"
-	)
+	@Column(nullable = false, columnDefinition = "char(10)")
 	private Way way;
 
 	@Column(nullable = false)
@@ -140,6 +119,26 @@ public class Study extends BaseEntity {
 
 	public String getOwnerNickname() {
 		return owner.getNickname();
+	}
+
+	public void ensureRecruitmentWritable() {
+		if (recruitment == null || recruitment.isDeleted()) {
+			return;
+		}
+		throw new IllegalArgumentException("이미 작성된 모집 공고가 존재합니다.");
+	}
+
+	public void ensureRecruitmentEditable(final User user) {
+		if (owner != user) {
+			throw new IllegalArgumentException("모집 공고를 수정할 권한이 없습니다.");
+		}
+		if (recruitment == null || recruitment.isDeleted()) {
+			throw new IllegalArgumentException("존재하지 않는 모집 공고입니다.");
+		}
+	}
+
+	public boolean isOwner(final User user) {
+		return owner == user;
 	}
 
 }

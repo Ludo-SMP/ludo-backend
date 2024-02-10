@@ -1,10 +1,13 @@
 package com.ludo.study.studymatchingplatform.study.repository.recruitment;
 
+import static com.ludo.study.studymatchingplatform.study.domain.recruitment.QRecruitment.*;
+
 import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
 
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
 
@@ -12,15 +15,29 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class RecruitmentRepositoryImpl {
 
+	private final JPAQueryFactory q;
+
 	private final RecruitmentJpaRepository recruitmentJpaRepository;
 
 	public Optional<Recruitment> findById(final Long recruitmentId) {
 		return recruitmentJpaRepository.findById(recruitmentId);
 	}
 
-	public Recruitment save(Recruitment recruitment) {
-		recruitmentJpaRepository.save(recruitment);
-		return recruitment;
+	public Optional<Recruitment> findByIdWithStudy(final long id) {
+		return Optional.ofNullable(
+				q.selectFrom(recruitment)
+						.leftJoin(recruitment.study).fetchJoin()
+						.where(recruitment.id.eq(id))
+						.fetchOne()
+		);
+	}
+
+	public boolean existsById(final long id) {
+		return recruitmentJpaRepository.existsById(id);
+	}
+
+	public Recruitment save(final Recruitment recruitment) {
+		return recruitmentJpaRepository.save(recruitment);
 	}
 
 	public void delete(final Recruitment recruitment) {

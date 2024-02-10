@@ -8,6 +8,8 @@ import org.springframework.stereotype.Repository;
 
 import com.ludo.study.studymatchingplatform.user.domain.User;
 import com.ludo.study.studymatchingplatform.user.repository.jpa.UserJpaRepositoryImpl;
+
+import com.ludo.study.studymatchingplatform.user.domain.Social;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
@@ -16,11 +18,27 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserRepositoryImpl {
 
+	private final JPAQueryFactory q;
 	private final JPAQueryFactory queryFactory;
 	private final UserJpaRepositoryImpl userJpaRepository;
 
 	public User save(final User user) {
 		return userJpaRepository.save(user);
+	}
+
+	/**
+	 * may need to add platformId into table
+	 */
+	public boolean existsByEmailForGoogle(final String email) {
+		final Long id = q.select(user.id)
+				.from(user)
+				.where(
+						user.social.eq(Social.GOOGLE),
+						user.email.eq(email)
+				)
+				.fetchFirst();
+
+		return id != null;
 	}
 
 	public Optional<User> findByEmail(final String email) {

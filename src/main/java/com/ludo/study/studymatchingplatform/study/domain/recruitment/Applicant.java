@@ -17,6 +17,7 @@ import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -29,6 +30,7 @@ import lombok.experimental.SuperBuilder;
 public class Applicant extends BaseEntity {
 
 	@EmbeddedId
+	@Builder.Default
 	private ApplicantId id = new ApplicantId();
 
 	@OneToOne(fetch = LAZY)
@@ -44,5 +46,20 @@ public class Applicant extends BaseEntity {
 	@Enumerated(EnumType.STRING)
 	@Column(name = "status", nullable = false, columnDefinition = "char(10)")
 	private ApplicantStatus applicantStatus;
+
+	public static Applicant of(final Recruitment recruitment, final User user) {
+		return Applicant.builder()
+				.recruitment(recruitment)
+				.user(user)
+				.build();
+	}
+
+	public void applyOrThrow() {
+		if (recruitment.isOwner(user)) {
+			throw new IllegalArgumentException("스터디장은 자신의 스터디에 지원할 수 없습니다.");
+		}
+		applicantStatus.ensureReapplicable();
+		applicantStatus = ApplicantStatus.UNCHECKED;
+	}
 
 }
