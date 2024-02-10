@@ -26,8 +26,8 @@ public class PositionRepositoryImpl {
 
 	public List<Position> findAllByIds(final List<Long> ids) {
 		return q.selectFrom(position)
-			.where(position.id.in(ids))
-			.fetch();
+				.where(position.id.in(ids))
+				.fetch();
 	}
 
 }

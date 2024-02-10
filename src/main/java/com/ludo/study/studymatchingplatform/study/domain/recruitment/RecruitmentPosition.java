@@ -40,8 +40,8 @@ public class RecruitmentPosition extends BaseEntity {
 	private Position position;
 
 	public static RecruitmentPosition from(
-		final Recruitment recruitment,
-		final Position position
+			final Recruitment recruitment,
+			final Position position
 	) {
 		final RecruitmentPosition recruitmentPosition = new RecruitmentPosition();
 		recruitmentPosition.recruitment = recruitment;

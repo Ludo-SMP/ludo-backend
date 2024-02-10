@@ -33,10 +33,10 @@ public class RecruitmentRepositoryImpl {
 
 	public Optional<Recruitment> findByIdWithStudy(final long id) {
 		return Optional.ofNullable(
-			q.selectFrom(recruitment)
-				.leftJoin(recruitment.study).fetchJoin()
-				.where(recruitment.id.eq(id))
-				.fetchOne()
+				q.selectFrom(recruitment)
+						.leftJoin(recruitment.study).fetchJoin()
+						.where(recruitment.id.eq(id))
+						.fetchOne()
 		);
 	}
 }

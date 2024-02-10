@@ -19,15 +19,15 @@ public class RecruitmentPositionService {
 	private final RecruitmentPositionRepositoryImpl recruitmentPositionRepository;
 
 	public List<RecruitmentPosition> createMany(
-		final Recruitment recruitment,
-		final List<Long> positionIds
+			final Recruitment recruitment,
+			final List<Long> positionIds
 	) {
 		final List<Position> positions = positionService.findAllByIdsOrThrow(positionIds);
 
 		final List<RecruitmentPosition> recruitmentPositions = positions.stream()
-			.filter(position -> !recruitment.hasPosition(positions))
-			.map(position -> RecruitmentPosition.from(recruitment, position))
-			.toList();
+				.filter(position -> !recruitment.hasPosition(positions))
+				.map(position -> RecruitmentPosition.from(recruitment, position))
+				.toList();
 
 		return recruitmentPositionRepository.saveAll(recruitmentPositions);
 	}

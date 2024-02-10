@@ -21,7 +21,7 @@ public class RecruitmentDetailsFindService {
 	@Transactional
 	public RecruitmentDetailsResponse findRecruitmentDetails(final Long id) {
 		Recruitment recruitment = recruitmentRepository.findById(id)
-			.orElseThrow(() -> new IllegalArgumentException("지원 공고가 없습니다."));
+				.orElseThrow(() -> new IllegalArgumentException("지원 공고가 없습니다."));
 
 		recruitment.upHit();
 		Study study = recruitment.getStudy();

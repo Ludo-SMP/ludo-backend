@@ -20,12 +20,12 @@ public class WriteRecruitmentRequest {
 
 	public Recruitment toRecruitment(final Study study) {
 		return Recruitment.builder()
-			.title(title)
-			.content(content)
-			.recruitmentLimit(recruitmentLimit)
-			.recruitmentEndDateTime(recruitmentEndDateTime)
-			.study(study)
-			.build();
+				.title(title)
+				.content(content)
+				.recruitmentLimit(recruitmentLimit)
+				.recruitmentEndDateTime(recruitmentEndDateTime)
+				.study(study)
+				.build();
 	}
 
 }

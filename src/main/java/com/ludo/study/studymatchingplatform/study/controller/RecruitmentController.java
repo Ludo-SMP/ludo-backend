@@ -41,55 +41,55 @@ public class RecruitmentController {
 
 	@GetMapping("/{recruitment-id}")
 	public ResponseEntity<RecruitmentDetailsResponse> readRecruitmentDetails(
-		@PathVariable("recruitment-id") final Long recruitmentId
+			@PathVariable("recruitment-id") final Long recruitmentId
 	) {
 		try {
 			RecruitmentDetailsResponse recruitmentDetails = recruitmentDetailsFindService.findRecruitmentDetails(
-				recruitmentId);
+					recruitmentId);
 
 			return ResponseEntity.ok(recruitmentDetails);
 		} catch (IllegalArgumentException exception) {
 
 			return ResponseEntity
-				.status(HttpStatus.NOT_FOUND)
-				.build();
+					.status(HttpStatus.NOT_FOUND)
+					.build();
 		}
 	}
 
 	@PostMapping("/")
 	public ResponseEntity<WriteRecruitmentResponse> write(
-		@RequestBody final WriteRecruitmentRequest request
+			@RequestBody final WriteRecruitmentRequest request
 	) {
 		final Recruitment recruitment = recruitmentService.write(request);
 
 		return ResponseEntity
-			.status(HttpStatus.CREATED)
-			.body(WriteRecruitmentResponse.from(recruitment));
+				.status(HttpStatus.CREATED)
+				.body(WriteRecruitmentResponse.from(recruitment));
 	}
 
 	@PutMapping("/{recruitmentId}")
 	public ResponseEntity<EditRecruitmentResponse> edit(
-		@RequestParam("userId") final Long userId,
-		@PathVariable("recruitmentId") final Long recruitmentId,
-		@RequestBody final EditRecruitmentRequest request
+			@RequestParam("userId") final Long userId,
+			@PathVariable("recruitmentId") final Long recruitmentId,
+			@RequestBody final EditRecruitmentRequest request
 	) {
 		// TODO: need to append authorization guard
 		final Recruitment recruitment = recruitmentService.edit(null, recruitmentId, request);
 
 		return ResponseEntity
-			.status(HttpStatus.OK)
-			.body(EditRecruitmentResponse.from(recruitment));
+				.status(HttpStatus.OK)
+				.body(EditRecruitmentResponse.from(recruitment));
 	}
 
 	@PostMapping("/{recruitmentId}/apply")
 	public ResponseEntity<ApplyRecruitmentResponse> apply(
-		@PathVariable("recruitmentId") final Long recruitmentId
+			@PathVariable("recruitmentId") final Long recruitmentId
 	) {
 		// TODO: need to append authorization guard
 		final Applicant applicant = recruitmentService.apply(null, recruitmentId);
 
 		return ResponseEntity
-			.status(HttpStatus.CREATED)
-			.body(ApplyRecruitmentResponse.from(applicant));
+				.status(HttpStatus.CREATED)
+				.body(ApplyRecruitmentResponse.from(applicant));
 	}
 }

@@ -33,22 +33,22 @@ public class User extends BaseEntity {
 
 	@Enumerated(EnumType.STRING)
 	@Column(
-		nullable = false,
-		updatable = false,
-		columnDefinition = "char(10)"
+			nullable = false,
+			updatable = false,
+			columnDefinition = "char(10)"
 	)
 	private Social social;
 
 	@Column(nullable = false)
 	@Size(
-		min = 1,
-		max = 20
+			min = 1,
+			max = 20
 	)
 	private String nickname;
 
 	@Column(
-		nullable = false,
-		length = 320
+			nullable = false,
+			length = 320
 	)
 	@Email
 	private String email;

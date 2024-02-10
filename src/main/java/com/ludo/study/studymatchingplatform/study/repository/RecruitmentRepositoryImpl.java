@@ -25,11 +25,11 @@ public class RecruitmentRepositoryImpl implements RecruitmentRepository {
 	@Override
 	public Optional<Recruitment> findByIdWithDetails(final long id) {
 		return Optional.ofNullable(
-			q.selectFrom(recruitment)
-				.join(recruitment.study, study).fetchJoin()
-				.join(recruitment.recruitmentStacks, recruitmentStack).fetchJoin()
-				.join(recruitment.recruitmentPositions, recruitmentPosition).fetchJoin()
-				.fetchFirst()
+				q.selectFrom(recruitment)
+						.join(recruitment.study, study).fetchJoin()
+						.join(recruitment.recruitmentStacks, recruitmentStack).fetchJoin()
+						.join(recruitment.recruitmentPositions, recruitmentPosition).fetchJoin()
+						.fetchFirst()
 		);
 
 	}
@@ -48,17 +48,17 @@ public class RecruitmentRepositoryImpl implements RecruitmentRepository {
 	@Override
 	public boolean existsById(final long id) {
 		return q.select(recruitment.id)
-			.from(recruitment)
-			.where(recruitment.id.eq(id))
-			.fetchFirst() != null;
+				.from(recruitment)
+				.where(recruitment.id.eq(id))
+				.fetchFirst() != null;
 	}
 
 	@Override
 	public boolean existsByStudyId(final long studyId) {
 		return q.select(recruitment.id)
-			.from(recruitment)
-			.where(recruitment.study.id.eq(studyId))
-			.fetchFirst() != null;
+				.from(recruitment)
+				.where(recruitment.study.id.eq(studyId))
+				.fetchFirst() != null;
 	}
 
 }

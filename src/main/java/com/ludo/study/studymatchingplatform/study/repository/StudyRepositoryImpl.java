@@ -25,9 +25,9 @@ public class StudyRepositoryImpl {
 
 	public boolean hasRecruitment(final long id) {
 		final Long recruitmentId = q.select(study.recruitment.id)
-			.from(study)
-			.where(study.id.eq(id))
-			.fetchOne();
+				.from(study)
+				.where(study.id.eq(id))
+				.fetchOne();
 
 		return recruitmentId != null;
 	}
@@ -38,10 +38,10 @@ public class StudyRepositoryImpl {
 
 	public Optional<Study> findByIdWithRecruitment(final long id) {
 		return Optional.ofNullable(
-			q.selectFrom(study)
-				.where(study.id.eq(id))
-				.leftJoin(study.recruitment).fetchJoin()
-				.fetchFirst()
+				q.selectFrom(study)
+						.where(study.id.eq(id))
+						.leftJoin(study.recruitment).fetchJoin()
+						.fetchFirst()
 		);
 	}
 }

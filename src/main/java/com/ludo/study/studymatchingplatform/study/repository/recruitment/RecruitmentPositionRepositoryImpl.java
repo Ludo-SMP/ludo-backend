@@ -27,8 +27,8 @@ public class RecruitmentPositionRepositoryImpl {
 
 	public void deleteById(final RecruitmentPositionId id) {
 		q.update(recruitmentPosition)
-			.set(recruitmentPosition.deletedDateTime, LocalDateTime.now())
-			.where(recruitmentPosition.id.eq(id))
-			.execute();
+				.set(recruitmentPosition.deletedDateTime, LocalDateTime.now())
+				.where(recruitmentPosition.id.eq(id))
+				.execute();
 	}
 }

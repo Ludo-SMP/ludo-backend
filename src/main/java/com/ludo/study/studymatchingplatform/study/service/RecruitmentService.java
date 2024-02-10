@@ -43,16 +43,16 @@ public class RecruitmentService {
 
 	public Recruitment write(final WriteRecruitmentRequest request) {
 		final Study study = studyRepository.findByIdWithRecruitment(request.getStudyId())
-			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 스터디입니다."));
+				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 스터디입니다."));
 
 		study.ensureRecruitmentWritable();
 
 		final Recruitment recruitment = request.toRecruitment(study);
 
 		final List<RecruitmentStack> recruitmentStacks = recruitmentStackService.createMany(recruitment,
-			request.getStackIds());
+				request.getStackIds());
 		final List<RecruitmentPosition> recruitmentPositions = recruitmentPositionService.createMany(recruitment,
-			request.getPositionIds());
+				request.getPositionIds());
 
 		recruitment.addRecruitmentStacks(recruitmentStacks);
 		recruitment.addRecruitmentPositions(recruitmentPositions);
@@ -62,13 +62,13 @@ public class RecruitmentService {
 	}
 
 	public Recruitment edit(
-		final User user,
-		final Long recruitmentId,
-		final EditRecruitmentRequest request
+			final User user,
+			final Long recruitmentId,
+			final EditRecruitmentRequest request
 	) {
 
 		final Recruitment recruitment = recruitmentRepository.findByIdWithStudy(recruitmentId)
-			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 스터디입니다."));
+				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 스터디입니다."));
 
 		recruitment.ensureEditable(user);
 
@@ -80,44 +80,44 @@ public class RecruitmentService {
 
 		for (final Stack stack : nextStacks) {
 			recruitment.getRecruitmentStack(stack)
-				.ifPresent(recruitmentStack -> {
-					recruitment.removeRecruitmentStack(recruitmentStack);
-					recruitmentStackRepository.deleteById(recruitmentStack.getId());
-				});
+					.ifPresent(recruitmentStack -> {
+						recruitment.removeRecruitmentStack(recruitmentStack);
+						recruitmentStackRepository.deleteById(recruitmentStack.getId());
+					});
 		}
 
 		for (final Position position : nextPositions) {
 			recruitment.getRecruitmentPosition(position)
-				.ifPresent(recruitmentPosition -> {
-					recruitment.removeRecruitmentPosition(recruitmentPosition);
-					recruitmentPositionRepository.deleteById(recruitmentPosition.getId());
-				});
+					.ifPresent(recruitmentPosition -> {
+						recruitment.removeRecruitmentPosition(recruitmentPosition);
+						recruitmentPositionRepository.deleteById(recruitmentPosition.getId());
+					});
 		}
 
 		recruitment.edit(
-			request.getTitle(),
-			request.getContent(),
-			request.getCallUrl(),
-			request.getHits(),
-			request.getRecruitmentLimit(),
-			request.getRecruitmentEndDateTime()
+				request.getTitle(),
+				request.getContent(),
+				request.getCallUrl(),
+				request.getHits(),
+				request.getRecruitmentLimit(),
+				request.getRecruitmentEndDateTime()
 		);
 
 		return recruitment;
 	}
 
 	public Applicant apply(
-		final User user,
-		final long recruitmentId
+			final User user,
+			final long recruitmentId
 	) {
 		final Recruitment recruitment = recruitmentRepository.findByIdWithStudy(recruitmentId)
-			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 모집 공고입니다."));
+				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 모집 공고입니다."));
 
 		final Applicant applicant = recruitment.findApplicant(user)
-			.orElseGet(() -> {
-				final Applicant newApplicant = Applicant.of(recruitment, user);
-				return applicantRepository.save(newApplicant);
-			});
+				.orElseGet(() -> {
+					final Applicant newApplicant = Applicant.of(recruitment, user);
+					return applicantRepository.save(newApplicant);
+				});
 
 		applicant.applyOrThrow();
 

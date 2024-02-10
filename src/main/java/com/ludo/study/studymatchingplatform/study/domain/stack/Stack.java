@@ -34,14 +34,14 @@ public class Stack extends BaseEntity {
 
 	@OneToOne
 	@JoinColumn(
-		name = "stack_category_id",
-		nullable = false
+			name = "stack_category_id",
+			nullable = false
 	)
 	private StackCategory stackCategory;
 
 	@Column(
-		nullable = false,
-		length = 50
+			nullable = false,
+			length = 50
 	)
 	@Size(max = 50)
 	private String name;

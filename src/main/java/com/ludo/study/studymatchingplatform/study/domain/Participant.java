@@ -31,16 +31,16 @@ public class Participant extends BaseEntity {
 	@ManyToOne(fetch = LAZY)
 	@MapsId("studyId")
 	@JoinColumn(
-		name = "study_id",
-		nullable = false
+			name = "study_id",
+			nullable = false
 	)
 	private Study study;
 
 	@OneToOne(fetch = LAZY)
 	@MapsId("userId")
 	@JoinColumn(
-		name = "user_id",
-		nullable = false
+			name = "user_id",
+			nullable = false
 	)
 	private User user;
 

@@ -43,47 +43,47 @@ public class Study extends BaseEntity {
 
 	@Enumerated(EnumType.STRING)
 	@Column(
-		nullable = false,
-		columnDefinition = "char(10)"
+			nullable = false,
+			columnDefinition = "char(10)"
 	)
 	private StudyStatus status;
 
 	@ManyToOne(fetch = LAZY)
 	@JoinColumn(
-		name = "category_id",
-		nullable = false
+			name = "category_id",
+			nullable = false
 	)
 	private Category category;
 
 	@ManyToOne(fetch = LAZY)
 	@JoinColumn(
-		name = "owner_id",
-		nullable = false
+			name = "owner_id",
+			nullable = false
 	)
 	private User owner;
 
 	@Column(
-		nullable = false,
-		length = 50
+			nullable = false,
+			length = 50
 	)
 	private String title;
 
 	@OneToOne(
-		mappedBy = "study",
-		fetch = LAZY
+			mappedBy = "study",
+			fetch = LAZY
 	)
 	private Recruitment recruitment;
 
 	@OneToMany(
-		mappedBy = "study",
-		fetch = LAZY
+			mappedBy = "study",
+			fetch = LAZY
 	)
 	private List<Participant> participants = new ArrayList<>();
 
 	@Enumerated(EnumType.STRING)
 	@Column(
-		nullable = false,
-		columnDefinition = "char(10)"
+			nullable = false,
+			columnDefinition = "char(10)"
 	)
 	private Way way;
 

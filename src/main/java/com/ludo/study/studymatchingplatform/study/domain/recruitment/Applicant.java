@@ -45,17 +45,17 @@ public class Applicant extends BaseEntity {
 
 	@Enumerated(EnumType.STRING)
 	@Column(
-		name = "status",
-		nullable = false,
-		columnDefinition = "char(10)"
+			name = "status",
+			nullable = false,
+			columnDefinition = "char(10)"
 	)
 	private ApplicantStatus applicantStatus;
 
 	public static Applicant of(final Recruitment recruitment, final User user) {
 		return Applicant.builder()
-			.recruitment(recruitment)
-			.user(user)
-			.build();
+				.recruitment(recruitment)
+				.user(user)
+				.build();
 	}
 
 	public void applyOrThrow() {

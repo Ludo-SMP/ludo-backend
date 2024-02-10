@@ -27,9 +27,9 @@ public class RecruitmentStackRepositoryImpl {
 
 	public void deleteById(final RecruitmentStackId id) {
 		q.update(recruitmentStack)
-			.set(recruitmentStack.deletedDateTime, LocalDateTime.now())
-			.where(recruitmentStack.id.eq(id))
-			.execute();
+				.set(recruitmentStack.deletedDateTime, LocalDateTime.now())
+				.where(recruitmentStack.id.eq(id))
+				.execute();
 	}
 
 }

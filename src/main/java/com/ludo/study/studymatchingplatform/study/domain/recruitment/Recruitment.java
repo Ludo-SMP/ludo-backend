@@ -49,46 +49,46 @@ public class Recruitment extends BaseEntity {
 
 	@OneToOne(fetch = LAZY)
 	@JoinColumn(
-		name = "study_id",
-		nullable = false
+			name = "study_id",
+			nullable = false
 	)
 	private Study study;
 
 	@OneToMany(
-		fetch = LAZY,
-		mappedBy = "recruitment"
+			fetch = LAZY,
+			mappedBy = "recruitment"
 	)
 	private List<Applicant> applicants = new ArrayList<>();
 
 	@OneToMany(
-		fetch = LAZY,
-		mappedBy = "recruitment"
+			fetch = LAZY,
+			mappedBy = "recruitment"
 	)
 	private List<RecruitmentStack> recruitmentStacks = new ArrayList<>();
 
 	@OneToMany(
-		fetch = LAZY,
-		mappedBy = "recruitment"
+			fetch = LAZY,
+			mappedBy = "recruitment"
 	)
 	private List<RecruitmentPosition> recruitmentPositions = new ArrayList<>();
 
 	@Column(
-		nullable = false,
-		length = 2048
+			nullable = false,
+			length = 2048
 	)
 	@Size(max = 2048)
 	private String callUrl;
 
 	@Column(
-		nullable = false,
-		length = 50
+			nullable = false,
+			length = 50
 	)
 	@Size(max = 50)
 	private String title;
 
 	@Column(
-		nullable = false,
-		length = 2000
+			nullable = false,
+			length = 2000
 	)
 	@Size(max = 2000)
 	private String content;
@@ -106,19 +106,19 @@ public class Recruitment extends BaseEntity {
 	private int recruitmentLimit;
 
 	public static Recruitment of(
-		final String title,
-		final String content,
-		final int recruitmentLimit,
-		final LocalDateTime recruitmentEndDateTime,
-		final Study study
+			final String title,
+			final String content,
+			final int recruitmentLimit,
+			final LocalDateTime recruitmentEndDateTime,
+			final Study study
 	) {
 		return Recruitment.builder()
-			.title(title)
-			.content(content)
-			.recruitmentLimit(recruitmentLimit)
-			.recruitmentEndDateTime(recruitmentEndDateTime)
-			.study(study)
-			.build();
+				.title(title)
+				.content(content)
+				.recruitmentLimit(recruitmentLimit)
+				.recruitmentEndDateTime(recruitmentEndDateTime)
+				.study(study)
+				.build();
 	}
 
 	@Deprecated
@@ -133,12 +133,12 @@ public class Recruitment extends BaseEntity {
 	 */
 	public void addStack(RecruitmentStack recruitmentStack) {
 		this.recruitmentStacks
-			.add(recruitmentStack);
+				.add(recruitmentStack);
 	}
 
 	public void addPosition(RecruitmentPosition recruitmentPosition) {
 		this.recruitmentPositions
-			.add(recruitmentPosition);
+				.add(recruitmentPosition);
 	}
 
 	public void upHit() {
@@ -170,12 +170,12 @@ public class Recruitment extends BaseEntity {
 	}
 
 	public void edit(
-		final String title,
-		final String content,
-		final String callUrl,
-		final int hits,
-		final int recruitmentLimit,
-		final LocalDateTime recruitmentEndDateTime
+			final String title,
+			final String content,
+			final String callUrl,
+			final int hits,
+			final int recruitmentLimit,
+			final LocalDateTime recruitmentEndDateTime
 	) {
 		this.title = title;
 		this.content = content;
@@ -187,14 +187,14 @@ public class Recruitment extends BaseEntity {
 
 	public Optional<RecruitmentStack> getRecruitmentStack(final Stack stack) {
 		return recruitmentStacks.stream()
-			.filter(r -> r.getStack().equals(stack))
-			.findFirst();
+				.filter(r -> r.getStack().equals(stack))
+				.findFirst();
 	}
 
 	public Optional<RecruitmentPosition> getRecruitmentPosition(final Position position) {
 		return recruitmentPositions.stream()
-			.filter(r -> r.getPosition().equals(position))
-			.findFirst();
+				.filter(r -> r.getPosition().equals(position))
+				.findFirst();
 	}
 
 	public void removeRecruitmentStack(final RecruitmentStack recruitmentStack) {
@@ -207,12 +207,12 @@ public class Recruitment extends BaseEntity {
 
 	public boolean hasStack(final Stack stack) {
 		return recruitmentStacks.stream()
-			.anyMatch(r -> r.getStack().equals(stack));
+				.anyMatch(r -> r.getStack().equals(stack));
 	}
 
 	public boolean hasPosition(final Position position) {
 		return recruitmentPositions.stream()
-			.anyMatch(r -> r.getPosition().equals(position));
+				.anyMatch(r -> r.getPosition().equals(position));
 	}
 
 	public void ensureEditable(final User user) {
@@ -226,15 +226,15 @@ public class Recruitment extends BaseEntity {
 			throw new IllegalArgumentException("스터디장은 자신의 스터디에 지원할 수 없습니다.");
 		}
 		applicants.stream()
-			.filter(a -> a.equals(user))
-			.findFirst()
-			.ifPresent(Applicant::applyOrThrow);
+				.filter(a -> a.equals(user))
+				.findFirst()
+				.ifPresent(Applicant::applyOrThrow);
 	}
 
 	public Optional<Applicant> findApplicant(final User user) {
 		return applicants.stream()
-			.filter(a -> a.equals(user))
-			.findFirst();
+				.filter(a -> a.equals(user))
+				.findFirst();
 	}
 
 	public boolean isOwner(final User user) {

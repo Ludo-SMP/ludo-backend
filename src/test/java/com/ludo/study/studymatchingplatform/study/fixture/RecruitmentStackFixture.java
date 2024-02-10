@@ -7,8 +7,8 @@ public class RecruitmentStackFixture {
 
 	public static RecruitmentStack createRecruitmentStack(Stack stack) {
 		return RecruitmentStack.builder()
-			.stack(stack)
-			.build();
+				.stack(stack)
+				.build();
 	}
 
 }

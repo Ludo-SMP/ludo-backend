@@ -19,22 +19,22 @@ public class RecruitmentStackService {
 	private final StackService stackService;
 
 	public List<RecruitmentStack> createMany(
-		final Recruitment recruitment,
-		final List<Long> stackIds
+			final Recruitment recruitment,
+			final List<Long> stackIds
 	) {
 		final List<Stack> stacks = stackService.findAllByIdsOrThrow(stackIds);
 
 		final List<RecruitmentStack> recruitmentStacks = stacks.stream()
-			.filter(stack -> !recruitment.hasStack(stack))
-			.map(stack -> RecruitmentStack.from(recruitment, stack))
-			.toList();
+				.filter(stack -> !recruitment.hasStack(stack))
+				.map(stack -> RecruitmentStack.from(recruitment, stack))
+				.toList();
 
 		return recruitmentStackRepository.saveAll(recruitmentStacks);
 	}
 
 	public void update(
-		final Recruitment recruitment,
-		final List<Long> stackIds
+			final Recruitment recruitment,
+			final List<Long> stackIds
 	) {
 	}
 }

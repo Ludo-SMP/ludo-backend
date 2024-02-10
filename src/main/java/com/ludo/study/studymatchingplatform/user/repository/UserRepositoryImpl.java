@@ -27,12 +27,12 @@ public class UserRepositoryImpl {
 	 */
 	public boolean existsByEmailForGoogle(final String email) {
 		final Long id = q.select(user.id)
-			.from(user)
-			.where(
-				user.social.eq(Social.GOOGLE),
-				user.email.eq(email)
-			)
-			.fetchFirst();
+				.from(user)
+				.where(
+						user.social.eq(Social.GOOGLE),
+						user.email.eq(email)
+				)
+				.fetchFirst();
 
 		return id != null;
 	}

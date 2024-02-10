@@ -27,8 +27,8 @@ public class StackRepositoryImpl {
 
 	public List<Stack> findAllByIds(final List<Long> stackIds) {
 		return q.selectFrom(stack)
-			.where(stack.id.in(stackIds))
-			.fetch();
+				.where(stack.id.in(stackIds))
+				.fetch();
 	}
 
 }
