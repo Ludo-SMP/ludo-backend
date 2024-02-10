@@ -11,8 +11,8 @@ import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment
 public class RecruitmentFixture {
 
 	public static Recruitment createRecruitment(Study study, String title, String content,
-			int hits, String callUrl,
-			RecruitmentStack... recruitmentStacks
+												int hits, String callUrl,
+												RecruitmentStack... recruitmentStacks
 	) {
 
 		return Recruitment.builder()

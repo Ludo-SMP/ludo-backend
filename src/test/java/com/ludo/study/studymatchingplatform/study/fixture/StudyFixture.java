@@ -11,7 +11,7 @@ import com.ludo.study.studymatchingplatform.user.domain.User;
 public class StudyFixture {
 
 	public static Study createStudy(StudyStatus studyStatus, String title, Way way, Category category, User user,
-			int participantCount, int participantLimit
+									int participantCount, int participantLimit
 	) {
 		return Study.builder()
 				.status(studyStatus)
