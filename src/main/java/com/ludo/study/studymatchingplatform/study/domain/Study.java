@@ -42,10 +42,7 @@ public class Study extends BaseEntity {
 	private Long id;
 
 	@Enumerated(EnumType.STRING)
-	@Column(
-			nullable = false,
-			columnDefinition = "char(10)"
-	)
+	@Column(nullable = false, columnDefinition = "char(10)")
 	private StudyStatus status;
 
 	@ManyToOne(fetch = LAZY)
