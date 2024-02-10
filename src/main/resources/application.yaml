@@ -20,31 +20,28 @@ spring:
         format_sql: true
     show-sql: true
 
-  security:
-    oauth2:
-      client:
-        registration:
-          naver:
-            client-id: ${NAVER_CLIENT_ID}
-            client-secret: ${NAVER_CLIENT_SECRET}
-            login-redirect-uri: ${NAVER_LOGIN_CALLBACK_URL}
-            signup-redirect-uri: ${NAVER_SIGNUP_CALLBACK_URL}
-            authorization-grant-type: code
-          google:
-            client-id: ${GOOGLE_CLIENT_ID}
-            client-secret: ${GOOGLE_CLIENT_SECRET}
-            redirect-uri: ${GOOGLE_REDIRECT_URI}
-            provider: google
-            authorization-grant-type: code
-            scope: profile,email
+oauth2:
+  client:
+    registration:
+      naver:
+        client-id: ${NAVER_CLIENT_ID}
+        client-secret: ${NAVER_CLIENT_SECRET}
+        login-redirect-uri: ${NAVER_LOGIN_CALLBACK_URL}
+        signup-redirect-uri: ${NAVER_SIGNUP_CALLBACK_URL}
+        authorization-grant-type: code
+      google:
+        client-id: ${GOOGLE_CLIENT_ID}
+        client-secret: ${GOOGLE_CLIENT_SECRET}
+        redirect-uri: ${GOOGLE_REDIRECT_URI}
+        provider: google
+        authorization-grant-type: code
+        scope: profile,email
 
-        provider:
-          naver:
-            authorization-uri: ${NAVER_LOGIN_API}
-            token-uri: ${NAVER_TOKEN_API}
-            user-info-uri: ${NAVER_USER_PROFILE_API}
-
-
+    provider:
+      naver:
+        authorization-uri: ${NAVER_LOGIN_API}
+        token-uri: ${NAVER_TOKEN_API}
+        user-info-uri: ${NAVER_USER_PROFILE_API}
 
 jwt:
   token:

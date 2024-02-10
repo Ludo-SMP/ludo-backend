@@ -4,10 +4,8 @@ import static jakarta.persistence.FetchType.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
@@ -60,19 +58,19 @@ public class Recruitment extends BaseEntity {
 		fetch = LAZY,
 		mappedBy = "recruitment"
 	)
-	private Set<Applicant> applicants = new HashSet<>();
+	private List<Applicant> applicants = new ArrayList<>();
 
 	@OneToMany(
 		fetch = LAZY,
 		mappedBy = "recruitment"
 	)
-	private Set<RecruitmentStack> recruitmentStacks = new HashSet<>();
+	private List<RecruitmentStack> recruitmentStacks = new ArrayList<>();
 
 	@OneToMany(
 		fetch = LAZY,
 		mappedBy = "recruitment"
 	)
-	private Set<RecruitmentPosition> recruitmentPositions = new HashSet<>();
+	private List<RecruitmentPosition> recruitmentPositions = new ArrayList<>();
 
 	@Column(
 		nullable = false,
@@ -189,13 +187,13 @@ public class Recruitment extends BaseEntity {
 
 	public Optional<RecruitmentStack> getRecruitmentStack(final Stack stack) {
 		return recruitmentStacks.stream()
-			.filter(r -> r.getStack() == stack)
+			.filter(r -> r.getStack().equals(stack))
 			.findFirst();
 	}
 
 	public Optional<RecruitmentPosition> getRecruitmentPosition(final Position position) {
 		return recruitmentPositions.stream()
-			.filter(r -> r.getPosition() == position)
+			.filter(r -> r.getPosition().equals(position))
 			.findFirst();
 	}
 
@@ -209,12 +207,12 @@ public class Recruitment extends BaseEntity {
 
 	public boolean hasStack(final Stack stack) {
 		return recruitmentStacks.stream()
-			.anyMatch(r -> r.getStack() == stack);
+			.anyMatch(r -> r.getStack().equals(stack));
 	}
 
-	public boolean hasPosition(final List<Position> positions) {
+	public boolean hasPosition(final Position position) {
 		return recruitmentPositions.stream()
-			.anyMatch(r -> r.getPosition() == positions);
+			.anyMatch(r -> r.getPosition().equals(position));
 	}
 
 	public void ensureEditable(final User user) {

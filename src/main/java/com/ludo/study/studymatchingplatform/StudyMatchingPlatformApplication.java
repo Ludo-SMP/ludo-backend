@@ -12,4 +12,5 @@ public class StudyMatchingPlatformApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(StudyMatchingPlatformApplication.class, args);
 	}
+
 }

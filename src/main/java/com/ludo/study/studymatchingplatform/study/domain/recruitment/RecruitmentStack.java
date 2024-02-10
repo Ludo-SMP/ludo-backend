@@ -27,7 +27,7 @@ import lombok.experimental.SuperBuilder;
 public class RecruitmentStack extends BaseEntity {
 
 	@EmbeddedId
-	private RecruitmentStackId id;
+	private RecruitmentStackId id = new RecruitmentStackId();
 
 	@ManyToOne(fetch = LAZY)
 	@MapsId("recruitmentId")

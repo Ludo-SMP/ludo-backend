@@ -20,12 +20,12 @@ import com.ludo.study.studymatchingplatform.study.fixture.StackFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.StudyFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.UserFixture;
 import com.ludo.study.studymatchingplatform.study.repository.CategoryRepository;
-import com.ludo.study.studymatchingplatform.study.repository.StudyRepositoryImpl;
-import com.ludo.study.studymatchingplatform.study.repository.recruitment.RecruitmentRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.repository.RecruitmentRepository;
+import com.ludo.study.studymatchingplatform.study.repository.StudyRepository;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.RecruitmentDetailsResponse;
 import com.ludo.study.studymatchingplatform.user.domain.Social;
 import com.ludo.study.studymatchingplatform.user.domain.User;
-import com.ludo.study.studymatchingplatform.user.repository.UserRepositoryImpl;
+import com.ludo.study.studymatchingplatform.user.repository.UserRepository;
 
 @SpringBootTest
 class RecruitmentDetailsFindServiceTest {
@@ -34,13 +34,13 @@ class RecruitmentDetailsFindServiceTest {
 	RecruitmentDetailsFindService recruitmentDetailsFindService;
 
 	@Autowired
-	RecruitmentRepositoryImpl recruitmentRepository;
+	RecruitmentRepository recruitmentRepository;
 
 	@Autowired
-	StudyRepositoryImpl studyRepositoryImpl;
+	StudyRepository studyRepository;
 
 	@Autowired
-	UserRepositoryImpl userRepository;
+	UserRepository userRepository;
 
 	@Autowired
 	CategoryRepository categoryRepository;
@@ -98,7 +98,7 @@ class RecruitmentDetailsFindServiceTest {
 
 		userRepository.save(user);
 		categoryRepository.save(category);
-		studyRepositoryImpl.save(study);
+		studyRepository.save(study);
 		return recruitmentRepository.save(recruitment);
 	}
 
@@ -114,8 +114,8 @@ class RecruitmentDetailsFindServiceTest {
 		assertThat(recruitmentDetailsResponse.ownerNickname()).isEqualTo(NICKNAME);
 		assertThat(recruitmentDetailsResponse.category()).isEqualTo(CATEGORY);
 		assertThat(recruitmentDetailsResponse.way()).isEqualTo(Way.ONLINE.toString());
-		assertThat(recruitmentDetailsResponse.startDateTime()).isEqualTo("2025-03-01T18:00");
-		assertThat(recruitmentDetailsResponse.endDateTime()).isEqualTo("2025-03-20T18:00");
+		assertThat(recruitmentDetailsResponse.startDateTime()).isEqualTo("2024-03-01T18:00");
+		assertThat(recruitmentDetailsResponse.endDateTime()).isEqualTo("2024-03-20T18:00");
 	}
 
 	void assertRecruitmentInfo(RecruitmentDetailsResponse recruitmentDetailsResponse) {
@@ -125,8 +125,8 @@ class RecruitmentDetailsFindServiceTest {
 		assertThat(recruitmentDetailsResponse.positions()).contains("백엔드", "프론트엔드");
 		assertThat(recruitmentDetailsResponse.platformUrl()).isEqualTo("https://example.com/call1");
 		assertThat(recruitmentDetailsResponse.applicantCount()).isSameAs(5);
-		assertThat(recruitmentDetailsResponse.recruitmentEndDateTime()).isEqualTo("2025-02-10T18:00");
-		assertThat(recruitmentDetailsResponse.createdDateTime()).isEqualTo("2025-01-20T12:30");
+		assertThat(recruitmentDetailsResponse.recruitmentEndDateTime()).isEqualTo("2024-02-10T18:00");
+		assertThat(recruitmentDetailsResponse.createdDateTime()).isEqualTo("2024-01-20T12:30");
 	}
 
 }
