@@ -62,35 +62,35 @@ class PopularRecruitmentsFindServiceTest {
 		Category interview = CategoryFixture.createCategory("모의면접");
 
 		RecruitmentStack spring = RecruitmentStackFixture.createRecruitmentStack(
-			StackFixture.createStack("spring")
+				StackFixture.createStack("spring")
 		);
 		userRepository.save(user);
 		categoryRepository.save(project);
 		categoryRepository.save(algorithm);
 		categoryRepository.save(interview);
 
-		Study studyA = StudyFixture.createStudy(StudyStatus.RECRUITING, "스터디A", Way.ONLINE, project, user);
-		Study studyB = StudyFixture.createStudy(StudyStatus.RECRUITING, "스터디B", Way.ONLINE, project, user);
-		Study studyC = StudyFixture.createStudy(StudyStatus.RECRUITING, "스터디C", Way.ONLINE, project, user);
-		Study studyD = StudyFixture.createStudy(StudyStatus.RECRUITING, "스터디D", Way.ONLINE, project, user);
-		Study studyE = StudyFixture.createStudy(StudyStatus.RECRUITING, "스터디E", Way.ONLINE, algorithm, user);
-		Study studyF = StudyFixture.createStudy(StudyStatus.RECRUITING, "스터디F", Way.ONLINE, algorithm, user);
-		Study studyG = StudyFixture.createStudy(StudyStatus.RECRUITING, "스터디G", Way.ONLINE, interview, user);
+		Study studyA = StudyFixture.createStudy(StudyStatus.RECRUITING, "스터디A", Way.ONLINE, project, user, 5, 5);
+		Study studyB = StudyFixture.createStudy(StudyStatus.RECRUITING, "스터디B", Way.ONLINE, project, user, 5, 5);
+		Study studyC = StudyFixture.createStudy(StudyStatus.RECRUITING, "스터디C", Way.ONLINE, project, user, 5, 5);
+		Study studyD = StudyFixture.createStudy(StudyStatus.RECRUITING, "스터디D", Way.ONLINE, project, user, 5, 5);
+		Study studyE = StudyFixture.createStudy(StudyStatus.RECRUITING, "스터디E", Way.ONLINE, algorithm, user, 5, 5);
+		Study studyF = StudyFixture.createStudy(StudyStatus.RECRUITING, "스터디F", Way.ONLINE, algorithm, user, 5, 5);
+		Study studyG = StudyFixture.createStudy(StudyStatus.RECRUITING, "스터디G", Way.ONLINE, interview, user, 5, 5);
 
 		Recruitment recruitmentA = RecruitmentFixture.createRecruitment(studyA, "모집공고A", "내용입니다.", 499, "call_url",
-			spring);
+				spring);
 		Recruitment recruitmentB = RecruitmentFixture.createRecruitment(studyB, "모집공고B", "내용입니다.", 500, "call_url",
-			spring);
+				spring);
 		Recruitment recruitmentC = RecruitmentFixture.createRecruitment(studyC, "모집공고C", "내용입니다.", 501, "call_url",
-			spring);
+				spring);
 		Recruitment recruitmentD = RecruitmentFixture.createRecruitment(studyD, "모집공고D", "내용입니다.", 498, "call_url",
-			spring);
+				spring);
 		Recruitment recruitmentE = RecruitmentFixture.createRecruitment(studyE, "모집공고E", "내용입니다.", 799, "call_url",
-			spring);
+				spring);
 		Recruitment recruitmentF = RecruitmentFixture.createRecruitment(studyF, "모집공고F", "내용입니다.", 800, "call_url",
-			spring);
+				spring);
 		Recruitment recruitmentG = RecruitmentFixture.createRecruitment(studyG, "모집공고G", "내용입니다.", 777, "call_url",
-			spring);
+				spring);
 
 		studyRepository.save(studyA);
 		studyRepository.save(studyB);
@@ -114,12 +114,12 @@ class PopularRecruitmentsFindServiceTest {
 		List<RecruitmentPreviewResponse> popularProjectRecruitments = result.popularProjectRecruitments();
 
 		assertThat(popularProjectRecruitments)
-			.size()
-			.isLessThanOrEqualTo(3);
+				.size()
+				.isLessThanOrEqualTo(3);
 
 		assertThat(popularProjectRecruitments)
-			.extracting("title")
-			.containsExactly("모집공고C", "모집공고B", "모집공고A");
+				.extracting("title")
+				.containsExactly("모집공고C", "모집공고B", "모집공고A");
 	}
 
 	@Test
@@ -128,12 +128,12 @@ class PopularRecruitmentsFindServiceTest {
 		List<RecruitmentPreviewResponse> popularCodingRecruitments = result.popularCodingRecruitments();
 
 		assertThat(popularCodingRecruitments)
-			.size()
-			.isLessThanOrEqualTo(3);
+				.size()
+				.isLessThanOrEqualTo(3);
 
 		assertThat(popularCodingRecruitments)
-			.extracting("title")
-			.containsExactly("모집공고F", "모집공고E");
+				.extracting("title")
+				.containsExactly("모집공고F", "모집공고E");
 	}
 
 	@Test
@@ -142,12 +142,12 @@ class PopularRecruitmentsFindServiceTest {
 		List<RecruitmentPreviewResponse> popularInterviewRecruitments = result.popularInterviewRecruitments();
 
 		assertThat(popularInterviewRecruitments)
-			.size()
-			.isLessThanOrEqualTo(3);
+				.size()
+				.isLessThanOrEqualTo(3);
 
 		assertThat(popularInterviewRecruitments)
-			.extracting("title")
-			.containsExactly("모집공고G");
+				.extracting("title")
+				.containsExactly("모집공고G");
 	}
 
 }
