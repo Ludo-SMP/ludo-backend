@@ -6,8 +6,8 @@ public class StackFixture {
 
 	public static Stack createStack(String name) {
 		return Stack.builder()
-			.name(name)
-			.build();
+				.name(name)
+				.build();
 	}
 
 }

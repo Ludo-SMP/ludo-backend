@@ -32,14 +32,14 @@ public class Category extends BaseEntity {
 	private Long id;
 
 	@Column(
-		nullable = false,
-		columnDefinition = "char(50)"
+			nullable = false,
+			columnDefinition = "char(50)"
 	)
 	private String name;
 
 	@OneToMany(
-		mappedBy = "category",
-		fetch = LAZY
+			mappedBy = "category",
+			fetch = LAZY
 	)
 	private List<Study> studies = new ArrayList<>();
 
