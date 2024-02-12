@@ -1,6 +1,9 @@
 package com.ludo.study.studymatchingplatform.study.repository.recruitment;
 
+import static com.ludo.study.studymatchingplatform.study.domain.QStudy.*;
 import static com.ludo.study.studymatchingplatform.study.domain.recruitment.QRecruitment.*;
+import static com.ludo.study.studymatchingplatform.study.domain.recruitment.QRecruitmentPosition.*;
+import static com.ludo.study.studymatchingplatform.study.domain.recruitment.QRecruitmentStack.*;
 
 import java.util.Optional;
 
@@ -23,7 +26,7 @@ public class RecruitmentRepositoryImpl {
 		return recruitmentJpaRepository.findById(recruitmentId);
 	}
 
-	public Optional<Recruitment> findByIdWithStudy(final long id) {
+	public Optional<Recruitment> findByIdWithStudy(final Long id) {
 		return Optional.ofNullable(
 				q.selectFrom(recruitment)
 						.leftJoin(recruitment.study).fetchJoin()
@@ -32,7 +35,24 @@ public class RecruitmentRepositoryImpl {
 		);
 	}
 
-	public boolean existsById(final long id) {
+	public Optional<Recruitment> findByIdWithDetails(final Long id) {
+		return Optional.ofNullable(
+				q.selectFrom(recruitment)
+						.join(recruitment.study, study).fetchJoin()
+						.join(recruitment.recruitmentStacks, recruitmentStack).fetchJoin()
+						.join(recruitment.recruitmentPositions, recruitmentPosition).fetchJoin()
+						.fetchFirst()
+		);
+	}
+
+	public boolean existsByStudyId(final Long studyId) {
+		return q.select(recruitment.id)
+				.from(recruitment)
+				.where(recruitment.study.id.eq(studyId))
+				.fetchFirst() != null;
+	}
+
+	public boolean existsById(final Long id) {
 		return recruitmentJpaRepository.existsById(id);
 	}
 

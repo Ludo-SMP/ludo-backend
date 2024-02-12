@@ -18,14 +18,10 @@ public class RecruitmentPositionService {
 	private final PositionService positionService;
 	private final RecruitmentPositionRepositoryImpl recruitmentPositionRepository;
 
-	public List<RecruitmentPosition> createMany(
-			final Recruitment recruitment,
-			final List<Long> positionIds
-	) {
+	public List<RecruitmentPosition> createMany(final Recruitment recruitment, final List<Long> positionIds) {
 		final List<Position> positions = positionService.findAllByIdsOrThrow(positionIds);
 
 		final List<RecruitmentPosition> recruitmentPositions = positions.stream()
-				// .filter(position -> !recruitment.hasPosition(positions))
 				.map(position -> RecruitmentPosition.from(recruitment, position))
 				.toList();
 
