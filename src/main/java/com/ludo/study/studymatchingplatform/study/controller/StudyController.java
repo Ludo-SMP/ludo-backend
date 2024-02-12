@@ -3,16 +3,18 @@ package com.ludo.study.studymatchingplatform.study.controller;
 import java.net.URI;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ludo.study.studymatchingplatform.auth.common.JwtTokenProvider;
 import com.ludo.study.studymatchingplatform.common.interceptor.Authenticated;
-import com.ludo.study.studymatchingplatform.common.resolver.UserIdentifier;
 import com.ludo.study.studymatchingplatform.study.domain.StudyStatus;
 import com.ludo.study.studymatchingplatform.study.service.RecruitmentDeleteService;
 import com.ludo.study.studymatchingplatform.study.service.StudyCreateService;
@@ -20,6 +22,7 @@ import com.ludo.study.studymatchingplatform.study.service.StudyStatusService;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.StudyCreateRequest;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.StudyResponse;
 
+import jakarta.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -30,10 +33,13 @@ public class StudyController {
 	private final StudyCreateService studyCreateService;
 	private final RecruitmentDeleteService recruitmentCreateService;
 	private final StudyStatusService studyStatusService;
+	private final JwtTokenProvider jwtTokenProvider;
 
 	@PostMapping
 	@Authenticated
-	public ResponseEntity<Void> create(final StudyCreateRequest request, @UserIdentifier final String email) {
+	public ResponseEntity<Void> create(@CookieValue(value = "Authorized") Cookie cookie,
+									   @RequestBody final StudyCreateRequest request,
+									   @RequestParam final String email) {
 		final Long studyId = studyCreateService.create(request, email);
 		return ResponseEntity.created(URI.create("/api/studies/" + studyId)).build();
 	}
