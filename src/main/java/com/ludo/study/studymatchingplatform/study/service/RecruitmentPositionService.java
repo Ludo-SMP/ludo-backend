@@ -25,7 +25,7 @@ public class RecruitmentPositionService {
 		final List<Position> positions = positionService.findAllByIdsOrThrow(positionIds);
 
 		final List<RecruitmentPosition> recruitmentPositions = positions.stream()
-				.filter(position -> !recruitment.hasPosition(positions))
+				// .filter(position -> !recruitment.hasPosition(positions))
 				.map(position -> RecruitmentPosition.from(recruitment, position))
 				.toList();
 
