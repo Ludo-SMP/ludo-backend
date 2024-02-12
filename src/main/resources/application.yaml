@@ -38,9 +38,9 @@ oauth2:
       google:
         client-id: ${GOOGLE_CLIENT_ID}
         client-secret: ${GOOGLE_CLIENT_SECRET}
-        login-redirect-uri: ${GOOGLE_REDIRECT_URI}
-        signup-redirect-uri: ${GOOGLE_REDIRECT_URI}
-        authorization-grant-type: code
+        login-redirect-uri: ${GOOGLE_LOGIN_CALLBACK_URL}
+        signup-redirect-uri: ${GOOGLE_SIGNUP_CALLBACK_URL}
+        authorization-grant-type: authorization_code
     provider:
       naver:
         authorization-uri: ${NAVER_LOGIN_API}
@@ -54,16 +54,8 @@ oauth2:
         authorization-uri: ${GOOGLE_LOGIN_API}
         token-uri: ${GOOGLE_TOKEN_API}
         user-info-uri: ${GOOGLE_USER_PROFILE_API}
-        # scope: profile,email
-
-
 
 jwt:
   token:
     secret-key: ${JWT_SECRET_KEY}
     access-token-expiresin: ${JWT_ACCESS_TOKEN_EXPIRES_IN}
-
-
-logging:
-  level:
-    web: DEBUG
