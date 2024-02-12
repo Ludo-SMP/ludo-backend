@@ -38,10 +38,9 @@ oauth2:
       google:
         client-id: ${GOOGLE_CLIENT_ID}
         client-secret: ${GOOGLE_CLIENT_SECRET}
-        redirect-uri: ${GOOGLE_REDIRECT_URI}
-        provider: google
-        authorization-grant-type: code
-        scope: profile,email
+        login-redirect-uri: ${GOOGLE_LOGIN_CALLBACK_URL}
+        signup-redirect-uri: ${GOOGLE_SIGNUP_CALLBACK_URL}
+        authorization-grant-type: authorization_code
     provider:
       naver:
         authorization-uri: ${NAVER_LOGIN_API}
@@ -51,6 +50,10 @@ oauth2:
         authorization-uri: ${KAKAO_LOGIN_API}
         token-uri: ${KAKAO_TOKEN_API}
         user-info-uri: ${KAKAO_USER_PROFILE_API}
+      google:
+        authorization-uri: ${GOOGLE_LOGIN_API}
+        token-uri: ${GOOGLE_TOKEN_API}
+        user-info-uri: ${GOOGLE_USER_PROFILE_API}
 
 jwt:
   token:
