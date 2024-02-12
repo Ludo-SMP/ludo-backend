@@ -18,5 +18,4 @@ public class ApplicantRepositoryImpl {
 	public Applicant save(final Applicant applicant) {
 		return applicantJpaRepository.save(applicant);
 	}
-
 }
