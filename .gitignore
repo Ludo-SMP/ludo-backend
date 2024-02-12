@@ -149,3 +149,8 @@ src/main/generated/
 .ionide
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode
+
+# React App for Client Test
+front-test-app/
+
+.env
