@@ -41,7 +41,7 @@ public class StudyCreateService {
 		// 스터디 생성자도 참여자로 포함
 		study.addParticipant(participant);
 		final Study savedStudy = studyRepository.save(study);
-		category.getStudies().add(study);
+		category.getStudies().add(savedStudy);
 		participantRepository.save(participant);
 
 		return savedStudy.getId();

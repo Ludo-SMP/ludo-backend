@@ -5,8 +5,10 @@ import static com.ludo.study.studymatchingplatform.study.domain.QStudy.*;
 import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ludo.study.studymatchingplatform.study.domain.Study;
+import com.ludo.study.studymatchingplatform.study.domain.StudyStatus;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
@@ -43,6 +45,14 @@ public class StudyRepositoryImpl {
 
 	public Study save(final Study study) {
 		return studyJpaRepository.save(study);
+	}
+
+	@Transactional
+	public Long updateStudyStatus(final Long id, final StudyStatus status) {
+		return q.update(study)
+				.set(study.status, status)
+				.where(study.id.eq(id))
+				.execute();
 	}
 
 }
