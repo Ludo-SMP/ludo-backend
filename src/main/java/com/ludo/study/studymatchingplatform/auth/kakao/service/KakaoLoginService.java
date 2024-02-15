@@ -40,7 +40,7 @@ public class KakaoLoginService {
 
 	private User validateNotSignUp(final KakaoUserProfileDto kakaoUserProfileDto) {
 		return userRepository.findByEmail(kakaoUserProfileDto.getEmail())
-				.orElseThrow(() -> new NotFoundException("가입되어 있지 않은 회원입니다."));
+				.orElseThrow(() -> new NotFoundException("가입되어 있지 않은 회원입니다"));
 	}
 
 }
