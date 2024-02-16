@@ -3,16 +3,16 @@ package com.ludo.study.studymatchingplatform.study.controller;
 import java.net.URI;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ludo.study.studymatchingplatform.common.interceptor.Authenticated;
-import com.ludo.study.studymatchingplatform.common.resolver.UserIdentifier;
 import com.ludo.study.studymatchingplatform.study.domain.StudyStatus;
 import com.ludo.study.studymatchingplatform.study.service.RecruitmentDeleteService;
 import com.ludo.study.studymatchingplatform.study.service.StudyCreateService;
@@ -32,8 +32,8 @@ public class StudyController {
 	private final StudyStatusService studyStatusService;
 
 	@PostMapping
-	@Authenticated
-	public ResponseEntity<Void> create(final StudyCreateRequest request, @UserIdentifier final String email) {
+	public ResponseEntity<Void> create(@RequestBody final StudyCreateRequest request,
+									   @RequestParam final String email) {
 		final Long studyId = studyCreateService.create(request, email);
 		return ResponseEntity.created(URI.create("/api/studies/" + studyId)).build();
 	}
@@ -45,6 +45,7 @@ public class StudyController {
 	}
 
 	@PatchMapping("/{studyId}")
+	@Transactional
 	public ResponseEntity<StudyResponse> changeStatus(
 			@PathVariable final Long studyId,
 			@RequestParam("status") final StudyStatus status

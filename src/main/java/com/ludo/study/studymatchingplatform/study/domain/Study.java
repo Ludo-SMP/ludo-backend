@@ -49,7 +49,7 @@ public class Study extends BaseEntity {
 	@JoinColumn(name = "category_id", nullable = false)
 	private Category category;
 
-	@OneToOne(fetch = LAZY)
+	@ManyToOne(fetch = LAZY)
 	@JoinColumn(name = "owner_id", nullable = false)
 	private User owner;
 

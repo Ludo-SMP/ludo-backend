@@ -18,8 +18,8 @@ public class StudyStatusService {
 	private final StudyRepositoryImpl studyRepository;
 
 	public StudyResponse changeStatus(final Long studyId, final StudyStatus status) {
-		final Study study = findById(studyId);
-		study.changeStatus(study, status);
+		final Long updatedId = studyRepository.updateStudyStatus(studyId, status);
+		final Study study = findById(updatedId);
 		return StudyBuilder.convertToStudyResponse(study);
 	}
 
