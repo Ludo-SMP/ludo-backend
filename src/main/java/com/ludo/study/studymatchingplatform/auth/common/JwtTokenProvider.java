@@ -56,15 +56,13 @@ public class JwtTokenProvider {
 		return accessTokenExpiresIn;
 	}
 
-	// todo: 사용자 검증 로직 추가 진행중
-	// 토큰 유효시간 만료여부 검사
 	public boolean isValidToken(final String token) {
 		try {
 			parseToClaimsJws(token);
 		} catch (final ExpiredJwtException expiredJwtException) {
-			throw new AuthenticationException("Expired Token");
+			throw new AuthenticationException("Expired Token", expiredJwtException);
 		} catch (final JwtException jwtException) {
-			throw new AuthenticationException("Invalid Token");
+			throw new AuthenticationException("Invalid Token", jwtException);
 		}
 		return true;
 	}
