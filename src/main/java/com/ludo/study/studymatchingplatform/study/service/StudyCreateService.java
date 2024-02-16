@@ -21,7 +21,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 // 캐시 제거 적용 필요
 public class StudyCreateService {
@@ -31,6 +30,7 @@ public class StudyCreateService {
 	private final CategoryRepositoryImpl categoryRepository;
 	private final ParticipantRepositoryImpl participantRepository;
 
+	@Transactional
 	public Long create(final StudyCreateRequest request, final String email) {
 		final User owner = findUserByEmail(email);
 		final Category category = findCategoryById(Long.valueOf(request.categoryId()));
@@ -41,6 +41,7 @@ public class StudyCreateService {
 		// 스터디 생성자도 참여자로 포함
 		study.addParticipant(participant);
 		final Study savedStudy = studyRepository.save(study);
+		category.getStudies().add(savedStudy);
 		participantRepository.save(participant);
 
 		return savedStudy.getId();
