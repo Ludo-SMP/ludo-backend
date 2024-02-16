@@ -6,4 +6,8 @@ public class AuthenticationException extends BusinessException {
 		super(message);
 	}
 
+	public AuthenticationException(final String message, final Throwable cause) {
+		super(message, cause);
+	}
+
 }
