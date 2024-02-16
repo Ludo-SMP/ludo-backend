@@ -27,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @Slf4j
-@RequestMapping("/recruitments")
+@RequestMapping("")
 @RequiredArgsConstructor
 public class RecruitmentController {
 
@@ -35,9 +35,9 @@ public class RecruitmentController {
 
 	private final RecruitmentService recruitmentService;
 
-	@GetMapping("/{recruitment-id}")
+	@GetMapping("/recruitments/{recruitmentId}")
 	public ResponseEntity<RecruitmentDetailsResponse> readRecruitmentDetails(
-			@PathVariable("recruitment-id") final Long recruitmentId) {
+			@PathVariable("recruitmentId") final Long recruitmentId) {
 		try {
 			RecruitmentDetailsResponse recruitmentDetails = recruitmentDetailsFindService.findRecruitmentDetails(
 					recruitmentId);
@@ -49,14 +49,14 @@ public class RecruitmentController {
 		}
 	}
 
-	@PostMapping("/")
+	@PostMapping("/studies/{studyId}/recruitments")
 	public ResponseEntity<WriteRecruitmentResponse> write(@RequestBody final WriteRecruitmentRequest request) {
 		final Recruitment recruitment = recruitmentService.write(request);
 
 		return ResponseEntity.status(HttpStatus.CREATED).body(WriteRecruitmentResponse.from(recruitment));
 	}
 
-	@PutMapping("/{recruitmentId}")
+	@PutMapping("/studies/{studyId}/recruitments")
 	public ResponseEntity<EditRecruitmentResponse> edit(@RequestParam("userId") final Long userId,
 														@PathVariable("recruitmentId") final Long recruitmentId,
 														@RequestBody final EditRecruitmentRequest request) {
@@ -66,7 +66,7 @@ public class RecruitmentController {
 		return ResponseEntity.status(HttpStatus.OK).body(EditRecruitmentResponse.from(recruitment));
 	}
 
-	@PostMapping("/{recruitmentId}/apply")
+	@PostMapping("/studies/{studyId}/recruitments/{recruitmentId}/apply")
 	public ResponseEntity<ApplyRecruitmentResponse> apply(@PathVariable("recruitmentId") final Long recruitmentId) {
 		// TODO: need to append authorization guard
 		final Applicant applicant = recruitmentService.apply(null, recruitmentId);
