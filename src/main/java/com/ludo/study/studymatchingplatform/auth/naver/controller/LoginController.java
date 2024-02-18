@@ -7,7 +7,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.ludo.study.studymatchingplatform.auth.common.JwtTokenProvider;
+import com.ludo.study.studymatchingplatform.auth.common.AuthUserPayload;
+import com.ludo.study.studymatchingplatform.auth.common.provider.JwtTokenProvider;
 import com.ludo.study.studymatchingplatform.auth.naver.repository.InMemoryClientRegistrationAndProviderRepository;
 import com.ludo.study.studymatchingplatform.auth.naver.service.NaverLoginService;
 import com.ludo.study.studymatchingplatform.auth.naver.service.dto.response.LoginResponse;
@@ -47,7 +48,8 @@ public class LoginController {
 			HttpServletResponse response
 	) {
 		LoginResponse loginResponse = naverLoginService.login(authorizationCode);
-		String accessToken = jwtTokenProvider.createAccessToken(loginResponse.id());
+
+		String accessToken = jwtTokenProvider.createAccessToken(AuthUserPayload.from(loginResponse.id()));
 
 		Cookie cookie = new Cookie("Authorization", accessToken);
 		cookie.setPath("/");

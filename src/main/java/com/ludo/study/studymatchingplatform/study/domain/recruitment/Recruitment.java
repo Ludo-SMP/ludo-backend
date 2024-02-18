@@ -6,9 +6,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.SQLRestriction;
+import java.util.Set;
 
 import com.ludo.study.studymatchingplatform.common.entity.BaseEntity;
 import com.ludo.study.studymatchingplatform.study.domain.Position;
@@ -16,6 +14,7 @@ import com.ludo.study.studymatchingplatform.study.domain.Study;
 import com.ludo.study.studymatchingplatform.study.domain.stack.Stack;
 import com.ludo.study.studymatchingplatform.user.domain.User;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -29,6 +28,7 @@ import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -38,8 +38,8 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@SQLDelete(sql = "UPDATE recruitment SET deleted_date_time = NOW() WHERE recruitment_id = ?")
-@SQLRestriction("deleted_date_time is null")
+// @SQLDelete(sql = "UPDATE recruitment SET deleted_date_time = NOW() WHERE recruitment_id = ?")
+// @SQLRestriction("deleted_date_time is null")
 public class Recruitment extends BaseEntity {
 
 	@Id
@@ -51,13 +51,16 @@ public class Recruitment extends BaseEntity {
 	@JoinColumn(name = "study_id", nullable = false)
 	private Study study;
 
-	@OneToMany(fetch = LAZY, mappedBy = "recruitment")
+	@OneToMany(fetch = LAZY, mappedBy = "recruitment", cascade = CascadeType.ALL, orphanRemoval = true)
+	@Builder.Default
 	private List<Applicant> applicants = new ArrayList<>();
 
-	@OneToMany(fetch = LAZY, mappedBy = "recruitment")
+	@OneToMany(fetch = LAZY, mappedBy = "recruitment", cascade = CascadeType.ALL, orphanRemoval = true)
+	@Builder.Default
 	private List<RecruitmentStack> recruitmentStacks = new ArrayList<>();
 
-	@OneToMany(fetch = LAZY, mappedBy = "recruitment")
+	@OneToMany(fetch = LAZY, mappedBy = "recruitment", cascade = CascadeType.ALL, orphanRemoval = true)
+	@Builder.Default
 	private List<RecruitmentPosition> recruitmentPositions = new ArrayList<>();
 
 	@Column(nullable = false, length = 2048)
@@ -74,6 +77,7 @@ public class Recruitment extends BaseEntity {
 
 	@Column(nullable = false)
 	@PositiveOrZero
+	@Builder.Default
 	private int hits = 0;
 
 	@Column(nullable = false)
@@ -87,6 +91,8 @@ public class Recruitment extends BaseEntity {
 	public static Recruitment of(
 			final String title,
 			final String content,
+			final String callUrl,
+			final int hits,
 			final int recruitmentLimit,
 			final LocalDateTime recruitmentEndDateTime,
 			final Study study
@@ -94,6 +100,8 @@ public class Recruitment extends BaseEntity {
 		return Recruitment.builder()
 				.title(title)
 				.content(content)
+				.callUrl(callUrl)
+				.hits(hits)
 				.recruitmentLimit(recruitmentLimit)
 				.recruitmentEndDateTime(recruitmentEndDateTime)
 				.study(study)
@@ -125,19 +133,15 @@ public class Recruitment extends BaseEntity {
 	}
 
 	public List<String> getStackNames() {
-		List<String> stacks = new ArrayList<>();
-		for (RecruitmentStack recruitmentStack : recruitmentStacks) {
-			stacks.add(recruitmentStack.getStack().getName());
-		}
-		return stacks;
+		return recruitmentStacks.stream()
+				.map(recruitmentStack -> recruitmentStack.getStack().getName())
+				.toList();
 	}
 
 	public List<String> getPositionNames() {
-		List<String> positions = new ArrayList<>();
-		for (RecruitmentPosition recruitmentPosition : recruitmentPositions) {
-			positions.add(recruitmentPosition.getPosition().getName());
-		}
-		return positions;
+		return recruitmentPositions.stream()
+				.map(recruitmentPosition -> recruitmentPosition.getPosition().getName())
+				.toList();
 	}
 
 	public void addRecruitmentStacks(final List<RecruitmentStack> recruitmentStacks) {
@@ -152,16 +156,24 @@ public class Recruitment extends BaseEntity {
 			final String title,
 			final String content,
 			final String callUrl,
-			final int hits,
-			final int recruitmentLimit,
+			final Integer recruitmentLimit,
 			final LocalDateTime recruitmentEndDateTime
 	) {
-		this.title = title;
-		this.content = content;
-		this.callUrl = callUrl;
-		this.hits = hits;
-		this.recruitmentLimit = recruitmentLimit;
-		this.recruitmentEndDateTime = recruitmentEndDateTime;
+		if (title != null) {
+			this.title = title;
+		}
+		if (content != null) {
+			this.content = content;
+		}
+		if (callUrl != null) {
+			this.callUrl = callUrl;
+		}
+		if (recruitmentLimit != null) {
+			this.recruitmentLimit = recruitmentLimit;
+		}
+		if (recruitmentEndDateTime != null) {
+			this.recruitmentEndDateTime = recruitmentEndDateTime;
+		}
 	}
 
 	public Optional<RecruitmentStack> getRecruitmentStack(final Stack stack) {
@@ -207,16 +219,50 @@ public class Recruitment extends BaseEntity {
 		applicants.stream()
 				.filter(a -> a.equals(user))
 				.findFirst()
-				.ifPresent(Applicant::applyOrThrow);
+				.ifPresent(Applicant::ensureApplicable);
 	}
 
 	public Optional<Applicant> findApplicant(final User user) {
 		return applicants.stream()
-				.filter(a -> a.equals(user))
+				.filter(a -> a.getUser().equals(user))
 				.findFirst();
 	}
 
 	public boolean isOwner(final User user) {
 		return study.isOwner(user);
+	}
+
+	public void addApplicant(final Applicant applicant) {
+		applicant.connectToRecruitment(this);
+		applicants.add(applicant);
+	}
+
+	public void ensureRecruiting() {
+		study.ensureRecruiting();
+	}
+
+	public void updateStacks(final Set<Stack> nextStacks) {
+	}
+
+	public List<Stack> getAddedRecruitmentStacks(final Set<Stack> nextStacks) {
+		final List<Stack> stacks = getStacks();
+
+		return nextStacks.stream()
+				.filter(nextStack -> !stacks.contains(nextStack))
+				.toList();
+	}
+
+	public List<Stack> getRemovedRecruitmentStacks(final Set<Stack> nextStacks) {
+		final List<Stack> prevStacks = getStacks();
+
+		return prevStacks.stream()
+				.filter(nextStacks::contains)
+				.toList();
+	}
+
+	public List<Stack> getStacks() {
+		return recruitmentStacks.stream()
+				.map(RecruitmentStack::getStack)
+				.toList();
 	}
 }

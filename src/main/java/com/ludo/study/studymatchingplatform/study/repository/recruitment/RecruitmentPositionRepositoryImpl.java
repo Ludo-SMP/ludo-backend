@@ -32,4 +32,7 @@ public class RecruitmentPositionRepositoryImpl {
 				.execute();
 	}
 
+	public void save(final RecruitmentPosition recruitmentPosition) {
+		recruitmentPositionJpaRepository.save(recruitmentPosition);
+	}
 }

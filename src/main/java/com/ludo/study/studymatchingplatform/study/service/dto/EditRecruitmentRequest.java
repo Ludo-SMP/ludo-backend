@@ -1,31 +1,27 @@
 package com.ludo.study.studymatchingplatform.study.service.dto;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
+@Builder
 public class EditRecruitmentRequest {
 
-	private long studyId;
+	private final String title;
 
-	private long recruitmentId;
+	private final String callUrl;
 
-	private String title;
+	private final Set<Long> stackIds;
 
-	private String callUrl;
+	private final Set<Long> positionIds;
 
-	private List<Long> stackIds;
+	private final Integer recruitmentLimit;
 
-	private List<Long> positionIds;
+	private final LocalDateTime recruitmentEndDateTime;
 
-	private int hits;
-
-	private int recruitmentLimit;
-
-	private LocalDateTime recruitmentEndDateTime;
-
-	private String content;
+	private final String content;
 
 }

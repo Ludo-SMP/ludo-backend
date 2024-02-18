@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.ludo.study.studymatchingplatform.auth.common.provider.JwtTokenProvider;
+
 @SpringBootTest
 class JwtTokenProviderTest {
 
@@ -14,17 +16,17 @@ class JwtTokenProviderTest {
 
 	@Test
 	void jwt_access_token_생성() {
-		String userId = "1";
-		String accessToken = jwtTokenProvider.createAccessToken(userId);
+		AuthUserPayload payload = AuthUserPayload.from(1L);
+		String accessToken = jwtTokenProvider.createAccessToken(payload);
 		assertThat(accessToken).isNotNull();
 	}
 
 	@Test
 	void jwt_access_token_검증() {
-		String userId = "1";
-		String accessToken = jwtTokenProvider.createAccessToken(userId);
-		
-		assertThatCode(() -> jwtTokenProvider.isValidToken(accessToken))
+		AuthUserPayload payload = AuthUserPayload.from(1L);
+		String accessToken = jwtTokenProvider.createAccessToken(payload);
+
+		assertThatCode(() -> jwtTokenProvider.verifyAuthTokenOrThrow(accessToken))
 				.doesNotThrowAnyException();
 	}
 

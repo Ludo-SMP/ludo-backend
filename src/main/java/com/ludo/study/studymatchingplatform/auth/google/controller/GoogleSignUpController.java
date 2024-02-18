@@ -7,11 +7,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.ludo.study.studymatchingplatform.auth.common.AuthUserPayload;
+import com.ludo.study.studymatchingplatform.auth.common.provider.CookieProvider;
+import com.ludo.study.studymatchingplatform.auth.common.provider.JwtTokenProvider;
 import com.ludo.study.studymatchingplatform.auth.google.service.GoogleSignUpService;
 import com.ludo.study.studymatchingplatform.auth.naver.repository.InMemoryClientRegistrationAndProviderRepository;
 import com.ludo.study.studymatchingplatform.auth.naver.service.dto.response.SignupResponse;
 import com.ludo.study.studymatchingplatform.user.domain.Social;
+import com.ludo.study.studymatchingplatform.user.domain.User;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,6 +28,8 @@ public class GoogleSignUpController {
 
 	private final InMemoryClientRegistrationAndProviderRepository clientRegistrationAndProviderRepository;
 	private final GoogleSignUpService googleSignUpService;
+	private final JwtTokenProvider jwtTokenProvider;
+	private final CookieProvider cookieProvider;
 
 	@GetMapping("/google")
 	public String googleSignup(final RedirectAttributes redirectAttributes) {
@@ -41,10 +48,13 @@ public class GoogleSignUpController {
 
 	@GetMapping("/google/callback")
 	public ResponseEntity<SignupResponse> googleSignupback(
-			@RequestParam(name = "code") final String authorizationCode) {
-		SignupResponse signupResponse = googleSignUpService.googleSignUp(authorizationCode);
+			@RequestParam(name = "code") final String authorizationCode, final HttpServletResponse response) {
+		final User user = googleSignUpService.googleSignUp(authorizationCode);
+		final String accessToken = jwtTokenProvider.createAccessToken(AuthUserPayload.from(user));
+		cookieProvider.setAuthCookie(accessToken, response);
 
 		return ResponseEntity.ok()
-				.body(signupResponse);
+				.body(new SignupResponse(true, "회원 가입에 성공했습니다."));
 	}
+
 }

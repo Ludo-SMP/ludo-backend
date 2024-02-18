@@ -10,6 +10,7 @@ import com.ludo.study.studymatchingplatform.common.entity.BaseEntity;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
 import com.ludo.study.studymatchingplatform.user.domain.User;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -23,14 +24,13 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 @Entity
 @Getter
-@ToString
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
@@ -59,7 +59,8 @@ public class Study extends BaseEntity {
 	@OneToOne(mappedBy = "study", fetch = LAZY)
 	private Recruitment recruitment;
 
-	@OneToMany(mappedBy = "study", fetch = LAZY)
+	@OneToMany(mappedBy = "study", fetch = LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	@Builder.Default
 	private List<Participant> participants = new ArrayList<>();
 
 	@Enumerated(EnumType.STRING)
@@ -105,6 +106,10 @@ public class Study extends BaseEntity {
 		study.status = status;
 	}
 
+	public void changeStatus(final StudyStatus status) {
+		this.status = status;
+	}
+
 	public void addRecruitment(Recruitment recruitment) {
 		this.recruitment = recruitment;
 	}
@@ -121,11 +126,14 @@ public class Study extends BaseEntity {
 		return owner.getNickname();
 	}
 
-	public void ensureRecruitmentWritable() {
-		if (recruitment == null || recruitment.isDeleted()) {
-			return;
+	public void ensureRecruitmentWritableBy(final User user) {
+		if (recruitment != null && !recruitment.isDeleted()) {
+			throw new IllegalArgumentException("이미 작성된 모집 공고가 존재합니다.");
 		}
-		throw new IllegalArgumentException("이미 작성된 모집 공고가 존재합니다.");
+
+		if (!isOwner(user)) {
+			throw new IllegalArgumentException("모집 공고를 작성할 권한이 없습니다.");
+		}
 	}
 
 	public void ensureRecruitmentEditable(final User user) {
@@ -138,7 +146,12 @@ public class Study extends BaseEntity {
 	}
 
 	public boolean isOwner(final User user) {
-		return owner == user;
+		return owner.equals(user);
 	}
 
+	public void ensureRecruiting() {
+		if (status != StudyStatus.RECRUITING) {
+			throw new IllegalStateException("현재 모집 중인 스터디가 아닙니다.");
+		}
+	}
 }

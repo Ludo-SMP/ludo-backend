@@ -1,4 +1,4 @@
-package com.ludo.study.studymatchingplatform.auth.common;
+package com.ludo.study.studymatchingplatform.auth.common.provider;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
@@ -7,6 +7,7 @@ import java.util.Date;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.ludo.study.studymatchingplatform.auth.common.AuthUserPayload;
 import com.ludo.study.studymatchingplatform.study.service.exception.AuthenticationException;
 
 import io.jsonwebtoken.Claims;
@@ -25,7 +26,7 @@ public class JwtTokenProvider {
 	@Value("${jwt.token.access-token-expiresin}")
 	private String accessTokenExpiresIn;
 
-	public String createAccessToken(final String payload) {
+	public String createAccessToken(final AuthUserPayload payload) {
 		final Claims claims = createClaims(payload);
 		final Date expiresIn = createExpiresIn();
 		final Key signingKey = createSigningKey();
@@ -37,9 +38,10 @@ public class JwtTokenProvider {
 				.compact();
 	}
 
-	private Claims createClaims(final String payload) {
-		return Jwts.claims()
-				.setSubject(payload);
+	private Claims createClaims(final AuthUserPayload payload) {
+		final Claims claims = Jwts.claims();
+		claims.put("id", payload.getId());
+		return claims;
 	}
 
 	private Date createExpiresIn() {
@@ -56,15 +58,19 @@ public class JwtTokenProvider {
 		return accessTokenExpiresIn;
 	}
 
-	public boolean isValidToken(final String token) {
+	public void isValidTokenOrThrows(final String token) {
+		verifyAuthTokenOrThrow(token);
+	}
+
+	public Claims verifyAuthTokenOrThrow(final String token) {
 		try {
-			parseToClaimsJws(token);
+			final Jws<Claims> claimsJws = parseToClaimsJws(token);
+			return claimsJws.getBody();
 		} catch (final ExpiredJwtException expiredJwtException) {
 			throw new AuthenticationException("Expired Token", expiredJwtException);
 		} catch (final JwtException jwtException) {
 			throw new AuthenticationException("Invalid Token", jwtException);
 		}
-		return true;
 	}
 
 	private Jws<Claims> parseToClaimsJws(final String token) {

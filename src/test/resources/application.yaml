@@ -1,11 +1,15 @@
+logging.level:
+
+  org.hibernate.SQL: debug
+
+  org.hibernate.type: trace
+
 spring:
-  security:
-    oauth2:
-      client:
-        registration:
-          google:
-            client-id: ${GOOGLE_CLIENT_ID}
-            client-secret: ${GOOGLE_CLIENT_SECRET}
+
+  devtools:
+    livereload:
+      enabled: true
+
   datasource:
     url: ${DB_URL}
     username: ${DB_USERNAME}
@@ -14,13 +18,51 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: create
 
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
         format_sql: true
+        default_batch_fetch_size: 1000
     show-sql: true
+
+
+
+oauth2:
+  client:
+    registration:
+      naver:
+        client-id: ${NAVER_CLIENT_ID}
+        client-secret: ${NAVER_CLIENT_SECRET}
+        login-redirect-uri: ${NAVER_LOGIN_CALLBACK_URL}
+        signup-redirect-uri: ${NAVER_SIGNUP_CALLBACK_URL}
+        authorization-grant-type: code
+      kakao:
+        client-id: ${KAKAO_CLIENT_ID}
+        client-secret: ${KAKAO_CLIENT_SECRET}
+        login-redirect-uri: ${KAKAO_LOGIN_CALLBACK_URL}
+        signup-redirect-uri: ${KAKAO_SIGNUP_CALLBACK_URL}
+        authorization-grant-type: code
+      google:
+        client-id: ${GOOGLE_CLIENT_ID}
+        client-secret: ${GOOGLE_CLIENT_SECRET}
+        login-redirect-uri: ${GOOGLE_LOGIN_CALLBACK_URL}
+        signup-redirect-uri: ${GOOGLE_SIGNUP_CALLBACK_URL}
+        authorization-grant-type: authorization_code
+    provider:
+      naver:
+        authorization-uri: ${NAVER_LOGIN_API}
+        token-uri: ${NAVER_TOKEN_API}
+        user-info-uri: ${NAVER_USER_PROFILE_API}
+      kakao:
+        authorization-uri: ${KAKAO_LOGIN_API}
+        token-uri: ${KAKAO_TOKEN_API}
+        user-info-uri: ${KAKAO_USER_PROFILE_API}
+      google:
+        authorization-uri: ${GOOGLE_LOGIN_API}
+        token-uri: ${GOOGLE_TOKEN_API}
+        user-info-uri: ${GOOGLE_USER_PROFILE_API}
 
 jwt:
   token:

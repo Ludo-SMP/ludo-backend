@@ -1,6 +1,7 @@
 package com.ludo.study.studymatchingplatform.study.service;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.stereotype.Service;
 
@@ -15,7 +16,7 @@ public class PositionService {
 
 	private final PositionRepositoryImpl positionRepository;
 
-	public List<Position> findAllByIdsOrThrow(final List<Long> positionIds) {
+	public List<Position> findAllByIdsOrThrow(final Set<Long> positionIds) {
 		final List<Position> positions = positionRepository.findAllByIds(positionIds);
 		// TODO
 		if (positions.size() != positionIds.size()) {

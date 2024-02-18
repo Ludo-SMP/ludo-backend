@@ -1,6 +1,8 @@
 package com.ludo.study.studymatchingplatform.study.repository;
 
 import static com.ludo.study.studymatchingplatform.study.domain.QStudy.*;
+import static com.ludo.study.studymatchingplatform.study.domain.recruitment.QRecruitment.*;
+import static com.ludo.study.studymatchingplatform.user.domain.QUser.*;
 
 import java.util.Optional;
 
@@ -29,7 +31,10 @@ public class StudyRepositoryImpl {
 		return Optional.ofNullable(
 				q.selectFrom(study)
 						.where(study.id.eq(id))
-						.leftJoin(study.recruitment).fetchJoin()
+						.leftJoin(study.recruitment, recruitment).fetchJoin()
+						// .leftJoin(recruitment.recruitmentStacks, recruitmentStack).fetchJoin()
+						// .leftJoin(recruitment.recruitmentPositions, recruitmentPosition).fetchJoin()
+						.join(study.owner, user).fetchJoin()
 						.fetchFirst()
 		);
 	}

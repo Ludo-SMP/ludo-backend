@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service;
 
 import com.ludo.study.studymatchingplatform.auth.google.GoogleOAuthToken;
 import com.ludo.study.studymatchingplatform.auth.google.GoogleUserInfo;
-import com.ludo.study.studymatchingplatform.auth.naver.service.dto.response.LoginResponse;
 import com.ludo.study.studymatchingplatform.user.domain.User;
 import com.ludo.study.studymatchingplatform.user.repository.UserRepositoryImpl;
 
@@ -20,17 +19,14 @@ public class GoogleLoginService {
 	private final GoogleProfileRequestService googleProfileRequestService;
 	private final UserRepositoryImpl userRepository;
 
-	public LoginResponse login(final String authorizationCode) {
+	public User login(final String authorizationCode) {
 		final GoogleOAuthToken oAuthToken = googleOAuthTokenRequestService.createOAuthToken(authorizationCode, false);
 		final GoogleUserInfo userInfo = googleProfileRequestService.createGoogleUserInfo(
 				oAuthToken.getAccessToken());
 
 		final User user = validateNotSignUp(userInfo);
 
-		return new LoginResponse(
-				String.valueOf(user.getId()),
-				user.getNickname(),
-				user.getEmail());
+		return user;
 	}
 
 	private User validateNotSignUp(final GoogleUserInfo userInfo) {

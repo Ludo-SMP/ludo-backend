@@ -40,7 +40,7 @@ public class StudyController {
 
 	@DeleteMapping("/{studyId}/recruitments")
 	public ResponseEntity<Void> deleteRecruitment(@PathVariable Long studyId) {
-		recruitmentCreateService.deleteRecruitment(studyId);
+		// recruitmentCreateService.deleteRecruitment(studyId);
 		return ResponseEntity.noContent().build();
 	}
 

@@ -15,6 +15,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -41,6 +42,7 @@ public class Category extends BaseEntity {
 			mappedBy = "category",
 			fetch = LAZY
 	)
+	@Builder.Default
 	private List<Study> studies = new ArrayList<>();
 
 }

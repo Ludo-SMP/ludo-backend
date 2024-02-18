@@ -1,5 +1,6 @@
 package com.ludo.study.studymatchingplatform.study.controller;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,9 +9,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ludo.study.studymatchingplatform.auth.common.AuthUser;
+import com.ludo.study.studymatchingplatform.auth.common.AuthUserPayload;
+import com.ludo.study.studymatchingplatform.auth.common.IsAuthenticated;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Applicant;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
 import com.ludo.study.studymatchingplatform.study.service.RecruitmentDetailsFindService;
@@ -21,13 +24,14 @@ import com.ludo.study.studymatchingplatform.study.service.dto.response.ApplyRecr
 import com.ludo.study.studymatchingplatform.study.service.dto.response.EditRecruitmentResponse;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.RecruitmentDetailsResponse;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.WriteRecruitmentResponse;
+import com.ludo.study.studymatchingplatform.user.domain.User;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @Slf4j
-@RequestMapping("")
+@RequestMapping
 @RequiredArgsConstructor
 public class RecruitmentController {
 
@@ -37,7 +41,10 @@ public class RecruitmentController {
 
 	@GetMapping("/recruitments/{recruitmentId}")
 	public ResponseEntity<RecruitmentDetailsResponse> readRecruitmentDetails(
-			@PathVariable("recruitmentId") final Long recruitmentId) {
+			@PathVariable("recruitment-id") final Long recruitmentId,
+			@AuthUser AuthUserPayload payload
+	) {
+		System.out.println(payload);
 		try {
 			RecruitmentDetailsResponse recruitmentDetails = recruitmentDetailsFindService.findRecruitmentDetails(
 					recruitmentId);
@@ -49,23 +56,29 @@ public class RecruitmentController {
 		}
 	}
 
+	@IsAuthenticated
 	@PostMapping("/studies/{studyId}/recruitments")
-	public ResponseEntity<WriteRecruitmentResponse> write(@RequestBody final WriteRecruitmentRequest request) {
-		final Recruitment recruitment = recruitmentService.write(request);
+	public ResponseEntity<WriteRecruitmentResponse> write(@RequestBody final WriteRecruitmentRequest request,
+														  @AuthUser final User user) {
+		final Recruitment recruitment = recruitmentService.write(user, request);
 
 		return ResponseEntity.status(HttpStatus.CREATED).body(WriteRecruitmentResponse.from(recruitment));
 	}
 
+	@Profile("test")
+	@IsAuthenticated
 	@PutMapping("/studies/{studyId}/recruitments")
-	public ResponseEntity<EditRecruitmentResponse> edit(@RequestParam("userId") final Long userId,
+	public ResponseEntity<EditRecruitmentResponse> edit(@AuthUser final User user,
+														@PathVariable("studyId") final Long studyId,
 														@PathVariable("recruitmentId") final Long recruitmentId,
 														@RequestBody final EditRecruitmentRequest request) {
 		// TODO: need to append authorization guard
-		final Recruitment recruitment = recruitmentService.edit(null, recruitmentId, request);
+		final Recruitment recruitment = recruitmentService.edit(user, recruitmentId, request);
 
 		return ResponseEntity.status(HttpStatus.OK).body(EditRecruitmentResponse.from(recruitment));
 	}
 
+	@IsAuthenticated
 	@PostMapping("/studies/{studyId}/recruitments/{recruitmentId}/apply")
 	public ResponseEntity<ApplyRecruitmentResponse> apply(@PathVariable("recruitmentId") final Long recruitmentId) {
 		// TODO: need to append authorization guard

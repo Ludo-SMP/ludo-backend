@@ -32,4 +32,7 @@ public class RecruitmentStackRepositoryImpl {
 				.execute();
 	}
 
+	public void save(final RecruitmentStack recruitmentStack) {
+		recruitmentStackJpaRepository.save(recruitmentStack);
+	}
 }

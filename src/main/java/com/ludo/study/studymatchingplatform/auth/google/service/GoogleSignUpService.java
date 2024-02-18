@@ -5,7 +5,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ludo.study.studymatchingplatform.auth.google.GoogleOAuthToken;
 import com.ludo.study.studymatchingplatform.auth.google.GoogleUserInfo;
-import com.ludo.study.studymatchingplatform.auth.naver.service.dto.response.SignupResponse;
 import com.ludo.study.studymatchingplatform.user.domain.User;
 import com.ludo.study.studymatchingplatform.user.repository.UserRepositoryImpl;
 
@@ -20,7 +19,7 @@ public class GoogleSignUpService {
 	private final UserRepositoryImpl userRepository;
 
 	@Transactional
-	public SignupResponse googleSignUp(final String authorizationCode) {
+	public User googleSignUp(final String authorizationCode) {
 		final GoogleOAuthToken oAuthToken = googleOAuthTokenRequestService.createOAuthToken(authorizationCode, true);
 		final GoogleUserInfo userInfo = googleProfileRequestService.createGoogleUserInfo(oAuthToken.getAccessToken());
 
@@ -29,7 +28,7 @@ public class GoogleSignUpService {
 		final User user = userInfo.toUser();
 		userRepository.save(user);
 
-		return new SignupResponse(true, "회원가입을 완료했습니다.");
+		return user;
 	}
 
 	private void validateAlreadySignUp(final GoogleUserInfo userInfo) {

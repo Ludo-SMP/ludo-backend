@@ -2,40 +2,32 @@ package com.ludo.study.studymatchingplatform.filter;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Optional;
 
-import com.ludo.study.studymatchingplatform.auth.common.JwtTokenProvider;
-import com.ludo.study.studymatchingplatform.study.service.exception.ServerException;
+import org.springframework.web.filter.OncePerRequestFilter;
 
-import jakarta.servlet.Filter;
+import com.ludo.study.studymatchingplatform.auth.common.AuthUserPayload;
+import com.ludo.study.studymatchingplatform.auth.common.provider.CookieProvider;
+import com.ludo.study.studymatchingplatform.auth.common.provider.JwtTokenProvider;
+import com.ludo.study.studymatchingplatform.study.service.exception.AuthenticationException;
+
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
-public class JwtAuthenticationFilter implements Filter {
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 	private final JwtTokenProvider jwtTokenProvider;
+	private final CookieProvider cookieProvider;
 
-	@Override
-	public void doFilter(ServletRequest request, ServletResponse response,
-						 FilterChain chain) throws IOException, ServletException {
-		HttpServletRequest httpRequest = (HttpServletRequest)request;
-		Cookie[] cookies = httpRequest.getCookies();
-		if (notExistCookies(cookies)) {
-			throw new ServerException("쿠키가 존재하지 않습니다.");
-		}
-		if (notExistSpecificCookie(cookies, "Authorization")) {
-			throw new ServerException("Authorization 쿠키가 없습니다.");
-		}
-		String accessToken = getAccessToken(cookies);
-		jwtTokenProvider.isValidToken(accessToken);
-	}
+	public static final String AUTH_USER_PAYLOAD = "AUTH_USER_PAYLOAD";
 
 	private boolean notExistCookies(final Cookie[] cookies) {
 		return cookies == null;
@@ -55,4 +47,19 @@ public class JwtAuthenticationFilter implements Filter {
 				.orElseThrow();
 	}
 
+	@Override
+	protected void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response,
+									final FilterChain filterChain) throws ServletException, IOException {
+
+		final Optional<String> authToken = cookieProvider.getAuthToken(request);
+		if (authToken.isEmpty()) {
+			throw new AuthenticationException("Authorization 쿠키가 없습니다.");
+		}
+
+		final Claims claims = jwtTokenProvider.verifyAuthTokenOrThrow(authToken.get());
+		final AuthUserPayload payload = AuthUserPayload.from(claims);
+		request.setAttribute(AUTH_USER_PAYLOAD, payload);
+
+		filterChain.doFilter(request, response);
+	}
 }

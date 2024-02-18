@@ -11,9 +11,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
-import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -26,6 +26,7 @@ import lombok.experimental.SuperBuilder;
 public class Participant extends BaseEntity {
 
 	@EmbeddedId
+	@Builder.Default
 	private ParticipantId id = new ParticipantId();
 
 	@ManyToOne(fetch = LAZY)
@@ -36,7 +37,7 @@ public class Participant extends BaseEntity {
 	)
 	private Study study;
 
-	@OneToOne(fetch = LAZY)
+	@ManyToOne(fetch = LAZY)
 	@MapsId("userId")
 	@JoinColumn(
 			name = "user_id",

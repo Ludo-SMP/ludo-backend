@@ -16,6 +16,7 @@ import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment
 import com.ludo.study.studymatchingplatform.study.fixture.CategoryFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.RecruitmentFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.RecruitmentStackFixture;
+import com.ludo.study.studymatchingplatform.study.fixture.StackCategoryFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.StackFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.StudyFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.UserFixture;
@@ -89,12 +90,12 @@ class RecruitmentDetailsFindServiceTest {
 		Study study = StudyFixture.createStudy(StudyStatus.RECRUITING, STUDY_TITLE, Way.ONLINE, category, user, 5, 10);
 
 		RecruitmentStack spring = RecruitmentStackFixture.createRecruitmentStack(
-				StackFixture.createStack(STACK_SPRING));
+				StackFixture.createStack(STACK_SPRING, StackCategoryFixture.createStackCategory("stackCategory1")));
 		RecruitmentStack react = RecruitmentStackFixture.createRecruitmentStack(
-				StackFixture.createStack(STACK_REACT));
+				StackFixture.createStack(STACK_REACT, StackCategoryFixture.createStackCategory("stackCategory2")));
 
 		Recruitment recruitment = RecruitmentFixture.createRecruitment(study, RECRUITMENT_TITLE, CONTENT, 5, CALL_URL,
-				spring, react);
+				null, spring, react);
 
 		userRepository.save(user);
 		categoryRepository.save(category);
