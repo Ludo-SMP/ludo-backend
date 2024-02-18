@@ -50,5 +50,10 @@ public class Stack extends BaseEntity {
 	@OneToMany(mappedBy = "stack", fetch = FetchType.LAZY)
 	@Builder.Default
 	private List<RecruitmentStack> recruitmentStacks = new ArrayList<>();
+
+	public void addRecruitmentStack(final RecruitmentStack recruitmentStack) {
+		this.recruitmentStacks.add(recruitmentStack);
+	}
+
 }
 

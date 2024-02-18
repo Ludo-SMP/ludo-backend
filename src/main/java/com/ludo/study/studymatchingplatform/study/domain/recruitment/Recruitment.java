@@ -118,7 +118,7 @@ public class Recruitment extends BaseEntity {
 	 * @param recruitmentStack
 	 * 어플리케이션 레벨에서 데이터 정합성 유지
 	 */
-	public void addStack(RecruitmentStack recruitmentStack) {
+	public void addRecruitmentStack(RecruitmentStack recruitmentStack) {
 		this.recruitmentStacks
 				.add(recruitmentStack);
 	}

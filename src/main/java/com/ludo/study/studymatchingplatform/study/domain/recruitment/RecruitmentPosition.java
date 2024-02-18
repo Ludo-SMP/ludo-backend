@@ -51,4 +51,10 @@ public class RecruitmentPosition extends BaseEntity {
 
 		return recruitmentPosition;
 	}
+
+	public void registerRecruitment(final Recruitment recruitment) {
+		this.recruitment = recruitment;
+		this.recruitment.addPosition(this);
+	}
+
 }
