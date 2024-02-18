@@ -51,4 +51,16 @@ public class RecruitmentStack extends BaseEntity {
 
 		return recruitmentStack;
 	}
+
+	public void registerRecruitmentAndStack(final Recruitment recruitment, final Stack stack) {
+		if (this.recruitment == null) {
+			this.recruitment = recruitment;
+		}
+		if (this.stack == null) {
+			this.stack = stack;
+		}
+		this.recruitment.addRecruitmentStack(this);
+		this.stack.addRecruitmentStack(this);
+	}
+
 }
