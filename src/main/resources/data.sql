@@ -16,12 +16,12 @@
 #        ('2025-02-10 18:00:00.000000', NULL, '2025-02-10 18:00:00.000000', '디자이너');
 #
 #
-# -- category table
+-- category table
 # INSERT INTO category(created_date_time, deleted_date_time, updated_date_time, name)
 # VALUES ('2025-02-10 18:00:00.000000', NULL, '2025-02-10 18:00:00.000000', '프로젝트'),
 #        ('2025-02-10 18:00:00.000000', NULL, '2025-02-10 18:00:00.000000', '코딩테스트'),
 #        ('2025-02-10 18:00:00.000000', NULL, '2025-02-10 18:00:00.000000', '모의면접');
-#
+
 # -- study table
 # INSERT INTO study(title, owner_id, `status`, way,
 #                   participant_limit, participant_count, category_id,

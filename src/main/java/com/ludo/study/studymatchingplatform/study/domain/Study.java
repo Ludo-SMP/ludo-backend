@@ -70,7 +70,8 @@ public class Study extends BaseEntity {
 	@Column(nullable = false)
 	private Integer participantLimit;
 
-	@Column(nullable = false)
+	// null 제거 필요
+	@Column(nullable = true)
 	private Integer participantCount;
 
 	@Column(nullable = false)
@@ -79,22 +80,9 @@ public class Study extends BaseEntity {
 	@Column(nullable = false)
 	private LocalDateTime endDateTime;
 
-	public Study(final Category category, final User owner, final String title,
-				 final Way way, final Integer participantLimit,
-				 final LocalDateTime startDateTime, final LocalDateTime endDateTime) {
-		this.status = StudyStatus.RECRUITING;
-		this.category = category;
-		this.owner = owner;
-		this.title = title;
-		this.way = way;
-		this.participantLimit = participantLimit;
-		this.startDateTime = startDateTime;
-		this.endDateTime = endDateTime;
-	}
-
 	public void addParticipant(final Participant participant) {
-		getParticipants().add(participant);
-		this.participantCount = getParticipantCount();
+		this.participants.add(participant);
+		this.participantCount = this.participants.size();
 	}
 
 	public void registerRecruitment(final Recruitment recruitment) {

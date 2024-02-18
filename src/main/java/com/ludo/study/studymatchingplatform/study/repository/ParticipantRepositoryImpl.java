@@ -12,8 +12,8 @@ public class ParticipantRepositoryImpl {
 
 	private final ParticipantJpaRepository participantJpaRepository;
 
-	public void save(final Participant participant) {
-		participantJpaRepository.save(participant);
+	public Participant save(final Participant participant) {
+		return participantJpaRepository.save(participant);
 	}
 
 }

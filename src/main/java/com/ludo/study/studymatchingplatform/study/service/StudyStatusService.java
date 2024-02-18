@@ -5,8 +5,7 @@ import org.springframework.stereotype.Service;
 import com.ludo.study.studymatchingplatform.study.domain.Study;
 import com.ludo.study.studymatchingplatform.study.domain.StudyStatus;
 import com.ludo.study.studymatchingplatform.study.repository.StudyRepositoryImpl;
-import com.ludo.study.studymatchingplatform.study.service.builder.StudyBuilder;
-import com.ludo.study.studymatchingplatform.study.service.dto.response.StudyResponse;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.WriteStudyResponse;
 import com.ludo.study.studymatchingplatform.study.service.exception.NotFoundException;
 
 import lombok.RequiredArgsConstructor;
@@ -17,10 +16,10 @@ public class StudyStatusService {
 
 	private final StudyRepositoryImpl studyRepository;
 
-	public StudyResponse changeStatus(final Long studyId, final StudyStatus status) {
+	public WriteStudyResponse changeStatus(final Long studyId, final StudyStatus status) {
 		final Long updatedId = studyRepository.updateStudyStatus(studyId, status);
 		final Study study = findById(updatedId);
-		return StudyBuilder.convertToStudyResponse(study);
+		return WriteStudyResponse.from(study);
 	}
 
 	public Study findById(final Long studyId) {
