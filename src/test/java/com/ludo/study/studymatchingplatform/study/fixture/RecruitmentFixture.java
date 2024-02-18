@@ -1,7 +1,6 @@
 package com.ludo.study.studymatchingplatform.study.fixture;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import com.ludo.study.studymatchingplatform.study.domain.Study;
@@ -13,16 +12,13 @@ public class RecruitmentFixture {
 
 	public static Recruitment createRecruitment(Study study, String title, String content,
 												int hits, String callUrl,
-												LocalDateTime endDateTime,
-												RecruitmentStack... recruitmentStacks
+												LocalDateTime endDateTime
 	) {
 		endDateTime = endDateTime == null ? LocalDateTime.now().plusDays(5) : endDateTime;
 		return Recruitment.builder()
 				.study(study)
-				.applicants(new ArrayList<>())
 				.callUrl(callUrl)
 				.content(content)
-				.recruitmentStacks(List.of(recruitmentStacks))
 				.recruitmentEndDateTime(endDateTime)
 				.title(title)
 				.hits(hits)
