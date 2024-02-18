@@ -7,11 +7,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.ludo.study.studymatchingplatform.auth.common.AuthUserPayload;
+import com.ludo.study.studymatchingplatform.auth.common.provider.CookieProvider;
+import com.ludo.study.studymatchingplatform.auth.common.provider.JwtTokenProvider;
 import com.ludo.study.studymatchingplatform.auth.kakao.service.KakaoSignUpService;
-import com.ludo.study.studymatchingplatform.auth.kakao.service.dto.response.KakaoSignUpResponse;
 import com.ludo.study.studymatchingplatform.auth.naver.repository.InMemoryClientRegistrationAndProviderRepository;
+import com.ludo.study.studymatchingplatform.auth.naver.service.dto.response.SignupResponse;
 import com.ludo.study.studymatchingplatform.user.domain.Social;
+import com.ludo.study.studymatchingplatform.user.domain.User;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,6 +28,8 @@ public class KakaoSignUpController {
 
 	private final InMemoryClientRegistrationAndProviderRepository clientRegistrationAndProviderRepository;
 	private final KakaoSignUpService kakaoSignUpService;
+	private final JwtTokenProvider jwtTokenProvider;
+	private final CookieProvider cookieProvider;
 
 	@GetMapping("/kakao")
 	public String kakaoSignUp(RedirectAttributes redirectAttributes) {
@@ -36,10 +43,15 @@ public class KakaoSignUpController {
 	}
 
 	@GetMapping("/kakao/callback")
-	public ResponseEntity<KakaoSignUpResponse> kakaoSignUpCallback(
-			@RequestParam(name = "code") String authorizationCode) {
-		KakaoSignUpResponse kakaoSignUpResponse = kakaoSignUpService.kakaoSignUp(authorizationCode);
-		return ResponseEntity.ok().body(kakaoSignUpResponse);
+	public ResponseEntity<SignupResponse> kakaoSignUpCallback(
+			@RequestParam(name = "code") String authorizationCode, final HttpServletResponse response) {
+
+		final User user = kakaoSignUpService.kakaoSignUp(authorizationCode);
+		final String accessToken = jwtTokenProvider.createAccessToken(AuthUserPayload.from(user));
+		cookieProvider.setAuthCookie(accessToken, response);
+
+		return ResponseEntity.ok()
+				.body(new SignupResponse(true, "회원 가입에 성공했습니다."));
 	}
 
 }

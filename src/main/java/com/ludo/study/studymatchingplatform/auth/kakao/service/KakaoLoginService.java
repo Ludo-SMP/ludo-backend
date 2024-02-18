@@ -5,7 +5,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ludo.study.studymatchingplatform.auth.kakao.service.dto.KakaoOAuthToken;
 import com.ludo.study.studymatchingplatform.auth.kakao.service.dto.KakaoUserProfileDto;
-import com.ludo.study.studymatchingplatform.auth.kakao.service.dto.response.KakaoLoginResponse;
 import com.ludo.study.studymatchingplatform.auth.naver.repository.InMemoryClientRegistrationAndProviderRepository;
 import com.ludo.study.studymatchingplatform.study.service.exception.NotFoundException;
 import com.ludo.study.studymatchingplatform.user.domain.Social;
@@ -24,18 +23,13 @@ public class KakaoLoginService {
 	private final KakaoProfileRequestService kakaoProfileRequestService;
 	private final UserRepositoryImpl userRepository;
 
-	public KakaoLoginResponse login(final String authrizationCode) {
+	public User login(final String authrizationCode) {
 		final String kakaoLoginRedirectUri = clientRegistrationAndProviderRepository.findLoginRedirectUri(Social.KAKAO);
 		final KakaoOAuthToken kakaoOAuthToken =
 				kakaoOAuthTokenRequestService.createOAuthToken(authrizationCode, kakaoLoginRedirectUri);
 		final KakaoUserProfileDto kakaoUserProfileDto = kakaoProfileRequestService.createKakaoProfile(kakaoOAuthToken);
-		final User user = validateNotSignUp(kakaoUserProfileDto);
 
-		return new KakaoLoginResponse(
-				String.valueOf(user.getId()),
-				user.getNickname(),
-				user.getEmail(),
-				kakaoOAuthToken.getAccessToken());
+		return validateNotSignUp(kakaoUserProfileDto);
 	}
 
 	private User validateNotSignUp(final KakaoUserProfileDto kakaoUserProfileDto) {
