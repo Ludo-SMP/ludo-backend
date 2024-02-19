@@ -90,10 +90,6 @@ public class Study extends BaseEntity {
 		this.recruitment.connectToStudy(this);
 	}
 
-	public void changeStatus(final Study study, final StudyStatus status) {
-		study.status = status;
-	}
-
 	public void changeStatus(final StudyStatus status) {
 		this.status = status;
 	}
@@ -133,6 +129,21 @@ public class Study extends BaseEntity {
 		}
 	}
 
+	public void ensureStudyEditable(final User user) {
+		if (owner != user) {
+			throw new IllegalArgumentException("스터디를 수정할 권한이 없습니다.");
+		}
+	}
+
+	public void ensureRecruitmentDeletable(final User user) {
+		if (owner != user) {
+			throw new IllegalArgumentException("모집 공고를 삭제할 권한이 없습니다.");
+		}
+		if (recruitment == null || recruitment.isDeleted()) {
+			throw new IllegalArgumentException("존재하지 않는 모집 공고입니다.");
+		}
+	}
+
 	public boolean isOwner(final User user) {
 		return owner.equals(user);
 	}
@@ -142,4 +153,11 @@ public class Study extends BaseEntity {
 			throw new IllegalStateException("현재 모집 중인 스터디가 아닙니다.");
 		}
 	}
+
+	public void edit(final StudyStatus status) {
+		if (status != null) {
+			this.status = status;
+		}
+	}
+
 }
