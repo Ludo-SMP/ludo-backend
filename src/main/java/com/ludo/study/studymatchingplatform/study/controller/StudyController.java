@@ -3,7 +3,6 @@ package com.ludo.study.studymatchingplatform.study.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ludo.study.studymatchingplatform.study.domain.Study;
 import com.ludo.study.studymatchingplatform.study.domain.StudyStatus;
-import com.ludo.study.studymatchingplatform.study.service.RecruitmentDeleteService;
 import com.ludo.study.studymatchingplatform.study.service.StudyCreateService;
 import com.ludo.study.studymatchingplatform.study.service.StudyStatusService;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.WriteStudyRequest;
@@ -28,7 +26,6 @@ import lombok.RequiredArgsConstructor;
 public class StudyController {
 
 	private final StudyCreateService studyCreateService;
-	private final RecruitmentDeleteService recruitmentCreateService;
 	private final StudyStatusService studyStatusService;
 
 	@PostMapping
@@ -36,12 +33,6 @@ public class StudyController {
 													 @RequestParam final String email) {
 		final Study study = studyCreateService.create(request, email);
 		return ResponseEntity.status(HttpStatus.CREATED).body(WriteStudyResponse.from(study));
-	}
-
-	@DeleteMapping("/{studyId}/recruitments")
-	public ResponseEntity<Void> deleteRecruitment(@PathVariable Long studyId) {
-		// recruitmentCreateService.deleteRecruitment(studyId);
-		return ResponseEntity.noContent().build();
 	}
 
 	@PatchMapping("/{studyId}")

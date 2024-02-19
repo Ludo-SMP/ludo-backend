@@ -19,6 +19,7 @@ public class StudyStatusService {
 	public WriteStudyResponse changeStatus(final Long studyId, final StudyStatus status) {
 		final Long updatedId = studyRepository.updateStudyStatus(studyId, status);
 		final Study study = findById(updatedId);
+
 		return WriteStudyResponse.from(study);
 	}
 

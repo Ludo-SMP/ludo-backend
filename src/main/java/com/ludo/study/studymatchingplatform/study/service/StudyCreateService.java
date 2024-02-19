@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import com.ludo.study.studymatchingplatform.study.domain.Category;
 import com.ludo.study.studymatchingplatform.study.domain.Study;
 import com.ludo.study.studymatchingplatform.study.repository.CategoryRepositoryImpl;
-import com.ludo.study.studymatchingplatform.study.repository.ParticipantRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.StudyRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.WriteStudyRequest;
 import com.ludo.study.studymatchingplatform.study.service.exception.AuthenticationException;
@@ -24,7 +23,6 @@ public class StudyCreateService {
 	private final UserRepositoryImpl userRepository;
 	private final StudyRepositoryImpl studyRepository;
 	private final CategoryRepositoryImpl categoryRepository;
-	private final ParticipantRepositoryImpl participantRepository;
 	private final ParticipantService participantService;
 
 	@Transactional

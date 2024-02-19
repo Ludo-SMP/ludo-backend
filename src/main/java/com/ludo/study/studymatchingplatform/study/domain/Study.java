@@ -133,6 +133,15 @@ public class Study extends BaseEntity {
 		}
 	}
 
+	public void ensureRecruitmentDeletable(final User user) {
+		if (owner != user) {
+			throw new IllegalArgumentException("모집 공고를 삭제할 권한이 없습니다.");
+		}
+		if (recruitment == null || recruitment.isDeleted()) {
+			throw new IllegalArgumentException("존재하지 않는 모집 공고입니다.");
+		}
+	}
+
 	public boolean isOwner(final User user) {
 		return owner.equals(user);
 	}
