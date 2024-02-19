@@ -146,4 +146,15 @@ public class RecruitmentService {
 		recruitmentRepository.delete(recruitment);
 	}
 
+	public void activate(final User user, final Long studyId) {
+		final Study study = studyRepository.findByIdWithRecruitment(studyId)
+				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 스터디 입니다."));
+
+		study.ensureRecruitmentDeletable(user);
+
+		final Recruitment recruitment = study.getRecruitment();
+		recruitment.activate();
+		recruitmentRepository.save(recruitment);
+	}
+
 }

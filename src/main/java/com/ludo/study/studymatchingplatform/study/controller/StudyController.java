@@ -39,15 +39,14 @@ public class StudyController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(WriteStudyResponse.from(study));
 	}
 
-	@PatchMapping("/{studyId}")
+	@IsAuthenticated
 	@Transactional
-	public ResponseEntity<WriteStudyResponse> changeStatus(
-			@PathVariable final Long studyId,
-			@RequestParam("status") final StudyStatus status,
-			@AuthUser final User user
-	) {
-		final WriteStudyResponse response = studyStatusService.changeStatus(studyId, status, user);
-		return ResponseEntity.ok(response);
+	@PatchMapping("/{studyId}")
+	public ResponseEntity<WriteStudyResponse> changeStatus(@PathVariable final Long studyId,
+														   @RequestParam("status") final StudyStatus status,
+														   @AuthUser final User user) {
+		final Study study = studyStatusService.changeStatus(studyId, status, user);
+		return ResponseEntity.status(HttpStatus.OK).body(WriteStudyResponse.from(study));
 	}
 
 }

@@ -268,4 +268,5 @@ public class Recruitment extends BaseEntity {
 				.map(RecruitmentStack::getStack)
 				.toList();
 	}
+
 }
