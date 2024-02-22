@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f0278df1-eae9-4f0e-9859-4d5a505b4e46" name="Changes" comment="refactor: checkstyle 전역 적용">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-    </list>
+    <list default="true" id="f0278df1-eae9-4f0e-9859-4d5a505b4e46" name="Changes" comment="refactor: save actions 전역 적용" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -169,7 +167,7 @@
     "project.structure.last.edited": "모듈",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "preferences.sourceCode.Java",
+    "settings.editor.selected.configurable": "actions.on.save",
     "vue.rearranger.settings.migration": "true"
   },
   "keyToStringList": {
@@ -440,7 +438,7 @@
       <workItem from="1708370997828" duration="4960000" />
       <workItem from="1708405303777" duration="44061000" />
       <workItem from="1708593346060" duration="928000" />
-      <workItem from="1708594301507" duration="2021000" />
+      <workItem from="1708594301507" duration="2725000" />
     </task>
     <task id="LOCAL-00001" summary="init: feature/delete_recruitment branch">
       <option name="closed" value="true" />
@@ -745,7 +743,39 @@
       <option name="project" value="LOCAL" />
       <updated>1708596018710</updated>
     </task>
-    <option name="localTasksCounter" value="31" />
+    <task id="LOCAL-00031" summary="refactor: checkstyle 전역 적용">
+      <option name="closed" value="true" />
+      <created>1708596339025</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1708596339025</updated>
+    </task>
+    <task id="LOCAL-00032" summary="refactor: save actions 전역 적용">
+      <option name="closed" value="true" />
+      <created>1708596648559</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1708596648559</updated>
+    </task>
+    <task id="LOCAL-00033" summary="refactor: save actions 전역 적용">
+      <option name="closed" value="true" />
+      <created>1708596792609</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1708596792610</updated>
+    </task>
+    <task id="LOCAL-00034" summary="refactor: save actions 전역 적용">
+      <option name="closed" value="true" />
+      <created>1708596851279</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1708596851279</updated>
+    </task>
+    <option name="localTasksCounter" value="35" />
     <servers>
       <JIRA url="https://studymatchproject.atlassian.net">
         <option name="apiType" value="REST_2_0" />
@@ -782,7 +812,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="SP-213 refactor: 디렉토리 구조 변경&#10;&#10;- Merge conflict 최소화 목적" />
     <MESSAGE value="SP-213 feat: 스터디 생성 사용자 인증" />
     <MESSAGE value="SP-213 refactor: 통합 환경 구성" />
     <MESSAGE value="refactor: 충돌 관리 및 기능 병합" />
@@ -807,7 +836,8 @@
     <MESSAGE value="SP-214 hotfix: 스터디 상태 변경시 모집 중을 제외한 모든 상태에서 모집 공고 비활성화 되도록 수정" />
     <MESSAGE value="hotfix: 로컬 프론트엔드와 백엔드 서버의 서드파티 쿠키 문제 해결&#10;&#10;- 양쪽 서버 https 적용&#10;- 도메인 네임 일치&#10;- 쿠키 설정 변경&#10;  - secure true&#10;  - sameSite None&#10;  - httpOnly true" />
     <MESSAGE value="refactor: checkstyle 전역 적용" />
-    <option name="LAST_COMMIT_MESSAGE" value="refactor: checkstyle 전역 적용" />
+    <MESSAGE value="refactor: save actions 전역 적용" />
+    <option name="LAST_COMMIT_MESSAGE" value="refactor: save actions 전역 적용" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
