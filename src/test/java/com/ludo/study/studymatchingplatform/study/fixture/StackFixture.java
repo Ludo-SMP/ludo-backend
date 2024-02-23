@@ -5,11 +5,16 @@ import com.ludo.study.studymatchingplatform.study.domain.stack.StackCategory;
 
 public class StackFixture {
 
-	public static Stack createStack(String name, StackCategory stackCategory) {
+	private static Stack createStack(String name, StackCategory stackCategory, int companyCount) {
 		return Stack.builder()
 				.name(name)
 				.stackCategory(stackCategory)
+				.companyCount(companyCount)
 				.build();
+	}
+
+	public static Stack createStack(String name, StackCategory stackCategory) {
+		return createStack(name, stackCategory, 0);
 	}
 
 }

@@ -47,6 +47,9 @@ public class Stack extends BaseEntity {
 	@Size(max = 2048)
 	private String imageUrl;
 
+	@Column(nullable = false)
+	private Integer companyCount;
+
 	@OneToMany(mappedBy = "stack", fetch = FetchType.LAZY)
 	@Builder.Default
 	private List<RecruitmentStack> recruitmentStacks = new ArrayList<>();
@@ -56,4 +59,3 @@ public class Stack extends BaseEntity {
 	}
 
 }
-
