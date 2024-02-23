@@ -4,7 +4,8 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,39 +24,38 @@ class StackRepositoryImplTest {
 	@Autowired
 	StackRepositoryImpl stackRepository;
 
-	@Test
+	@ParameterizedTest
+	@CsvSource(value = {"백엔드:spring", "프론트엔드:nextJs", "데이터베이스:mySql", "언어:java", "데브옵스:jenkins"}, delimiter = ':')
 	@Transactional
-	void findAllTest() {
-		// given - 현 비즈니스 요구사항에 부합하는 기술스택 카테고리
-		StackCategory backend = StackCategoryFixture.createStackCategory("백엔드");
-		StackCategory frontend = StackCategoryFixture.createStackCategory("프론트엔드");
-		StackCategory database = StackCategoryFixture.createStackCategory("데이터베이스");
-		StackCategory language = StackCategoryFixture.createStackCategory("언어");
-		StackCategory devops = StackCategoryFixture.createStackCategory("데브옵스");
-		// given - 현 비즈니스 요구사항 이외의 기술스택 카테고리
-		StackCategory data = StackCategoryFixture.createStackCategory("데이터");
-		StackCategory tool = StackCategoryFixture.createStackCategory("협업툴");
-		StackCategory testing = StackCategoryFixture.createStackCategory("테스팅툴");
-		saveAllStackCategory(backend, frontend, database, language, devops, data, tool, testing);
-
-		Stack spring = StackFixture.createStack("spring", backend);
-		Stack nextJs = StackFixture.createStack("nextJs", frontend);
-		Stack mySql = StackFixture.createStack("mySQL", database);
-		Stack java = StackFixture.createStack("java", language);
-		Stack jenkins = StackFixture.createStack("jenkins", devops);
-		Stack airflow = StackFixture.createStack("airflow", data);
-		Stack confluence = StackFixture.createStack("confluence", tool);
-		Stack junit = StackFixture.createStack("junit", testing);
-		saveAllStack(spring, nextJs, mySql, java, jenkins, airflow, confluence, junit);
-
+	void 현재_비즈니스_요구사항에_포함되는_기술스택은_조회를_성공한다(String stackCategoryName, String stackName) {
+		// given
+		StackCategory stackCategory = StackCategoryFixture.createStackCategory(stackCategoryName);
+		Stack stack = StackFixture.createStack(stackName, stackCategory);
+		saveAllStackCategory(stackCategory);
+		saveAllStack(stack);
+		// when
 		List<Stack> stacks = stackRepository.findAll();
+		// then
 		assertThat(stacks)
 				.extracting("name")
-				.contains("spring", "nextJs", "mySQL", "java", "jenkins");
+				.contains(stackName);
+	}
 
+	@ParameterizedTest
+	@CsvSource(value = {"데이터:airflow", "협업툴:confluence", "테스팅툴:junit"}, delimiter = ':')
+	@Transactional
+	void 현재_비즈니스_요구사항에_포함되지_않는_기술스택은_조회하지_않는다(String notIncludedStackCategoryName, String stackName) {
+		// given
+		StackCategory notIncludedStackCategory = StackCategoryFixture.createStackCategory(notIncludedStackCategoryName);
+		Stack stack = StackFixture.createStack(stackName, notIncludedStackCategory);
+		saveAllStackCategory(notIncludedStackCategory);
+		saveAllStack(stack);
+		// when
+		List<Stack> stacks = stackRepository.findAll();
+		// then
 		assertThat(stacks)
 				.extracting("name")
-				.doesNotContain("airflow", "confluence", "junit");
+				.doesNotContain(stackName);
 	}
 
 	private void saveAllStackCategory(StackCategory... stackCategories) {
