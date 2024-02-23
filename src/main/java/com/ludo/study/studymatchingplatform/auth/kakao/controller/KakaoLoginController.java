@@ -1,5 +1,7 @@
 package com.ludo.study.studymatchingplatform.auth.kakao.controller;
 
+import java.io.IOException;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,7 +14,6 @@ import com.ludo.study.studymatchingplatform.auth.common.provider.CookieProvider;
 import com.ludo.study.studymatchingplatform.auth.common.provider.JwtTokenProvider;
 import com.ludo.study.studymatchingplatform.auth.kakao.service.KakaoLoginService;
 import com.ludo.study.studymatchingplatform.auth.naver.repository.InMemoryClientRegistrationAndProviderRepository;
-import com.ludo.study.studymatchingplatform.auth.naver.service.dto.response.LoginResponse;
 import com.ludo.study.studymatchingplatform.user.domain.Social;
 import com.ludo.study.studymatchingplatform.user.domain.User;
 
@@ -43,14 +44,13 @@ public class KakaoLoginController {
 	}
 
 	@GetMapping("/kakao/callback")
-	public ResponseEntity<LoginResponse> kakaoLoginCallback(@RequestParam(name = "code") String authorizationCode,
-															HttpServletResponse response) {
+	public ResponseEntity kakaoLoginCallback(@RequestParam(name = "code") String authorizationCode,
+											 HttpServletResponse response) throws IOException {
 		final User user = kakaoLoginService.login(authorizationCode);
 		final String accessToken = jwtTokenProvider.createAccessToken(AuthUserPayload.from(user));
 		cookieProvider.setAuthCookie(accessToken, response);
-
-		return ResponseEntity.ok()
-				.body(new LoginResponse(user.getId().toString(), user.getNickname(), user.getEmail()));
+		response.sendRedirect("https://local.ludoapi.store:3000");
+		return ResponseEntity.ok("success");
 	}
 
 }

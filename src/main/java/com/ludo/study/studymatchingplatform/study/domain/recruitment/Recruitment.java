@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
+
 import com.ludo.study.studymatchingplatform.common.entity.BaseEntity;
 import com.ludo.study.studymatchingplatform.study.domain.Position;
 import com.ludo.study.studymatchingplatform.study.domain.Study;
@@ -38,8 +41,8 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-// @SQLDelete(sql = "UPDATE recruitment SET deleted_date_time = NOW() WHERE recruitment_id = ?")
-// @SQLRestriction("deleted_date_time is null")
+@SQLDelete(sql = "UPDATE recruitment SET deleted_date_time = NOW() WHERE recruitment_id = ?")
+@SQLRestriction("deleted_date_time is null")
 public class Recruitment extends BaseEntity {
 
 	@Id
@@ -265,4 +268,5 @@ public class Recruitment extends BaseEntity {
 				.map(RecruitmentStack::getStack)
 				.toList();
 	}
+
 }

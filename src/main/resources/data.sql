@@ -64,7 +64,7 @@
 # INSERT INTO recruitment (hits, recruitment_limit, created_date_time, deleted_date_time, recruitment_end_date_time,
 #                          study_id, updated_date_time, call_url, content, title)
 # VALUES (100, 5, '2025-01-20 12:30:00.000000', NULL, '2025-02-10 18:00:00.000000', 1, '2025-01-20 14:45:00.000000',
-#         'https://example.com/call1', 'Content 1', 'Recruitment Title 1'),
+#         'https://example.com/call1', 'Content 1', 'Recruitment Title 1')
 #        (150, 8, '2025-01-21 10:15:00.000000', NULL, '2025-02-15 20:30:00.000000', 2, '2025-01-21 12:20:00.000000',
 #         'https://example.com/call2', 'Content 2', 'Recruitment Title 2'),
 #        (80, 3, '2025-01-22 08:00:00.000000', NULL, '2025-02-08 14:00:00.000000', 3, '2025-01-22 09:45:00.000000',
