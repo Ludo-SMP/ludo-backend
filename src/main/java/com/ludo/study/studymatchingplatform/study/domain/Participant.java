@@ -56,7 +56,8 @@ public class Participant extends BaseEntity {
 	}
 
 	public boolean matchesUser(final User user) {
-		return Objects.equals(this.user.getId(), user.getId());
+		final boolean isMatchesUser = Objects.equals(this.user.getId(), user.getId());
+		return isMatchesUser && !isDeleted();
 	}
 
 	public void leave(final Study study) {
