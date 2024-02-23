@@ -27,6 +27,13 @@ public class StackRepositoryImpl {
 		return stackJpaRepository.findByIdIn(stackIds);
 	}
 
+	public List<Stack> findAll() {
+		return q.selectFrom(stack)
+				.innerJoin(stack.stackCategory, stackCategory)
+				.where(stackCategory.name.in("프론트엔드", "백엔드", "디자이너", "데이터베이스", "데브옵스", "언어"))
+				.fetch();
+	}
+
 	public List<Stack> findAllByIds(final Set<Long> stackIds) {
 		return q.selectFrom(stack)
 				.where(stack.id.in(stackIds))
