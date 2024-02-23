@@ -151,7 +151,6 @@ public class Study extends BaseEntity {
 	public Participant getParticipant(final User user) {
 		return participants.stream()
 				.filter(p -> p.matchesUser(user))
-				.filter(p -> !p.isDeleted())
 				.findFirst()
 				.orElseThrow(() -> new IllegalStateException("현재 참여 중인 스터디원이 아닙니다."));
 	}
