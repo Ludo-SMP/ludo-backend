@@ -6,7 +6,7 @@
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
 
 # User-specific stuff
-#.idea/**/workspace.xml
+.idea/**/workspace.xml
 .idea/**/tasks.xml
 .idea/**/usage.statistics.xml
 .idea/**/dictionaries
@@ -26,8 +26,6 @@
 .idea/**/dynamic.xml
 .idea/**/uiDesigner.xml
 .idea/**/dbnavigator.xml
-.idea/**/.gitignore
-.idea/**/workspace.xml
 
 # Gradle
 .idea/**/gradle.xml
