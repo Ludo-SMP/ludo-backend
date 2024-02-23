@@ -5,6 +5,7 @@ import static jakarta.persistence.FetchType.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import com.ludo.study.studymatchingplatform.common.entity.BaseEntity;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
@@ -134,12 +135,28 @@ public class Study extends BaseEntity {
 	}
 
 	public boolean isOwner(final User user) {
-		return owner.equals(user);
+		return Objects.equals(owner.getId(), user.getId());
+	}
+
+	public boolean isOwner(final Participant participant) {
+		return participant.matchesUser(owner);
 	}
 
 	public void ensureRecruiting() {
 		if (status != StudyStatus.RECRUITING) {
 			throw new IllegalStateException("현재 모집 중인 스터디가 아닙니다.");
 		}
+	}
+
+	public Participant getParticipant(final User user) {
+		return participants.stream()
+				.filter(p -> p.matchesUser(user))
+				.filter(p -> !p.isDeleted())
+				.findFirst()
+				.orElseThrow(() -> new IllegalStateException("현재 참여 중인 스터디원이 아닙니다."));
+	}
+
+	public void removeParticipant(final Participant participant) {
+		participants.removeIf(p -> Objects.equals(p, participant));
 	}
 }

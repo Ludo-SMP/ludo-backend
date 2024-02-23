@@ -12,13 +12,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ludo.study.studymatchingplatform.auth.common.AuthUser;
 import com.ludo.study.studymatchingplatform.study.domain.Study;
 import com.ludo.study.studymatchingplatform.study.domain.StudyStatus;
 import com.ludo.study.studymatchingplatform.study.service.RecruitmentDeleteService;
 import com.ludo.study.studymatchingplatform.study.service.StudyCreateService;
+import com.ludo.study.studymatchingplatform.study.service.StudyService;
 import com.ludo.study.studymatchingplatform.study.service.StudyStatusService;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.WriteStudyRequest;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.WriteStudyResponse;
+import com.ludo.study.studymatchingplatform.user.domain.User;
 
 import lombok.RequiredArgsConstructor;
 
@@ -30,6 +33,7 @@ public class StudyController {
 	private final StudyCreateService studyCreateService;
 	private final RecruitmentDeleteService recruitmentCreateService;
 	private final StudyStatusService studyStatusService;
+	private final StudyService studyService;
 
 	@PostMapping
 	public ResponseEntity<WriteStudyResponse> create(@RequestBody final WriteStudyRequest request,
@@ -52,6 +56,12 @@ public class StudyController {
 	) {
 		final WriteStudyResponse response = studyStatusService.changeStatus(studyId, status);
 		return ResponseEntity.ok(response);
+	}
+
+	@DeleteMapping("/{studyId}/participants")
+	public ResponseEntity<Void> leave(@AuthUser final User user, @PathVariable("studyId") final Long studyId) {
+		studyService.leave(user, studyId);
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
 }
