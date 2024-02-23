@@ -50,16 +50,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response,
 									final FilterChain filterChain) throws ServletException, IOException {
-
-		final Optional<String> authToken = cookieProvider.getAuthToken(request);
-		if (authToken.isEmpty()) {
-			throw new AuthenticationException("Authorization 쿠키가 없습니다.");
+		if (!request.getMethod().equals("OPTIONS")) {
+			final Optional<String> authToken = cookieProvider.getAuthToken(request);
+			if (authToken.isEmpty()) {
+				throw new AuthenticationException("Authorization 쿠키가 없습니다.");
+			}
+			Claims claims = null;
+			try {
+				claims = jwtTokenProvider.verifyAuthTokenOrThrow(authToken.get());
+				final AuthUserPayload payload = AuthUserPayload.from(claims);
+				request.setAttribute(AUTH_USER_PAYLOAD, payload);
+			} catch (final Exception e) {
+				cookieProvider.clearAuthCookie(response);
+				throw e;
+			}
 		}
-
-		final Claims claims = jwtTokenProvider.verifyAuthTokenOrThrow(authToken.get());
-		final AuthUserPayload payload = AuthUserPayload.from(claims);
-		request.setAttribute(AUTH_USER_PAYLOAD, payload);
 
 		filterChain.doFilter(request, response);
 	}
+
 }

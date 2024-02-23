@@ -4,6 +4,8 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 
+import com.ludo.study.studymatchingplatform.common.properties.ClientProperties;
+
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -14,6 +16,8 @@ import lombok.RequiredArgsConstructor;
 public final class CookieProvider {
 
 	private final JwtTokenProvider jwtTokenProvider;
+
+	private final ClientProperties clientProperties;
 	public static final String AUTH_TOKEN_NAME = "Authorization";
 
 	public Optional<String> getAuthToken(final HttpServletRequest request) {
@@ -42,17 +46,26 @@ public final class CookieProvider {
 	}
 
 	public void setAuthCookie(final String accessToken, final HttpServletResponse response) {
-		final Cookie authCookie = createAuthCookie(accessToken);
+		final int maxAge = Integer.parseInt(jwtTokenProvider.getAccessTokenExpiresIn());
+		final Cookie authCookie = createAuthCookie(accessToken, maxAge);
 		response.addCookie(authCookie);
 	}
 
-	public Cookie createAuthCookie(final String accessToken) {
+	public Cookie createAuthCookie(final String accessToken, final int maxAge) {
 		final Cookie cookie = new Cookie(AUTH_TOKEN_NAME, accessToken);
 
+		cookie.setDomain("ludoapi.store");
 		cookie.setPath("/");
-		cookie.setMaxAge(Integer.parseInt(jwtTokenProvider.getAccessTokenExpiresIn()));
 		cookie.setHttpOnly(true);
+		cookie.setSecure(clientProperties.isSecure());
+		cookie.setAttribute("SameSite", "None");
+		cookie.setMaxAge(maxAge);
 
 		return cookie;
+	}
+
+	public void clearAuthCookie(final HttpServletResponse response) {
+		final Cookie authCookie = createAuthCookie("", 0);
+		response.addCookie(authCookie);
 	}
 }
