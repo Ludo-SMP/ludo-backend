@@ -1,6 +1,7 @@
 package com.ludo.study.studymatchingplatform.study.repository;
 
 import static com.ludo.study.studymatchingplatform.study.domain.QStudy.*;
+import static com.ludo.study.studymatchingplatform.study.domain.QParticipant.*;
 import static com.ludo.study.studymatchingplatform.study.domain.recruitment.QRecruitment.*;
 import static com.ludo.study.studymatchingplatform.user.domain.QUser.*;
 
@@ -25,6 +26,15 @@ public class StudyRepositoryImpl {
 
 	public Optional<Study> findById(final Long studyId) {
 		return studyJpaRepository.findById(studyId);
+	}
+
+	public Optional<Study> findByIdWithParticipants(final Long studyId) {
+		return Optional.ofNullable(
+				q.selectFrom(study)
+						.where(study.id.eq(studyId))
+						.leftJoin(study.participants, participant).fetchJoin()
+						.join(study.owner, user).fetchJoin()
+						.fetchFirst();
 	}
 
 	public Optional<Study> findByIdWithRecruitment(final Long id) {

@@ -3,6 +3,7 @@ package com.ludo.study.studymatchingplatform.study.domain;
 import static jakarta.persistence.FetchType.*;
 
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -141,5 +142,14 @@ public class Study extends BaseEntity {
 		if (status != StudyStatus.RECRUITING) {
 			throw new IllegalStateException("현재 모집 중인 스터디가 아닙니다.");
 		}
+	}
+
+	public boolean isParticipating(final User user) {
+		return participants.stream()
+				.anyMatch(p -> p.matchesUser(user));
+	}
+
+	public int getDday() {
+		return Period.between(startDateTime.toLocalDate(), endDateTime.toLocalDate()).getDays();
 	}
 }
