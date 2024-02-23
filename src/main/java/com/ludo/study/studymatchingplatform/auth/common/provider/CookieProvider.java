@@ -54,7 +54,7 @@ public final class CookieProvider {
 	public Cookie createAuthCookie(final String accessToken, final int maxAge) {
 		final Cookie cookie = new Cookie(AUTH_TOKEN_NAME, accessToken);
 
-		cookie.setDomain("ludoapi.store");
+		cookie.setDomain(clientProperties.getDomain());
 		cookie.setPath("/");
 		cookie.setHttpOnly(true);
 		cookie.setSecure(clientProperties.isSecure());
