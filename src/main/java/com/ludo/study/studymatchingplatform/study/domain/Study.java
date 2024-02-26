@@ -130,13 +130,13 @@ public class Study extends BaseEntity {
 	}
 
 	public void ensureStudyEditable(final User user) {
-		if (owner != user) {
+		if (owner.getId() != user.getId()) {
 			throw new IllegalArgumentException("스터디를 수정할 권한이 없습니다.");
 		}
 	}
 
 	public void ensureRecruitmentDeletable(final User user) {
-		if (owner != user) {
+		if (owner.getId() != user.getId()) {
 			throw new IllegalArgumentException("모집 공고를 삭제할 권한이 없습니다.");
 		}
 		if (recruitment == null || recruitment.isDeleted()) {
@@ -145,7 +145,7 @@ public class Study extends BaseEntity {
 	}
 
 	public boolean isOwner(final User user) {
-		return owner.equals(user);
+		return owner.getId().equals(user.getId());
 	}
 
 	public void ensureRecruiting() {
