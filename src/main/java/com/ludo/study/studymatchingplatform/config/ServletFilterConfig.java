@@ -33,6 +33,7 @@ public class ServletFilterConfig {
 		filterRegistrationBean.addUrlPatterns("/test/*");
 		filterRegistrationBean.addUrlPatterns("/studies/{studyId}/recruitments/{recruitmentId}/cancel");
 		filterRegistrationBean.addUrlPatterns("/studies/{studyId}/recruitments/{recruitmentId}/apply");
+		filterRegistrationBean.addUrlPatterns("/users/*");
 	}
 
 }
