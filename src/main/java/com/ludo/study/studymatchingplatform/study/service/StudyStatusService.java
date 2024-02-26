@@ -21,7 +21,7 @@ public class StudyStatusService {
 
 	@Transactional
 	public Study changeStatus(final Long studyId, final StudyStatus status, final User user) {
-		final Study study = studyRepository.findByIdWithRecruitment(studyId)
+		final Study study = studyRepository.findById(studyId)
 				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 스터디 입니다."));
 
 		study.ensureStudyEditable(user);

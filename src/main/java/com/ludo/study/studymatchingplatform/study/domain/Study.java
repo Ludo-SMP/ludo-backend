@@ -130,7 +130,7 @@ public class Study extends BaseEntity {
 	}
 
 	public void ensureStudyEditable(final User user) {
-		if (owner != user) {
+		if (owner != (user)) {
 			throw new IllegalArgumentException("스터디를 수정할 권한이 없습니다.");
 		}
 	}

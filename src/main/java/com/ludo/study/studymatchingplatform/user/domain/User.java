@@ -37,7 +37,7 @@ public class User extends BaseEntity {
 
 	@Column(nullable = false)
 	@Size(min = 1, max = 20)
-	private String nickname;
+	private String nickname; // 부여할 기본 닉네임
 
 	@Column(nullable = false, length = 320)
 	@Email
@@ -50,4 +50,3 @@ public class User extends BaseEntity {
 	}
 
 }
-
