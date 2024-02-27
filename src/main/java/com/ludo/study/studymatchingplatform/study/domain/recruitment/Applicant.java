@@ -99,8 +99,4 @@ public class Applicant extends BaseEntity {
 		}
 	}
 
-	public void accepted() {
-		applicantStatus = ApplicantStatus.ACCEPTED;
-	}
-
 }
