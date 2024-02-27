@@ -11,14 +11,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ludo.study.studymatchingplatform.study.controller.dto.response.BaseApiResponse;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Applicant;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
+import com.ludo.study.studymatchingplatform.study.service.PopularRecruitmentsFindService;
 import com.ludo.study.studymatchingplatform.study.service.RecruitmentDetailsFindService;
 import com.ludo.study.studymatchingplatform.study.service.RecruitmentService;
 import com.ludo.study.studymatchingplatform.study.service.dto.EditRecruitmentRequest;
 import com.ludo.study.studymatchingplatform.study.service.dto.WriteRecruitmentRequest;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.ApplyRecruitmentResponse;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.EditRecruitmentResponse;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.PopularRecruitmentsResponse;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.RecruitmentDetailsResponse;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.WriteRecruitmentResponse;
 
@@ -32,6 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 public class RecruitmentController {
 
 	private final RecruitmentDetailsFindService recruitmentDetailsFindService;
+	private final PopularRecruitmentsFindService popularRecruitmentsFindService;
 
 	private final RecruitmentService recruitmentService;
 
@@ -47,6 +51,13 @@ public class RecruitmentController {
 
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
+	}
+
+	@GetMapping("/popular")
+	public ResponseEntity<BaseApiResponse<PopularRecruitmentsResponse>> readPopularRecruitments() {
+		PopularRecruitmentsResponse popularRecruitments = popularRecruitmentsFindService.findPopularRecruitments();
+
+		return ResponseEntity.ok(BaseApiResponse.success("인기 모집 공고 목록 조회 성공", popularRecruitments));
 	}
 
 	@PostMapping("/")
