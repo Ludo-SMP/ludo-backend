@@ -15,6 +15,7 @@ public record WriteStudyRequest(
 
 		String title,
 		Long categoryId,
+		Long positionId,
 		Way way,
 		Integer participantLimit,
 		LocalDateTime startDateTime,

@@ -13,4 +13,6 @@ public class ParticipantId implements Serializable {
 
 	private Long userId;
 
+	private Long positionId;
+
 }
