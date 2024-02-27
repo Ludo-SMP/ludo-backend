@@ -55,6 +55,10 @@ public class Study extends BaseEntity {
 	@JoinColumn(name = "owner_id", nullable = false)
 	private User owner;
 
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false, columnDefinition = "char(20)")
+	private Platform platform;
+
 	@Column(nullable = false, length = 50)
 	private String title;
 
