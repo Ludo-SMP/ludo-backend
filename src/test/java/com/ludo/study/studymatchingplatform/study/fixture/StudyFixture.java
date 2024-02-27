@@ -40,4 +40,17 @@ public class StudyFixture {
 		);
 	}
 
+	public static Study createStudy(User user, String title, int participantLimit,
+									StudyStatus studyStatus) {
+		return createStudy(
+				studyStatus,
+				title,
+				Way.ONLINE,
+				CategoryFixture.createCategory(CategoryFixture.PROJECT),
+				user,
+				0,
+				participantLimit
+		);
+	}
+
 }
