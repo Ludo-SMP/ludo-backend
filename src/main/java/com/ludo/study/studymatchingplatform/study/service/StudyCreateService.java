@@ -25,7 +25,7 @@ public class StudyCreateService {
 	@Transactional
 	public Study create(final WriteStudyRequest request, final User user) {
 		final Category category = findCategoryById(request.categoryId());
-		final Study study = request.toStudy(user, category);
+		final Study study = request.toStudy(user, category, request.platform());
 		studyRepository.save(study);
 		participantService.add(study, user);
 		return study;
