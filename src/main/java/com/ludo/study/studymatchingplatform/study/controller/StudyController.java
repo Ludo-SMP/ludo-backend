@@ -42,12 +42,6 @@ public class StudyController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(WriteStudyResponse.from(study));
 	}
 
-	@DeleteMapping("/{studyId}/recruitments")
-	public ResponseEntity<Void> deleteRecruitment(@PathVariable Long studyId) {
-		// recruitmentCreateService.deleteRecruitment(studyId);
-		return ResponseEntity.noContent().build();
-	}
-
 	@PatchMapping("/{studyId}")
 	@Transactional
 	public ResponseEntity<WriteStudyResponse> changeStatus(
