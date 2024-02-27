@@ -5,6 +5,7 @@ import static jakarta.persistence.FetchType.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import com.ludo.study.studymatchingplatform.common.entity.BaseEntity;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
@@ -28,12 +29,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import lombok.extern.slf4j.Slf4j;
 
 @Entity
 @Getter
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Slf4j
 public class Study extends BaseEntity {
 
 	@Id
@@ -90,10 +93,6 @@ public class Study extends BaseEntity {
 		this.recruitment.connectToStudy(this);
 	}
 
-	public void changeStatus(final Study study, final StudyStatus status) {
-		study.status = status;
-	}
-
 	public void changeStatus(final StudyStatus status) {
 		this.status = status;
 	}
@@ -142,4 +141,49 @@ public class Study extends BaseEntity {
 			throw new IllegalStateException("현재 모집 중인 스터디가 아닙니다.");
 		}
 	}
+
+	public void acceptApplicant(final User owner, final User applicantUser, final Long recruitmentId) {
+		ensureAcceptApplicant(owner, applicantUser, recruitmentId);
+		accept(applicantUser);
+		if (isMaxParticipantCount()) {
+			changeStatus(StudyStatus.RECRUITED);
+		}
+	}
+
+	private void ensureAcceptApplicant(final User owner, final User applicantUser, final Long recruitmentId) {
+		ensureCorrectOwner(owner);
+		ensureRecruiting();
+		ensureRemainParticipantLimit();
+		ensureCorrectRecruitment(recruitmentId);
+		recruitment.ensureCorrectApplicantUser(applicantUser);
+	}
+
+	private void ensureCorrectOwner(final User owner) {
+		if (!isOwner(owner)) {
+			throw new IllegalStateException(
+					String.format("스터디 장이 아닙니다. 스터디 장 id = %s, 잘못된 id = %s", this.owner, owner));
+		}
+	}
+
+	private void ensureRemainParticipantLimit() {
+		if (Objects.equals(getParticipantCount(), participantLimit)) {
+			throw new IllegalStateException("남아있는 자리가 없습니다.");
+		}
+	}
+
+	private void ensureCorrectRecruitment(final Long recruitmentId) {
+		if (!this.recruitment.isIdEquals(recruitmentId)) {
+			throw new IllegalArgumentException("해당 스터디의 모집공고가 아닙니다.");
+		}
+	}
+
+	private void accept(final User applicantUser) {
+		recruitment.acceptApplicant(applicantUser);
+		addParticipant(Participant.from(this, applicantUser));
+	}
+
+	private boolean isMaxParticipantCount() {
+		return Objects.equals(participantCount, participantLimit);
+	}
+
 }
