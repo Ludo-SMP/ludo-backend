@@ -144,8 +144,7 @@ class RecruitmentControllerTest {
 				.andExpect(jsonPath("$.title").value("recruitment"))
 				.andExpect(jsonPath("$.recruitmentLimit").value(4))
 				.andExpect(jsonPath("$.callUrl").value("x.com"))
-				.andExpect(jsonPath("$.content").value("I want to study"))
-		;
+				.andExpect(jsonPath("$.content").value("I want to study"));
 
 	}
 

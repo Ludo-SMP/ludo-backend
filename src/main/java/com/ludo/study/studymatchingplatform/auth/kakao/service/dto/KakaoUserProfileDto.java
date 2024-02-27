@@ -19,7 +19,7 @@ public record KakaoUserProfileDto(
 
 	public User toUser() {
 		return User.builder()
-				.social(Social.NAVER)
+				.social(Social.KAKAO)
 				.nickname(properties.nickname())
 				.email(kakao_account.email())
 				.build();
