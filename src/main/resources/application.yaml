@@ -64,9 +64,15 @@ jwt:
     secret-key: ${JWT_SECRET_KEY}
     access-token-expiresin: ${JWT_ACCESS_TOKEN_EXPIRES_IN}
 
+client:
+  scheme: http
+  domain: localhost
+  port: 3000
+  url: ${client.scheme}://${client.domain}:${client.port}
+  
 logging.level:
   org.hibernate.SQL: debug
   org.hibernate.type: trace
 
 server:
-  port: 8080
+  port: ${PORT}
