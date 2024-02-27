@@ -150,8 +150,27 @@ public class Study extends BaseEntity {
 		}
 	}
 
+	public void rejectApplicant(final User owner, final User applicantUser, final Long recruitmentId) {
+		ensureRejectApplicant(owner, applicantUser, recruitmentId);
+		recruitment.rejectApplicant(applicantUser);
+	}
+
+	private void ensureRejectApplicant(final User owner, final User applicantUser, final Long recruitmentId) {
+		ensureCorrectOwner(owner);
+		ensureApplicantUserIsNotOwner(owner, applicantUser);
+		ensureCorrectRecruitment(recruitmentId);
+		recruitment.ensureCorrectApplicantUser(applicantUser);
+	}
+
+	private void ensureApplicantUserIsNotOwner(final User owner, final User applicantUser) {
+		if (owner.equals(applicantUser)) {
+			throw new IllegalArgumentException("스터디 장과 지원자가 같습니다.");
+		}
+	}
+
 	private void ensureAcceptApplicant(final User owner, final User applicantUser, final Long recruitmentId) {
 		ensureCorrectOwner(owner);
+		ensureApplicantUserIsNotOwner(owner, applicantUser);
 		ensureRecruiting();
 		ensureRemainParticipantLimit();
 		ensureCorrectRecruitment(recruitmentId);

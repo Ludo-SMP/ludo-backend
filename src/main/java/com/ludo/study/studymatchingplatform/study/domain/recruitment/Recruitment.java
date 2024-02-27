@@ -287,7 +287,12 @@ public class Recruitment extends BaseEntity {
 
 	public void acceptApplicant(final User applicantUser) {
 		final Applicant applicant = getApplicant(applicantUser);
-		applicant.accepted();
+		applicant.changeStatus(ApplicantStatus.ACCEPTED);
+	}
+
+	public void rejectApplicant(final User applicantUser) {
+		final Applicant applicant = getApplicant(applicantUser);
+		applicant.changeStatus(ApplicantStatus.REJECTED);
 	}
 
 	private Applicant getApplicant(final User applicantUser) {
