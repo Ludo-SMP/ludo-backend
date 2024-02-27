@@ -6,10 +6,10 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
 
+import com.ludo.study.studymatchingplatform.study.service.exception.AuthenticationException;
+import com.ludo.study.studymatchingplatform.user.domain.Social;
 import com.ludo.study.studymatchingplatform.user.domain.User;
 import com.ludo.study.studymatchingplatform.user.repository.jpa.UserJpaRepositoryImpl;
-
-import com.ludo.study.studymatchingplatform.user.domain.Social;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
@@ -49,4 +49,12 @@ public class UserRepositoryImpl {
 						.fetchOne());
 	}
 
+	public Optional<User> findById(final Long id) {
+		return userJpaRepository.findById(id);
+	}
+
+	public User getById(final Long id) {
+		return userJpaRepository.findById(id)
+				.orElseThrow(() -> new AuthenticationException("로그인 되지 않은 사용자입니다."));
+	}
 }

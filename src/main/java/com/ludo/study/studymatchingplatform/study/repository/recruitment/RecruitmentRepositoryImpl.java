@@ -31,7 +31,8 @@ public class RecruitmentRepositoryImpl {
 	public Optional<Recruitment> findByIdWithStudy(final Long id) {
 		return Optional.ofNullable(
 				q.selectFrom(recruitment)
-						.leftJoin(recruitment.study).fetchJoin()
+						.join(recruitment.study, study).fetchJoin()
+						// .innerJoin(recruitment.applicants, applicant).fetchJoin()
 						.where(recruitment.id.eq(id))
 						.fetchOne()
 		);

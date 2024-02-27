@@ -3,6 +3,8 @@ package com.ludo.study.studymatchingplatform.study.domain.recruitment;
 import static jakarta.persistence.FetchType.*;
 
 import com.ludo.study.studymatchingplatform.common.entity.BaseEntity;
+import com.ludo.study.studymatchingplatform.study.domain.Position;
+import com.ludo.study.studymatchingplatform.study.domain.StudyStatus;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.id.ApplicantId;
 import com.ludo.study.studymatchingplatform.user.domain.User;
 
@@ -14,7 +16,6 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
-import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,7 +34,7 @@ public class Applicant extends BaseEntity {
 	@Builder.Default
 	private ApplicantId id = new ApplicantId();
 
-	@OneToOne(fetch = LAZY)
+	@ManyToOne(fetch = LAZY)
 	@MapsId("userId")
 	@JoinColumn(name = "user_id")
 	private User user;
@@ -43,6 +44,11 @@ public class Applicant extends BaseEntity {
 	@JoinColumn(name = "recruitment_id")
 	private Recruitment recruitment;
 
+	@ManyToOne
+	@MapsId("positionId")
+	@JoinColumn(name = "position_id")
+	private Position position;
+
 	@Enumerated(EnumType.STRING)
 	@Column(name = "status", nullable = false, columnDefinition = "char(10)")
 	private ApplicantStatus applicantStatus;
@@ -51,15 +57,50 @@ public class Applicant extends BaseEntity {
 		return Applicant.builder()
 				.recruitment(recruitment)
 				.user(user)
+				.applicantStatus(ApplicantStatus.UNCHECKED)
 				.build();
 	}
 
-	public void applyOrThrow() {
+	public void ensureApplicable() {
 		if (recruitment.isOwner(user)) {
 			throw new IllegalArgumentException("스터디장은 자신의 스터디에 지원할 수 없습니다.");
 		}
-		applicantStatus.ensureReapplicable();
+		if (applicantStatus == ApplicantStatus.REJECTED) {
+			throw new IllegalArgumentException("이미 거절된 모집 공고입니다.");
+		}
+		if (applicantStatus == ApplicantStatus.ACCEPTED) {
+			throw new IllegalArgumentException("이미 수락된 모집 공고입니다.");
+		}
+		if (applicantStatus == ApplicantStatus.UNCHECKED) {
+			throw new IllegalArgumentException("이미 지원한 모집 공고입니다.");
+		}
+	}
+
+	public void apply() {
 		applicantStatus = ApplicantStatus.UNCHECKED;
 	}
 
+	public void connectToRecruitment(final Recruitment recruitment) {
+		this.recruitment = recruitment;
+	}
+
+	public void changeStatus(final ApplicantStatus applicantStatus) {
+		this.applicantStatus = applicantStatus;
+	}
+
+	public void reapply() {
+		applicantStatus = ApplicantStatus.UNCHECKED;
+	}
+
+	public void ensureCancellable(final StudyStatus studyStatus) {
+		if (studyStatus != StudyStatus.RECRUITING) {
+			throw new IllegalStateException("이미 모집이 종료된 공고입니다.");
+		}
+		if (applicantStatus == ApplicantStatus.REJECTED) {
+			throw new IllegalStateException("이미 거절된 모집 공고입니다.");
+		}
+		if (applicantStatus == ApplicantStatus.CANCELLED) {
+			throw new IllegalStateException("이미 지원 취소된 모집 공고입니다.");
+		}
+	}
 }

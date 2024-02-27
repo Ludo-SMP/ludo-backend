@@ -1,6 +1,7 @@
 package com.ludo.study.studymatchingplatform.study.service;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.stereotype.Service;
 
@@ -18,16 +19,16 @@ public class RecruitmentPositionService {
 	private final PositionService positionService;
 	private final RecruitmentPositionRepositoryImpl recruitmentPositionRepository;
 
-	public List<RecruitmentPosition> createMany(final Recruitment recruitment, final List<Long> positionIds) {
+	public void addMany(final Recruitment recruitment, final Set<Long> positionIds) {
 		final List<Position> positions = positionService.findAllByIdsOrThrow(positionIds);
 
 		final List<RecruitmentPosition> recruitmentPositions = positions.stream()
 				.map(position -> RecruitmentPosition.from(recruitment, position))
 				.toList();
 
-		return recruitmentPositionRepository.saveAll(recruitmentPositions);
+		recruitment.addRecruitmentPositions(recruitmentPositionRepository.saveAll(recruitmentPositions));
 	}
 
-	public void update(Recruitment recruitment, List<Long> positionIds) {
+	public void update(Recruitment recruitment, Set<Long> positionIds) {
 	}
 }

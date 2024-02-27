@@ -14,6 +14,7 @@ import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -27,6 +28,7 @@ import lombok.experimental.SuperBuilder;
 public class RecruitmentStack extends BaseEntity {
 
 	@EmbeddedId
+	@Builder.Default
 	private RecruitmentStackId id = new RecruitmentStackId();
 
 	@ManyToOne(fetch = LAZY)
@@ -49,4 +51,16 @@ public class RecruitmentStack extends BaseEntity {
 
 		return recruitmentStack;
 	}
+
+	public void registerRecruitmentAndStack(final Recruitment recruitment, final Stack stack) {
+		if (this.recruitment == null) {
+			this.recruitment = recruitment;
+		}
+		if (this.stack == null) {
+			this.stack = stack;
+		}
+		this.recruitment.addRecruitmentStack(this);
+		this.stack.addRecruitmentStack(this);
+	}
+
 }

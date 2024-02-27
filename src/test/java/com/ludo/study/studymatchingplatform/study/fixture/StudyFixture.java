@@ -26,4 +26,18 @@ public class StudyFixture {
 				.build();
 	}
 
+	public static Study createStudy(String title, Category category, User user,
+									int participantLimit
+	) {
+		return createStudy(
+				StudyStatus.RECRUITING,
+				title,
+				Way.ONLINE,
+				category,
+				user,
+				0,
+				participantLimit
+		);
+	}
+
 }

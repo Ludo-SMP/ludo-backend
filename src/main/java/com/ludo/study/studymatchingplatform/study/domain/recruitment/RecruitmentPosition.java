@@ -14,6 +14,7 @@ import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -27,7 +28,8 @@ import lombok.experimental.SuperBuilder;
 public class RecruitmentPosition extends BaseEntity {
 
 	@EmbeddedId
-	private RecruitmentPositionId id;
+	@Builder.Default
+	private RecruitmentPositionId id = new RecruitmentPositionId();
 
 	@ManyToOne(fetch = LAZY)
 	@MapsId("recruitmentId")
@@ -49,4 +51,10 @@ public class RecruitmentPosition extends BaseEntity {
 
 		return recruitmentPosition;
 	}
+
+	public void registerRecruitment(final Recruitment recruitment) {
+		this.recruitment = recruitment;
+		this.recruitment.addPosition(this);
+	}
+
 }

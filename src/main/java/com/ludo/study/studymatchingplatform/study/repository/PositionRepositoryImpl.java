@@ -20,14 +20,23 @@ public class PositionRepositoryImpl {
 
 	private final PositionJpaRepository positionJpaRepository;
 
-	public Set<Position> findByIdIn(final List<Long> positionIds) {
+	public Set<Position> findByIdIn(final Set<Long> positionIds) {
 		return positionJpaRepository.findByIdIn(positionIds);
 	}
 
-	public List<Position> findAllByIds(final List<Long> ids) {
+	public List<Position> findAllByIds(final Set<Long> ids) {
 		return q.selectFrom(position)
 				.where(position.id.in(ids))
 				.fetch();
 	}
 
+	public Position findById(final Long id) {
+		return q.selectFrom(position)
+				.where(position.id.eq(id))
+				.fetchOne();
+	}
+
+	public Position save(final Position position) {
+		return positionJpaRepository.save(position);
+	}
 }

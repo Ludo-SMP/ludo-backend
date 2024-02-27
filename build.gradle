@@ -25,11 +25,15 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
     compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'com.mysql:mysql-connector-j'
-    annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
 
     //Querydsl 추가
     implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
@@ -45,7 +49,13 @@ dependencies {
 
     // spring dotenv (for inject environment variables into spring config file - application.yaml)
     implementation 'me.paulschwarz:spring-dotenv:4.0.0'
+
+    // springdoc-openapi (Swagger 사용)
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0'
+
+    implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.5.7'
 }
+
 
 tasks.named('test') {
     useJUnitPlatform()
