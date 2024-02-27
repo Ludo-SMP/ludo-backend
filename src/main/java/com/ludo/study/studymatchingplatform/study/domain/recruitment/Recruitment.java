@@ -273,7 +273,7 @@ public class Recruitment extends BaseEntity {
 				.map(RecruitmentStack::getStack)
 				.toList();
 	}
-
+  
 	public void ensureCorrectApplicantUser(final User applicantUser) {
 		if (!containsApplicantUser(applicantUser)) {
 			throw new IllegalStateException("지원자 목록에 존재하지 않는 사용자입니다.");
@@ -307,5 +307,5 @@ public class Recruitment extends BaseEntity {
 	public boolean isIdEquals(final Long recruitmentId) {
 		return Objects.equals(this.id, recruitmentId);
 	}
-
+  
 }

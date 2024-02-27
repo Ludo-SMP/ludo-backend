@@ -19,4 +19,6 @@ public class ApplicantId implements Serializable {
 
 	private Long userId;
 
+	private Long positionId;
+
 }

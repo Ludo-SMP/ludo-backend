@@ -2,6 +2,7 @@ package com.ludo.study.studymatchingplatform.study.repository.recruitment;
 
 import static com.ludo.study.studymatchingplatform.study.domain.recruitment.QApplicant.*;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
@@ -30,6 +31,13 @@ public class ApplicantRepositoryImpl {
 						.where(applicant.user.id.eq(userId))
 						.where(applicant.deletedDateTime.isNull())
 						.fetchOne()
+  }
+
+	public Optional<List<Applicant>> findByUserId(final Long id) {
+		return Optional.ofNullable(
+				q.selectFrom(applicant)
+						.where(applicant.user.id.eq(id))
+						.fetch()
 		);
 	}
 

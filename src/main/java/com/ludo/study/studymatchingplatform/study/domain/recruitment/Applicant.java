@@ -3,6 +3,7 @@ package com.ludo.study.studymatchingplatform.study.domain.recruitment;
 import static jakarta.persistence.FetchType.*;
 
 import com.ludo.study.studymatchingplatform.common.entity.BaseEntity;
+import com.ludo.study.studymatchingplatform.study.domain.Position;
 import com.ludo.study.studymatchingplatform.study.domain.StudyStatus;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.id.ApplicantId;
 import com.ludo.study.studymatchingplatform.user.domain.User;
@@ -42,6 +43,11 @@ public class Applicant extends BaseEntity {
 	@MapsId("recruitmentId")
 	@JoinColumn(name = "recruitment_id")
 	private Recruitment recruitment;
+
+	@ManyToOne
+	@MapsId("positionId")
+	@JoinColumn(name = "position_id")
+	private Position position;
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "status", nullable = false, columnDefinition = "char(10)")

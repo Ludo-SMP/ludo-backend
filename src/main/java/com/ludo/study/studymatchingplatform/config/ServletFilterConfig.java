@@ -29,10 +29,13 @@ public class ServletFilterConfig {
 	}
 
 	private void addAuthenticationEndpoints(FilterRegistrationBean<Filter> filterRegistrationBean) {
+		filterRegistrationBean.addUrlPatterns("/users/me");
+		filterRegistrationBean.addUrlPatterns("/users/me/*");
 		filterRegistrationBean.addUrlPatterns("/studies/*");
 		filterRegistrationBean.addUrlPatterns("/test/*");
 		filterRegistrationBean.addUrlPatterns("/studies/{studyId}/recruitments/{recruitmentId}/cancel");
 		filterRegistrationBean.addUrlPatterns("/studies/{studyId}/recruitments/{recruitmentId}/apply");
+		filterRegistrationBean.addUrlPatterns("/users/*");
 	}
 
 }

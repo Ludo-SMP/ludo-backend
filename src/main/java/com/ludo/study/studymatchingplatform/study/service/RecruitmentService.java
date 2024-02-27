@@ -98,7 +98,7 @@ public class RecruitmentService {
 
 	public Applicant apply(final User user, final long recruitmentId) {
 		final Recruitment recruitment = recruitmentRepository.findByIdWithStudy(recruitmentId)
-				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 모집 공고입니다."));
+				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 스터디 입니다."));
 		recruitment.ensureRecruiting();
 
 		final Optional<Applicant> applicant = recruitment.findApplicant(user);
@@ -133,6 +133,17 @@ public class RecruitmentService {
 		applicant.changeStatus(ApplicantStatus.CANCELLED);
 
 		return applicant;
+	}
+
+	public void delete(final User user, final Long studyId) {
+		final Study study = studyRepository.findByIdWithRecruitment(studyId)
+				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 스터디 입니다."));
+
+		study.ensureRecruitmentDeletable(user);
+
+		final Recruitment recruitment = study.getRecruitment();
+
+		recruitmentRepository.delete(recruitment);
 	}
 
 }
