@@ -56,9 +56,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 				throw new AuthenticationException("Authorization 쿠키가 없습니다.");
 			}
 
-			final Claims claims = jwtTokenProvider.verifyAuthTokenOrThrow(authToken.get());
-			final AuthUserPayload payload = AuthUserPayload.from(claims);
-			request.setAttribute(AUTH_USER_PAYLOAD, payload);
+			Claims claims = null;
+			try {
+				claims = jwtTokenProvider.verifyAuthTokenOrThrow(authToken.get());
+				final AuthUserPayload payload = AuthUserPayload.from(claims);
+				request.setAttribute(AUTH_USER_PAYLOAD, payload);
+			} catch (final Exception e) {
+				cookieProvider.clearAuthCookie(response);
+				throw e;
+			}
+      
 		}
 
 		filterChain.doFilter(request, response);

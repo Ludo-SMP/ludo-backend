@@ -2,6 +2,8 @@ package com.ludo.study.studymatchingplatform.study.domain;
 
 import static jakarta.persistence.FetchType.*;
 
+import java.util.Objects;
+
 import com.ludo.study.studymatchingplatform.common.entity.BaseEntity;
 import com.ludo.study.studymatchingplatform.study.domain.id.ParticipantId;
 import com.ludo.study.studymatchingplatform.user.domain.User;
@@ -58,4 +60,22 @@ public class Participant extends BaseEntity {
 		return participant;
 	}
 
+	public String getRole() {
+		// TODO: Role spec not determined clearly
+		if (study.isOwner(this)) {
+			return "Owner";
+		}
+		return "Participant";
+
+	public boolean matchesUser(final User user) {
+		final boolean isMatchesUser = Objects.equals(this.user.getId(), user.getId());
+		return isMatchesUser && !isDeleted();
+	}
+
+	public void leave(final Study study) {
+		study.removeParticipant(this);
+		this.study = null;
+		this.softDelete();
+
+	}
 }
