@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import com.ludo.study.studymatchingplatform.common.entity.BaseEntity;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
@@ -91,10 +92,6 @@ public class Study extends BaseEntity {
 		this.recruitment.connectToStudy(this);
 	}
 
-	public void changeStatus(final Study study, final StudyStatus status) {
-		study.status = status;
-	}
-
 	public void changeStatus(final StudyStatus status) {
 		this.status = status;
 	}
@@ -134,8 +131,27 @@ public class Study extends BaseEntity {
 		}
 	}
 
+	public void ensureStudyEditable(final User user) {
+		if (owner != user) {
+			throw new IllegalArgumentException("스터디를 수정할 권한이 없습니다.");
+		}
+	}
+
+	public void ensureRecruitmentDeletable(final User user) {
+		if (owner != user) {
+			throw new IllegalArgumentException("모집 공고를 삭제할 권한이 없습니다.");
+		}
+		if (recruitment == null || recruitment.isDeleted()) {
+			throw new IllegalArgumentException("존재하지 않는 모집 공고입니다.");
+		}
+	}
+
 	public boolean isOwner(final User user) {
-		return owner.equals(user);
+		return Objects.equals(owner.getId(), user.getId());
+	}
+
+	public boolean isOwner(final Participant participant) {
+		return participant.matchesUser(owner);
 	}
 
 	public void ensureRecruiting() {
@@ -152,4 +168,22 @@ public class Study extends BaseEntity {
 	public int getDday() {
 		return Period.between(startDateTime.toLocalDate(), endDateTime.toLocalDate()).getDays();
 	}
+
+	public Participant getParticipant(final User user) {
+		return participants.stream()
+				.filter(p -> p.matchesUser(user))
+				.findFirst()
+				.orElseThrow(() -> new IllegalStateException("현재 참여 중인 스터디원이 아닙니다."));
+	}
+
+	public void removeParticipant(final Participant participant) {
+		participants.removeIf(p -> Objects.equals(p, participant));
+	}
+
+	public void edit(final StudyStatus status) {
+		if (status != null) {
+			this.status = status;
+		}
+	}
+
 }

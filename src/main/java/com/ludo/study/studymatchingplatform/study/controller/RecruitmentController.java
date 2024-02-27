@@ -3,6 +3,7 @@ package com.ludo.study.studymatchingplatform.study.controller;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,6 +22,7 @@ import com.ludo.study.studymatchingplatform.study.service.RecruitmentService;
 import com.ludo.study.studymatchingplatform.study.service.dto.EditRecruitmentRequest;
 import com.ludo.study.studymatchingplatform.study.service.dto.WriteRecruitmentRequest;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.ApplyRecruitmentResponse;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.DeleteRecruitmentResponse;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.EditRecruitmentResponse;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.RecruitmentDetailsResponse;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.WriteRecruitmentResponse;
@@ -85,6 +87,14 @@ public class RecruitmentController {
 		final Applicant applicant = recruitmentService.apply(null, recruitmentId);
 
 		return ResponseEntity.status(HttpStatus.CREATED).body(ApplyRecruitmentResponse.from(applicant));
+	}
+
+	@DeleteMapping("/studies/{studyId}/recruitments")
+	public ResponseEntity<DeleteRecruitmentResponse> delete(@PathVariable Long studyId, @AuthUser final User user) {
+		recruitmentService.delete(user, studyId);
+		return ResponseEntity.status(HttpStatus.OK).body(
+				DeleteRecruitmentResponse.from("모집 공고가 비활성화 되었습니다.")
+		);
 	}
 
 }
