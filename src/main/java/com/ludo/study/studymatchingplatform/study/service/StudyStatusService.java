@@ -30,7 +30,7 @@ public class StudyStatusService {
 		if (studyRepository.hasRecruitment(studyId) && status != StudyStatus.RECRUITING) {
 			recruitmentService.delete(user, studyId);
 		}
-		return study;
+		return studyRepository.save(study);
 	}
 
 }

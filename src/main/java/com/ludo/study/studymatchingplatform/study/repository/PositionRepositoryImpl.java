@@ -30,6 +30,12 @@ public class PositionRepositoryImpl {
 				.fetch();
 	}
 
+	public Position findById(final Long id) {
+		return q.selectFrom(position)
+				.where(position.id.eq(id))
+				.fetchOne();
+	}
+
 	public Position save(final Position position) {
 		return positionJpaRepository.save(position);
 	}
