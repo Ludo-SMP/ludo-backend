@@ -13,9 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ludo.study.studymatchingplatform.auth.common.AuthUser;
 import com.ludo.study.studymatchingplatform.auth.common.IsAuthenticated;
+
 import com.ludo.study.studymatchingplatform.study.domain.Study;
 import com.ludo.study.studymatchingplatform.study.domain.StudyStatus;
 import com.ludo.study.studymatchingplatform.study.service.StudyCreateService;
+import com.ludo.study.studymatchingplatform.study.service.StudyService;
 import com.ludo.study.studymatchingplatform.study.service.StudyStatusService;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.WriteStudyRequest;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.WriteStudyResponse;
@@ -30,6 +32,7 @@ public class StudyController {
 
 	private final StudyCreateService studyCreateService;
 	private final StudyStatusService studyStatusService;
+	private final StudyService studyService;
 
 	@IsAuthenticated
 	@PostMapping
@@ -47,6 +50,12 @@ public class StudyController {
 														   @AuthUser final User user) {
 		final Study study = studyStatusService.changeStatus(studyId, status, user);
 		return ResponseEntity.status(HttpStatus.OK).body(WriteStudyResponse.from(study));
+	}
+
+	@DeleteMapping("/{studyId}/participants")
+	public ResponseEntity<Void> leave(@AuthUser final User user, @PathVariable("studyId") final Long studyId) {
+		studyService.leave(user, studyId);
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
 }
