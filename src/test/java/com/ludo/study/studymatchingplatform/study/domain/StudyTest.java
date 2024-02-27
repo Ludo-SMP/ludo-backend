@@ -20,7 +20,7 @@ import com.ludo.study.studymatchingplatform.user.domain.User;
 class StudyTest {
 
 	@Nested
-	@DisplayName("유저 스토리: 스터디장은 지원자를 수락/거절 할 수 있어야 한다.")
+	@DisplayName("유저 스토리: 스터디장은 지원자를 수락할 수 있어야 한다")
 	class AcceptApplicantTest {
 		@Test
 		@DisplayName("[Exception] 스터디 장이 아닌 경우 예외 발생")
@@ -111,7 +111,20 @@ class StudyTest {
 		}
 
 		@Test
-		@DisplayName("[Success] 예외 검증 조건을 통과하면 지원자를 수락한다")
+		@DisplayName("[Exception] 스터디 장과 지원자가 같은 경우 예외 발생")
+		void equalsOwnerAndApplicantUser() {
+			// given
+			User owner = UserFixture.createUser(Social.NAVER, "archa", "archa@gmail.com");
+			Study study = StudyFixture.createStudy(owner, "스터디 A", 5, StudyStatus.RECRUITING);
+			Recruitment recruitment = RecruitmentFixture.createRecruitment(study, "모집공고", "내용", 5, null, null);
+
+			// when then
+			assertThatThrownBy(() -> study.acceptApplicant(owner, owner, recruitment.getId()))
+					.hasMessage("스터디 장과 지원자가 같습니다.");
+		}
+
+		@Test
+		@DisplayName("[Success] 예외 검증 조건을 통과하면 지원자 수락")
 		void success() {
 			// given
 			User owner = UserFixture.createUser(Social.NAVER, "archa", "archa@gmail.com");
@@ -166,6 +179,98 @@ class StudyTest {
 
 			// then
 			assertThatThrownBy(study::ensureRecruiting).hasMessage("현재 모집 중인 스터디가 아닙니다.");
+		}
+	}
+
+	@Nested
+	@DisplayName("유저스토리: 스터디장은 지원자를 거절할 수 있어야 한다")
+	class RejectApplicantTest {
+		@Test
+		@DisplayName("[Exception] 스터디 장이 아닌 경우 예외 발생")
+		void notStudyOwner() {
+			// given
+			User owner = UserFixture.createUser(Social.NAVER, "archa", "archa@naver.com");
+			User notOwner = UserFixture.createUser(Social.NAVER, "anonymous", "anonymous@naver.com");
+			User applicant = UserFixture.createUser(Social.NAVER, "applicant", "applicant@naver.com");
+
+			Study study = StudyFixture.createStudy(owner, "스터디 A", 5, StudyStatus.RECRUITING);
+			Recruitment recruitment = RecruitmentFixture.createRecruitment(study, "모집공고", "내용", 0, null, null);
+
+			// when then
+			assertThatThrownBy(() -> study.rejectApplicant(notOwner, applicant, recruitment.getId()))
+					.hasMessageContaining("스터디 장이 아닙니다.");
+		}
+
+		@Test
+		@DisplayName("[Exception] 다른 스터디 모집공고로 지원한 경우 예외 발생")
+		void otherRecruitment() {
+			// given
+			long otherRecruitmentId = 100;
+			User owner = UserFixture.createUser(Social.NAVER, "archa", "archa@naver.com");
+			User applicantUser = UserFixture.createUser(Social.NAVER, "applicant", "applicant@naver.com");
+
+			Study ownerStudy = StudyFixture.createStudy(owner, "스터디 A", 5, StudyStatus.RECRUITING);
+
+			Recruitment ownerStudyRecruitment = RecruitmentFixture.createRecruitment(ownerStudy, "모집공고", "내용", 0, null,
+					null);
+			ownerStudy.registerRecruitment(ownerStudyRecruitment);
+
+			// when, then
+			assertThatThrownBy(() -> ownerStudy.rejectApplicant(owner, applicantUser, otherRecruitmentId))
+					.hasMessage("해당 스터디의 모집공고가 아닙니다.");
+		}
+
+		@Test
+		@DisplayName("[Exception] 지원하지 않은 지원자의 경우 예외 발생")
+		void wrongApplicant() {
+			// given
+			User owner = UserFixture.createUser(Social.NAVER, "archa", "archa@gmail.com");
+			Study study = StudyFixture.createStudy(owner, "스터디 A", 5, StudyStatus.RECRUITING);
+			Recruitment recruitment = RecruitmentFixture.createRecruitment(study, "모집공고", "내용", 5, null, null);
+			study.registerRecruitment(recruitment);
+			User notApplicantUser = UserFixture.createUser(Social.NAVER, "other", "other@gmail.com");
+
+			// when then
+			assertThatThrownBy(() -> study.acceptApplicant(owner, notApplicantUser, recruitment.getId()))
+					.hasMessage("지원자 목록에 존재하지 않는 사용자입니다.");
+		}
+
+		@Test
+		@DisplayName("[Exception] 스터디 장과 지원자가 같은 경우 예외 발생")
+		void equalsOwnerAndApplicantUser() {
+			// given
+			User owner = UserFixture.createUser(Social.NAVER, "archa", "archa@gmail.com");
+			Study study = StudyFixture.createStudy(owner, "스터디 A", 5, StudyStatus.RECRUITING);
+			Recruitment recruitment = RecruitmentFixture.createRecruitment(study, "모집공고", "내용", 5, null, null);
+
+			// when then
+			assertThatThrownBy(() -> study.rejectApplicant(owner, owner, recruitment.getId()))
+					.hasMessage("스터디 장과 지원자가 같습니다.");
+		}
+
+		@Test
+		@DisplayName("[Success] 예외 검증 조건을 통과하면 지원자를 거절한다")
+		void success() {
+			// given
+			User owner = UserFixture.createUser(Social.NAVER, "archa", "archa@gmail.com");
+			Study study = StudyFixture.createStudy(owner, "스터디 A", 5, StudyStatus.RECRUITING);
+			Recruitment recruitment = RecruitmentFixture.createRecruitment(study, "모집공고", "내용", 5, null, null);
+
+			study.registerRecruitment(recruitment);
+
+			// when
+			User applicantUser = UserFixture.createUser(Social.NAVER, "other", "other@gmail.com");
+			Applicant applicant = Applicant.of(recruitment, applicantUser);
+			recruitment.addApplicant(applicant);
+			assertThat(recruitment.getApplicants()).isNotEmpty();
+			assertThat(recruitment.getApplicants().get(0).getApplicantStatus()).isEqualTo(ApplicantStatus.UNCHECKED);
+
+			// then
+			assertThatCode(() -> study.rejectApplicant(owner, applicantUser, recruitment.getId()))
+					.doesNotThrowAnyException();
+			assertThat(study.getParticipants()).isEmpty();
+			assertThat(recruitment.getApplicants()).isNotEmpty();
+			assertThat(recruitment.getApplicants().get(0).getApplicantStatus()).isEqualTo(ApplicantStatus.REJECTED);
 		}
 	}
 
