@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ludo.study.studymatchingplatform.study.domain.Category;
+import com.ludo.study.studymatchingplatform.study.domain.Platform;
 import com.ludo.study.studymatchingplatform.study.domain.Position;
 import com.ludo.study.studymatchingplatform.study.domain.Study;
 import com.ludo.study.studymatchingplatform.study.domain.StudyStatus;
@@ -32,8 +33,9 @@ import com.ludo.study.studymatchingplatform.study.repository.StudyRepositoryImpl
 import com.ludo.study.studymatchingplatform.study.repository.recruitment.RecruitmentRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.stack.StackCategoryRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.stack.StackRepositoryImpl;
-import com.ludo.study.studymatchingplatform.study.service.dto.EditRecruitmentRequest;
-import com.ludo.study.studymatchingplatform.study.service.dto.WriteRecruitmentRequest;
+import com.ludo.study.studymatchingplatform.study.service.dto.request.ApplyRecruitmentRequest;
+import com.ludo.study.studymatchingplatform.study.service.dto.request.EditRecruitmentRequest;
+import com.ludo.study.studymatchingplatform.study.service.dto.request.WriteRecruitmentRequest;
 import com.ludo.study.studymatchingplatform.user.domain.Social;
 import com.ludo.study.studymatchingplatform.user.domain.User;
 import com.ludo.study.studymatchingplatform.user.repository.UserRepositoryImpl;
@@ -66,6 +68,16 @@ class RecruitmentServiceTestBakup {
 	@Autowired
 	private RecruitmentService recruitmentService;
 
+	Position createPosition() {
+		return PositionFixture.createPosition("position");
+	}
+
+	ApplyRecruitmentRequest createRequest() {
+		return ApplyRecruitmentRequest.builder()
+				.positionId(1L)
+				.build();
+	}
+
 	@DisplayName("스터디장은 모집 공고를 작성할 수 있다")
 	@Test
 	void writeRecruitment() {
@@ -86,7 +98,8 @@ class RecruitmentServiceTestBakup {
 						"study",
 						category,
 						owner,
-						4
+						4,
+						Platform.GATHER
 				)
 		);
 		final StackCategory stackCategory = stackCategoryRepository.save(
@@ -147,7 +160,8 @@ class RecruitmentServiceTestBakup {
 						"study",
 						category,
 						owner,
-						4
+						4,
+						Platform.GATHER
 				)
 		);
 		final StackCategory stackCategory = stackCategoryRepository.save(
@@ -199,7 +213,8 @@ class RecruitmentServiceTestBakup {
 						"study",
 						category,
 						owner,
-						4
+						4,
+						Platform.GATHER
 				)
 		);
 		final StackCategory stackCategory = stackCategoryRepository.save(
@@ -305,7 +320,8 @@ class RecruitmentServiceTestBakup {
 						"study",
 						category,
 						owner,
-						4
+						4,
+						Platform.GATHER
 				)
 		);
 		final Recruitment recruitment = recruitmentRepository.save(
@@ -319,8 +335,12 @@ class RecruitmentServiceTestBakup {
 		);
 		study.registerRecruitment(recruitment);
 
+		// 포지션 생성
+		final Position position1 = createPosition();
+		final ApplyRecruitmentRequest request = createRequest();
+
 		// when
-		final Applicant applicant = recruitmentService.apply(applier, recruitment.getId());
+		final Applicant applicant = recruitmentService.apply(applier, recruitment.getId(), request);
 
 		// then
 		assertThat(applicant.getUser()).isEqualTo(applier);
@@ -354,7 +374,8 @@ class RecruitmentServiceTestBakup {
 						"study",
 						category,
 						owner,
-						4
+						4,
+						Platform.GATHER
 				)
 		);
 		final Recruitment recruitment = recruitmentRepository.save(
@@ -366,12 +387,17 @@ class RecruitmentServiceTestBakup {
 						LocalDateTime.now().plusDays(5)
 				)
 		);
+
+		// 포지션 생성
+		final Position position1 = createPosition();
+		final ApplyRecruitmentRequest request = createRequest();
+
 		study.registerRecruitment(recruitment);
-		recruitmentService.apply(applier, recruitment.getId());
+		recruitmentService.apply(applier, recruitment.getId(), request);
 
 		// when
 		// then
-		assertThatThrownBy(() -> recruitmentService.apply(applier, recruitment.getId()))
+		assertThatThrownBy(() -> recruitmentService.apply(applier, recruitment.getId(), request))
 				.isInstanceOf(IllegalArgumentException.class)
 				.hasMessage("이미 지원한 모집 공고입니다.");
 	}
@@ -404,7 +430,8 @@ class RecruitmentServiceTestBakup {
 						"study",
 						category,
 						owner,
-						4
+						4,
+						Platform.GATHER
 				)
 		);
 		final Recruitment recruitment = recruitmentRepository.save(
@@ -418,20 +445,23 @@ class RecruitmentServiceTestBakup {
 		);
 		study.registerRecruitment(recruitment);
 
+		final Position position1 = createPosition();
+		final ApplyRecruitmentRequest request = createRequest();
+
 		// when
 		// then
 		study.changeStatus(StudyStatus.RECRUITED);
-		assertThatThrownBy(() -> recruitmentService.apply(applier, recruitment.getId()))
+		assertThatThrownBy(() -> recruitmentService.apply(applier, recruitment.getId(), request))
 				.isInstanceOf(IllegalStateException.class)
 				.hasMessage("현재 모집 중인 스터디가 아닙니다.");
 
 		study.changeStatus(StudyStatus.PROGRESS);
-		assertThatThrownBy(() -> recruitmentService.apply(applier, recruitment.getId()))
+		assertThatThrownBy(() -> recruitmentService.apply(applier, recruitment.getId(), request))
 				.isInstanceOf(IllegalStateException.class)
 				.hasMessage("현재 모집 중인 스터디가 아닙니다.");
 
 		study.changeStatus(StudyStatus.COMPLETED);
-		assertThatThrownBy(() -> recruitmentService.apply(applier, recruitment.getId()))
+		assertThatThrownBy(() -> recruitmentService.apply(applier, recruitment.getId(), request))
 				.isInstanceOf(IllegalStateException.class)
 				.hasMessage("현재 모집 중인 스터디가 아닙니다.");
 	}
@@ -464,7 +494,8 @@ class RecruitmentServiceTestBakup {
 						"study",
 						category,
 						owner,
-						4
+						4,
+						Platform.GATHER
 				)
 		);
 		final Recruitment recruitment = recruitmentRepository.save(
@@ -477,12 +508,16 @@ class RecruitmentServiceTestBakup {
 				)
 		);
 		study.registerRecruitment(recruitment);
-		recruitmentService.apply(applier, recruitment.getId());
+
+		final Position position1 = createPosition();
+		final ApplyRecruitmentRequest request = createRequest();
+
+		recruitmentService.apply(applier, recruitment.getId(), request);
 		recruitmentService.cancel(applier, recruitment.getId());
 
 		// when
 		// then
-		recruitmentService.apply(applier, recruitment.getId());
+		recruitmentService.apply(applier, recruitment.getId(), request);
 	}
 
 	@DisplayName("지원 취소 상태가 아닌 경우, 모집 공고에 다시 지원할 수 없다")
@@ -513,7 +548,8 @@ class RecruitmentServiceTestBakup {
 						"study",
 						category,
 						owner,
-						4
+						4,
+						Platform.GATHER
 				)
 		);
 		final Recruitment recruitment = recruitmentRepository.save(
@@ -526,17 +562,21 @@ class RecruitmentServiceTestBakup {
 				)
 		);
 		study.registerRecruitment(recruitment);
-		final Applicant applicant = recruitmentService.apply(applier, recruitment.getId());
+
+		final Position position1 = createPosition();
+		final ApplyRecruitmentRequest request = createRequest();
+
+		final Applicant applicant = recruitmentService.apply(applier, recruitment.getId(), request);
 
 		// when
 		// then
 		applicant.changeStatus(ApplicantStatus.ACCEPTED);
-		assertThatThrownBy(() -> recruitmentService.apply(applier, recruitment.getId()))
+		assertThatThrownBy(() -> recruitmentService.apply(applier, recruitment.getId(), request))
 				.isInstanceOf(IllegalArgumentException.class)
 				.hasMessage("이미 수락된 모집 공고입니다.");
 
 		applicant.changeStatus(ApplicantStatus.REJECTED);
-		assertThatThrownBy(() -> recruitmentService.apply(applier, recruitment.getId()))
+		assertThatThrownBy(() -> recruitmentService.apply(applier, recruitment.getId(), request))
 				.isInstanceOf(IllegalArgumentException.class)
 				.hasMessage("이미 거절된 모집 공고입니다.");
 
@@ -570,7 +610,8 @@ class RecruitmentServiceTestBakup {
 						"study",
 						category,
 						owner,
-						4
+						4,
+						Platform.GATHER
 				)
 		);
 		final Recruitment recruitment = recruitmentRepository.save(
@@ -583,7 +624,11 @@ class RecruitmentServiceTestBakup {
 				)
 		);
 		study.registerRecruitment(recruitment);
-		final Applicant applicant = recruitmentService.apply(applier, recruitment.getId());
+
+		final Position position1 = createPosition();
+		final ApplyRecruitmentRequest request = createRequest();
+
+		final Applicant applicant = recruitmentService.apply(applier, recruitment.getId(), request);
 
 		// when
 		// then
@@ -622,7 +667,8 @@ class RecruitmentServiceTestBakup {
 						"study",
 						category,
 						owner,
-						4
+						4,
+						Platform.GATHER
 				)
 		);
 		final Recruitment recruitment = recruitmentRepository.save(
@@ -637,7 +683,10 @@ class RecruitmentServiceTestBakup {
 		study.registerRecruitment(recruitment);
 		study.changeStatus(StudyStatus.RECRUITING);
 
-		final Applicant applicant = recruitmentService.apply(applier, recruitment.getId());
+		final Position position1 = createPosition();
+		final ApplyRecruitmentRequest request = createRequest();
+
+		final Applicant applicant = recruitmentService.apply(applier, recruitment.getId(), request);
 
 		// when
 		// then
@@ -676,7 +725,8 @@ class RecruitmentServiceTestBakup {
 						"study",
 						category,
 						owner,
-						4
+						4,
+						Platform.GATHER
 				)
 		);
 		final Recruitment recruitment = recruitmentRepository.save(
@@ -689,34 +739,38 @@ class RecruitmentServiceTestBakup {
 				)
 		);
 		study.registerRecruitment(recruitment);
-		final Applicant applicant = recruitmentService.apply(applier, recruitment.getId());
+
+		final Position position1 = createPosition();
+		final ApplyRecruitmentRequest request = createRequest();
+
+		final Applicant applicant = recruitmentService.apply(applier, recruitment.getId(), request);
 
 		study.changeStatus(StudyStatus.RECRUITED);
 
 		// when
 		// then
 		applicant.changeStatus(ApplicantStatus.UNCHECKED);
-		assertThatThrownBy(() -> recruitmentService.apply(applier, recruitment.getId()))
+		assertThatThrownBy(() -> recruitmentService.apply(applier, recruitment.getId(), request))
 				.isInstanceOf(IllegalStateException.class)
 				.hasMessage("현재 모집 중인 스터디가 아닙니다.");
 
 		applicant.changeStatus(ApplicantStatus.CANCELLED);
-		assertThatThrownBy(() -> recruitmentService.apply(applier, recruitment.getId()))
+		assertThatThrownBy(() -> recruitmentService.apply(applier, recruitment.getId(), request))
 				.isInstanceOf(IllegalStateException.class)
 				.hasMessage("현재 모집 중인 스터디가 아닙니다.");
 
 		applicant.changeStatus(ApplicantStatus.REJECTED);
-		assertThatThrownBy(() -> recruitmentService.apply(applier, recruitment.getId()))
+		assertThatThrownBy(() -> recruitmentService.apply(applier, recruitment.getId(), request))
 				.isInstanceOf(IllegalStateException.class)
 				.hasMessage("현재 모집 중인 스터디가 아닙니다.");
 
 		applicant.changeStatus(ApplicantStatus.REMOVED);
-		assertThatThrownBy(() -> recruitmentService.apply(applier, recruitment.getId()))
+		assertThatThrownBy(() -> recruitmentService.apply(applier, recruitment.getId(), request))
 				.isInstanceOf(IllegalStateException.class)
 				.hasMessage("현재 모집 중인 스터디가 아닙니다.");
 
 		applicant.changeStatus(ApplicantStatus.ACCEPTED);
-		assertThatThrownBy(() -> recruitmentService.apply(applier, recruitment.getId()))
+		assertThatThrownBy(() -> recruitmentService.apply(applier, recruitment.getId(), request))
 				.isInstanceOf(IllegalStateException.class)
 				.hasMessage("현재 모집 중인 스터디가 아닙니다.");
 
@@ -750,7 +804,8 @@ class RecruitmentServiceTestBakup {
 						"study",
 						category,
 						owner,
-						4
+						4,
+						Platform.GATHER
 				)
 		);
 		final Recruitment recruitment = recruitmentRepository.save(
@@ -763,12 +818,16 @@ class RecruitmentServiceTestBakup {
 				)
 		);
 		study.registerRecruitment(recruitment);
-		final Applicant applicant = recruitmentService.apply(applier, recruitment.getId());
+
+		final Position position1 = createPosition();
+		final ApplyRecruitmentRequest request = createRequest();
+
+		final Applicant applicant = recruitmentService.apply(applier, recruitment.getId(), request);
 
 		// when
 		// then
 		applicant.changeStatus(ApplicantStatus.REJECTED);
-		assertThatThrownBy(() -> recruitmentService.apply(applier, recruitment.getId()))
+		assertThatThrownBy(() -> recruitmentService.apply(applier, recruitment.getId(), request))
 				.isInstanceOf(IllegalArgumentException.class)
 				.hasMessage("이미 거절된 모집 공고입니다.");
 
@@ -795,7 +854,8 @@ class RecruitmentServiceTestBakup {
 						"study",
 						category,
 						owner,
-						4
+						4,
+						Platform.GATHER
 				)
 		);
 		final Recruitment recruitment = recruitmentRepository.save(
@@ -859,7 +919,8 @@ class RecruitmentServiceTestBakup {
 						"study",
 						category,
 						owner,
-						4
+						4,
+						Platform.GATHER
 				)
 		);
 		final Recruitment recruitment = recruitmentRepository.save(

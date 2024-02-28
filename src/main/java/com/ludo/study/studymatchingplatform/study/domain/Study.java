@@ -145,7 +145,7 @@ public class Study extends BaseEntity {
 		if (owner.getId() != user.getId()) {
 			throw new IllegalArgumentException("모집 공고를 삭제할 권한이 없습니다.");
 		}
-		if (recruitment == null || recruitment.isDeleted()) {
+		if (recruitment.isDeleted()) {
 			throw new IllegalArgumentException("존재하지 않는 모집 공고입니다.");
 		}
 	}

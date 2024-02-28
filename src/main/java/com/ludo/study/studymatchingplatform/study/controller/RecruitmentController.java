@@ -19,8 +19,9 @@ import com.ludo.study.studymatchingplatform.study.domain.recruitment.Applicant;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
 import com.ludo.study.studymatchingplatform.study.service.RecruitmentDetailsFindService;
 import com.ludo.study.studymatchingplatform.study.service.RecruitmentService;
-import com.ludo.study.studymatchingplatform.study.service.dto.EditRecruitmentRequest;
-import com.ludo.study.studymatchingplatform.study.service.dto.WriteRecruitmentRequest;
+import com.ludo.study.studymatchingplatform.study.service.dto.request.ApplyRecruitmentRequest;
+import com.ludo.study.studymatchingplatform.study.service.dto.request.EditRecruitmentRequest;
+import com.ludo.study.studymatchingplatform.study.service.dto.request.WriteRecruitmentRequest;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.ApplyRecruitmentResponse;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.DeleteRecruitmentResponse;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.EditRecruitmentResponse;
@@ -76,16 +77,17 @@ public class RecruitmentController {
 														@RequestBody final EditRecruitmentRequest request) {
 		// TODO: need to append authorization guard
 		final Recruitment recruitment = recruitmentService.edit(user, recruitmentId, request);
-
 		return ResponseEntity.status(HttpStatus.OK).body(EditRecruitmentResponse.from(recruitment));
 	}
 
 	@IsAuthenticated
 	@PostMapping("/studies/{studyId}/recruitments/{recruitmentId}/apply")
-	public ResponseEntity<ApplyRecruitmentResponse> apply(@PathVariable("recruitmentId") final Long recruitmentId) {
+	public ResponseEntity<ApplyRecruitmentResponse> apply(@PathVariable("recruitmentId") final Long recruitmentId,
+														  @RequestBody final ApplyRecruitmentRequest request,
+														  @AuthUser final User user) {
 		// TODO: need to append authorization guard
-		final Applicant applicant = recruitmentService.apply(null, recruitmentId);
 
+		final Applicant applicant = recruitmentService.apply(user, recruitmentId, request);
 		return ResponseEntity.status(HttpStatus.CREATED).body(ApplyRecruitmentResponse.from(applicant));
 	}
 

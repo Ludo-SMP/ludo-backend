@@ -45,7 +45,6 @@ public class Applicant extends BaseEntity {
 	private Recruitment recruitment;
 
 	@ManyToOne
-	@MapsId("positionId")
 	@JoinColumn(name = "position_id")
 	private Position position;
 
@@ -53,10 +52,11 @@ public class Applicant extends BaseEntity {
 	@Column(name = "status", nullable = false, columnDefinition = "char(10)")
 	private ApplicantStatus applicantStatus;
 
-	public static Applicant of(final Recruitment recruitment, final User user) {
+	public static Applicant of(final Recruitment recruitment, final User user, final Position position) {
 		return Applicant.builder()
 				.recruitment(recruitment)
 				.user(user)
+				.position(position)
 				.applicantStatus(ApplicantStatus.UNCHECKED)
 				.build();
 	}
