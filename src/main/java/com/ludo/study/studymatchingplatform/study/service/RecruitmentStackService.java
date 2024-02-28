@@ -1,41 +1,45 @@
 package com.ludo.study.studymatchingplatform.study.service;
 
-import java.util.List;
-import java.util.Set;
-
-import org.springframework.stereotype.Service;
-
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.RecruitmentStack;
 import com.ludo.study.studymatchingplatform.study.domain.stack.Stack;
 import com.ludo.study.studymatchingplatform.study.repository.recruitment.RecruitmentStackRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.stack.StackRepositoryImpl;
-
+import java.util.List;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class RecruitmentStackService {
 
-	private final RecruitmentStackRepositoryImpl recruitmentStackRepository;
-	private final StackService stackService;
-	private final StackRepositoryImpl stackRepository;
+    private final RecruitmentStackRepositoryImpl recruitmentStackRepository;
+    private final StackService stackService;
+    private final StackRepositoryImpl stackRepository;
 
-	public void addMany(final Recruitment recruitment, final Set<Long> stackIds) {
-		final List<Stack> stacks = stackService.findAllByIdsOrThrow(stackIds);
+    public void addMany(final Recruitment recruitment, final Set<Long> stackIds) {
+        final List<Stack> stacks = stackService.findAllByIdsOrThrow(stackIds);
+        addRecruitmentStacksIn(recruitment, stacks);
+    }
 
-		final List<RecruitmentStack> recruitmentStacks = stacks.stream()
-				.map(stack -> RecruitmentStack.from(recruitment, stack))
-				.toList();
+    public void update(final Recruitment recruitment, final Set<Long> stackIds) {
+        final Set<Stack> nextStacks = stackRepository.findByIdIn(stackIds);
+        final List<Stack> addedStacks = recruitment.getAddedStacks(nextStacks);
 
-		recruitment.addRecruitmentStacks(recruitmentStackRepository.saveAll(recruitmentStacks));
-	}
+        addRecruitmentStacksIn(recruitment, addedStacks);
+        recruitment.removeRecruitmentStacksNotIn(nextStacks);
+    }
 
-	public void update(final Recruitment recruitment, final Set<Long> stackIds) {
-		final Set<Stack> nextStacks = stackRepository.findByIdIn(stackIds);
-		recruitment.updateStacks(nextStacks);
-		// List<Stack> notExistStacks = recruitment.getRemovedStacks(nextStacks);
-		// List<Stack> notExistStacks = recruitment.getNotExistStacks(nextStacks);
-	}
+    private void addRecruitmentStacksIn(final Recruitment recruitment, final List<Stack> stacks) {
+        recruitment.validateDuplicateStacks(stacks);
+
+        final List<RecruitmentStack> recruitmentStacks = stacks.stream()
+            .map(stack -> RecruitmentStack.from(recruitment, stack))
+            .toList();
+
+        recruitment.addRecruitmentStacks(recruitmentStackRepository.saveAll(recruitmentStacks));
+    }
+
 
 }
