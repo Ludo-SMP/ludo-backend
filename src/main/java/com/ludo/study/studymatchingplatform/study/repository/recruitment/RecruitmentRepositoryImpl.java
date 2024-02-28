@@ -1,10 +1,12 @@
 package com.ludo.study.studymatchingplatform.study.repository.recruitment;
 
+import static com.ludo.study.studymatchingplatform.study.domain.QCategory.*;
 import static com.ludo.study.studymatchingplatform.study.domain.QStudy.*;
 import static com.ludo.study.studymatchingplatform.study.domain.recruitment.QRecruitment.*;
 import static com.ludo.study.studymatchingplatform.study.domain.recruitment.QRecruitmentPosition.*;
 import static com.ludo.study.studymatchingplatform.study.domain.recruitment.QRecruitmentStack.*;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
@@ -63,6 +65,17 @@ public class RecruitmentRepositoryImpl {
 
 	public void delete(final Recruitment recruitment) {
 		recruitmentJpaRepository.delete(recruitment);
+	}
+
+	public List<Recruitment> findPopularRecruitments(final String categoryName) {
+		return q.select(recruitment)
+				.from(recruitment)
+				.join(recruitment.study, study)
+				.join(study.category, category)
+				.where(category.name.eq(categoryName))
+				.limit(3)
+				.orderBy(recruitment.hits.desc())
+				.fetch();
 	}
 
 }

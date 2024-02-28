@@ -24,6 +24,10 @@ spring:
         default_batch_fetch_size: 1000
     show-sql: true
 
+server:
+  servlet:
+    context-path: /api
+
 oauth2:
   client:
     registration:
