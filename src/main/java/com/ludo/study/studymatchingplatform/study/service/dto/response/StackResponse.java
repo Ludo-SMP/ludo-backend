@@ -1,5 +1,6 @@
 package com.ludo.study.studymatchingplatform.study.service.dto.response;
 
+import com.ludo.study.studymatchingplatform.common.ResourcePath;
 import com.ludo.study.studymatchingplatform.study.domain.stack.Stack;
 
 import lombok.Getter;
@@ -19,6 +20,7 @@ public class StackResponse {
 
 	public static StackResponse from(final Stack stack) {
 		final StackCategoryResponse stackCategory = StackCategoryResponse.from(stack.getStackCategory());
-		return new StackResponse(stack.getId(), stack.getName(), stackCategory, stack.getImageUrl());
+		return new StackResponse(stack.getId(), stack.getName(), stackCategory,
+				ResourcePath.STACK_IMAGE.getPath() + stack.getImageUrl());
 	}
 }
