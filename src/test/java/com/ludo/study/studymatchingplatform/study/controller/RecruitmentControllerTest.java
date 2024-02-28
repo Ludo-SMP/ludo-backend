@@ -15,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ludo.study.studymatchingplatform.auth.common.AuthUserPayload;
@@ -123,6 +124,7 @@ class RecruitmentControllerTest {
 
 	@DisplayName("write recruitment")
 	@Test
+	@Transactional
 	void writeRecruitment() throws Exception {
 
 		final WriteRecruitmentRequest body = WriteRecruitmentRequest.builder()
