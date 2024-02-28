@@ -22,11 +22,8 @@ import com.ludo.study.studymatchingplatform.study.domain.recruitment.Applicant;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
 import com.ludo.study.studymatchingplatform.study.service.PopularRecruitmentsFindService;
 import com.ludo.study.studymatchingplatform.study.service.RecruitmentDetailsFindService;
-import com.ludo.study.studymatchingplatform.study.service.RecruitmentsFindService;
-import com.ludo.study.studymatchingplatform.study.service.dto.response.RecruitmentDetailsResponse;
-import com.ludo.study.studymatchingplatform.study.service.dto.response.RecruitmentPreviewResponse;
-import com.ludo.study.studymatchingplatform.study.service.dto.response.RecruitmentPreviewResponses;
 import com.ludo.study.studymatchingplatform.study.service.RecruitmentService;
+import com.ludo.study.studymatchingplatform.study.service.RecruitmentsFindService;
 import com.ludo.study.studymatchingplatform.study.service.StudyApplicantDecisionService;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.ApplyRecruitmentRequest;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.EditRecruitmentRequest;
@@ -38,6 +35,8 @@ import com.ludo.study.studymatchingplatform.study.service.dto.response.EditRecru
 import com.ludo.study.studymatchingplatform.study.service.dto.response.ParticipantResponse;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.PopularRecruitmentsResponse;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.RecruitmentDetailsResponse;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.RecruitmentPreviewResponse;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.RecruitmentPreviewResponses;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.WriteRecruitmentResponse;
 import com.ludo.study.studymatchingplatform.user.domain.User;
 
@@ -52,35 +51,36 @@ public class RecruitmentController {
 
 	private final RecruitmentDetailsFindService recruitmentDetailsFindService;
 	private final RecruitmentsFindService recruitmentsFindService;
-  private final PopularRecruitmentsFindService popularRecruitmentsFindService;
-  private final RecruitmentService recruitmentService;
+	private final PopularRecruitmentsFindService popularRecruitmentsFindService;
+	private final RecruitmentService recruitmentService;
 	private final StudyApplicantDecisionService applicantDecisionService;
 
-	@GetMapping
-	public ResponseEntity<RecruitmentPreviewResponses> readRecruitments(
-		@RequestParam(required = false) Long after, @RequestParam Integer count
-	) {
-		List<RecruitmentPreviewResponse> recruitments = recruitmentsFindService.findRecruitments(after, count);
+	@GetMapping("/recruitments")
+	public ResponseEntity<BaseApiResponse<RecruitmentPreviewResponses>> readRecruitments(
+			@RequestParam(required = false) Long last, @RequestParam Integer count) {
 
-		return ResponseEntity.ok().body(new RecruitmentPreviewResponses(recruitments));
+		final List<RecruitmentPreviewResponse> recruitments = recruitmentsFindService.findRecruitments(last, count);
+		final RecruitmentPreviewResponses recruitmentPreviewResponses = new RecruitmentPreviewResponses(recruitments);
+
+		return ResponseEntity.ok(BaseApiResponse.success("모집 공고 목록 조회 성공", recruitmentPreviewResponses));
 	}
 
 	@GetMapping("/recruitments/{recruitmentId}")
-	public ResponseEntity<RecruitmentDetailsResponse> readRecruitmentDetails(
-			@PathVariable("recruitment-id") final Long recruitmentId
+	public ResponseEntity<BaseApiResponse<RecruitmentDetailsResponse>> readRecruitmentDetails(
+			@PathVariable("recruitmentId") final Long recruitmentId
 	) {
 		try {
-			RecruitmentDetailsResponse recruitmentDetails = recruitmentDetailsFindService.findRecruitmentDetails(
+			final RecruitmentDetailsResponse recruitmentDetails = recruitmentDetailsFindService.findRecruitmentDetails(
 					recruitmentId);
 
-			return ResponseEntity.ok(recruitmentDetails);
+			return ResponseEntity.ok(BaseApiResponse.success("모집 공고 상세 조회 성공", recruitmentDetails));
 		} catch (IllegalArgumentException exception) {
 
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 	}
 
-	@GetMapping("/popular")
+	@GetMapping("/recruitments/popular")
 	public ResponseEntity<BaseApiResponse<PopularRecruitmentsResponse>> readPopularRecruitments() {
 		PopularRecruitmentsResponse popularRecruitments = popularRecruitmentsFindService.findPopularRecruitments();
 
@@ -124,8 +124,7 @@ public class RecruitmentController {
 	public ResponseEntity<BaseApiResponse<ParticipantResponse>> applicantAccept(@AuthUser final User user,
 																				@PathVariable final Long studyId,
 																				@PathVariable Long recruitmentId,
-																				@PathVariable Long applicantUserId,
-																				@RequestBody Long positionId) {
+																				@PathVariable Long applicantUserId) {
 
 		final StudyApplicantDecisionRequest studyApplicantDecisionRequest = new StudyApplicantDecisionRequest(studyId,
 				recruitmentId, applicantUserId);
