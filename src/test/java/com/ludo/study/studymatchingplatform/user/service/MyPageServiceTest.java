@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import com.ludo.study.studymatchingplatform.study.domain.Category;
 import com.ludo.study.studymatchingplatform.study.domain.Participant;
+import com.ludo.study.studymatchingplatform.study.domain.Platform;
 import com.ludo.study.studymatchingplatform.study.domain.Position;
 import com.ludo.study.studymatchingplatform.study.domain.Study;
 import com.ludo.study.studymatchingplatform.study.domain.StudyStatus;
@@ -33,14 +34,11 @@ import com.ludo.study.studymatchingplatform.study.repository.stack.StackCategory
 import com.ludo.study.studymatchingplatform.study.repository.stack.StackRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.service.RecruitmentService;
 import com.ludo.study.studymatchingplatform.study.service.StudyStatusService;
-import com.ludo.study.studymatchingplatform.study.service.dto.WriteRecruitmentRequest;
+import com.ludo.study.studymatchingplatform.study.service.dto.request.WriteRecruitmentRequest;
 import com.ludo.study.studymatchingplatform.user.domain.Social;
 import com.ludo.study.studymatchingplatform.user.domain.User;
 import com.ludo.study.studymatchingplatform.user.repository.UserRepositoryImpl;
 
-import jakarta.transaction.Transactional;
-
-@Transactional
 @SpringBootTest
 class MyPageServiceTest {
 
@@ -92,7 +90,8 @@ class MyPageServiceTest {
 						"study",
 						category,
 						user,
-						4
+						4,
+						Platform.GATHER
 				)
 		);
 	}

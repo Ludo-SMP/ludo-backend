@@ -20,8 +20,9 @@ import com.ludo.study.studymatchingplatform.study.repository.recruitment.Recruit
 import com.ludo.study.studymatchingplatform.study.repository.recruitment.RecruitmentRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.recruitment.RecruitmentStackRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.stack.StackRepositoryImpl;
-import com.ludo.study.studymatchingplatform.study.service.dto.EditRecruitmentRequest;
-import com.ludo.study.studymatchingplatform.study.service.dto.WriteRecruitmentRequest;
+import com.ludo.study.studymatchingplatform.study.service.dto.request.ApplyRecruitmentRequest;
+import com.ludo.study.studymatchingplatform.study.service.dto.request.EditRecruitmentRequest;
+import com.ludo.study.studymatchingplatform.study.service.dto.request.WriteRecruitmentRequest;
 import com.ludo.study.studymatchingplatform.user.domain.User;
 
 import lombok.RequiredArgsConstructor;
@@ -96,15 +97,17 @@ public class RecruitmentService {
 		return recruitment;
 	}
 
-	public Applicant apply(final User user, final long recruitmentId) {
+	public Applicant apply(final User user,
+						   final long recruitmentId,
+						   final ApplyRecruitmentRequest request) {
 		final Recruitment recruitment = recruitmentRepository.findByIdWithStudy(recruitmentId)
 				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 스터디 입니다."));
 		recruitment.ensureRecruiting();
 
 		final Optional<Applicant> applicant = recruitment.findApplicant(user);
-
+		final Position position = positionRepository.findById(request.positionId());
 		if (applicant.isEmpty()) {
-			final Applicant newApplicant = Applicant.of(recruitment, user);
+			final Applicant newApplicant = Applicant.of(recruitment, user, position);
 			applicantRepository.save(newApplicant);
 			final Applicant savedApplicant = applicantRepository.save(newApplicant);
 			recruitment.addApplicant(savedApplicant);

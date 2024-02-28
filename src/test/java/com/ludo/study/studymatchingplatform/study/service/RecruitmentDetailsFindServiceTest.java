@@ -5,9 +5,9 @@ import static org.assertj.core.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.ludo.study.studymatchingplatform.study.domain.Category;
+import com.ludo.study.studymatchingplatform.study.domain.Platform;
 import com.ludo.study.studymatchingplatform.study.domain.Study;
 import com.ludo.study.studymatchingplatform.study.domain.StudyStatus;
 import com.ludo.study.studymatchingplatform.study.domain.Way;
@@ -32,6 +32,8 @@ import com.ludo.study.studymatchingplatform.study.service.dto.response.Recruitme
 import com.ludo.study.studymatchingplatform.user.domain.Social;
 import com.ludo.study.studymatchingplatform.user.domain.User;
 import com.ludo.study.studymatchingplatform.user.repository.UserRepositoryImpl;
+
+import jakarta.transaction.Transactional;
 
 @SpringBootTest
 class RecruitmentDetailsFindServiceTest {
@@ -99,7 +101,8 @@ class RecruitmentDetailsFindServiceTest {
 
 		Category category = CategoryFixture.createCategory(CATEGORY);
 
-		Study study = StudyFixture.createStudy(StudyStatus.RECRUITING, STUDY_TITLE, Way.ONLINE, category, user, 5, 10);
+		Study study = StudyFixture.createStudy(StudyStatus.RECRUITING, STUDY_TITLE, Way.ONLINE,
+				category, user, 5, 10, Platform.GATHER);
 
 		Recruitment recruitment = RecruitmentFixture.createRecruitment(study, RECRUITMENT_TITLE, CONTENT, 5, CALL_URL,
 				null);
