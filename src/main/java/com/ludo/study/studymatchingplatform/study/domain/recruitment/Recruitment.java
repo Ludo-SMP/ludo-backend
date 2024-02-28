@@ -36,6 +36,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
 
@@ -46,6 +47,7 @@ import lombok.extern.slf4j.Slf4j;
 @AllArgsConstructor
 @SQLDelete(sql = "UPDATE recruitment SET deleted_date_time = NOW() WHERE recruitment_id = ?")
 @SQLRestriction("deleted_date_time is null")
+@ToString(of = {"id", "title"}, callSuper = true)
 @Slf4j
 public class Recruitment extends BaseEntity {
 

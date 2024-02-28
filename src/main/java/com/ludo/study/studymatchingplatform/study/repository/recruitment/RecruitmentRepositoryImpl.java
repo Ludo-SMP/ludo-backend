@@ -12,6 +12,8 @@ import java.util.Optional;
 import org.springframework.stereotype.Repository;
 
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
+
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
@@ -21,7 +23,6 @@ import lombok.RequiredArgsConstructor;
 public class RecruitmentRepositoryImpl {
 
 	private final JPAQueryFactory q;
-
 	private final RecruitmentJpaRepository recruitmentJpaRepository;
 
 	public Optional<Recruitment> findById(final Long recruitmentId) {
@@ -76,6 +77,20 @@ public class RecruitmentRepositoryImpl {
 				.limit(3)
 				.orderBy(recruitment.hits.desc())
 				.fetch();
+	}
+
+	public List<Recruitment> findRecruitments(final Long recruitmentId, final Integer count) {
+		return q
+			.select(recruitment)
+			.from(recruitment)
+			.where(lessThan(recruitmentId))
+			.limit(count)
+			.orderBy(recruitment.id.desc())
+			.fetch();
+	}
+
+	private BooleanExpression lessThan(Long recruitmentId) {
+		return recruitmentId != null ? recruitment.id.lt(recruitmentId) : null;
 	}
 
 }
