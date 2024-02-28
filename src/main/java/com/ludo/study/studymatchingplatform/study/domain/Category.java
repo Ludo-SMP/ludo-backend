@@ -15,6 +15,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -32,15 +33,16 @@ public class Category extends BaseEntity {
 	private Long id;
 
 	@Column(
-		nullable = false,
-		columnDefinition = "char(50)"
+			nullable = false,
+			columnDefinition = "char(50)"
 	)
 	private String name;
 
 	@OneToMany(
-		mappedBy = "category",
-		fetch = LAZY
+			mappedBy = "category",
+			fetch = LAZY
 	)
+	@Builder.Default
 	private List<Study> studies = new ArrayList<>();
 
 }

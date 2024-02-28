@@ -6,7 +6,6 @@ public record RecruitmentPreviewResponse(Long id, String title, String createdDa
 										 String recruitmentEndDateTime, int hits,
 										 List<String> stacks, List<String> positions,
 										 String category, String ownerNickname, String way,
-										 String startDateTime, String endDateTime
-) {
+										 String startDateTime, String endDateTime) {
 
 }

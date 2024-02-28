@@ -116,8 +116,21 @@ fabric.properties
 
 # End of https://www.toptal.com/developers/gitignore/api/intellij
 
+.idea/**/vcs.xml
+.idea/**/study-matching-platform.test.iml
+.idea/**/study-matching-platform.main.iml
+.idea/**/study-matching-platform.iml
+.idea/**/readme.txt
+.idea/**/modules.xml
+.idea/**/misc.xml
+.idea/**/jarRepositories.xml
+.idea/**/dataSources.xml
+.idea/**/compiler.xml
+.idea/**/.name
+
+
+
 .gradle/
-.idea/
 build/
 HELP.md
 .DS_Store
@@ -152,3 +165,5 @@ src/main/generated/
 
 # React App for Client Test
 front-test-app/
+
+.env*

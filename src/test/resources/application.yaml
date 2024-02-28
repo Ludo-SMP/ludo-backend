@@ -1,8 +1,16 @@
 spring:
+  profiles:
+    active: local
+    default: local
+
+  devtools:
+    livereload:
+      enabled: true
+
   datasource:
-    url: jdbc:mysql://localhost:3306/ludo
-    username: root
-    password: root
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
@@ -13,5 +21,58 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
         format_sql: true
+        default_batch_fetch_size: 1000
     show-sql: true
 
+oauth2:
+  client:
+    registration:
+      naver:
+        client-id: ${NAVER_CLIENT_ID}
+        client-secret: ${NAVER_CLIENT_SECRET}
+        login-redirect-uri: ${NAVER_LOGIN_CALLBACK_URL}
+        signup-redirect-uri: ${NAVER_SIGNUP_CALLBACK_URL}
+        authorization-grant-type: code
+      kakao:
+        client-id: ${KAKAO_CLIENT_ID}
+        client-secret: ${KAKAO_CLIENT_SECRET}
+        login-redirect-uri: ${KAKAO_LOGIN_CALLBACK_URL}
+        signup-redirect-uri: ${KAKAO_SIGNUP_CALLBACK_URL}
+        authorization-grant-type: code
+      google:
+        client-id: ${GOOGLE_CLIENT_ID}
+        client-secret: ${GOOGLE_CLIENT_SECRET}
+        login-redirect-uri: ${GOOGLE_LOGIN_CALLBACK_URL}
+        signup-redirect-uri: ${GOOGLE_SIGNUP_CALLBACK_URL}
+        authorization-grant-type: authorization_code
+    provider:
+      naver:
+        authorization-uri: ${NAVER_LOGIN_API}
+        token-uri: ${NAVER_TOKEN_API}
+        user-info-uri: ${NAVER_USER_PROFILE_API}
+      kakao:
+        authorization-uri: ${KAKAO_LOGIN_API}
+        token-uri: ${KAKAO_TOKEN_API}
+        user-info-uri: ${KAKAO_USER_PROFILE_API}
+      google:
+        authorization-uri: ${GOOGLE_LOGIN_API}
+        token-uri: ${GOOGLE_TOKEN_API}
+        user-info-uri: ${GOOGLE_USER_PROFILE_API}
+
+jwt:
+  token:
+    secret-key: ${JWT_SECRET_KEY}
+    access-token-expiresin: ${JWT_ACCESS_TOKEN_EXPIRES_IN}
+
+client:
+  scheme: http
+  domain: localhost
+  port: 3000
+  url: ${client.scheme}://${client.domain}:${client.port}
+
+logging.level:
+  org.hibernate.SQL: debug
+  org.hibernate.type: trace
+
+server:
+  port: ${PORT}

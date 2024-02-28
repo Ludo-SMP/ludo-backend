@@ -2,6 +2,8 @@ package com.ludo.study.studymatchingplatform.study.domain;
 
 import static jakarta.persistence.FetchType.*;
 
+import java.util.Objects;
+
 import com.ludo.study.studymatchingplatform.common.entity.BaseEntity;
 import com.ludo.study.studymatchingplatform.study.domain.id.ParticipantId;
 import com.ludo.study.studymatchingplatform.user.domain.User;
@@ -11,9 +13,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
-import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -26,22 +28,53 @@ import lombok.experimental.SuperBuilder;
 public class Participant extends BaseEntity {
 
 	@EmbeddedId
+	@Builder.Default
 	private ParticipantId id = new ParticipantId();
 
 	@ManyToOne(fetch = LAZY)
 	@MapsId("studyId")
 	@JoinColumn(
-		name = "study_id",
-		nullable = false
+			name = "study_id",
+			nullable = false
 	)
 	private Study study;
 
-	@OneToOne(fetch = LAZY)
+	@ManyToOne(fetch = LAZY)
 	@MapsId("userId")
 	@JoinColumn(
-		name = "user_id",
-		nullable = false
+			name = "user_id",
+			nullable = false
 	)
 	private User user;
 
+	@ManyToOne
+	@JoinColumn(name = "position_id")
+	private Position position;
+
+	public static Participant from(final Study study, final User user, final Position position) {
+		final Participant participant = new Participant();
+		participant.study = study;
+		participant.user = user;
+		participant.position = position;
+		return participant;
+	}
+
+	public String getRole() {
+		// TODO: Role spec not determined clearly
+		if (study.isOwner(this)) {
+			return "Owner";
+		}
+		return "Participant";
+	}
+
+	public boolean matchesUser(final User user) {
+		final boolean isMatchesUser = Objects.equals(this.user.getId(), user.getId());
+		return isMatchesUser && !isDeleted();
+	}
+
+	public void leave(final Study study) {
+		study.removeParticipant(this);
+		this.study = null;
+		this.softDelete();
+	}
 }

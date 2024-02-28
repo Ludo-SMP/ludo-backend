@@ -6,6 +6,6 @@ public enum ApplicantStatus {
 	ACCEPTED,
 	REJECTED,
 	REMOVED,
-	CANCELLED
+	CANCELLED;
 
 }
