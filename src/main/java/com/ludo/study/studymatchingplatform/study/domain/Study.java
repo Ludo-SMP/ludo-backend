@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Objects;
 
 import com.ludo.study.studymatchingplatform.common.entity.BaseEntity;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.Applicant;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
 import com.ludo.study.studymatchingplatform.user.domain.User;
 
@@ -202,6 +203,8 @@ public class Study extends BaseEntity {
 	}
 
 	private void ensureCorrectOwner(final User owner) {
+		log.info("스터디장 = {}", this.owner.getId());
+		log.info("파라미터 = {}", owner.getId());
 		if (!isOwner(owner)) {
 			throw new IllegalStateException(
 					String.format("스터디 장이 아닙니다. 스터디 장 id = %s, 잘못된 id = %s", this.owner, owner));
@@ -222,7 +225,8 @@ public class Study extends BaseEntity {
 
 	private void accept(final User applicantUser) {
 		recruitment.acceptApplicant(applicantUser);
-		addParticipant(Participant.from(this, applicantUser));
+		final Applicant applicant = recruitment.getApplicant(applicantUser);
+		addParticipant(Participant.from(this, applicantUser, applicant.getPosition()));
 	}
 
 	private boolean isMaxParticipantCount() {
