@@ -22,4 +22,11 @@ public record ParticipantResponse(
 				.build();
 	}
 
+	public static ParticipantResponse fromWithOutStudyResponse(final Participant participant) {
+		final UserResponse userResponse = UserResponse.from(participant.getUser());
+		return ParticipantResponse.builder()
+				.user(userResponse)
+				.build();
+	}
+
 }

@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ludo.study.studymatchingplatform.study.domain.Participant;
 import com.ludo.study.studymatchingplatform.study.domain.Study;
 import com.ludo.study.studymatchingplatform.study.repository.ParticipantRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.repository.PositionRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.StudyRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.StudyApplicantDecisionRequest;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.ParticipantResponse;
@@ -23,6 +24,7 @@ public class StudyApplicantDecisionService {
 	private final StudyRepositoryImpl studyRepository;
 	private final UserRepositoryImpl userRepository;
 	private final ParticipantRepositoryImpl participantRepository;
+	private final PositionRepositoryImpl positionRepository;
 
 	@Transactional
 	public ParticipantResponse applicantAccept(final User owner, final StudyApplicantDecisionRequest request) {
@@ -32,7 +34,7 @@ public class StudyApplicantDecisionService {
 		study.acceptApplicant(owner, applicantUser, request.recruitmentId());
 		Participant participant = findParticipant(study, applicantUser);
 
-		return ParticipantResponse.from(participant);
+		return ParticipantResponse.fromWithOutStudyResponse(participant);
 	}
 
 	@Transactional
