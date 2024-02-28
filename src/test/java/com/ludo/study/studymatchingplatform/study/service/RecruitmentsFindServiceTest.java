@@ -11,14 +11,17 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ludo.study.studymatchingplatform.study.domain.Category;
+import com.ludo.study.studymatchingplatform.study.domain.Platform;
 import com.ludo.study.studymatchingplatform.study.domain.Study;
 import com.ludo.study.studymatchingplatform.study.domain.StudyStatus;
 import com.ludo.study.studymatchingplatform.study.domain.Way;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.RecruitmentStack;
+import com.ludo.study.studymatchingplatform.study.domain.stack.StackCategory;
 import com.ludo.study.studymatchingplatform.study.fixture.CategoryFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.RecruitmentFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.RecruitmentStackFixture;
+import com.ludo.study.studymatchingplatform.study.fixture.StackCategoryFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.StackFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.StudyFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.UserFixture;
@@ -132,21 +135,22 @@ class RecruitmentsFindServiceTest {
 
 	private Study saveStudy(Category category, User user, int count) {
 		String studyTitle = "스터디" + count;
-		Study study = StudyFixture.createStudy(StudyStatus.RECRUITING, studyTitle, Way.ONLINE, category, user);
+		Study study = StudyFixture.createStudy(StudyStatus.RECRUITING, studyTitle, Way.ONLINE, category, user, 0, 5,
+				Platform.GATHER);
 		studyRepository.save(study);
 		return study;
 	}
 
 	private RecruitmentStack createRecruitmentStack() {
+		StackCategory backend = StackCategoryFixture.createStackCategory("백엔드");
 		return RecruitmentStackFixture.createRecruitmentStack(
-				StackFixture.createStack("spring")
+				StackFixture.createStack("spring", backend)
 		);
 	}
 
 	private void saveRecruitment(int count, Study study, RecruitmentStack spring) {
 		String recruitmentTitle = "모집공고" + count;
-		Recruitment recruitment = RecruitmentFixture.createRecruitment(study, recruitmentTitle, "내용", 1, "call",
-				spring);
+		Recruitment recruitment = RecruitmentFixture.createRecruitment(study, recruitmentTitle, "내용", 1, "call", null);
 		recruitmentRepository.save(recruitment);
 	}
 }
