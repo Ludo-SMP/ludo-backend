@@ -1,7 +1,6 @@
 package com.ludo.study.studymatchingplatform.filter;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Optional;
 
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -14,7 +13,6 @@ import com.ludo.study.studymatchingplatform.study.service.exception.Authenticati
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -28,24 +26,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	private final CookieProvider cookieProvider;
 
 	public static final String AUTH_USER_PAYLOAD = "AUTH_USER_PAYLOAD";
-
-	private boolean notExistCookies(final Cookie[] cookies) {
-		return cookies == null;
-	}
-
-	private boolean notExistSpecificCookie(final Cookie[] cookies, final String specificCookieName) {
-		return Arrays.stream(cookies)
-				.map(Cookie::getName)
-				.noneMatch(cookieName -> cookieName.equals(specificCookieName));
-	}
-
-	private String getAccessToken(final Cookie[] cookies) {
-		return Arrays.stream(cookies)
-				.filter(cookie -> cookie.getName().equals("Authorization"))
-				.map(Cookie::getValue)
-				.findFirst()
-				.orElseThrow();
-	}
 
 	@Override
 	protected void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response,
@@ -65,7 +45,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 				cookieProvider.clearAuthCookie(response);
 				throw e;
 			}
-      
+
 		}
 
 		filterChain.doFilter(request, response);

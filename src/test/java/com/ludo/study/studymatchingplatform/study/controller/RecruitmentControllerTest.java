@@ -136,7 +136,7 @@ class RecruitmentControllerTest {
 				.recruitmentEndDateTime(LocalDateTime.now().plusMonths(3))
 				.build();
 
-		mockMvc.perform(MockMvcRequestBuilders.post("/studies/1/recruitments")
+		mockMvc.perform(MockMvcRequestBuilders.post("/api/studies/1/recruitments")
 						.cookie(authCookie)
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(mapper.writeValueAsString(body)))

@@ -16,5 +16,5 @@ public class PathConfig implements WebMvcConfigurer {
 						.and(HandlerTypePredicate.forAnnotation(Controller.class))
 		);
 	}
-	
+
 }
