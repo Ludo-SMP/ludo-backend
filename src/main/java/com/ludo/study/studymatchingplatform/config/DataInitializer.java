@@ -25,10 +25,10 @@ public class DataInitializer {
 						.name("프로젝트")
 						.build(),
 				Category.builder()
-						.name("모의면접")
+						.name("코딩테스트")
 						.build(),
 				Category.builder()
-						.name("코딩테스트")
+						.name("모의면접")
 						.build()
 		);
 	}
