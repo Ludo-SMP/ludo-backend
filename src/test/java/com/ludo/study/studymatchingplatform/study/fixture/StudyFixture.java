@@ -52,8 +52,8 @@ public class StudyFixture {
 				CategoryFixture.createCategory(CategoryFixture.PROJECT),
 				user,
 				0,
-				participantLimit
-		);
+				participantLimit,
+				Platform.GATHER);
 	}
 
 }

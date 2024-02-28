@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Applicant;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.ApplicantStatus;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
+import com.ludo.study.studymatchingplatform.study.fixture.PositionFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.RecruitmentFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.StudyFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.UserFixture;
@@ -26,9 +27,9 @@ class StudyTest {
 		@DisplayName("[Exception] 스터디 장이 아닌 경우 예외 발생")
 		void notStudyOwner() {
 			// given
-			User owner = UserFixture.createUser(Social.NAVER, "archa", "archa@naver.com");
-			User notOwner = UserFixture.createUser(Social.NAVER, "anonymous", "anonymous@naver.com");
-			User applicant = UserFixture.createUser(Social.NAVER, "applicant", "applicant@naver.com");
+			User owner = UserFixture.createUserWithId(1L, Social.NAVER, "archa", "archa@naver.com");
+			User notOwner = UserFixture.createUserWithId(2L, Social.NAVER, "anonymous", "anonymous@naver.com");
+			User applicant = UserFixture.createUserWithId(3L, Social.NAVER, "applicant", "applicant@naver.com");
 
 			Study study = StudyFixture.createStudy(owner, "스터디 A", 5, StudyStatus.RECRUITING);
 			Recruitment recruitment = RecruitmentFixture.createRecruitment(study, "모집공고", "내용", 0, null, null);
@@ -135,7 +136,7 @@ class StudyTest {
 
 			// when
 			User applicantUser = UserFixture.createUser(Social.NAVER, "other", "other@gmail.com");
-			Applicant applicant = Applicant.of(recruitment, applicantUser);
+			Applicant applicant = Applicant.of(recruitment, applicantUser, PositionFixture.createPosition("백엔드"));
 			recruitment.addApplicant(applicant);
 			assertThat(study.getParticipantCount()).isZero();
 			assertThat(recruitment.getApplicants()).isNotEmpty();
@@ -165,13 +166,13 @@ class StudyTest {
 			// 현재 스터디 참가자 4명이 존재할 때
 			while (curParticipantCount-- > 0) {
 				User user = UserFixture.createUser(Social.NAVER, "닉네임", "email@google.com");
-				Applicant applicant = Applicant.of(recruitment, user);
+				Applicant applicant = Applicant.of(recruitment, user, PositionFixture.createPosition("백엔드"));
 				recruitment.addApplicant(applicant);
 				study.acceptApplicant(owner, user, recruitment.getId());
 			}
 
 			User applicantUser = UserFixture.createUser(Social.NAVER, "other", "other@gmail.com");
-			Applicant applicant = Applicant.of(recruitment, applicantUser);
+			Applicant applicant = Applicant.of(recruitment, applicantUser, PositionFixture.createPosition("백엔드"));
 			recruitment.addApplicant(applicant);
 
 			// when
@@ -189,12 +190,13 @@ class StudyTest {
 		@DisplayName("[Exception] 스터디 장이 아닌 경우 예외 발생")
 		void notStudyOwner() {
 			// given
-			User owner = UserFixture.createUser(Social.NAVER, "archa", "archa@naver.com");
-			User notOwner = UserFixture.createUser(Social.NAVER, "anonymous", "anonymous@naver.com");
-			User applicant = UserFixture.createUser(Social.NAVER, "applicant", "applicant@naver.com");
+			User owner = UserFixture.createUserWithId(1L, Social.NAVER, "archa", "archa@naver.com");
+			User notOwner = UserFixture.createUserWithId(2L, Social.NAVER, "anonymous", "anonymous@naver.com");
+			User applicant = UserFixture.createUserWithId(3L, Social.NAVER, "applicant", "applicant@naver.com");
 
 			Study study = StudyFixture.createStudy(owner, "스터디 A", 5, StudyStatus.RECRUITING);
 			Recruitment recruitment = RecruitmentFixture.createRecruitment(study, "모집공고", "내용", 0, null, null);
+			study.addRecruitment(recruitment);
 
 			// when then
 			assertThatThrownBy(() -> study.rejectApplicant(notOwner, applicant, recruitment.getId()))
@@ -260,7 +262,7 @@ class StudyTest {
 
 			// when
 			User applicantUser = UserFixture.createUser(Social.NAVER, "other", "other@gmail.com");
-			Applicant applicant = Applicant.of(recruitment, applicantUser);
+			Applicant applicant = Applicant.of(recruitment, applicantUser, PositionFixture.createPosition("백엔드"));
 			recruitment.addApplicant(applicant);
 			assertThat(recruitment.getApplicants()).isNotEmpty();
 			assertThat(recruitment.getApplicants().get(0).getApplicantStatus()).isEqualTo(ApplicantStatus.UNCHECKED);

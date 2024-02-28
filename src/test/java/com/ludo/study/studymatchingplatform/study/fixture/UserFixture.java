@@ -13,4 +13,13 @@ public class UserFixture {
 				.build();
 	}
 
+	public static User createUserWithId(Long userId, Social social, String nickname, String email) {
+		return User.builder()
+				.id(userId)
+				.social(social)
+				.nickname(nickname)
+				.email(email)
+				.build();
+	}
+
 }
