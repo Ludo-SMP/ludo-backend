@@ -8,6 +8,14 @@ import com.ludo.study.studymatchingplatform.user.domain.User;
 
 public class ApplicantFixture {
 
+	public static Applicant createApplicant(User user, Recruitment recruitment) {
+		return Applicant.builder()
+				.user(user)
+				.applicantStatus(ApplicantStatus.UNCHECKED)
+				.recruitment(recruitment)
+				.build();
+	}
+
 	public static Applicant createApplicant(Recruitment recruitment,
 											User user,
 											Position position) {

@@ -48,7 +48,6 @@ public class Participant extends BaseEntity {
 	private User user;
 
 	@ManyToOne
-	@MapsId("positionId")
 	@JoinColumn(name = "position_id")
 	private Position position;
 
@@ -66,6 +65,7 @@ public class Participant extends BaseEntity {
 			return "Owner";
 		}
 		return "Participant";
+	}
 
 	public boolean matchesUser(final User user) {
 		final boolean isMatchesUser = Objects.equals(this.user.getId(), user.getId());
@@ -76,6 +76,5 @@ public class Participant extends BaseEntity {
 		study.removeParticipant(this);
 		this.study = null;
 		this.softDelete();
-
 	}
 }

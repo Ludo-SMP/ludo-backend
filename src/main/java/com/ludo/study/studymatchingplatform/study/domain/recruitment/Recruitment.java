@@ -5,6 +5,7 @@ import static jakarta.persistence.FetchType.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -14,6 +15,7 @@ import org.hibernate.annotations.SQLRestriction;
 import com.ludo.study.studymatchingplatform.common.entity.BaseEntity;
 import com.ludo.study.studymatchingplatform.study.domain.Position;
 import com.ludo.study.studymatchingplatform.study.domain.Study;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.id.ApplicantId;
 import com.ludo.study.studymatchingplatform.study.domain.stack.Stack;
 import com.ludo.study.studymatchingplatform.user.domain.User;
 
@@ -35,6 +37,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import lombok.extern.slf4j.Slf4j;
 
 @Entity
 @Getter
@@ -43,6 +46,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @SQLDelete(sql = "UPDATE recruitment SET deleted_date_time = NOW() WHERE recruitment_id = ?")
 @SQLRestriction("deleted_date_time is null")
+@Slf4j
 public class Recruitment extends BaseEntity {
 
 	@Id
@@ -235,6 +239,7 @@ public class Recruitment extends BaseEntity {
 		return study.isOwner(user);
 	}
 
+	/** helper method */
 	public void addApplicant(final Applicant applicant) {
 		applicant.connectToRecruitment(this);
 		applicants.add(applicant);
@@ -268,5 +273,39 @@ public class Recruitment extends BaseEntity {
 				.map(RecruitmentStack::getStack)
 				.toList();
 	}
+  
+	public void ensureCorrectApplicantUser(final User applicantUser) {
+		if (!containsApplicantUser(applicantUser)) {
+			throw new IllegalStateException("지원자 목록에 존재하지 않는 사용자입니다.");
+		}
+	}
 
+	private boolean containsApplicantUser(final User applicantUser) {
+		return applicants.stream()
+				.anyMatch(applicant -> applicant.getUser().equals(applicantUser));
+	}
+
+	public void acceptApplicant(final User applicantUser) {
+		final Applicant applicant = getApplicant(applicantUser);
+		applicant.changeStatus(ApplicantStatus.ACCEPTED);
+	}
+
+	public void rejectApplicant(final User applicantUser) {
+		final Applicant applicant = getApplicant(applicantUser);
+		applicant.changeStatus(ApplicantStatus.REJECTED);
+	}
+
+	private Applicant getApplicant(final User applicantUser) {
+		ApplicantId applicantId = new ApplicantId(id, applicantUser.getId());
+
+		return applicants.stream()
+				.filter(applicant -> applicant.getId().equals(applicantId))
+				.findFirst()
+				.orElseThrow(() -> new IllegalStateException("지원하지 않은 사용자입니다."));
+	}
+
+	public boolean isIdEquals(final Long recruitmentId) {
+		return Objects.equals(this.id, recruitmentId);
+	}
+  
 }

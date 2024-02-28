@@ -1,8 +1,9 @@
 package com.ludo.study.studymatchingplatform.user.controller;
 
+import java.io.IOException;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -30,12 +31,11 @@ public class UserController {
 
 	@DeleteMapping("/users/deactivate")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void withdraw(@AuthUser final User user, final HttpServletResponse response) {
+	public void withdraw(@AuthUser final User user, final HttpServletResponse response) throws IOException {
 		userService.withdraw(user);
 		cookieProvider.clearAuthCookie(response);
 		redirection.to("/", response);
 	}
-
 
 	@GetMapping("/users/me")
 	public ResponseEntity<Me> fetchMe(@AuthUser final User user) {

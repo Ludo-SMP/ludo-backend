@@ -21,6 +21,7 @@ import com.ludo.study.studymatchingplatform.auth.common.AuthUserPayload;
 import com.ludo.study.studymatchingplatform.auth.common.provider.CookieProvider;
 import com.ludo.study.studymatchingplatform.auth.common.provider.JwtTokenProvider;
 import com.ludo.study.studymatchingplatform.study.domain.Category;
+import com.ludo.study.studymatchingplatform.study.domain.Platform;
 import com.ludo.study.studymatchingplatform.study.domain.Position;
 import com.ludo.study.studymatchingplatform.study.domain.Study;
 import com.ludo.study.studymatchingplatform.study.domain.stack.Stack;
@@ -36,7 +37,7 @@ import com.ludo.study.studymatchingplatform.study.repository.PositionRepositoryI
 import com.ludo.study.studymatchingplatform.study.repository.StudyRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.stack.StackCategoryRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.stack.StackRepositoryImpl;
-import com.ludo.study.studymatchingplatform.study.service.dto.WriteRecruitmentRequest;
+import com.ludo.study.studymatchingplatform.study.service.dto.request.WriteRecruitmentRequest;
 import com.ludo.study.studymatchingplatform.user.domain.Social;
 import com.ludo.study.studymatchingplatform.user.domain.User;
 import com.ludo.study.studymatchingplatform.user.repository.UserRepositoryImpl;
@@ -112,11 +113,12 @@ class RecruitmentControllerTest {
 		);
 		positions.forEach(position -> positionRepository.save(position));
 
-		final Study study = StudyFixture.createStudy("study", categories.get(0), user, 3);
+		final Study study =
+				StudyFixture.createStudy("study", categories.get(0), user, 3, Platform.GATHER);
 		studyRepository.save(study);
 
 		final String accessToken = jwtTokenProvider.createAccessToken(AuthUserPayload.from(user.getId()));
-		authCookie = cookieProvider.createAuthCookie(accessToken);
+		authCookie = cookieProvider.createAuthCookie(accessToken, 300000);
 	}
 
 	@DisplayName("write recruitment")

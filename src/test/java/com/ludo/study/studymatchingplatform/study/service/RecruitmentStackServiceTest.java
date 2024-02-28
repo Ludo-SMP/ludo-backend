@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.ludo.study.studymatchingplatform.study.domain.Category;
+import com.ludo.study.studymatchingplatform.study.domain.Platform;
 import com.ludo.study.studymatchingplatform.study.domain.Study;
 import com.ludo.study.studymatchingplatform.study.domain.stack.Stack;
 import com.ludo.study.studymatchingplatform.study.domain.stack.StackCategory;
@@ -60,7 +61,7 @@ class RecruitmentStackServiceTest {
 		stackRepository.save(stack2);
 		stackRepository.save(stack3);
 
-		final Study study = StudyFixture.createStudy("study", category, user, 4);
+		final Study study = StudyFixture.createStudy("study", category, user, 4, Platform.GATHER);
 		studyRepository.save(study);
 
 	}

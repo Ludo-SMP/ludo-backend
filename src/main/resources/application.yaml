@@ -73,7 +73,7 @@ client:
   domain: localhost
   port: 3000
   url: ${client.scheme}://${client.domain}:${client.port}
-  
+
 logging.level:
   org.hibernate.SQL: debug
   org.hibernate.type: trace
