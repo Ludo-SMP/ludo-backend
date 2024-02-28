@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 
 import com.ludo.study.studymatchingplatform.study.domain.Participant;
 import com.ludo.study.studymatchingplatform.study.domain.StudyStatus;
-
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
@@ -21,7 +20,6 @@ public class ParticipantRepositoryImpl {
 	private final JPAQueryFactory q;
 
 	private final ParticipantJpaRepository participantJpaRepository;
-	private final JPAQueryFactory q;
 
 	public Participant save(final Participant participant) {
 		return participantJpaRepository.save(participant);
@@ -31,7 +29,8 @@ public class ParticipantRepositoryImpl {
 		return Optional.ofNullable(q.selectFrom(participant)
 				.where(participant.study.id.eq(studyId))
 				.where(participant.user.id.eq(userId))
-				.fetchOne()
+				.fetchOne());
+	}
 
 	public Optional<List<Participant>> findByUserId(final Long id) {
 		return Optional.ofNullable(

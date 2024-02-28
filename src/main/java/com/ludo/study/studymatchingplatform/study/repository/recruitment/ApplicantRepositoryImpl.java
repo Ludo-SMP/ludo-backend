@@ -30,8 +30,8 @@ public class ApplicantRepositoryImpl {
 						.where(applicant.recruitment.id.eq(recruitmentId))
 						.where(applicant.user.id.eq(userId))
 						.where(applicant.deletedDateTime.isNull())
-						.fetchOne()
-  }
+						.fetchOne());
+	}
 
 	public Optional<List<Applicant>> findByUserId(final Long id) {
 		return Optional.ofNullable(
