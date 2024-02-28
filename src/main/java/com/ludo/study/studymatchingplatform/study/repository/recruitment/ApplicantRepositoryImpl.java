@@ -24,6 +24,15 @@ public class ApplicantRepositoryImpl {
 		return applicantJpaRepository.save(applicant);
 	}
 
+	public Optional<Applicant> find(final Long recruitmentId, final Long userId) {
+		return Optional.ofNullable(
+				q.selectFrom(applicant)
+						.where(applicant.recruitment.id.eq(recruitmentId))
+						.where(applicant.user.id.eq(userId))
+						.where(applicant.deletedDateTime.isNull())
+						.fetchOne()
+  }
+
 	public Optional<List<Applicant>> findByUserId(final Long id) {
 		return Optional.ofNullable(
 				q.selectFrom(applicant)

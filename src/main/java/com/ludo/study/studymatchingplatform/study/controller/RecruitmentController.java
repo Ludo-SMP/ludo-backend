@@ -13,18 +13,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ludo.study.studymatchingplatform.auth.common.AuthUser;
-import com.ludo.study.studymatchingplatform.auth.common.AuthUserPayload;
 import com.ludo.study.studymatchingplatform.auth.common.IsAuthenticated;
+import com.ludo.study.studymatchingplatform.study.controller.dto.BaseApiResponse;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Applicant;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
 import com.ludo.study.studymatchingplatform.study.service.RecruitmentDetailsFindService;
 import com.ludo.study.studymatchingplatform.study.service.RecruitmentService;
+import com.ludo.study.studymatchingplatform.study.service.StudyApplicantDecisionService;
+import com.ludo.study.studymatchingplatform.study.service.dto.EditRecruitmentRequest;
+import com.ludo.study.studymatchingplatform.study.service.dto.WriteRecruitmentRequest;
+import com.ludo.study.studymatchingplatform.study.service.dto.request.StudyApplicantDecisionRequest;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.ApplyRecruitmentRequest;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.EditRecruitmentRequest;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.WriteRecruitmentRequest;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.ApplyRecruitmentResponse;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.DeleteRecruitmentResponse;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.EditRecruitmentResponse;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.ParticipantResponse;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.RecruitmentDetailsResponse;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.WriteRecruitmentResponse;
 import com.ludo.study.studymatchingplatform.user.domain.User;
@@ -42,12 +47,12 @@ public class RecruitmentController {
 
 	private final RecruitmentService recruitmentService;
 
+	private final StudyApplicantDecisionService applicantDecisionService;
+
 	@GetMapping("/recruitments/{recruitmentId}")
 	public ResponseEntity<RecruitmentDetailsResponse> readRecruitmentDetails(
-			@PathVariable("recruitment-id") final Long recruitmentId,
-			@AuthUser AuthUserPayload payload
+			@PathVariable("recruitment-id") final Long recruitmentId
 	) {
-		System.out.println(payload);
 		try {
 			RecruitmentDetailsResponse recruitmentDetails = recruitmentDetailsFindService.findRecruitmentDetails(
 					recruitmentId);
@@ -91,12 +96,41 @@ public class RecruitmentController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(ApplyRecruitmentResponse.from(applicant));
 	}
 
+	@IsAuthenticated
+	@PostMapping("/api/studies/{studyId}/recruitments/{recruitmentId}/apply-accept/{applicantUserId}")
+	public ResponseEntity<BaseApiResponse<ParticipantResponse>> applicantAccept(@AuthUser final User user,
+																				@PathVariable final Long studyId,
+																				@PathVariable Long recruitmentId,
+																				@PathVariable Long applicantUserId) {
+
+		final StudyApplicantDecisionRequest studyApplicantDecisionRequest = new StudyApplicantDecisionRequest(studyId,
+				recruitmentId, applicantUserId);
+		ParticipantResponse participantResponse = applicantDecisionService.applicantAccept(user,
+				studyApplicantDecisionRequest);
+
+		return ResponseEntity.ok(BaseApiResponse.success("지원자 수락 성공", participantResponse));
+	}
+
+	@IsAuthenticated
+	@PostMapping("/api/studies/{studyId}/recruitments/{recruitmentId}/apply-refuse/{applicantUserId}")
+	public ResponseEntity<BaseApiResponse> applicantRefuse(@AuthUser final User user,
+														   @PathVariable final Long studyId,
+														   @PathVariable Long recruitmentId,
+														   @PathVariable Long applicantUserId) {
+
+		final StudyApplicantDecisionRequest studyApplicantDecisionRequest = new StudyApplicantDecisionRequest(studyId,
+				recruitmentId, applicantUserId);
+		applicantDecisionService.applicantReject(user, studyApplicantDecisionRequest);
+
+		return ResponseEntity.ok(new BaseApiResponse(true, "지원자 거절 성공", null));
+
 	@DeleteMapping("/studies/{studyId}/recruitments")
 	public ResponseEntity<DeleteRecruitmentResponse> delete(@PathVariable Long studyId, @AuthUser final User user) {
 		recruitmentService.delete(user, studyId);
 		return ResponseEntity.status(HttpStatus.OK).body(
 				DeleteRecruitmentResponse.from("모집 공고가 비활성화 되었습니다.")
 		);
+
 	}
 
 }

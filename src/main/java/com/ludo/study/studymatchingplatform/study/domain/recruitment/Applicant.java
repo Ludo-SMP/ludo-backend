@@ -81,6 +81,7 @@ public class Applicant extends BaseEntity {
 	}
 
 	public void connectToRecruitment(final Recruitment recruitment) {
+		System.out.println("현재 recruitment = " + recruitment);
 		this.recruitment = recruitment;
 	}
 
@@ -103,4 +104,5 @@ public class Applicant extends BaseEntity {
 			throw new IllegalStateException("이미 지원 취소된 모집 공고입니다.");
 		}
 	}
+
 }
