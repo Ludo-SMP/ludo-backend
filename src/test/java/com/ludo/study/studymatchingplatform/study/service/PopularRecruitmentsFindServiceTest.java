@@ -11,14 +11,17 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ludo.study.studymatchingplatform.study.domain.Category;
+import com.ludo.study.studymatchingplatform.study.domain.Platform;
 import com.ludo.study.studymatchingplatform.study.domain.Study;
 import com.ludo.study.studymatchingplatform.study.domain.StudyStatus;
 import com.ludo.study.studymatchingplatform.study.domain.Way;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.RecruitmentStack;
+import com.ludo.study.studymatchingplatform.study.domain.stack.StackCategory;
 import com.ludo.study.studymatchingplatform.study.fixture.CategoryFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.RecruitmentFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.RecruitmentStackFixture;
+import com.ludo.study.studymatchingplatform.study.fixture.StackCategoryFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.StackFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.StudyFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.UserFixture;
@@ -61,36 +64,44 @@ class PopularRecruitmentsFindServiceTest {
 		Category algorithm = CategoryFixture.createCategory("코딩테스트");
 		Category interview = CategoryFixture.createCategory("모의면접");
 
+		StackCategory backend = StackCategoryFixture.createStackCategory("백엔드");
 		RecruitmentStack spring = RecruitmentStackFixture.createRecruitmentStack(
-				StackFixture.createStack("spring")
+				StackFixture.createStack("spring", backend)
 		);
 		userRepository.save(user);
 		categoryRepository.save(project);
 		categoryRepository.save(algorithm);
 		categoryRepository.save(interview);
 
-		Study studyA = StudyFixture.createStudy(StudyStatus.RECRUITING, "스터디A", Way.ONLINE, project, user, 5, 5);
-		Study studyB = StudyFixture.createStudy(StudyStatus.RECRUITING, "스터디B", Way.ONLINE, project, user, 5, 5);
-		Study studyC = StudyFixture.createStudy(StudyStatus.RECRUITING, "스터디C", Way.ONLINE, project, user, 5, 5);
-		Study studyD = StudyFixture.createStudy(StudyStatus.RECRUITING, "스터디D", Way.ONLINE, project, user, 5, 5);
-		Study studyE = StudyFixture.createStudy(StudyStatus.RECRUITING, "스터디E", Way.ONLINE, algorithm, user, 5, 5);
-		Study studyF = StudyFixture.createStudy(StudyStatus.RECRUITING, "스터디F", Way.ONLINE, algorithm, user, 5, 5);
-		Study studyG = StudyFixture.createStudy(StudyStatus.RECRUITING, "스터디G", Way.ONLINE, interview, user, 5, 5);
+		Study studyA = StudyFixture.createStudy(StudyStatus.RECRUITING, "스터디A", Way.ONLINE, project, user, 5, 5,
+				Platform.GATHER);
+		Study studyB = StudyFixture.createStudy(StudyStatus.RECRUITING, "스터디B", Way.ONLINE, project, user, 5, 5,
+				Platform.GATHER);
+		Study studyC = StudyFixture.createStudy(StudyStatus.RECRUITING, "스터디C", Way.ONLINE, project, user, 5, 5,
+				Platform.GATHER);
+		Study studyD = StudyFixture.createStudy(StudyStatus.RECRUITING, "스터디D", Way.ONLINE, project, user, 5, 5,
+				Platform.GATHER);
+		Study studyE = StudyFixture.createStudy(StudyStatus.RECRUITING, "스터디E", Way.ONLINE, algorithm, user, 5, 5,
+				Platform.GATHER);
+		Study studyF = StudyFixture.createStudy(StudyStatus.RECRUITING, "스터디F", Way.ONLINE, algorithm, user, 5, 5,
+				Platform.GATHER);
+		Study studyG = StudyFixture.createStudy(StudyStatus.RECRUITING, "스터디G", Way.ONLINE, interview, user, 5, 5,
+				Platform.GATHER);
 
 		Recruitment recruitmentA = RecruitmentFixture.createRecruitment(studyA, "모집공고A", "내용입니다.", 499, "call_url",
-				spring);
+				null);
 		Recruitment recruitmentB = RecruitmentFixture.createRecruitment(studyB, "모집공고B", "내용입니다.", 500, "call_url",
-				spring);
+				null);
 		Recruitment recruitmentC = RecruitmentFixture.createRecruitment(studyC, "모집공고C", "내용입니다.", 501, "call_url",
-				spring);
+				null);
 		Recruitment recruitmentD = RecruitmentFixture.createRecruitment(studyD, "모집공고D", "내용입니다.", 498, "call_url",
-				spring);
+				null);
 		Recruitment recruitmentE = RecruitmentFixture.createRecruitment(studyE, "모집공고E", "내용입니다.", 799, "call_url",
-				spring);
+				null);
 		Recruitment recruitmentF = RecruitmentFixture.createRecruitment(studyF, "모집공고F", "내용입니다.", 800, "call_url",
-				spring);
+				null);
 		Recruitment recruitmentG = RecruitmentFixture.createRecruitment(studyG, "모집공고G", "내용입니다.", 777, "call_url",
-				spring);
+				null);
 
 		studyRepository.save(studyA);
 		studyRepository.save(studyB);

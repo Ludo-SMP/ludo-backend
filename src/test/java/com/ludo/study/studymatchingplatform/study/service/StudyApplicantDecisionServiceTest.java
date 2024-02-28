@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ludo.study.studymatchingplatform.study.domain.Category;
 import com.ludo.study.studymatchingplatform.study.domain.Participant;
+import com.ludo.study.studymatchingplatform.study.domain.Platform;
 import com.ludo.study.studymatchingplatform.study.domain.Study;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Applicant;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.ApplicantStatus;
@@ -72,7 +73,7 @@ class StudyApplicantDecisionServiceTest {
 
 		Category project = saveCategory();
 
-		Study study = StudyFixture.createStudy("스터디A", project, owner, 5);
+		Study study = StudyFixture.createStudy("스터디A", project, owner, 5, Platform.GATHER);
 		Recruitment recruitment = RecruitmentFixture.createRecruitment(study, "지원공고", "내용", 5, "callurl", null);
 		study.registerRecruitment(recruitment);
 
@@ -111,7 +112,7 @@ class StudyApplicantDecisionServiceTest {
 
 		Category project = saveCategory();
 
-		Study study = StudyFixture.createStudy("스터디A", project, owner, 5);
+		Study study = StudyFixture.createStudy("스터디A", project, owner, 5, Platform.GATHER);
 		Recruitment recruitment = RecruitmentFixture.createRecruitment(study, "지원공고", "내용", 5, "callurl", null);
 		study.registerRecruitment(recruitment);
 
