@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ludo.study.studymatchingplatform.auth.common.AuthUser;
 import com.ludo.study.studymatchingplatform.auth.common.IsAuthenticated;
+import com.ludo.study.studymatchingplatform.study.controller.dto.response.BaseApiResponse;
 import com.ludo.study.studymatchingplatform.study.domain.Study;
 import com.ludo.study.studymatchingplatform.study.domain.StudyStatus;
 import com.ludo.study.studymatchingplatform.study.service.RecruitmentDeleteService;
@@ -24,6 +25,7 @@ import com.ludo.study.studymatchingplatform.study.service.StudyService;
 import com.ludo.study.studymatchingplatform.study.service.StudyStatusService;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.WriteStudyRequest;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.StudyDetailsResponse;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.StudyResponse;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.WriteStudyResponse;
 import com.ludo.study.studymatchingplatform.user.domain.User;
 
@@ -42,10 +44,12 @@ public class StudyController {
 
 	@IsAuthenticated
 	@PostMapping
-	public ResponseEntity<WriteStudyResponse> create(@RequestBody final WriteStudyRequest request,
-													 @AuthUser final User user) {
+	public ResponseEntity<BaseApiResponse<StudyResponse>> create(@RequestBody final WriteStudyRequest request,
+																 @AuthUser final User user) {
 		final Study study = studyCreateService.create(request, user);
-		return ResponseEntity.status(HttpStatus.CREATED).body(WriteStudyResponse.from(study));
+		final StudyResponse response = StudyResponse.from(study);
+
+		return ResponseEntity.ok(BaseApiResponse.success("스터디 생성이 완료되었습니다.", response));
 	}
 
 	@IsAuthenticated

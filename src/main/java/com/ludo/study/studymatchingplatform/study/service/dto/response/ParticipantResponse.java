@@ -8,19 +8,9 @@ import lombok.Builder;
 @Builder
 public record ParticipantResponse(
 
-		UserResponse user,
-		WriteStudyResponse study
+		UserResponse user
 
 ) {
-
-	public static ParticipantResponse from(final Participant participant) {
-		final UserResponse userResponse = UserResponse.from(participant.getUser());
-		final WriteStudyResponse studyResponse = WriteStudyResponse.from(participant.getStudy());
-		return ParticipantResponse.builder()
-				.user(userResponse)
-				.study(studyResponse)
-				.build();
-	}
 
 	public static ParticipantResponse fromWithOutStudyResponse(final Participant participant) {
 		final UserResponse userResponse = UserResponse.from(participant.getUser());
