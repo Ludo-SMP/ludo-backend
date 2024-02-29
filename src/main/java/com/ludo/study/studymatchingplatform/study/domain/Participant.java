@@ -8,8 +8,11 @@ import com.ludo.study.studymatchingplatform.common.entity.BaseEntity;
 import com.ludo.study.studymatchingplatform.study.domain.id.ParticipantId;
 import com.ludo.study.studymatchingplatform.user.domain.User;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
@@ -47,6 +50,10 @@ public class Participant extends BaseEntity {
 	)
 	private User user;
 
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false, columnDefinition = "char(10)")
+	private Role role;
+
 	@ManyToOne
 	@JoinColumn(name = "position_id")
 	private Position position;
@@ -59,12 +66,22 @@ public class Participant extends BaseEntity {
 		return participant;
 	}
 
-	public String getRole() {
+	public static Participant from(final Study study, final User user, final Position position, final Role role) {
+		final Participant participant = new Participant();
+		participant.study = study;
+		participant.user = user;
+		participant.role = role;
+		participant.position = position;
+		return participant;
+	}
+
+	public Role getRole() {
 		// TODO: Role spec not determined clearly
+		// TODO: First of all, I reflected it in my own way
 		if (study.isOwner(this)) {
-			return "Owner";
+			return Role.OWNER;
 		}
-		return "Participant";
+		return Role.MEMBER;
 	}
 
 	public boolean matchesUser(final User user) {
