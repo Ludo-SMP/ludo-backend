@@ -1,6 +1,5 @@
 package com.ludo.study.studymatchingplatform.study.controller;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -61,9 +60,10 @@ public class StudyController {
 	}
 
 	@DeleteMapping("/{studyId}/participants")
-	public ResponseEntity<Void> leave(@AuthUser final User user, @PathVariable("studyId") final Long studyId) {
+	public ResponseEntity<BaseApiResponse<Void>> leave(@AuthUser final User user,
+													   @PathVariable("studyId") final Long studyId) {
 		studyService.leave(user, studyId);
-		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		return ResponseEntity.ok(BaseApiResponse.success("스터디 탈퇴가 완료되었습니다.", null));
 	}
 
 	@GetMapping("/{studyId}")
