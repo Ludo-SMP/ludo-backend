@@ -267,7 +267,7 @@ public class Recruitment extends BaseEntity {
 				.toList();
 	}
 
-	private List<Position> getPositions() {
+	public List<Position> getPositions() {
 		return recruitmentPositions.stream()
 				.map(RecruitmentPosition::getPosition)
 				.toList();
@@ -341,13 +341,13 @@ public class Recruitment extends BaseEntity {
 		return Objects.equals(this.id, recruitmentId);
 	}
 
-    public void validateDuplicatePositions(final List<Position> positions) {
-        final boolean isDuplicatePosition = this.recruitmentPositions.stream()
-            .anyMatch(r -> positions.contains(r.getPosition()));
-        if (isDuplicatePosition) {
-            throw new IllegalArgumentException("이미 존재하는 포지션입니다.");
-        }
-    }
+	public void validateDuplicatePositions(final List<Position> positions) {
+		final boolean isDuplicatePosition = this.recruitmentPositions.stream()
+				.anyMatch(r -> positions.contains(r.getPosition()));
+		if (isDuplicatePosition) {
+			throw new IllegalArgumentException("이미 존재하는 포지션입니다.");
+		}
+	}
 
 	public void validateDuplicateStacks(final List<Stack> stacks) {
 		final boolean isDuplicateStack = this.recruitmentStacks.stream()
@@ -355,6 +355,12 @@ public class Recruitment extends BaseEntity {
 		if (isDuplicateStack) {
 			throw new IllegalArgumentException("이미 존재하는 스택입니다.");
 		}
+	}
+
+	public int getApplicantsCount() {
+		return (int)applicants.stream()
+				.filter(Applicant::isActive)
+				.count();
 	}
 
 }

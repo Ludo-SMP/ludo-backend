@@ -105,4 +105,7 @@ public class Applicant extends BaseEntity {
 		}
 	}
 
+	public boolean isActive() {
+		return !isDeleted();
+	}
 }

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ludo.study.studymatchingplatform.auth.common.AuthUser;
@@ -45,8 +46,8 @@ import com.ludo.study.studymatchingplatform.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-@RestController
 @Slf4j
+@RestController
 @RequestMapping
 @RequiredArgsConstructor
 public class RecruitmentController {
@@ -100,31 +101,34 @@ public class RecruitmentController {
 
 	@IsAuthenticated
 	@PostMapping("/studies/{studyId}/recruitments")
-	public ResponseEntity<WriteRecruitmentResponse> write(@RequestBody final WriteRecruitmentRequest request,
+	@ResponseStatus(HttpStatus.CREATED)
+	public ResponseEntity<BaseApiResponse<WriteRecruitmentResponse>> write(@RequestBody final WriteRecruitmentRequest request,
 														  @AuthUser final User user) {
 		final Recruitment recruitment = recruitmentService.write(user, request);
+		final WriteRecruitmentResponse response = WriteRecruitmentResponse.from(recruitment);
 
-		return ResponseEntity.status(HttpStatus.CREATED).body(WriteRecruitmentResponse.from(recruitment));
+		return ResponseEntity.ok(BaseApiResponse.success("모집 공고 작성 성공", response));
 	}
 
-	@Profile("test")
 	@IsAuthenticated
 	@PutMapping("/studies/{studyId}/recruitments")
-	public ResponseEntity<EditRecruitmentResponse> edit(@AuthUser final User user,
-														@PathVariable("studyId") final Long studyId,
-														@PathVariable("recruitmentId") final Long recruitmentId,
-														@RequestBody final EditRecruitmentRequest request) {
+	public ResponseEntity<BaseApiResponse<EditRecruitmentResponse>> edit(@AuthUser final User user,
+																		 @PathVariable("studyId") final Long studyId,
+																		 @PathVariable("recruitmentId") final Long recruitmentId,
+																		 @RequestBody final EditRecruitmentRequest request) {
 		final Recruitment recruitment = recruitmentService.edit(user, recruitmentId, request);
-		return ResponseEntity.status(HttpStatus.OK).body(EditRecruitmentResponse.from(recruitment));
+		return ResponseEntity.ok(BaseApiResponse.success("모집 공고 수정", EditRecruitmentResponse.from(recruitment)));
 	}
 
 	@IsAuthenticated
 	@PostMapping("/studies/{studyId}/recruitments/{recruitmentId}/apply")
-	public ResponseEntity<ApplyRecruitmentResponse> apply(@PathVariable("recruitmentId") final Long recruitmentId,
-														  @RequestBody final ApplyRecruitmentRequest request,
-														  @AuthUser final User user) {
+	@ResponseStatus(HttpStatus.CREATED)
+	public ResponseEntity<BaseApiResponse<ApplyRecruitmentResponse>> apply(
+			@PathVariable("recruitmentId") final Long recruitmentId,
+			@RequestBody final ApplyRecruitmentRequest request,
+			@AuthUser final User user) {
 		final Applicant applicant = recruitmentService.apply(user, recruitmentId, request);
-		return ResponseEntity.status(HttpStatus.CREATED).body(ApplyRecruitmentResponse.from(applicant));
+		return ResponseEntity.ok(BaseApiResponse.success("지원 성공", ApplyRecruitmentResponse.from(applicant)));
 	}
 
 	@IsAuthenticated
@@ -144,16 +148,16 @@ public class RecruitmentController {
 
 	@IsAuthenticated
 	@PostMapping("/studies/{studyId}/recruitments/{recruitmentId}/apply-refuse/{applicantUserId}")
-	public ResponseEntity<BaseApiResponse> applicantRefuse(@AuthUser final User user,
-														   @PathVariable final Long studyId,
-														   @PathVariable Long recruitmentId,
-														   @PathVariable Long applicantUserId) {
+	public ResponseEntity<BaseApiResponse<Void>> applicantRefuse(@AuthUser final User user,
+																 @PathVariable final Long studyId,
+																 @PathVariable Long recruitmentId,
+																 @PathVariable Long applicantUserId) {
 
 		final StudyApplicantDecisionRequest studyApplicantDecisionRequest = new StudyApplicantDecisionRequest(studyId,
 				recruitmentId, applicantUserId);
 		applicantDecisionService.applicantReject(user, studyApplicantDecisionRequest);
 
-		return ResponseEntity.ok(new BaseApiResponse(true, "지원자 거절 성공", null));
+		return ResponseEntity.ok(new BaseApiResponse<>(true, "지원자 거절 성공", null));
 	}
 
 	@DeleteMapping("/studies/{studyId}/recruitments")
