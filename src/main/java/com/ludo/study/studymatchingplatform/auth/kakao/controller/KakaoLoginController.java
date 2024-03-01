@@ -53,7 +53,7 @@ public class KakaoLoginController {
 		final String accessToken = jwtTokenProvider.createAccessToken(AuthUserPayload.from(user));
 		final UserResponse userResponse = UserResponse.from(user);
 		cookieProvider.setAuthCookie(accessToken, response);
-		// response.sendRedirect("https://local.ludoapi.store:3000");
+		response.sendRedirect("https://local.ludoapi.store:3000");
 		return ResponseEntity.ok(BaseApiResponse.success("로그인 성공", userResponse));
 	}
 
