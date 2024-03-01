@@ -136,9 +136,9 @@ class StudyApplicantDecisionServiceTest {
 	}
 
 	private void assertParticipantResponse(ParticipantResponse participantResponse, User other) {
-		assertThat(participantResponse.participant().nickname()).isEqualTo("other");
-		assertThat(participantResponse.participant().email()).isEqualTo("other@gmail.com");
-		assertThat(participantResponse.participant().id()).isEqualTo(other.getId());
+		assertThat(participantResponse.participant().user().nickname()).isEqualTo("other");
+		assertThat(participantResponse.participant().user().email()).isEqualTo("other@gmail.com");
+		assertThat(participantResponse.participant().user().id()).isEqualTo(other.getId());
 	}
 
 	private static void assertApplicantStatus(Applicant findApplicant, ApplicantStatus applicantStatus) {
