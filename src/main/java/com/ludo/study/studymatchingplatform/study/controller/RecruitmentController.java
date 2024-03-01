@@ -20,6 +20,8 @@ import com.ludo.study.studymatchingplatform.auth.common.IsAuthenticated;
 import com.ludo.study.studymatchingplatform.study.controller.dto.response.BaseApiResponse;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Applicant;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
+import com.ludo.study.studymatchingplatform.study.repository.dto.request.RecruitmentFindCond;
+import com.ludo.study.studymatchingplatform.study.repository.dto.request.RecruitmentFindCursor;
 import com.ludo.study.studymatchingplatform.study.service.PopularRecruitmentsFindService;
 import com.ludo.study.studymatchingplatform.study.service.RecruitmentDetailsFindService;
 import com.ludo.study.studymatchingplatform.study.service.RecruitmentService;
@@ -57,9 +59,18 @@ public class RecruitmentController {
 
 	@GetMapping("/recruitments")
 	public ResponseEntity<BaseApiResponse<RecruitmentPreviewResponses>> readRecruitments(
-			@RequestParam(required = false) Long last, @RequestParam Integer count) {
+			@RequestParam(required = false) Long last,
+			@RequestParam Integer count,
+			@RequestParam(required = false) Long category,
+			@RequestParam(required = false) String way,
+			@RequestParam(required = false) Long position,
+			@RequestParam(required = false) List<Long> stacks) {
 
-		final List<RecruitmentPreviewResponse> recruitments = recruitmentsFindService.findRecruitments(last, count);
+		final RecruitmentFindCursor recruitmentFindCursor = new RecruitmentFindCursor(last, count);
+		final RecruitmentFindCond recruitmentFindCond = new RecruitmentFindCond(category, stacks, position, way);
+
+		final List<RecruitmentPreviewResponse> recruitments = recruitmentsFindService.findRecruitments(
+				recruitmentFindCursor, recruitmentFindCond);
 		final RecruitmentPreviewResponses recruitmentPreviewResponses = new RecruitmentPreviewResponses(recruitments);
 
 		return ResponseEntity.ok(BaseApiResponse.success("모집 공고 목록 조회 성공", recruitmentPreviewResponses));
