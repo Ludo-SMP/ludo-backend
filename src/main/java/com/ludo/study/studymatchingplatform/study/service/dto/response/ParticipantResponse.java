@@ -8,14 +8,14 @@ import lombok.Builder;
 @Builder
 public record ParticipantResponse(
 
-		UserResponse user
+		UserResponse participant
 
 ) {
 
 	public static ParticipantResponse fromWithOutStudyResponse(final Participant participant) {
 		final UserResponse userResponse = UserResponse.from(participant.getUser());
 		return ParticipantResponse.builder()
-				.user(userResponse)
+				.participant(userResponse)
 				.build();
 	}
 

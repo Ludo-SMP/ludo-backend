@@ -75,12 +75,12 @@ class RecruitmentDetailsFindServiceTest {
 		RecruitmentDetailsResponse recruitmentDetailsResponse = recruitmentDetailsFindService
 				.findRecruitmentDetails(saveRecruitment.getId());
 		// then
-		assertThat(recruitmentDetailsResponse.title()).isEqualTo(RECRUITMENT_TITLE);
-		assertThat(recruitmentDetailsResponse.ownerNickname()).isEqualTo(NICKNAME);
-		assertThat(recruitmentDetailsResponse.way()).isEqualTo(Way.ONLINE.toString());
-		assertThat(recruitmentDetailsResponse.category()).isEqualTo(CATEGORY);
-		assertThat(recruitmentDetailsResponse.positions()).contains("백엔드");
-		assertThat(recruitmentDetailsResponse.stacks()).contains("spring", "react");
+		assertThat(recruitmentDetailsResponse.recruitment().title()).isEqualTo(RECRUITMENT_TITLE);
+		assertThat(recruitmentDetailsResponse.recruitment().ownerNickname()).isEqualTo(NICKNAME);
+		assertThat(recruitmentDetailsResponse.recruitment().way()).isEqualTo(Way.ONLINE.toString());
+		assertThat(recruitmentDetailsResponse.recruitment().category()).isEqualTo(CATEGORY);
+		assertThat(recruitmentDetailsResponse.recruitment().positions()).contains("백엔드");
+		assertThat(recruitmentDetailsResponse.recruitment().stacks()).contains("spring", "react");
 	}
 
 	@Test
