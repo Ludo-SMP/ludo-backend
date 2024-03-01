@@ -19,6 +19,8 @@ import com.ludo.study.studymatchingplatform.study.domain.StudyStatus;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Applicant;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.ApplicantStatus;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.RecruitmentPosition;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.RecruitmentStack;
 import com.ludo.study.studymatchingplatform.study.domain.stack.Stack;
 import com.ludo.study.studymatchingplatform.study.domain.stack.StackCategory;
 import com.ludo.study.studymatchingplatform.study.fixture.CategoryFixture;
@@ -27,6 +29,7 @@ import com.ludo.study.studymatchingplatform.study.fixture.RecruitmentFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.StackCategoryFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.StackFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.StudyFixture;
+import com.ludo.study.studymatchingplatform.study.fixture.UserFixture;
 import com.ludo.study.studymatchingplatform.study.repository.CategoryRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.PositionRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.StudyRepositoryImpl;
@@ -39,6 +42,8 @@ import com.ludo.study.studymatchingplatform.study.service.dto.request.WriteRecru
 import com.ludo.study.studymatchingplatform.user.domain.Social;
 import com.ludo.study.studymatchingplatform.user.domain.User;
 import com.ludo.study.studymatchingplatform.user.repository.UserRepositoryImpl;
+
+import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
 @Transactional

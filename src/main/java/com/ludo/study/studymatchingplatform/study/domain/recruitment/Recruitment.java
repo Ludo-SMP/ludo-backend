@@ -251,10 +251,7 @@ public class Recruitment extends BaseEntity {
 		study.ensureRecruiting();
 	}
 
-	public void updateStacks(final Set<Stack> nextStacks) {
-	}
-
-	public List<Stack> getAddedRecruitmentStacks(final Set<Stack> nextStacks) {
+	public List<Stack> getAddedStacks(final Set<Stack> nextStacks) {
 		final List<Stack> stacks = getStacks();
 
 		return nextStacks.stream()
@@ -262,13 +259,47 @@ public class Recruitment extends BaseEntity {
 				.toList();
 	}
 
-	public List<Stack> getRemovedRecruitmentStacks(final Set<Stack> nextStacks) {
-		final List<Stack> prevStacks = getStacks();
+	public List<Position> getAddedPositions(final Set<Position> nextPositions) {
+		final List<Position> prevPositions = getPositions();
 
-		return prevStacks.stream()
-				.filter(nextStacks::contains)
+		return nextPositions.stream()
+				.filter(nextPosition -> !prevPositions.contains(nextPosition))
 				.toList();
 	}
+
+	private List<Position> getPositions() {
+		return recruitmentPositions.stream()
+				.map(RecruitmentPosition::getPosition)
+				.toList();
+	}
+
+	public void removeRecruitmentPositionsNotIn(final Set<Position> nextPositions) {
+		final List<Position> prevPositions = getPositions();
+
+		for (final Position prevPosition : prevPositions) {
+			if (!nextPositions.contains(prevPosition)) {
+				recruitmentPositions.removeIf(recruitmentPosition -> recruitmentPosition.hasPosition(prevPosition));
+			}
+		}
+	}
+
+	public void removeRecruitmentStacksNotIn(final Set<Stack> nextStacks) {
+		final List<Stack> prevStacks = getStacks();
+
+		for (final Stack prevStack : prevStacks) {
+			if (!nextStacks.contains(prevStack)) {
+				recruitmentStacks.removeIf(recruitmentStack -> recruitmentStack.hasStack(prevStack));
+			}
+		}
+	}
+
+	// public List<Stack> removeRecruitmentStacksNotIn(final Set<Stack> nextStacks) {
+	// 	final List<Stack> prevStacks = getStacks();
+	//
+	// 	return prevStacks.stream()
+	// 			.filter(nextStacks::contains)
+	// 			.toList();
+	// }
 
 	public List<Stack> getStacks() {
 		return recruitmentStacks.stream()
@@ -308,6 +339,22 @@ public class Recruitment extends BaseEntity {
 
 	public boolean isIdEquals(final Long recruitmentId) {
 		return Objects.equals(this.id, recruitmentId);
+	}
+
+    public void validateDuplicatePositions(final List<Position> positions) {
+        final boolean isDuplicatePosition = this.recruitmentPositions.stream()
+            .anyMatch(r -> positions.contains(r.getPosition()));
+        if (isDuplicatePosition) {
+            throw new IllegalArgumentException("이미 존재하는 포지션입니다.");
+        }
+    }
+
+	public void validateDuplicateStacks(final List<Stack> stacks) {
+		final boolean isDuplicateStack = this.recruitmentStacks.stream()
+				.anyMatch(r -> stacks.contains(r.getStack()));
+		if (isDuplicateStack) {
+			throw new IllegalArgumentException("이미 존재하는 스택입니다.");
+		}
 	}
 
 }
