@@ -149,7 +149,6 @@ public class RecruitmentController {
 	public ResponseEntity<BaseApiResponse<DeleteRecruitmentResponse>> delete(@PathVariable Long studyId,
 																			 @AuthUser final User user) {
 		recruitmentService.delete(user, studyId);
-		// return ResponseEntity.status(HttpStatus.OK).body(DeleteRecruitmentResponse.from("모집 공고가 비활성화 되었습니다."));
 		return ResponseEntity.ok(BaseApiResponse.success("모집 공고가 비활성화 되었습니다.", null));
 	}
 
