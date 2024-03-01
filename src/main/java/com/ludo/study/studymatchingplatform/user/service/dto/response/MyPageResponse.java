@@ -10,10 +10,10 @@ import lombok.Builder;
 @Builder
 public record MyPageResponse(
 
-		UserResponse userResponse,
-		List<ParticipateStudyResponse> participateStudiesResponse,
-		List<ApplicantRecruitmentResponse> applicantRecruitmentsResponse,
-		List<CompletedStudyResponse> completedStudiesResponse
+		UserResponse user,
+		List<ParticipateStudyResponse> participateStudies,
+		List<ApplicantRecruitmentResponse> applicantRecruitments,
+		List<CompletedStudyResponse> completedStudies
 
 ) {
 
@@ -28,8 +28,7 @@ public record MyPageResponse(
 				.toList();
 
 		final List<ApplicantRecruitmentResponse> recruitments = applicants.stream()
-				.map(applicant ->
-						ApplicantRecruitmentResponse.from(applicant))
+				.map(ApplicantRecruitmentResponse::from)
 				.toList();
 
 		final List<CompletedStudyResponse> completed = completedStudies.stream()
@@ -38,10 +37,10 @@ public record MyPageResponse(
 				.toList();
 
 		return MyPageResponse.builder()
-				.userResponse(user)
-				.participateStudiesResponse(studies)
-				.applicantRecruitmentsResponse(recruitments)
-				.completedStudiesResponse(completed)
+				.user(user)
+				.participateStudies(studies)
+				.applicantRecruitments(recruitments)
+				.completedStudies(completed)
 				.build();
 	}
 

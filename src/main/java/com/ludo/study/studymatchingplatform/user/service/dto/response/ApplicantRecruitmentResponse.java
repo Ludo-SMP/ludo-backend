@@ -11,17 +11,17 @@ public record ApplicantRecruitmentResponse(
 
 		Long recruitmentId,
 		String title,
-		PositionResponse positionResponse,
+		PositionResponse position,
 		ApplicantStatus applicantStatus
 
 ) {
 
 	public static ApplicantRecruitmentResponse from(final Applicant applicant) {
-		final PositionResponse position = PositionResponse.from(applicant.getPosition());
+		final PositionResponse positionResponse = PositionResponse.from(applicant.getPosition());
 		return ApplicantRecruitmentResponse.builder()
 				.recruitmentId(applicant.getRecruitment().getId())
 				.title(applicant.getRecruitment().getTitle())
-				.positionResponse(position)
+				.position(positionResponse)
 				.applicantStatus(applicant.getApplicantStatus())
 				.build();
 	}

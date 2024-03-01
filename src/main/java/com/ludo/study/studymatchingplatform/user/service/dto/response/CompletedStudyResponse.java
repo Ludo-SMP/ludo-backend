@@ -13,7 +13,7 @@ public record CompletedStudyResponse(
 
 		Long studyId,
 		String title,
-		PositionResponse positionResponse,
+		PositionResponse position,
 		LocalDateTime startDateTime,
 		LocalDateTime endDateTime,
 		Integer participantCount
@@ -21,11 +21,11 @@ public record CompletedStudyResponse(
 ) {
 
 	public static CompletedStudyResponse from(final Study study, final Position pos) {
-		final PositionResponse position = PositionResponse.from(pos);
+		final PositionResponse positionResponse = PositionResponse.from(pos);
 		return CompletedStudyResponse.builder()
 				.studyId(study.getId())
 				.title(study.getTitle())
-				.positionResponse(position)
+				.position(positionResponse)
 				.startDateTime(study.getStartDateTime())
 				.endDateTime(study.getEndDateTime())
 				.participantCount(study.getParticipantCount())

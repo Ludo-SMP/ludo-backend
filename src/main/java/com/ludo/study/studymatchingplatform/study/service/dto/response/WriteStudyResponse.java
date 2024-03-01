@@ -24,7 +24,7 @@ public record WriteStudyResponse(
 		LocalDateTime startDateTime,
 		LocalDateTime endDateTime,
 		CategoryResponse category,
-		UserResponse owner,
+		UserResponse.InnerUserResponse owner,
 		List<ParticipantUserResponse> participants
 
 ) {
@@ -35,7 +35,7 @@ public record WriteStudyResponse(
 				.toList();
 
 		final CategoryResponse category = CategoryResponse.from(study.getCategory());
-		final UserResponse owner = UserResponse.from(study.getOwner());
+		final UserResponse.InnerUserResponse owner = UserResponse.InnerUserResponse.from(study.getOwner());
 
 		return WriteStudyResponse.builder()
 				.id(study.getId())
