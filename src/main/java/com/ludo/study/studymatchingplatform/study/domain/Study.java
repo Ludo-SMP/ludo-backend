@@ -97,6 +97,7 @@ public class Study extends BaseEntity {
 	public void registerRecruitment(final Recruitment recruitment) {
 		this.recruitment = recruitment;
 		this.recruitment.connectToStudy(this);
+
 	}
 
 	public void changeStatus(final StudyStatus status) {
