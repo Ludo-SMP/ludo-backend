@@ -58,5 +58,11 @@ jwt:
     secret-key: ${JWT_SECRET_KEY}
     access-token-expiresin: ${JWT_ACCESS_TOKEN_EXPIRES_IN}
 
+client:
+  scheme: https
+  domain: local.ludoapi.store
+  port: 3000
+  url: ${client.scheme}://${client.domain}:${client.port}
+
 server:
-  port: 80
+  port: ${PORT}

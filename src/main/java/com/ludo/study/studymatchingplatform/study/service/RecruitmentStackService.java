@@ -23,19 +23,25 @@ public class RecruitmentStackService {
 
 	public void addMany(final Recruitment recruitment, final Set<Long> stackIds) {
 		final List<Stack> stacks = stackService.findAllByIdsOrThrow(stackIds);
+		addRecruitmentStacksIn(recruitment, stacks);
+	}
+
+	public void update(final Recruitment recruitment, final Set<Long> stackIds) {
+		final Set<Stack> nextStacks = stackRepository.findByIdIn(stackIds);
+		final List<Stack> addedStacks = recruitment.getAddedStacks(nextStacks);
+
+		addRecruitmentStacksIn(recruitment, addedStacks);
+		recruitment.removeRecruitmentStacksNotIn(nextStacks);
+	}
+
+	private void addRecruitmentStacksIn(final Recruitment recruitment, final List<Stack> stacks) {
+		recruitment.validateDuplicateStacks(stacks);
 
 		final List<RecruitmentStack> recruitmentStacks = stacks.stream()
 				.map(stack -> RecruitmentStack.from(recruitment, stack))
 				.toList();
 
 		recruitment.addRecruitmentStacks(recruitmentStackRepository.saveAll(recruitmentStacks));
-	}
-
-	public void update(final Recruitment recruitment, final Set<Long> stackIds) {
-		final Set<Stack> nextStacks = stackRepository.findByIdIn(stackIds);
-		recruitment.updateStacks(nextStacks);
-		// List<Stack> notExistStacks = recruitment.getRemovedStacks(nextStacks);
-		// List<Stack> notExistStacks = recruitment.getNotExistStacks(nextStacks);
 	}
 
 }

@@ -6,16 +6,20 @@ import com.ludo.study.studymatchingplatform.study.domain.Study;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
 
 public record RecruitmentDetailsResponse(
-		Long id, String title, List<String> stacks, List<String> positions,
-		String platformUrl, int applicantCount, String recruitmentEndDateTime,
-		String content, String createdDateTime,
-		String category, String ownerNickname, String way,
-		String startDateTime, String endDateTime
+		RecruitmentDetails recruitment
 ) {
 
-	public RecruitmentDetailsResponse(final Recruitment recruitment, final Study study) {
+	public record RecruitmentDetails(
+			Long id, String title, List<String> stacks, List<String> positions,
+			String platformUrl, int applicantCount, String recruitmentEndDateTime,
+			String content, String createdDateTime,
+			String category, String ownerNickname, String way,
+			String startDateTime, String endDateTime
+	) {
+	}
 
-		this(
+	public RecruitmentDetailsResponse(final Recruitment recruitment, final Study study) {
+		this(new RecruitmentDetails(
 				recruitment.getId(),
 				recruitment.getTitle(),
 				recruitment.getStackNames(),
@@ -30,8 +34,7 @@ public record RecruitmentDetailsResponse(
 				study.getOwnerNickname(),
 				study.getWay().name(),
 				study.getStartDateTime().toString(),
-				study.getEndDateTime().toString()
-		);
+				study.getEndDateTime().toString()));
 	}
 
 }

@@ -12,6 +12,7 @@ import jakarta.persistence.MappedSuperclass;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 @Getter
@@ -19,6 +20,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
+@ToString(of = "createdDateTime")
 public abstract class BaseEntity {
 
 	@CreatedDate
@@ -36,4 +38,7 @@ public abstract class BaseEntity {
 		return deletedDateTime != null;
 	}
 
+	public void softDelete() {
+		deletedDateTime = LocalDateTime.now();
+	}
 }

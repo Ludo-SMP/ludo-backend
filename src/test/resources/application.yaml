@@ -1,10 +1,7 @@
-logging.level:
-
-  org.hibernate.SQL: debug
-
-  org.hibernate.type: trace
-
 spring:
+  profiles:
+    active: local
+    default: local
 
   devtools:
     livereload:
@@ -26,8 +23,6 @@ spring:
         format_sql: true
         default_batch_fetch_size: 1000
     show-sql: true
-
-
 
 oauth2:
   client:
@@ -68,3 +63,16 @@ jwt:
   token:
     secret-key: ${JWT_SECRET_KEY}
     access-token-expiresin: ${JWT_ACCESS_TOKEN_EXPIRES_IN}
+
+client:
+  scheme: http
+  domain: localhost
+  port: 3000
+  url: ${client.scheme}://${client.domain}:${client.port}
+
+logging.level:
+  org.hibernate.SQL: debug
+  org.hibernate.type: trace
+
+server:
+  port: ${PORT}

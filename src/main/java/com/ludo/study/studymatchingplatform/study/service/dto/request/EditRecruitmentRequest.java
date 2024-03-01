@@ -1,4 +1,4 @@
-package com.ludo.study.studymatchingplatform.study.service.dto;
+package com.ludo.study.studymatchingplatform.study.service.dto.request;
 
 import java.time.LocalDateTime;
 import java.util.Set;

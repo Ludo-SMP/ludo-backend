@@ -3,6 +3,7 @@ package com.ludo.study.studymatchingplatform.study.domain.recruitment;
 import static jakarta.persistence.FetchType.*;
 
 import com.ludo.study.studymatchingplatform.common.entity.BaseEntity;
+import com.ludo.study.studymatchingplatform.study.domain.Position;
 import com.ludo.study.studymatchingplatform.study.domain.StudyStatus;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.id.ApplicantId;
 import com.ludo.study.studymatchingplatform.user.domain.User;
@@ -43,14 +44,19 @@ public class Applicant extends BaseEntity {
 	@JoinColumn(name = "recruitment_id")
 	private Recruitment recruitment;
 
+	@ManyToOne
+	@JoinColumn(name = "position_id")
+	private Position position;
+
 	@Enumerated(EnumType.STRING)
 	@Column(name = "status", nullable = false, columnDefinition = "char(10)")
 	private ApplicantStatus applicantStatus;
 
-	public static Applicant of(final Recruitment recruitment, final User user) {
+	public static Applicant of(final Recruitment recruitment, final User user, final Position position) {
 		return Applicant.builder()
 				.recruitment(recruitment)
 				.user(user)
+				.position(position)
 				.applicantStatus(ApplicantStatus.UNCHECKED)
 				.build();
 	}
@@ -75,6 +81,7 @@ public class Applicant extends BaseEntity {
 	}
 
 	public void connectToRecruitment(final Recruitment recruitment) {
+		System.out.println("현재 recruitment = " + recruitment);
 		this.recruitment = recruitment;
 	}
 
@@ -96,5 +103,9 @@ public class Applicant extends BaseEntity {
 		if (applicantStatus == ApplicantStatus.CANCELLED) {
 			throw new IllegalStateException("이미 지원 취소된 모집 공고입니다.");
 		}
+	}
+
+	public boolean isActive() {
+		return !isDeleted();
 	}
 }

@@ -5,6 +5,7 @@ import static jakarta.persistence.FetchType.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -14,6 +15,7 @@ import org.hibernate.annotations.SQLRestriction;
 import com.ludo.study.studymatchingplatform.common.entity.BaseEntity;
 import com.ludo.study.studymatchingplatform.study.domain.Position;
 import com.ludo.study.studymatchingplatform.study.domain.Study;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.id.ApplicantId;
 import com.ludo.study.studymatchingplatform.study.domain.stack.Stack;
 import com.ludo.study.studymatchingplatform.user.domain.User;
 
@@ -34,7 +36,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
+import lombok.extern.slf4j.Slf4j;
 
 @Entity
 @Getter
@@ -43,6 +47,8 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @SQLDelete(sql = "UPDATE recruitment SET deleted_date_time = NOW() WHERE recruitment_id = ?")
 @SQLRestriction("deleted_date_time is null")
+@ToString(of = {"id", "title"}, callSuper = true)
+@Slf4j
 public class Recruitment extends BaseEntity {
 
 	@Id
@@ -235,6 +241,7 @@ public class Recruitment extends BaseEntity {
 		return study.isOwner(user);
 	}
 
+	/** helper method */
 	public void addApplicant(final Applicant applicant) {
 		applicant.connectToRecruitment(this);
 		applicants.add(applicant);
@@ -244,10 +251,7 @@ public class Recruitment extends BaseEntity {
 		study.ensureRecruiting();
 	}
 
-	public void updateStacks(final Set<Stack> nextStacks) {
-	}
-
-	public List<Stack> getAddedRecruitmentStacks(final Set<Stack> nextStacks) {
+	public List<Stack> getAddedStacks(final Set<Stack> nextStacks) {
 		final List<Stack> stacks = getStacks();
 
 		return nextStacks.stream()
@@ -255,18 +259,108 @@ public class Recruitment extends BaseEntity {
 				.toList();
 	}
 
-	public List<Stack> getRemovedRecruitmentStacks(final Set<Stack> nextStacks) {
-		final List<Stack> prevStacks = getStacks();
+	public List<Position> getAddedPositions(final Set<Position> nextPositions) {
+		final List<Position> prevPositions = getPositions();
 
-		return prevStacks.stream()
-				.filter(nextStacks::contains)
+		return nextPositions.stream()
+				.filter(nextPosition -> !prevPositions.contains(nextPosition))
 				.toList();
 	}
+
+	public List<Position> getPositions() {
+		return recruitmentPositions.stream()
+				.map(RecruitmentPosition::getPosition)
+				.toList();
+	}
+
+	public void removeRecruitmentPositionsNotIn(final Set<Position> nextPositions) {
+		final List<Position> prevPositions = getPositions();
+
+		for (final Position prevPosition : prevPositions) {
+			if (!nextPositions.contains(prevPosition)) {
+				recruitmentPositions.removeIf(recruitmentPosition -> recruitmentPosition.hasPosition(prevPosition));
+			}
+		}
+	}
+
+	public void removeRecruitmentStacksNotIn(final Set<Stack> nextStacks) {
+		final List<Stack> prevStacks = getStacks();
+
+		for (final Stack prevStack : prevStacks) {
+			if (!nextStacks.contains(prevStack)) {
+				recruitmentStacks.removeIf(recruitmentStack -> recruitmentStack.hasStack(prevStack));
+			}
+		}
+	}
+
+	// public List<Stack> removeRecruitmentStacksNotIn(final Set<Stack> nextStacks) {
+	// 	final List<Stack> prevStacks = getStacks();
+	//
+	// 	return prevStacks.stream()
+	// 			.filter(nextStacks::contains)
+	// 			.toList();
+	// }
 
 	public List<Stack> getStacks() {
 		return recruitmentStacks.stream()
 				.map(RecruitmentStack::getStack)
 				.toList();
+	}
+
+	public void ensureCorrectApplicantUser(final User applicantUser) {
+		if (!containsApplicantUser(applicantUser)) {
+			throw new IllegalStateException("지원자 목록에 존재하지 않는 사용자입니다.");
+		}
+	}
+
+	private boolean containsApplicantUser(final User applicantUser) {
+		return applicants.stream()
+				.anyMatch(applicant -> applicant.getUser().equals(applicantUser));
+	}
+
+	public void acceptApplicant(final User applicantUser) {
+		final Applicant applicant = getApplicant(applicantUser);
+		applicant.changeStatus(ApplicantStatus.ACCEPTED);
+	}
+
+	public void rejectApplicant(final User applicantUser) {
+		final Applicant applicant = getApplicant(applicantUser);
+		applicant.changeStatus(ApplicantStatus.REJECTED);
+	}
+
+	public Applicant getApplicant(final User applicantUser) {
+		ApplicantId applicantId = new ApplicantId(id, applicantUser.getId());
+
+		return applicants.stream()
+				.filter(applicant -> applicant.getId().equals(applicantId))
+				.findFirst()
+				.orElseThrow(() -> new IllegalStateException("지원하지 않은 사용자입니다."));
+	}
+
+	public boolean isIdEquals(final Long recruitmentId) {
+		return Objects.equals(this.id, recruitmentId);
+	}
+
+	public void validateDuplicatePositions(final List<Position> positions) {
+		final boolean isDuplicatePosition = this.recruitmentPositions.stream()
+				.anyMatch(r -> positions.contains(r.getPosition()));
+		if (isDuplicatePosition) {
+			throw new IllegalArgumentException("이미 존재하는 포지션입니다.");
+		}
+	}
+
+	public void validateDuplicateStacks(final List<Stack> stacks) {
+		final boolean isDuplicateStack = this.recruitmentStacks.stream()
+				.anyMatch(r -> stacks.contains(r.getStack()));
+		if (isDuplicateStack) {
+			throw new IllegalArgumentException("이미 존재하는 스택입니다.");
+		}
+	}
+
+	public int getApplicantsCount() {
+		return (int)applicants.stream()
+				.filter(Applicant::isActive)
+				.count();
 	}
 
 }

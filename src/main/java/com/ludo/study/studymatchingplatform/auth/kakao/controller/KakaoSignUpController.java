@@ -14,8 +14,10 @@ import com.ludo.study.studymatchingplatform.auth.common.provider.CookieProvider;
 import com.ludo.study.studymatchingplatform.auth.common.provider.JwtTokenProvider;
 import com.ludo.study.studymatchingplatform.auth.kakao.service.KakaoSignUpService;
 import com.ludo.study.studymatchingplatform.auth.naver.repository.InMemoryClientRegistrationAndProviderRepository;
+import com.ludo.study.studymatchingplatform.study.controller.dto.response.BaseApiResponse;
 import com.ludo.study.studymatchingplatform.user.domain.Social;
 import com.ludo.study.studymatchingplatform.user.domain.User;
+import com.ludo.study.studymatchingplatform.user.service.dto.response.UserResponse;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -44,13 +46,15 @@ public class KakaoSignUpController {
 	}
 
 	@GetMapping("/kakao/callback")
-	public ResponseEntity kakaoSignUpCallback(@RequestParam(name = "code") String authorizationCode,
-											  final HttpServletResponse response) throws IOException {
+	public ResponseEntity<BaseApiResponse<UserResponse>> kakaoSignUpCallback(
+			@RequestParam(name = "code") String authorizationCode,
+			final HttpServletResponse response) throws IOException {
 		final User user = kakaoSignUpService.kakaoSignUp(authorizationCode);
 		final String accessToken = jwtTokenProvider.createAccessToken(AuthUserPayload.from(user));
+		final UserResponse userResponse = UserResponse.from(user);
 		cookieProvider.setAuthCookie(accessToken, response);
 		response.sendRedirect("https://local.ludoapi.store:3000");
-		return ResponseEntity.ok("success");
+		return ResponseEntity.ok(BaseApiResponse.success("회원가입 성공", userResponse));
 	}
 
 }

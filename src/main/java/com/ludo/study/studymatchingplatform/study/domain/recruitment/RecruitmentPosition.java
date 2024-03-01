@@ -57,4 +57,7 @@ public class RecruitmentPosition extends BaseEntity {
 		this.recruitment.addPosition(this);
 	}
 
+	public boolean hasPosition(final Position position) {
+		return this.position.equals(position);
+	}
 }
