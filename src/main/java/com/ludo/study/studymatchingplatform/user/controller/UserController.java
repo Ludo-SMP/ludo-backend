@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ludo.study.studymatchingplatform.auth.common.AuthUser;
 import com.ludo.study.studymatchingplatform.auth.common.Redirection;
 import com.ludo.study.studymatchingplatform.auth.common.provider.CookieProvider;
+import com.ludo.study.studymatchingplatform.study.controller.dto.BaseApiResponse;
 import com.ludo.study.studymatchingplatform.user.domain.User;
 import com.ludo.study.studymatchingplatform.user.service.UserService;
 import com.ludo.study.studymatchingplatform.user.service.dto.Me;
@@ -38,8 +39,9 @@ public class UserController {
 	}
 
 	@GetMapping("/users/me")
-	public ResponseEntity<Me> fetchMe(@AuthUser final User user) {
-		return new ResponseEntity<>(Me.from(user), HttpStatus.OK);
+	public ResponseEntity<BaseApiResponse<Me>> fetchMe(@AuthUser final User user) {
+		final Me response = Me.from(user);
+		return ResponseEntity.ok(BaseApiResponse.success("사용자 조회 성공", response));
 	}
 
 }
