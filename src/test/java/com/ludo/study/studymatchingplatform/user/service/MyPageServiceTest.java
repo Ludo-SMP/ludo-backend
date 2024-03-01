@@ -13,6 +13,7 @@ import com.ludo.study.studymatchingplatform.study.domain.Category;
 import com.ludo.study.studymatchingplatform.study.domain.Participant;
 import com.ludo.study.studymatchingplatform.study.domain.Platform;
 import com.ludo.study.studymatchingplatform.study.domain.Position;
+import com.ludo.study.studymatchingplatform.study.domain.Role;
 import com.ludo.study.studymatchingplatform.study.domain.Study;
 import com.ludo.study.studymatchingplatform.study.domain.StudyStatus;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
@@ -149,14 +150,14 @@ class MyPageServiceTest {
 		// 사용자1 -> 스터디1 참여
 		final Position position1 = positionRepository.findById(1L);
 		final Participant participant1 = participantRepository.save(
-				ParticipantFixture.createParticipant(study1, user1, position1)
+				ParticipantFixture.createParticipant(study1, user1, position1, Role.OWNER)
 		);
 		study1.addParticipant(participant1);
 
 		// 사용자1 -> 스터디2 참여
 		final Position position2 = positionRepository.findById(2L);
 		final Participant participant2 = participantRepository.save(
-				ParticipantFixture.createParticipant(study2, user1, position2)
+				ParticipantFixture.createParticipant(study2, user1, position2, Role.MEMBER)
 		);
 		study2.addParticipant(participant2);
 
