@@ -16,22 +16,22 @@ public record WriteStudyResponse(
 
 		Long id,
 		StudyStatus status,
-		CategoryResponse category,
-		UserResponse owner,
 		String title,
 		Platform platform,
-		List<ParticipantResponse> participants,
 		Way way,
 		Integer participantLimit,
 		Integer participantCount,
 		LocalDateTime startDateTime,
-		LocalDateTime endDateTime
+		LocalDateTime endDateTime,
+		CategoryResponse category,
+		UserResponse owner,
+		List<ParticipantUserResponse> participants
 
 ) {
 
 	public static WriteStudyResponse from(final Study study) {
-		final List<ParticipantResponse> participants = study.getParticipants().stream()
-				.map(participant -> ParticipantResponse.from(participant))
+		final List<ParticipantUserResponse> participants = study.getParticipants().stream()
+				.map(ParticipantUserResponse::from)
 				.toList();
 
 		final CategoryResponse category = CategoryResponse.from(study.getCategory());

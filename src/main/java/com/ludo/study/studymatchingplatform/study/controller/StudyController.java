@@ -1,6 +1,5 @@
 package com.ludo.study.studymatchingplatform.study.controller;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ludo.study.studymatchingplatform.auth.common.AuthUser;
 import com.ludo.study.studymatchingplatform.auth.common.IsAuthenticated;
+import com.ludo.study.studymatchingplatform.study.controller.dto.response.BaseApiResponse;
 import com.ludo.study.studymatchingplatform.study.domain.Study;
 import com.ludo.study.studymatchingplatform.study.domain.StudyStatus;
 import com.ludo.study.studymatchingplatform.study.service.RecruitmentDeleteService;
@@ -23,8 +23,7 @@ import com.ludo.study.studymatchingplatform.study.service.StudyFetchService;
 import com.ludo.study.studymatchingplatform.study.service.StudyService;
 import com.ludo.study.studymatchingplatform.study.service.StudyStatusService;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.WriteStudyRequest;
-import com.ludo.study.studymatchingplatform.study.service.dto.response.StudyDetailsResponse;
-import com.ludo.study.studymatchingplatform.study.service.dto.response.WriteStudyResponse;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.StudyResponse;
 import com.ludo.study.studymatchingplatform.user.domain.User;
 
 import lombok.RequiredArgsConstructor;
@@ -42,35 +41,38 @@ public class StudyController {
 
 	@IsAuthenticated
 	@PostMapping
-	public ResponseEntity<WriteStudyResponse> create(@RequestBody final WriteStudyRequest request,
-													 @AuthUser final User user) {
+	public ResponseEntity<BaseApiResponse<StudyResponse>> create(@RequestBody final WriteStudyRequest request,
+																 @AuthUser final User user) {
 		final Study study = studyCreateService.create(request, user);
-		return ResponseEntity.status(HttpStatus.CREATED).body(WriteStudyResponse.from(study));
+		final StudyResponse response = StudyResponse.from(study);
+		return ResponseEntity.ok(BaseApiResponse.success("스터디 생성이 완료되었습니다.", response));
 	}
 
 	@IsAuthenticated
 	@Transactional
 	@PatchMapping("/{studyId}")
-	public ResponseEntity<WriteStudyResponse> changeStatus(@PathVariable final Long studyId,
-														   @RequestParam("status") final StudyStatus status,
-														   @AuthUser final User user) {
+	public ResponseEntity<BaseApiResponse<StudyResponse>> changeStatus(@PathVariable final Long studyId,
+																	   @RequestParam("status") final StudyStatus status,
+																	   @AuthUser final User user) {
 		final Study study = studyStatusService.changeStatus(studyId, status, user);
-		return ResponseEntity.status(HttpStatus.OK).body(WriteStudyResponse.from(study));
+		final StudyResponse response = StudyResponse.from(study);
+		return ResponseEntity.ok(BaseApiResponse.success("스터디 상태 변경이 완료되었습니다.", response));
 	}
 
 	@DeleteMapping("/{studyId}/participants")
-	public ResponseEntity<Void> leave(@AuthUser final User user, @PathVariable("studyId") final Long studyId) {
+	public ResponseEntity<BaseApiResponse<Void>> leave(@AuthUser final User user,
+													   @PathVariable("studyId") final Long studyId) {
 		studyService.leave(user, studyId);
-		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		return ResponseEntity.ok(BaseApiResponse.success("스터디 탈퇴가 완료되었습니다.", null));
 	}
 
 	@GetMapping("/{studyId}")
-	public ResponseEntity<StudyDetailsResponse> getStudyDetails(@AuthUser final User user,
-																@PathVariable("studyId") final Long studyId) {
-		final Study studyDetails = studyFetchService.getStudyDetails(user, studyId);
-		final StudyDetailsResponse response = StudyDetailsResponse.from(studyDetails);
+	public ResponseEntity<BaseApiResponse<StudyResponse>> getStudyDetails(@AuthUser final User user,
+																		  @PathVariable("studyId") final Long studyId) {
+		final Study study = studyFetchService.getStudyDetails(user, studyId);
+		final StudyResponse response = StudyResponse.from(study);
 
-		return new ResponseEntity<>(response, HttpStatus.OK);
+		return ResponseEntity.ok(BaseApiResponse.success("스터디 조회가 완료되었습니다.", response));
 	}
 
 }

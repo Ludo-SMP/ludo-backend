@@ -103,7 +103,6 @@ public class RecruitmentController {
 														@PathVariable("studyId") final Long studyId,
 														@PathVariable("recruitmentId") final Long recruitmentId,
 														@RequestBody final EditRecruitmentRequest request) {
-		// TODO: need to append authorization guard
 		final Recruitment recruitment = recruitmentService.edit(user, recruitmentId, request);
 		return ResponseEntity.status(HttpStatus.OK).body(EditRecruitmentResponse.from(recruitment));
 	}
@@ -113,8 +112,6 @@ public class RecruitmentController {
 	public ResponseEntity<ApplyRecruitmentResponse> apply(@PathVariable("recruitmentId") final Long recruitmentId,
 														  @RequestBody final ApplyRecruitmentRequest request,
 														  @AuthUser final User user) {
-		// TODO: need to append authorization guard
-
 		final Applicant applicant = recruitmentService.apply(user, recruitmentId, request);
 		return ResponseEntity.status(HttpStatus.CREATED).body(ApplyRecruitmentResponse.from(applicant));
 	}
@@ -149,11 +146,10 @@ public class RecruitmentController {
 	}
 
 	@DeleteMapping("/studies/{studyId}/recruitments")
-	public ResponseEntity<DeleteRecruitmentResponse> delete(@PathVariable Long studyId, @AuthUser final User user) {
+	public ResponseEntity<BaseApiResponse<DeleteRecruitmentResponse>> delete(@PathVariable Long studyId,
+																			 @AuthUser final User user) {
 		recruitmentService.delete(user, studyId);
-
-		return ResponseEntity.status(HttpStatus.OK).body(
-				DeleteRecruitmentResponse.from("모집 공고가 비활성화 되었습니다."));
+		return ResponseEntity.ok(BaseApiResponse.success("모집 공고가 비활성화 되었습니다.", null));
 	}
 
 }
