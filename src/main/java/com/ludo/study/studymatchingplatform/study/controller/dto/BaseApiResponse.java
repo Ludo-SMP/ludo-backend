@@ -1,8 +1,10 @@
 package com.ludo.study.studymatchingplatform.study.controller.dto;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
+@Getter
 public class BaseApiResponse<T> {
 
 	private final boolean ok;
