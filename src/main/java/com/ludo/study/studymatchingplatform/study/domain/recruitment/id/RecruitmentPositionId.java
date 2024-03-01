@@ -4,9 +4,11 @@ import java.io.Serializable;
 
 import jakarta.persistence.Embeddable;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
 @Embeddable
 @EqualsAndHashCode
+@Getter
 public class RecruitmentPositionId implements Serializable {
 
 	private Long recruitmentId;
