@@ -15,7 +15,7 @@ import com.ludo.study.studymatchingplatform.auth.common.provider.CookieProvider;
 import com.ludo.study.studymatchingplatform.study.controller.dto.BaseApiResponse;
 import com.ludo.study.studymatchingplatform.user.domain.User;
 import com.ludo.study.studymatchingplatform.user.service.UserService;
-import com.ludo.study.studymatchingplatform.user.service.dto.Me;
+import com.ludo.study.studymatchingplatform.user.service.dto.response.UserResponse;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -39,8 +39,8 @@ public class UserController {
 	}
 
 	@GetMapping("/users/me")
-	public ResponseEntity<BaseApiResponse<Me>> fetchMe(@AuthUser final User user) {
-		final Me response = Me.from(user);
+	public ResponseEntity<BaseApiResponse<UserResponse>> fetchMe(@AuthUser final User user) {
+		final UserResponse response = UserResponse.from(user);
 		return ResponseEntity.ok(BaseApiResponse.success("사용자 조회 성공", response));
 	}
 
