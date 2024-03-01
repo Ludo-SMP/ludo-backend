@@ -226,7 +226,7 @@ public class Study extends BaseEntity {
 	private void accept(final User applicantUser) {
 		recruitment.acceptApplicant(applicantUser);
 		final Applicant applicant = recruitment.getApplicant(applicantUser);
-		addParticipant(Participant.from(this, applicantUser, applicant.getPosition()));
+		addParticipant(Participant.from(this, applicantUser, applicant.getPosition(), Role.MEMBER));
 	}
 
 	private boolean isMaxParticipantCount() {

@@ -58,14 +58,6 @@ public class Participant extends BaseEntity {
 	@JoinColumn(name = "position_id")
 	private Position position;
 
-	public static Participant from(final Study study, final User user, final Position position) {
-		final Participant participant = new Participant();
-		participant.study = study;
-		participant.user = user;
-		participant.position = position;
-		return participant;
-	}
-
 	public static Participant from(final Study study, final User user, final Position position, final Role role) {
 		final Participant participant = new Participant();
 		participant.study = study;
