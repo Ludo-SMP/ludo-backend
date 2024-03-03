@@ -13,22 +13,23 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ludo.study.studymatchingplatform.study.domain.Category;
 import com.ludo.study.studymatchingplatform.study.domain.Participant;
 import com.ludo.study.studymatchingplatform.study.domain.Platform;
+import com.ludo.study.studymatchingplatform.study.domain.Role;
 import com.ludo.study.studymatchingplatform.study.domain.Study;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Applicant;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.ApplicantStatus;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
 import com.ludo.study.studymatchingplatform.study.fixture.ApplicantFixture;
-import com.ludo.study.studymatchingplatform.study.fixture.CategoryFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.RecruitmentFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.StudyFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.UserFixture;
 import com.ludo.study.studymatchingplatform.study.repository.CategoryRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.ParticipantRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.repository.PositionRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.StudyRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.recruitment.ApplicantRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.recruitment.RecruitmentRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.StudyApplicantDecisionRequest;
-import com.ludo.study.studymatchingplatform.study.service.dto.response.ParticipantResponse;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.ApplyAcceptResponse;
 import com.ludo.study.studymatchingplatform.user.domain.Social;
 import com.ludo.study.studymatchingplatform.user.domain.User;
 import com.ludo.study.studymatchingplatform.user.repository.UserRepositoryImpl;
@@ -60,7 +61,13 @@ class StudyApplicantDecisionServiceTest {
 	ApplicantRepositoryImpl applicantRepository;
 
 	@Autowired
+	PositionRepositoryImpl positionRepository;
+
+	@Autowired
 	EntityManager entityManager;
+
+	private static final String CATEGORY_NAME = "프로젝트";
+	private static final String POSITION_NAME = "백엔드";
 
 	@Test
 	@Transactional
@@ -71,13 +78,14 @@ class StudyApplicantDecisionServiceTest {
 		User other = UserFixture.createUser(Social.NAVER, "other", "other@gmail.com");
 		saveUsers(owner, other);
 
-		Category project = saveCategory();
+		Category project = categoryRepository.findByName(CATEGORY_NAME).get();
 
 		Study study = StudyFixture.createStudy("스터디A", project, owner, 5, Platform.GATHER);
 		Recruitment recruitment = RecruitmentFixture.createRecruitment(study, "지원공고", "내용", 5, "callurl", null);
 		study.registerRecruitment(recruitment);
 
-		Applicant applicant = ApplicantFixture.createApplicant(other, null);
+		Applicant applicant = ApplicantFixture.createApplicant(null,
+				other, positionRepository.findByName(POSITION_NAME).get());
 		recruitment.addApplicant(applicant);
 
 		studyRepository.save(study);
@@ -89,11 +97,11 @@ class StudyApplicantDecisionServiceTest {
 		// when
 		StudyApplicantDecisionRequest studyApplicantDecisionRequest = new StudyApplicantDecisionRequest(study.getId(),
 				recruitment.getId(), other.getId());
-		ParticipantResponse participantResponse = applicantDecisionService.applicantAccept(owner,
+		ApplyAcceptResponse applyAcceptResponse = applicantDecisionService.applicantAccept(owner,
 				studyApplicantDecisionRequest);
 
 		// then
-		assertParticipantResponse(participantResponse, other);
+		assertApplyAcceptResponse(applyAcceptResponse, other);
 		Applicant findApplicant = applicantRepository.find(recruitment.getId(), other.getId()).get();
 		assertApplicantStatus(findApplicant, ApplicantStatus.ACCEPTED);
 
@@ -110,7 +118,7 @@ class StudyApplicantDecisionServiceTest {
 		User other = UserFixture.createUser(Social.NAVER, "other", "other@gmail.com");
 		saveUsers(owner, other);
 
-		Category project = saveCategory();
+		Category project = categoryRepository.findByName(CATEGORY_NAME).get();
 
 		Study study = StudyFixture.createStudy("스터디A", project, owner, 5, Platform.GATHER);
 		Recruitment recruitment = RecruitmentFixture.createRecruitment(study, "지원공고", "내용", 5, "callurl", null);
@@ -135,10 +143,12 @@ class StudyApplicantDecisionServiceTest {
 		assertApplicantStatus(findApplicant, ApplicantStatus.REJECTED);
 	}
 
-	private void assertParticipantResponse(ParticipantResponse participantResponse, User other) {
-		assertThat(participantResponse.participant().user().nickname()).isEqualTo("other");
-		assertThat(participantResponse.participant().user().email()).isEqualTo("other@gmail.com");
-		assertThat(participantResponse.participant().user().id()).isEqualTo(other.getId());
+	private void assertApplyAcceptResponse(ApplyAcceptResponse applyAcceptResponse, User other) {
+		assertThat(applyAcceptResponse.participant().nickname()).isEqualTo("other");
+		assertThat(applyAcceptResponse.participant().email()).isEqualTo("other@gmail.com");
+		assertThat(applyAcceptResponse.participant().id()).isEqualTo(other.getId());
+		assertThat(applyAcceptResponse.participant().role()).isEqualTo(Role.MEMBER);
+		assertThat(applyAcceptResponse.participant().position().getName()).isEqualTo(POSITION_NAME);
 	}
 
 	private static void assertApplicantStatus(Applicant findApplicant, ApplicantStatus applicantStatus) {
@@ -147,8 +157,10 @@ class StudyApplicantDecisionServiceTest {
 
 	private static void assertParticipant(Optional<Participant> findParticipant, User user, Study study) {
 		assertThat(findParticipant).isPresent();
-		assertThat(findParticipant.get().getUser()).isEqualTo(user);
-		assertThat(findParticipant.get().getStudy()).isEqualTo(study);
+		Participant participant = findParticipant.get();
+		assertThat(participant.getUser()).isEqualTo(user);
+		assertThat(participant.getStudy()).isEqualTo(study);
+		assertThat(participant.getPosition().getName()).isEqualTo(POSITION_NAME);
 		assertThat(study.getParticipants()).isNotEmpty();
 	}
 
@@ -156,12 +168,6 @@ class StudyApplicantDecisionServiceTest {
 		for (User user : users) {
 			userRepository.save(user);
 		}
-	}
-
-	private Category saveCategory() {
-		Category project = CategoryFixture.createCategory(CategoryFixture.PROJECT);
-		categoryRepository.save(project);
-		return project;
 	}
 
 }
