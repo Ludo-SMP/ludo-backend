@@ -38,8 +38,8 @@ public class NaverSignUpService {
 	}
 
 	private void signup(final UserProfile userProfile) {
-		User user = userProfile.toUser();
-		userRepository.save(user);
+		User user = userRepository.save(userProfile.toUser());
+		user.setInitialDefaultNickname();
 	}
 
 }

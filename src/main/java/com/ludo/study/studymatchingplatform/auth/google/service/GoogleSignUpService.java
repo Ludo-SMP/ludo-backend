@@ -25,10 +25,7 @@ public class GoogleSignUpService {
 
 		validateAlreadySignUp(userInfo);
 
-		final User user = userInfo.toUser();
-		userRepository.save(user);
-
-		return user;
+		return signup(userInfo);
 	}
 
 	private void validateAlreadySignUp(final GoogleUserInfo userInfo) {
@@ -36,6 +33,12 @@ public class GoogleSignUpService {
 				.ifPresent(user -> {
 					throw new IllegalArgumentException("이미 가입되어 있는 회원입니다.");
 				});
+	}
+
+	private User signup(final GoogleUserInfo userInfo) {
+		final User user = userRepository.save(userInfo.toUser());
+		user.setInitialDefaultNickname();
+		return user;
 	}
 
 }
