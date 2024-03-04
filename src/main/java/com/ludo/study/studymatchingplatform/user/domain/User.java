@@ -1,6 +1,7 @@
 package com.ludo.study.studymatchingplatform.user.domain;
 
 import com.ludo.study.studymatchingplatform.common.entity.BaseEntity;
+import com.ludo.study.studymatchingplatform.user.domain.exception.UserExceptionMessage;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -26,6 +27,9 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class User extends BaseEntity {
 
+	public static final String DEFAULT_NICKNAME_PREFIX = "스따-디 %d";
+	public static final Long DEFAULT_NICKNAME_ID = 716L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "user_id")
@@ -47,6 +51,17 @@ public class User extends BaseEntity {
 		this.social = social;
 		this.nickname = nickname;
 		this.email = email;
+	}
+
+	public void setInitialDefaultNickname() {
+		validateInitDefaultNickname();
+		this.nickname = String.format(DEFAULT_NICKNAME_PREFIX, DEFAULT_NICKNAME_ID + id);
+	}
+
+	private void validateInitDefaultNickname() {
+		if (this.id == null) {
+			throw new IllegalArgumentException(UserExceptionMessage.INIT_DEFAULT_NICKNAME.getMessage());
+		}
 	}
 
 }
