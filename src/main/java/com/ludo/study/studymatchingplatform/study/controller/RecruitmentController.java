@@ -30,10 +30,10 @@ import com.ludo.study.studymatchingplatform.study.service.dto.request.ApplyRecru
 import com.ludo.study.studymatchingplatform.study.service.dto.request.EditRecruitmentRequest;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.StudyApplicantDecisionRequest;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.WriteRecruitmentRequest;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.ApplyAcceptResponse;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.ApplyRecruitmentResponse;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.DeleteRecruitmentResponse;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.EditRecruitmentResponse;
-import com.ludo.study.studymatchingplatform.study.service.dto.response.ParticipantResponse;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.PopularRecruitmentsResponse;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.RecruitmentDetailsResponse;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.RecruitmentPreviewResponse;
@@ -143,17 +143,17 @@ public class RecruitmentController {
 
 	@IsAuthenticated
 	@PostMapping("/studies/{studyId}/recruitments/{recruitmentId}/apply-accept/{applicantUserId}")
-	public ResponseEntity<BaseApiResponse<ParticipantResponse>> applicantAccept(@AuthUser final User user,
+	public ResponseEntity<BaseApiResponse<ApplyAcceptResponse>> applicantAccept(@AuthUser final User user,
 																				@PathVariable final Long studyId,
 																				@PathVariable Long recruitmentId,
 																				@PathVariable Long applicantUserId) {
 
 		final StudyApplicantDecisionRequest studyApplicantDecisionRequest = new StudyApplicantDecisionRequest(studyId,
 				recruitmentId, applicantUserId);
-		ParticipantResponse participantResponse = applicantDecisionService.applicantAccept(user,
+		ApplyAcceptResponse applyAcceptResponse = applicantDecisionService.applicantAccept(user,
 				studyApplicantDecisionRequest);
 
-		return ResponseEntity.ok(BaseApiResponse.success("지원자 수락 성공", participantResponse));
+		return ResponseEntity.ok(BaseApiResponse.success("지원자 수락 성공", applyAcceptResponse));
 	}
 
 	@IsAuthenticated

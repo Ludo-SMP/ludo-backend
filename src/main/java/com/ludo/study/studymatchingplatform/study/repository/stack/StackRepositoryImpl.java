@@ -30,7 +30,7 @@ public class StackRepositoryImpl {
 	public List<Stack> findAll() {
 		return q.selectFrom(stack)
 				.innerJoin(stack.stackCategory, stackCategory)
-				.where(stackCategory.name.in("프론트엔드", "백엔드", "디자이너", "데이터베이스", "데브옵스", "언어"))
+				.where(stackCategory.name.in("프론트엔드", "백엔드", "데이터베이스", "데브옵스", "언어", "디자인"))
 				.fetch();
 	}
 

@@ -9,7 +9,7 @@ import com.ludo.study.studymatchingplatform.study.repository.ParticipantReposito
 import com.ludo.study.studymatchingplatform.study.repository.PositionRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.StudyRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.StudyApplicantDecisionRequest;
-import com.ludo.study.studymatchingplatform.study.service.dto.response.ParticipantResponse;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.ApplyAcceptResponse;
 import com.ludo.study.studymatchingplatform.user.domain.User;
 import com.ludo.study.studymatchingplatform.user.repository.UserRepositoryImpl;
 
@@ -27,14 +27,14 @@ public class StudyApplicantDecisionService {
 	private final PositionRepositoryImpl positionRepository;
 
 	@Transactional
-	public ParticipantResponse applicantAccept(final User owner, final StudyApplicantDecisionRequest request) {
+	public ApplyAcceptResponse applicantAccept(final User owner, final StudyApplicantDecisionRequest request) {
 		final Study study = findStudy(request.studyId());
 		final User applicantUser = findUser(request.applicantUserId());
 
 		study.acceptApplicant(owner, applicantUser, request.recruitmentId());
 		Participant participant = findParticipant(study, applicantUser);
 
-		return ParticipantResponse.fromWithOutStudyResponse(participant);
+		return ApplyAcceptResponse.from(participant);
 	}
 
 	@Transactional
