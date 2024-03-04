@@ -1,6 +1,7 @@
 package com.ludo.study.studymatchingplatform.user.domain;
 
 import com.ludo.study.studymatchingplatform.common.entity.BaseEntity;
+import com.ludo.study.studymatchingplatform.user.service.exception.CurrentNicknameEqualsException;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,6 +18,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import lombok.extern.slf4j.Slf4j;
 
 @Entity
 @Table(name = "`user`")
@@ -24,6 +26,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Slf4j
 public class User extends BaseEntity {
 
 	@Id
@@ -47,6 +50,17 @@ public class User extends BaseEntity {
 		this.social = social;
 		this.nickname = nickname;
 		this.email = email;
+	}
+
+	public void changeNickname(final String nickname) {
+		validateNotEqualsCurrentNickname(nickname);
+		this.nickname = nickname;
+	}
+
+	public void validateNotEqualsCurrentNickname(final String nickname) {
+		if (this.nickname.equals(nickname)) {
+			throw new CurrentNicknameEqualsException();
+		}
 	}
 
 }
