@@ -2,7 +2,6 @@ package com.ludo.study.studymatchingplatform.study.controller;
 
 import java.util.List;
 
-import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ludo.study.studymatchingplatform.auth.common.AuthUser;
@@ -43,6 +41,12 @@ import com.ludo.study.studymatchingplatform.study.service.dto.response.Recruitme
 import com.ludo.study.studymatchingplatform.study.service.dto.response.WriteRecruitmentResponse;
 import com.ludo.study.studymatchingplatform.user.domain.User;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -99,34 +103,40 @@ public class RecruitmentController {
 		return ResponseEntity.ok(BaseApiResponse.success("인기 모집 공고 목록 조회 성공", popularRecruitments));
 	}
 
-	@IsAuthenticated
+	@Operation(description = "모집 공고 작성")
+	@ApiResponse(description = "모집 공고 작성 성공", responseCode = "201", useReturnTypeSchema = true, content = @Content(mediaType = "application/json", schema = @Schema(implementation = WriteRecruitmentResponse.class)))
 	@PostMapping("/studies/{studyId}/recruitments")
-	@ResponseStatus(HttpStatus.CREATED)
-	public ResponseEntity<BaseApiResponse<WriteRecruitmentResponse>> write(@RequestBody final WriteRecruitmentRequest request,
-														  @AuthUser final User user) {
+	public ResponseEntity<BaseApiResponse<WriteRecruitmentResponse>> write(
+			@RequestBody final WriteRecruitmentRequest request, @Parameter(hidden = true) @AuthUser final User user) {
 		final Recruitment recruitment = recruitmentService.write(user, request);
 		final WriteRecruitmentResponse response = WriteRecruitmentResponse.from(recruitment);
 
-		return ResponseEntity.ok(BaseApiResponse.success("모집 공고 작성 성공", response));
+		return new ResponseEntity<>(BaseApiResponse.success("모집 공고 작성 성공", response), HttpStatus.CREATED);
 	}
 
-	@IsAuthenticated
-	@PutMapping("/studies/{studyId}/recruitments")
-	public ResponseEntity<BaseApiResponse<EditRecruitmentResponse>> edit(@AuthUser final User user,
-																		 @PathVariable("studyId") final Long studyId,
-																		 @PathVariable("recruitmentId") final Long recruitmentId,
-																		 @RequestBody final EditRecruitmentRequest request) {
+	@PutMapping("/studies/{studyId}/recruitments/{recruitmentId}")
+	@Operation(description = "모집 공고 수정")
+	@ApiResponse(description = "모집 공고 수정 성공", responseCode = "200", useReturnTypeSchema = true, content = @Content(mediaType = "application/json", schema = @Schema(implementation = EditRecruitmentResponse.class)))
+	@Parameters({
+			@Parameter(name = "studyId", description = "모집 공고에 대한 스터디 id", required = true),
+			@Parameter(name = "recruitmentId", description = "지원할 모집 공고 id", required = true)
+	})
+	public ResponseEntity<BaseApiResponse<EditRecruitmentResponse>> edit(
+			@Parameter(hidden = true) @AuthUser final User user,
+			@PathVariable("studyId") final Long studyId,
+			@PathVariable("recruitmentId") final Long recruitmentId,
+			@RequestBody final EditRecruitmentRequest request) {
 		final Recruitment recruitment = recruitmentService.edit(user, recruitmentId, request);
 		return ResponseEntity.ok(BaseApiResponse.success("모집 공고 수정", EditRecruitmentResponse.from(recruitment)));
 	}
 
-	@IsAuthenticated
 	@PostMapping("/studies/{studyId}/recruitments/{recruitmentId}/apply")
-	@ResponseStatus(HttpStatus.CREATED)
+	@Operation(description = "모집 공고 지원")
+	@ApiResponse(description = "모집 공고 지원 성공", responseCode = "200", useReturnTypeSchema = true, content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApplyRecruitmentResponse.class)))
 	public ResponseEntity<BaseApiResponse<ApplyRecruitmentResponse>> apply(
-			@PathVariable("recruitmentId") final Long recruitmentId,
+			@Parameter(description = "지원할 모집 공고 id", required = true) @PathVariable("recruitmentId") final Long recruitmentId,
 			@RequestBody final ApplyRecruitmentRequest request,
-			@AuthUser final User user) {
+			@Parameter(hidden = true) @AuthUser final User user) {
 		final Applicant applicant = recruitmentService.apply(user, recruitmentId, request);
 		return ResponseEntity.ok(BaseApiResponse.success("지원 성공", ApplyRecruitmentResponse.from(applicant)));
 	}
@@ -160,11 +170,22 @@ public class RecruitmentController {
 		return ResponseEntity.ok(new BaseApiResponse<>(true, "지원자 거절 성공", null));
 	}
 
-	@DeleteMapping("/studies/{studyId}/recruitments")
-	public ResponseEntity<BaseApiResponse<DeleteRecruitmentResponse>> delete(@PathVariable Long studyId,
-																			 @AuthUser final User user) {
+	@DeleteMapping("/studies/{studyId}/recruitments/{recruitmentid}")
+	@ApiResponse(description = "모집 공고 삭제", responseCode = "200", useReturnTypeSchema = true, content = @Content(mediaType = "application/json", schema = @Schema(implementation = DeleteRecruitmentResponse.class)))
+	public ResponseEntity<BaseApiResponse<DeleteRecruitmentResponse>> delete(
+			@Parameter(name = "studyId", description = "모집 공고를 삭제 할 스터디 id", required = true) @PathVariable("studyId") Long studyId,
+			@Parameter(hidden = true) @AuthUser final User user) {
 		recruitmentService.delete(user, studyId);
-		return ResponseEntity.ok(BaseApiResponse.success("모집 공고가 비활성화 되었습니다.", null));
+		return ResponseEntity.ok(BaseApiResponse.success("모집 공고가 삭제 되었습니다.", null));
 	}
 
+	@PostMapping("/studies/{studyId}/recruitments/{recruitmentId}/cancel")
+	@ApiResponse(description = "지원 취소", responseCode = "200", useReturnTypeSchema = true, content = @Content(mediaType = "application/json", schema = @Schema(implementation = BaseApiResponse.class)))
+	public ResponseEntity<BaseApiResponse<Void>> cancel(
+			@Parameter(name = "studyId", description = "스터디 id", required = true) @PathVariable("studyId") final Long studyId,
+			@Parameter(name = "recruitmentId", description = "모집 공고 id", required = true) @PathVariable("recruitmentId") final Long recruitmentId,
+			@Parameter(hidden = true) @AuthUser final User user) {
+		recruitmentService.cancel(user, recruitmentId);
+		return ResponseEntity.ok(BaseApiResponse.success("지원이 정상적으로 취소 되었습니다.", null));
+	}
 }
