@@ -1,7 +1,7 @@
 package com.ludo.study.studymatchingplatform.user.domain;
 
 import com.ludo.study.studymatchingplatform.common.entity.BaseEntity;
-import com.ludo.study.studymatchingplatform.user.service.exception.CurrentNicknameEqualsException;
+import com.ludo.study.studymatchingplatform.user.domain.exception.CurrentNicknameEqualsException;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

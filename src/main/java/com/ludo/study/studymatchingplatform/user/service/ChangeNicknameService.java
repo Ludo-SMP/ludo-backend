@@ -4,9 +4,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ludo.study.studymatchingplatform.user.domain.User;
+import com.ludo.study.studymatchingplatform.user.domain.exception.DuplicateNicknameException;
 import com.ludo.study.studymatchingplatform.user.repository.UserRepositoryImpl;
 import com.ludo.study.studymatchingplatform.user.service.dto.response.ChangeUserNicknameResponse;
-import com.ludo.study.studymatchingplatform.user.service.exception.DuplicateNicknameException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
