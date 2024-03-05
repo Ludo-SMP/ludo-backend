@@ -26,12 +26,9 @@ import com.ludo.study.studymatchingplatform.study.service.PopularRecruitmentsFin
 import com.ludo.study.studymatchingplatform.study.service.RecruitmentDetailsFindService;
 import com.ludo.study.studymatchingplatform.study.service.RecruitmentService;
 import com.ludo.study.studymatchingplatform.study.service.RecruitmentsFindService;
-import com.ludo.study.studymatchingplatform.study.service.StudyApplicantDecisionService;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.ApplyRecruitmentRequest;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.EditRecruitmentRequest;
-import com.ludo.study.studymatchingplatform.study.service.dto.request.StudyApplicantDecisionRequest;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.WriteRecruitmentRequest;
-import com.ludo.study.studymatchingplatform.study.service.dto.response.ApplyAcceptResponse;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.ApplyRecruitmentResponse;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.DeleteRecruitmentResponse;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.EditRecruitmentResponse;
@@ -55,7 +52,6 @@ public class RecruitmentController {
 	private final RecruitmentsFindService recruitmentsFindService;
 	private final PopularRecruitmentsFindService popularRecruitmentsFindService;
 	private final RecruitmentService recruitmentService;
-	private final StudyApplicantDecisionService applicantDecisionService;
 
 	@GetMapping("/recruitments")
 	public ResponseEntity<BaseApiResponse<RecruitmentPreviewResponses>> readRecruitments(
@@ -129,35 +125,6 @@ public class RecruitmentController {
 			@AuthUser final User user) {
 		final Applicant applicant = recruitmentService.apply(user, recruitmentId, request);
 		return ResponseEntity.ok(BaseApiResponse.success("지원 성공", ApplyRecruitmentResponse.from(applicant)));
-	}
-
-	@IsAuthenticated
-	@PostMapping("/studies/{studyId}/recruitments/{recruitmentId}/apply-accept/{applicantUserId}")
-	public ResponseEntity<BaseApiResponse<ApplyAcceptResponse>> applicantAccept(@AuthUser final User user,
-																				@PathVariable final Long studyId,
-																				@PathVariable Long recruitmentId,
-																				@PathVariable Long applicantUserId) {
-
-		final StudyApplicantDecisionRequest studyApplicantDecisionRequest = new StudyApplicantDecisionRequest(studyId,
-				recruitmentId, applicantUserId);
-		ApplyAcceptResponse applyAcceptResponse = applicantDecisionService.applicantAccept(user,
-				studyApplicantDecisionRequest);
-
-		return ResponseEntity.ok(BaseApiResponse.success("지원자 수락 성공", applyAcceptResponse));
-	}
-
-	@IsAuthenticated
-	@PostMapping("/studies/{studyId}/recruitments/{recruitmentId}/apply-refuse/{applicantUserId}")
-	public ResponseEntity<BaseApiResponse<Void>> applicantRefuse(@AuthUser final User user,
-																 @PathVariable final Long studyId,
-																 @PathVariable Long recruitmentId,
-																 @PathVariable Long applicantUserId) {
-
-		final StudyApplicantDecisionRequest studyApplicantDecisionRequest = new StudyApplicantDecisionRequest(studyId,
-				recruitmentId, applicantUserId);
-		applicantDecisionService.applicantReject(user, studyApplicantDecisionRequest);
-
-		return ResponseEntity.ok(new BaseApiResponse<>(true, "지원자 거절 성공", null));
 	}
 
 	@DeleteMapping("/studies/{studyId}/recruitments")

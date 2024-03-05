@@ -19,12 +19,14 @@ import com.ludo.study.studymatchingplatform.auth.common.IsAuthenticated;
 import com.ludo.study.studymatchingplatform.study.controller.dto.response.BaseApiResponse;
 import com.ludo.study.studymatchingplatform.study.domain.Study;
 import com.ludo.study.studymatchingplatform.study.domain.StudyStatus;
-import com.ludo.study.studymatchingplatform.study.service.RecruitmentDeleteService;
+import com.ludo.study.studymatchingplatform.study.service.StudyApplicantDecisionService;
 import com.ludo.study.studymatchingplatform.study.service.StudyCreateService;
 import com.ludo.study.studymatchingplatform.study.service.StudyFetchService;
 import com.ludo.study.studymatchingplatform.study.service.StudyService;
 import com.ludo.study.studymatchingplatform.study.service.StudyStatusService;
+import com.ludo.study.studymatchingplatform.study.service.dto.request.StudyApplicantDecisionRequest;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.WriteStudyRequest;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.ApplyAcceptResponse;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.StudyResponse;
 import com.ludo.study.studymatchingplatform.user.domain.User;
 
@@ -37,9 +39,9 @@ public class StudyController {
 
 	private final StudyCreateService studyCreateService;
 	private final StudyFetchService studyFetchService;
-	private final RecruitmentDeleteService recruitmentCreateService;
 	private final StudyStatusService studyStatusService;
 	private final StudyService studyService;
+	private final StudyApplicantDecisionService applicantDecisionService;
 
 	@IsAuthenticated
 	@PostMapping
@@ -76,6 +78,33 @@ public class StudyController {
 		final StudyResponse response = StudyResponse.from(study);
 
 		return ResponseEntity.ok(BaseApiResponse.success("스터디 조회가 완료되었습니다.", response));
+	}
+
+	@IsAuthenticated
+	@PostMapping("/{studyId}/apply-accept/{applicantUserId}")
+	public ResponseEntity<BaseApiResponse<ApplyAcceptResponse>> applicantAccept(@AuthUser final User user,
+																				@PathVariable final Long studyId,
+																				@PathVariable Long applicantUserId) {
+
+		final StudyApplicantDecisionRequest studyApplicantDecisionRequest = new StudyApplicantDecisionRequest(studyId,
+				applicantUserId);
+		ApplyAcceptResponse applyAcceptResponse = applicantDecisionService.applicantAccept(user,
+				studyApplicantDecisionRequest);
+
+		return ResponseEntity.ok(BaseApiResponse.success("지원자 수락 성공", applyAcceptResponse));
+	}
+
+	@IsAuthenticated
+	@PostMapping("/{studyId}/apply-refuse/{applicantUserId}")
+	public ResponseEntity<BaseApiResponse<Void>> applicantRefuse(@AuthUser final User user,
+																 @PathVariable final Long studyId,
+																 @PathVariable Long applicantUserId) {
+
+		final StudyApplicantDecisionRequest studyApplicantDecisionRequest = new StudyApplicantDecisionRequest(studyId,
+				applicantUserId);
+		applicantDecisionService.applicantReject(user, studyApplicantDecisionRequest);
+
+		return ResponseEntity.ok(new BaseApiResponse<>(true, "지원자 거절 성공", null));
 	}
 
 }
