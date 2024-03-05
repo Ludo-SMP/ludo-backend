@@ -35,32 +35,8 @@ class StudyTest {
 			Recruitment recruitment = RecruitmentFixture.createRecruitment(study, "모집공고", "내용", 0, null, null);
 
 			// when then
-			assertThatThrownBy(() -> study.acceptApplicant(notOwner, applicant, recruitment.getId()))
+			assertThatThrownBy(() -> study.acceptApplicant(notOwner, applicant))
 					.hasMessageContaining("스터디 장이 아닙니다.");
-		}
-
-		/**
-		 * test scenario:
-		 * 스터디 지원자 수락 API -> /studies/{study-id}/recruitments/{recruitment-id}
-		 * 중 recruitment-id를 임의로 바꿔서 요청을 보내는 경우
-		 */
-		@Test
-		@DisplayName("[Exception] 다른 스터디 모집공고로 지원한 경우 예외 발생")
-		void otherRecruitment() {
-			// given
-			long otherRecruitmentId = 100;
-			User owner = UserFixture.createUser(Social.NAVER, "archa", "archa@naver.com");
-			User applicantUser = UserFixture.createUser(Social.NAVER, "applicant", "applicant@naver.com");
-
-			Study ownerStudy = StudyFixture.createStudy(owner, "스터디 A", 5, StudyStatus.RECRUITING);
-
-			Recruitment ownerStudyRecruitment = RecruitmentFixture.createRecruitment(ownerStudy, "모집공고", "내용", 0, null,
-					null);
-			ownerStudy.registerRecruitment(ownerStudyRecruitment);
-
-			// when, then
-			assertThatThrownBy(() -> ownerStudy.acceptApplicant(owner, applicantUser, otherRecruitmentId))
-					.hasMessage("해당 스터디의 모집공고가 아닙니다.");
 		}
 
 		@Test
@@ -78,7 +54,7 @@ class StudyTest {
 			}
 
 			// when then
-			assertThatThrownBy(() -> study.acceptApplicant(owner, applicantUser, null))
+			assertThatThrownBy(() -> study.acceptApplicant(owner, applicantUser))
 					.hasMessage("남아있는 자리가 없습니다.");
 		}
 
@@ -92,7 +68,7 @@ class StudyTest {
 			Study study = StudyFixture.createStudy(owner, "스터디 A", 5, studyStatus);
 
 			// when then
-			assertThatThrownBy(() -> study.acceptApplicant(owner, applicantUser, null))
+			assertThatThrownBy(() -> study.acceptApplicant(owner, applicantUser))
 					.hasMessage("현재 모집 중인 스터디가 아닙니다.");
 		}
 
@@ -107,7 +83,7 @@ class StudyTest {
 			User notApplicantUser = UserFixture.createUser(Social.NAVER, "other", "other@gmail.com");
 
 			// when then
-			assertThatThrownBy(() -> study.acceptApplicant(owner, notApplicantUser, recruitment.getId()))
+			assertThatThrownBy(() -> study.acceptApplicant(owner, notApplicantUser))
 					.hasMessage("지원자 목록에 존재하지 않는 사용자입니다.");
 		}
 
@@ -120,7 +96,7 @@ class StudyTest {
 			Recruitment recruitment = RecruitmentFixture.createRecruitment(study, "모집공고", "내용", 5, null, null);
 
 			// when then
-			assertThatThrownBy(() -> study.acceptApplicant(owner, owner, recruitment.getId()))
+			assertThatThrownBy(() -> study.acceptApplicant(owner, owner))
 					.hasMessage("스터디 장과 지원자가 같습니다.");
 		}
 
@@ -143,7 +119,7 @@ class StudyTest {
 			assertThat(recruitment.getApplicants().get(0).getApplicantStatus()).isEqualTo(ApplicantStatus.UNCHECKED);
 
 			// then
-			assertThatCode(() -> study.acceptApplicant(owner, applicantUser, recruitment.getId()))
+			assertThatCode(() -> study.acceptApplicant(owner, applicantUser))
 					.doesNotThrowAnyException();
 			assertThat(study.getParticipantCount()).isEqualTo(1);
 			assertThat(recruitment.getApplicants().get(0).getApplicantStatus()).isEqualTo(ApplicantStatus.ACCEPTED);
@@ -168,7 +144,7 @@ class StudyTest {
 				User user = UserFixture.createUser(Social.NAVER, "닉네임", "email@google.com");
 				Applicant applicant = Applicant.of(recruitment, user, PositionFixture.createPosition("백엔드"));
 				recruitment.addApplicant(applicant);
-				study.acceptApplicant(owner, user, recruitment.getId());
+				study.acceptApplicant(owner, user);
 			}
 
 			User applicantUser = UserFixture.createUser(Social.NAVER, "other", "other@gmail.com");
@@ -176,7 +152,7 @@ class StudyTest {
 			recruitment.addApplicant(applicant);
 
 			// when
-			study.acceptApplicant(owner, applicantUser, recruitment.getId());
+			study.acceptApplicant(owner, applicantUser);
 
 			// then
 			assertThatThrownBy(study::ensureRecruiting).hasMessage("현재 모집 중인 스터디가 아닙니다.");
@@ -199,27 +175,8 @@ class StudyTest {
 			study.addRecruitment(recruitment);
 
 			// when then
-			assertThatThrownBy(() -> study.rejectApplicant(notOwner, applicant, recruitment.getId()))
+			assertThatThrownBy(() -> study.rejectApplicant(notOwner, applicant))
 					.hasMessageContaining("스터디 장이 아닙니다.");
-		}
-
-		@Test
-		@DisplayName("[Exception] 다른 스터디 모집공고로 지원한 경우 예외 발생")
-		void otherRecruitment() {
-			// given
-			long otherRecruitmentId = 100;
-			User owner = UserFixture.createUser(Social.NAVER, "archa", "archa@naver.com");
-			User applicantUser = UserFixture.createUser(Social.NAVER, "applicant", "applicant@naver.com");
-
-			Study ownerStudy = StudyFixture.createStudy(owner, "스터디 A", 5, StudyStatus.RECRUITING);
-
-			Recruitment ownerStudyRecruitment = RecruitmentFixture.createRecruitment(ownerStudy, "모집공고", "내용", 0, null,
-					null);
-			ownerStudy.registerRecruitment(ownerStudyRecruitment);
-
-			// when, then
-			assertThatThrownBy(() -> ownerStudy.rejectApplicant(owner, applicantUser, otherRecruitmentId))
-					.hasMessage("해당 스터디의 모집공고가 아닙니다.");
 		}
 
 		@Test
@@ -233,7 +190,7 @@ class StudyTest {
 			User notApplicantUser = UserFixture.createUser(Social.NAVER, "other", "other@gmail.com");
 
 			// when then
-			assertThatThrownBy(() -> study.acceptApplicant(owner, notApplicantUser, recruitment.getId()))
+			assertThatThrownBy(() -> study.acceptApplicant(owner, notApplicantUser))
 					.hasMessage("지원자 목록에 존재하지 않는 사용자입니다.");
 		}
 
@@ -246,7 +203,7 @@ class StudyTest {
 			Recruitment recruitment = RecruitmentFixture.createRecruitment(study, "모집공고", "내용", 5, null, null);
 
 			// when then
-			assertThatThrownBy(() -> study.rejectApplicant(owner, owner, recruitment.getId()))
+			assertThatThrownBy(() -> study.rejectApplicant(owner, owner))
 					.hasMessage("스터디 장과 지원자가 같습니다.");
 		}
 
@@ -268,7 +225,7 @@ class StudyTest {
 			assertThat(recruitment.getApplicants().get(0).getApplicantStatus()).isEqualTo(ApplicantStatus.UNCHECKED);
 
 			// then
-			assertThatCode(() -> study.rejectApplicant(owner, applicantUser, recruitment.getId()))
+			assertThatCode(() -> study.rejectApplicant(owner, applicantUser))
 					.doesNotThrowAnyException();
 			assertThat(study.getParticipants()).isEmpty();
 			assertThat(recruitment.getApplicants()).isNotEmpty();
