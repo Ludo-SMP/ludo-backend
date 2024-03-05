@@ -6,7 +6,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ludo.study.studymatchingplatform.study.domain.Participant;
 import com.ludo.study.studymatchingplatform.study.domain.Study;
 import com.ludo.study.studymatchingplatform.study.repository.ParticipantRepositoryImpl;
-import com.ludo.study.studymatchingplatform.study.repository.PositionRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.StudyRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.StudyApplicantDecisionRequest;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.ApplyAcceptResponse;
@@ -24,14 +23,13 @@ public class StudyApplicantDecisionService {
 	private final StudyRepositoryImpl studyRepository;
 	private final UserRepositoryImpl userRepository;
 	private final ParticipantRepositoryImpl participantRepository;
-	private final PositionRepositoryImpl positionRepository;
 
 	@Transactional
 	public ApplyAcceptResponse applicantAccept(final User owner, final StudyApplicantDecisionRequest request) {
 		final Study study = findStudy(request.studyId());
 		final User applicantUser = findUser(request.applicantUserId());
 
-		study.acceptApplicant(owner, applicantUser, request.recruitmentId());
+		study.acceptApplicant(owner, applicantUser);
 		Participant participant = findParticipant(study, applicantUser);
 
 		return ApplyAcceptResponse.from(participant);
@@ -42,7 +40,7 @@ public class StudyApplicantDecisionService {
 		final Study study = findStudy(request.studyId());
 		final User applicantUser = findUser(request.applicantUserId());
 
-		study.rejectApplicant(owner, applicantUser, request.recruitmentId());
+		study.rejectApplicant(owner, applicantUser);
 	}
 
 	private User findUser(final Long applicantUserId) {
