@@ -15,9 +15,8 @@ import com.ludo.study.studymatchingplatform.auth.common.AuthUser;
 import com.ludo.study.studymatchingplatform.auth.common.Redirection;
 import com.ludo.study.studymatchingplatform.auth.common.provider.CookieProvider;
 import com.ludo.study.studymatchingplatform.study.controller.dto.BaseApiResponse;
+import com.ludo.study.studymatchingplatform.study.service.exception.BusinessException;
 import com.ludo.study.studymatchingplatform.user.domain.User;
-import com.ludo.study.studymatchingplatform.user.domain.exception.CurrentNicknameEqualsException;
-import com.ludo.study.studymatchingplatform.user.domain.exception.DuplicateNicknameException;
 import com.ludo.study.studymatchingplatform.user.service.ChangeNicknameService;
 import com.ludo.study.studymatchingplatform.user.service.UserService;
 import com.ludo.study.studymatchingplatform.user.service.dto.request.ChangeUserNicknameRequest;
@@ -25,6 +24,7 @@ import com.ludo.study.studymatchingplatform.user.service.dto.response.ChangeUser
 import com.ludo.study.studymatchingplatform.user.service.dto.response.UserResponse;
 
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -56,18 +56,14 @@ public class UserController {
 
 	@PostMapping("/users/me/nickname")
 	public ResponseEntity<BaseApiResponse<ChangeUserNicknameResponse>> changeNickname(@AuthUser final User user,
-																					  @RequestBody final ChangeUserNicknameRequest changeNickname) {
+																					  @RequestBody @Valid final ChangeUserNicknameRequest changeNickname) {
 
 		try {
 			final ChangeUserNicknameResponse response = changeNicknameService.changeUserNickname(user,
 					changeNickname.changeNickname());
 
 			return ResponseEntity.ok(BaseApiResponse.success("닉네임 변경 성공", response));
-		} catch (CurrentNicknameEqualsException e) {
-
-			return ResponseEntity.status(HttpStatus.CONFLICT)
-					.body(BaseApiResponse.fail(e.getMessage(), null));
-		} catch (DuplicateNicknameException e) {
+		} catch (BusinessException e) {
 
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 					.body(BaseApiResponse.fail(e.getMessage(), null));
