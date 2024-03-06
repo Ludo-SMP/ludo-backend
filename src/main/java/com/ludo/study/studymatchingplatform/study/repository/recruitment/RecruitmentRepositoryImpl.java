@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import com.ludo.study.studymatchingplatform.study.domain.Way;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
+import com.ludo.study.studymatchingplatform.study.repository.dto.request.PopularRecruitmentCond;
 import com.ludo.study.studymatchingplatform.study.repository.dto.request.RecruitmentFindCond;
 import com.ludo.study.studymatchingplatform.study.repository.dto.request.RecruitmentFindCursor;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -71,13 +72,14 @@ public class RecruitmentRepositoryImpl {
 		recruitmentJpaRepository.delete(recruitment);
 	}
 
-	public List<Recruitment> findPopularRecruitments(final String categoryName) {
+	public List<Recruitment> findPopularRecruitments(final String categoryName,
+													 final PopularRecruitmentCond cond) {
 		return q.select(recruitment)
 				.from(recruitment)
 				.join(recruitment.study, study)
 				.join(study.category, category)
 				.where(category.name.eq(categoryName))
-				.limit(3)
+				.limit(cond.count())
 				.orderBy(recruitment.hits.desc())
 				.fetch();
 	}

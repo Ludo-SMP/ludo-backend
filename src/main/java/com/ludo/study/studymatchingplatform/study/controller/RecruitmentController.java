@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -20,6 +21,7 @@ import com.ludo.study.studymatchingplatform.auth.common.IsAuthenticated;
 import com.ludo.study.studymatchingplatform.study.controller.dto.response.BaseApiResponse;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Applicant;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
+import com.ludo.study.studymatchingplatform.study.repository.dto.request.PopularRecruitmentCond;
 import com.ludo.study.studymatchingplatform.study.repository.dto.request.RecruitmentFindCond;
 import com.ludo.study.studymatchingplatform.study.repository.dto.request.RecruitmentFindCursor;
 import com.ludo.study.studymatchingplatform.study.service.PopularRecruitmentsFindService;
@@ -92,8 +94,10 @@ public class RecruitmentController {
 	}
 
 	@GetMapping("/recruitments/popular")
-	public ResponseEntity<BaseApiResponse<PopularRecruitmentsResponse>> readPopularRecruitments() {
-		PopularRecruitmentsResponse popularRecruitments = popularRecruitmentsFindService.findPopularRecruitments();
+	public ResponseEntity<BaseApiResponse<PopularRecruitmentsResponse>> readPopularRecruitments(
+			@ModelAttribute PopularRecruitmentCond request) {
+		PopularRecruitmentsResponse popularRecruitments = popularRecruitmentsFindService.findPopularRecruitments(
+				request);
 
 		return ResponseEntity.ok(BaseApiResponse.success("인기 모집 공고 목록 조회 성공", popularRecruitments));
 	}
