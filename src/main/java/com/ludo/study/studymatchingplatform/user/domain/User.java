@@ -1,7 +1,6 @@
 package com.ludo.study.studymatchingplatform.user.domain;
 
 import com.ludo.study.studymatchingplatform.common.entity.BaseEntity;
-import com.ludo.study.studymatchingplatform.user.domain.exception.CurrentNicknameEqualsException;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -53,14 +52,11 @@ public class User extends BaseEntity {
 	}
 
 	public void changeNickname(final String nickname) {
-		validateNotEqualsCurrentNickname(nickname);
 		this.nickname = nickname;
 	}
 
-	public void validateNotEqualsCurrentNickname(final String nickname) {
-		if (this.nickname.equals(nickname)) {
-			throw new CurrentNicknameEqualsException();
-		}
+	public boolean equalsNickname(final String nickname) {
+		return this.nickname.equals(nickname);
 	}
 
 }
