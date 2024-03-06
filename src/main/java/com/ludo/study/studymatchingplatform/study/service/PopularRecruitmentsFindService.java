@@ -22,14 +22,14 @@ public class PopularRecruitmentsFindService {
 	@Transactional
 	public PopularRecruitmentsResponse findPopularRecruitments() {
 
-		List<Recruitment> popularCoding = recruitmentRepository.findPopularRecruitments("코딩테스트");
-		List<Recruitment> popularInterview = recruitmentRepository.findPopularRecruitments("모의면접");
+		List<Recruitment> popularCoding = recruitmentRepository.findPopularRecruitments("코딩 테스트");
+		List<Recruitment> popularInterview = recruitmentRepository.findPopularRecruitments("모의 면접");
 		List<Recruitment> popularProject = recruitmentRepository.findPopularRecruitments("프로젝트");
 
 		return new PopularRecruitmentsResponse(
-			recruitmentPreviewResponseMapper.mapBy(popularCoding),
-			recruitmentPreviewResponseMapper.mapBy(popularInterview),
-			recruitmentPreviewResponseMapper.mapBy(popularProject)
+				recruitmentPreviewResponseMapper.mapBy(popularCoding),
+				recruitmentPreviewResponseMapper.mapBy(popularInterview),
+				recruitmentPreviewResponseMapper.mapBy(popularProject)
 		);
 	}
 
