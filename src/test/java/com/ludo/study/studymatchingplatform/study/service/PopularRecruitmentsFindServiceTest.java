@@ -27,6 +27,7 @@ import com.ludo.study.studymatchingplatform.study.fixture.StudyFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.UserFixture;
 import com.ludo.study.studymatchingplatform.study.repository.CategoryRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.StudyRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.repository.dto.request.PopularRecruitmentCond;
 import com.ludo.study.studymatchingplatform.study.repository.recruitment.RecruitmentRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.service.dto.mapper.RecruitmentPreviewResponseMapper;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.PopularRecruitmentsResponse;
@@ -60,9 +61,9 @@ class PopularRecruitmentsFindServiceTest {
 	@BeforeEach
 	void init() {
 		User user = UserFixture.createUser(Social.GOOGLE, "아카", "hihi@google.com");
-		Category project = CategoryFixture.createCategory("프로젝트");
-		Category algorithm = CategoryFixture.createCategory("코딩테스트");
-		Category interview = CategoryFixture.createCategory("모의면접");
+		Category project = CategoryFixture.createCategory(CategoryFixture.PROJECT);
+		Category algorithm = CategoryFixture.createCategory(CategoryFixture.CODING_TEST);
+		Category interview = CategoryFixture.createCategory(CategoryFixture.INTERVIEW);
 
 		StackCategory backend = StackCategoryFixture.createStackCategory("백엔드");
 		RecruitmentStack spring = RecruitmentStackFixture.createRecruitmentStack(
@@ -121,21 +122,23 @@ class PopularRecruitmentsFindServiceTest {
 
 	@Test
 	void 인기있는_프로젝트_모집공고_조회() {
-		PopularRecruitmentsResponse result = popularRecruitmentsFindService.findPopularRecruitments();
+		PopularRecruitmentCond request = new PopularRecruitmentCond(6);
+		PopularRecruitmentsResponse result = popularRecruitmentsFindService.findPopularRecruitments(request);
 		List<RecruitmentPreviewResponse> popularProjectRecruitments = result.popularProjectRecruitments();
 
 		assertThat(popularProjectRecruitments)
 				.size()
-				.isLessThanOrEqualTo(3);
+				.isLessThanOrEqualTo(6);
 
 		assertThat(popularProjectRecruitments)
 				.extracting("title")
-				.containsExactly("모집공고C", "모집공고B", "모집공고A");
+				.containsExactly("모집공고C", "모집공고B", "모집공고A", "모집공고D");
 	}
 
 	@Test
 	void 인기있는_코딩테스트_모집공고_조회() {
-		PopularRecruitmentsResponse result = popularRecruitmentsFindService.findPopularRecruitments();
+		PopularRecruitmentCond request = new PopularRecruitmentCond(6);
+		PopularRecruitmentsResponse result = popularRecruitmentsFindService.findPopularRecruitments(request);
 		List<RecruitmentPreviewResponse> popularCodingRecruitments = result.popularCodingRecruitments();
 
 		assertThat(popularCodingRecruitments)
@@ -149,7 +152,8 @@ class PopularRecruitmentsFindServiceTest {
 
 	@Test
 	void 인기있는_모의면접_모집공고_조회() {
-		PopularRecruitmentsResponse result = popularRecruitmentsFindService.findPopularRecruitments();
+		PopularRecruitmentCond request = new PopularRecruitmentCond(6);
+		PopularRecruitmentsResponse result = popularRecruitmentsFindService.findPopularRecruitments(request);
 		List<RecruitmentPreviewResponse> popularInterviewRecruitments = result.popularInterviewRecruitments();
 
 		assertThat(popularInterviewRecruitments)
