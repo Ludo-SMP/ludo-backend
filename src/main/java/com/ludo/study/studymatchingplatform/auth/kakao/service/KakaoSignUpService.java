@@ -28,19 +28,21 @@ public class KakaoSignUpService {
 		final KakaoOAuthToken kakaoOAuthToken =
 				kakaoOAuthTokenRequestService.createOAuthToken(authorizationCode, kakaoSignUpRedirectUri);
 		final KakaoUserProfileDto kakaoUserProfileDto = kakaoProfileRequestService.createKakaoProfile(kakaoOAuthToken);
-
 		validateAlreadySignUp(kakaoUserProfileDto);
-
-		User user = kakaoUserProfileDto.toUser();
-		userRepository.save(user);
-		return user;
+		return signup(kakaoUserProfileDto);
 	}
 
-	private void validateAlreadySignUp(final KakaoUserProfileDto userInfo) {
-		userRepository.findByEmail(userInfo.getEmail())
+	private void validateAlreadySignUp(final KakaoUserProfileDto kakaoUserProfileDto) {
+		userRepository.findByEmail(kakaoUserProfileDto.getEmail())
 				.ifPresent(user -> {
 					throw new IllegalArgumentException("이미 가입되어 있는 회원입니다.");
 				});
+	}
+
+	private User signup(final KakaoUserProfileDto kakaoUserProfileDto) {
+		final User user = kakaoUserProfileDto.toUser();
+		userRepository.save(user);
+		return user;
 	}
 
 }
