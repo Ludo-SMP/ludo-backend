@@ -1,7 +1,5 @@
 package com.ludo.study.studymatchingplatform.auth.common;
 
-import java.io.IOException;
-
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,11 +14,9 @@ public class AuthController {
 
 	private final CookieProvider cookieProvider;
 
-	private final Redirection redirection;
-
 	@PostMapping("/auth/logout")
-	public void logout(final HttpServletResponse response) throws IOException {
+	public void logout(final HttpServletResponse response) {
 		cookieProvider.clearAuthCookie(response);
-		redirection.to("/", response);
 	}
+
 }
