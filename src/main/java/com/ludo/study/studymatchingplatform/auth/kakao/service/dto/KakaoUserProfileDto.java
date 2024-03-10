@@ -2,8 +2,8 @@ package com.ludo.study.studymatchingplatform.auth.kakao.service.dto;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import com.ludo.study.studymatchingplatform.user.domain.Social;
-import com.ludo.study.studymatchingplatform.user.domain.User;
+import com.ludo.study.studymatchingplatform.user.domain.user.Social;
+import com.ludo.study.studymatchingplatform.user.domain.user.User;
 
 @JsonNaming(value = PropertyNamingStrategies.LowerCaseStrategy.class)
 public record KakaoUserProfileDto(
