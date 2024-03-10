@@ -1,4 +1,4 @@
-package com.ludo.study.studymatchingplatform.study.service;
+package com.ludo.study.studymatchingplatform.study.service.recruitment;
 
 import java.util.List;
 
@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
 import com.ludo.study.studymatchingplatform.study.repository.recruitment.RecruitmentRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.service.dto.mapper.RecruitmentPreviewResponseMapper;
-import com.ludo.study.studymatchingplatform.study.service.dto.response.PopularRecruitmentsResponse;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.PopularRecruitmentsResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -27,9 +27,9 @@ public class PopularRecruitmentsFindService {
 		List<Recruitment> popularProject = recruitmentRepository.findPopularRecruitments("프로젝트");
 
 		return new PopularRecruitmentsResponse(
-			recruitmentPreviewResponseMapper.mapBy(popularCoding),
-			recruitmentPreviewResponseMapper.mapBy(popularInterview),
-			recruitmentPreviewResponseMapper.mapBy(popularProject)
+				recruitmentPreviewResponseMapper.mapBy(popularCoding),
+				recruitmentPreviewResponseMapper.mapBy(popularInterview),
+				recruitmentPreviewResponseMapper.mapBy(popularProject)
 		);
 	}
 

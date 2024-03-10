@@ -1,12 +1,12 @@
-package com.ludo.study.studymatchingplatform.study.service;
+package com.ludo.study.studymatchingplatform.study.service.recruitment.stack;
 
 import java.util.List;
 import java.util.Set;
 
 import org.springframework.stereotype.Service;
 
-import com.ludo.study.studymatchingplatform.study.domain.stack.Stack;
-import com.ludo.study.studymatchingplatform.study.repository.stack.StackRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.stack.Stack;
+import com.ludo.study.studymatchingplatform.study.repository.recruitment.stack.StackRepositoryImpl;
 
 import lombok.RequiredArgsConstructor;
 

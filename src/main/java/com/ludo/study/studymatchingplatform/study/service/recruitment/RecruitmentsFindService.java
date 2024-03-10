@@ -1,4 +1,4 @@
-package com.ludo.study.studymatchingplatform.study.service;
+package com.ludo.study.studymatchingplatform.study.service.recruitment;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ import com.ludo.study.studymatchingplatform.study.repository.dto.request.Recruit
 import com.ludo.study.studymatchingplatform.study.repository.dto.request.RecruitmentFindCursor;
 import com.ludo.study.studymatchingplatform.study.repository.recruitment.RecruitmentRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.service.dto.mapper.RecruitmentPreviewResponseMapper;
-import com.ludo.study.studymatchingplatform.study.service.dto.response.RecruitmentPreviewResponse;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.RecruitmentPreviewResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,7 +24,7 @@ public class RecruitmentsFindService {
 	@Transactional
 	public List<RecruitmentPreviewResponse> findRecruitments(final RecruitmentFindCursor recruitmentFindCursor,
 															 final RecruitmentFindCond recruitmentFindCond) {
-		
+
 		List<Recruitment> recruitments = recruitmentRepository.findRecruitments(recruitmentFindCursor,
 				recruitmentFindCond);
 

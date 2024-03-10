@@ -4,11 +4,11 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.ludo.study.studymatchingplatform.study.domain.Participant;
-import com.ludo.study.studymatchingplatform.study.domain.recruitment.Applicant;
-import com.ludo.study.studymatchingplatform.study.repository.ParticipantRepositoryImpl;
-import com.ludo.study.studymatchingplatform.study.repository.recruitment.ApplicantRepositoryImpl;
-import com.ludo.study.studymatchingplatform.user.domain.User;
+import com.ludo.study.studymatchingplatform.study.domain.study.participant.Participant;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant.Applicant;
+import com.ludo.study.studymatchingplatform.study.repository.study.participant.ParticipantRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.repository.recruitment.applicant.ApplicantRepositoryImpl;
+import com.ludo.study.studymatchingplatform.user.domain.user.User;
 
 import lombok.RequiredArgsConstructor;
 
