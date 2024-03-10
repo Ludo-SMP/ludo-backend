@@ -1,4 +1,4 @@
-package com.ludo.study.studymatchingplatform.auth.naver.service.vo.property;
+package com.ludo.study.studymatchingplatform.auth.config.property;
 
 import java.util.HashMap;
 import java.util.Map;
