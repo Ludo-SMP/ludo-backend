@@ -1,4 +1,4 @@
-package com.ludo.study.studymatchingplatform.auth.kakao.service;
+package com.ludo.study.studymatchingplatform.auth.service.kakao;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -9,8 +9,8 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import com.ludo.study.studymatchingplatform.auth.kakao.service.dto.KakaoOAuthToken;
 import com.ludo.study.studymatchingplatform.auth.naver.repository.InMemoryClientRegistrationAndProviderRepository;
+import com.ludo.study.studymatchingplatform.auth.service.kakao.dto.KakaoOAuthToken;
 import com.ludo.study.studymatchingplatform.user.domain.Social;
 
 import lombok.RequiredArgsConstructor;

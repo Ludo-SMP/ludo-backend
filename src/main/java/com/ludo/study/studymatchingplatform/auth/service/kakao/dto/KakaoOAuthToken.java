@@ -1,4 +1,4 @@
-package com.ludo.study.studymatchingplatform.auth.kakao.service.dto;
+package com.ludo.study.studymatchingplatform.auth.service.kakao.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

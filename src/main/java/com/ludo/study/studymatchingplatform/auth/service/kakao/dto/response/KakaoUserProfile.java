@@ -1,4 +1,4 @@
-package com.ludo.study.studymatchingplatform.auth.kakao.service.dto.response;
+package com.ludo.study.studymatchingplatform.auth.service.kakao.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ludo.study.studymatchingplatform.user.domain.Social;

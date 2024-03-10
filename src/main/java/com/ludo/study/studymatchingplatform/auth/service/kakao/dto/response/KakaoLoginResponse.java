@@ -1,4 +1,4 @@
-package com.ludo.study.studymatchingplatform.auth.kakao.service.dto.response;
+package com.ludo.study.studymatchingplatform.auth.service.kakao.dto.response;
 
 public record KakaoLoginResponse(
 

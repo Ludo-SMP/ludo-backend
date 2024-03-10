@@ -1,12 +1,12 @@
-package com.ludo.study.studymatchingplatform.auth.kakao.service.dto;
+package com.ludo.study.studymatchingplatform.auth.service.kakao.dto;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 @JsonNaming(value = PropertyNamingStrategies.LowerCaseStrategy.class)
-public record KakaoUserPropertiesDto(
+public record KakaoUserAccountDto(
 
-		String nickname
+		String email
 
 ) {
 }
