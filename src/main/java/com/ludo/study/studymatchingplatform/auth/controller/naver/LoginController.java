@@ -1,4 +1,4 @@
-package com.ludo.study.studymatchingplatform.auth.naver.controller;
+package com.ludo.study.studymatchingplatform.auth.controller.naver;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
