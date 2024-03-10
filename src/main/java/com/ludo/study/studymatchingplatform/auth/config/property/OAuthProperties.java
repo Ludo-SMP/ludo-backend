@@ -34,6 +34,7 @@ public class OAuthProperties {
 		private String authorizationUri;
 		private String tokenUri;
 		private String userInfoUri;
+		private String authorizationGrantType;
 	}
 
 }
