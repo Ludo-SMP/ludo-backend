@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
+import com.ludo.study.studymatchingplatform.common.ResourcePath;
 import com.ludo.study.studymatchingplatform.study.domain.Study;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.RecruitmentPreviewResponse;
@@ -24,17 +25,24 @@ public class RecruitmentPreviewResponseMapper {
 		return new RecruitmentPreviewResponse(
 				recruitment.getId(),
 				recruitment.getTitle(),
-				recruitment.getCreatedDateTime().toString(),
-				recruitment.getRecruitmentEndDateTime().toString(),
-				recruitment.getHits(),
-				recruitment.getStackNames(),
-				recruitment.getPositionNames(),
+				recruitment.getPositions().stream()
+						.map(position -> new RecruitmentPreviewResponse.PositionDetail(position.getId(),
+								position.getName()))
+						.toList(),
+				recruitment.getStacks().stream()
+						.map(stack -> new RecruitmentPreviewResponse.StackDetail(stack.getId(), stack.getName(),
+								ResourcePath.STACK_IMAGE.getPath() + stack.getImageUrl()))
+						.toList(),
 
-				study.getCategoryByName(),
+				new RecruitmentPreviewResponse.CategoryDetail(study.getCategoryId(), study.getCategoryByName()),
 				study.getOwnerNickname(),
 				study.getWay().toString(),
-				study.getStartDateTime().toString(),
-				study.getEndDateTime().toString()
+				recruitment.getHits(),
+				recruitment.getRecruitmentEndDateTime(),
+				study.getStartDateTime(),
+				study.getEndDateTime(),
+				recruitment.getCreatedDateTime()
 		);
 	}
+
 }
