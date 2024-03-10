@@ -18,7 +18,7 @@ public class RecruitmentFixture {
 		endDateTime = endDateTime == null ? LocalDateTime.now().plusDays(5) : endDateTime;
 		return Recruitment.builder()
 				.study(study)
-				.contect(com.ludo.study.studymatchingplatform.study.domain.recruitment.Contact.KAKAO)
+				.contact(Contact.KAKAO)
 				.callUrl(callUrl)
 				.content(content)
 				.applicantCount(3)
@@ -33,7 +33,7 @@ public class RecruitmentFixture {
 		endDateTime = endDateTime == null ? LocalDateTime.now().plusDays(5) : endDateTime;
 		return Recruitment.builder()
 				.study(study)
-				.contect(Contact.KAKAO)
+				.contact(Contact.KAKAO)
 				.callUrl(callUrl)
 				.applicantCount(3)
 				.content(content)
@@ -63,7 +63,7 @@ public class RecruitmentFixture {
 		return Recruitment.builder()
 				.id(id)
 				.study(study)
-				.contect(com.ludo.study.studymatchingplatform.study.domain.recruitment.Contact.KAKAO)
+				.contact(Contact.KAKAO)
 				.callUrl(callUrl)
 				.content(content)
 				.applicantCount(3)

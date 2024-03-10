@@ -13,14 +13,14 @@ import lombok.Getter;
 @Getter
 @Builder
 public final class WriteRecruitmentRequest {
-	private final Long studyId;
+
 	private final String title;
 	private final Set<Long> stackIds;
 	private final Set<Long> positionIds;
 	private final Integer applicantCount;
 	private final LocalDateTime recruitmentEndDateTime;
 	private final String content;
-	private final Contact contect;
+	private final Contact contact;
 	private final String callUrl;
 
 	public Recruitment toRecruitment(final Study study) {
@@ -30,7 +30,7 @@ public final class WriteRecruitmentRequest {
 				.applicantCount(applicantCount)
 				.recruitmentEndDateTime(recruitmentEndDateTime)
 				.study(study)
-				.contect(contect)
+				.contact(contact)
 				.callUrl(callUrl)
 				.build();
 	}

@@ -4,8 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Contact;
-import com.ludo.study.studymatchingplatform.study.domain.study.Platform;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
+import com.ludo.study.studymatchingplatform.study.domain.study.Platform;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.position.PositionResponse;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.stack.StackResponse;
 
@@ -21,19 +21,19 @@ public class WriteRecruitmentResponse {
 	@Getter
 	@RequiredArgsConstructor
 	static class WriteRecruitment {
-		private final long id;
+		private final Long id;
 		private final String ownerNickname;
 		private final String title;
 		private final String category;
 		private final List<StackResponse> stacks;
 		private final List<PositionResponse> positions;
 		private final Platform platform;
-		private final int applicantCount;
+		private final Integer applicantCount;
 		private final LocalDateTime recruitmentEndDateTime;
 		private final LocalDateTime startDateTime;
 		private final LocalDateTime endDateTime;
 		private final LocalDateTime createdDateTime;
-		private final Contact contect;
+		private final Contact contact;
 		private final String callUrl;
 		private final String content;
 
@@ -54,13 +54,13 @@ public class WriteRecruitmentResponse {
 				recruitment.getStudy().getCategory().getName(),
 				stacks,
 				positions,
-				recruitment.getStudy().getPlatform(), // TODO
+				recruitment.getStudy().getPlatform(),
 				recruitment.getApplicantsCount(),
 				recruitment.getRecruitmentEndDateTime(),
 				recruitment.getStudy().getStartDateTime(),
 				recruitment.getStudy().getEndDateTime(),
 				recruitment.getCreatedDateTime(),
-				recruitment.getContect(),
+				recruitment.getContact(),
 				recruitment.getCallUrl(),
 				recruitment.getContent()
 		));

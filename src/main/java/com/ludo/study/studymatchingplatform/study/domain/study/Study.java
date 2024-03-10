@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Objects;
 
 import com.ludo.study.studymatchingplatform.common.entity.BaseEntity;
-import com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant.Applicant;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant.Applicant;
 import com.ludo.study.studymatchingplatform.study.domain.study.category.Category;
 import com.ludo.study.studymatchingplatform.study.domain.study.participant.Participant;
 import com.ludo.study.studymatchingplatform.study.domain.study.participant.Role;
@@ -132,13 +132,14 @@ public class Study extends BaseEntity {
 		}
 	}
 
-	public void ensureRecruitmentEditable(final User user) {
+	public Recruitment ensureRecruitmentEditable(final User user) {
 		if (owner != user) {
 			throw new IllegalArgumentException("모집 공고를 수정할 권한이 없습니다.");
 		}
 		if (recruitment == null || recruitment.isDeleted()) {
 			throw new IllegalArgumentException("존재하지 않는 모집 공고입니다.");
 		}
+		return recruitment;
 	}
 
 	public void ensureStudyEditable(final User user) {

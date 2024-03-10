@@ -43,8 +43,8 @@ public class RecruitmentService {
 	private final ApplicantRepositoryImpl applicantRepository;
 
 	@Transactional
-	public Recruitment write(final User user, final WriteRecruitmentRequest request) {
-		final Study study = studyRepository.findByIdWithRecruitment(request.getStudyId())
+	public Recruitment write(final User user, final WriteRecruitmentRequest request, final Long studyId) {
+		final Study study = studyRepository.findByIdWithRecruitment(studyId)
 				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 스터디입니다."));
 
 		study.ensureRecruitmentWritableBy(user);
@@ -59,21 +59,21 @@ public class RecruitmentService {
 		return recruitment;
 	}
 
-	public Recruitment edit(final User user, final Long recruitmentId, final EditRecruitmentRequest request) {
-		final Recruitment recruitment = recruitmentRepository.findByIdWithStudy(recruitmentId)
-				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 모집 공고입니다."));
-
-		recruitment.ensureEditable(user);
+	public Recruitment edit(final User user, final Long studyId, final EditRecruitmentRequest request) {
+		final Study study = studyRepository.findByIdWithRecruitment(studyId)
+				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 스터디 입니다."));
+		final Recruitment recruitment = study.ensureRecruitmentEditable(user);
 
 		recruitmentStackService.update(recruitment, request.getStackIds());
 		recruitmentPositionService.update(recruitment, request.getPositionIds());
 
 		recruitment.edit(
 				request.getTitle(),
-				request.getContent(),
+				request.getContact(),
 				request.getCallUrl(),
-				request.getRecruitmentLimit(),
-				request.getRecruitmentEndDateTime()
+				request.getApplicantCount(),
+				request.getRecruitmentEndDateTime(),
+				request.getContent()
 		);
 
 		return recruitment;

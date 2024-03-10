@@ -3,6 +3,7 @@ package com.ludo.study.studymatchingplatform.study.service.dto.response.recruitm
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.Contact;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.position.PositionResponse;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.stack.StackResponse;
@@ -13,14 +14,16 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public class EditRecruitmentResponse {
-	private final long id;
+
+	private final Long id;
 	private final String ownerNickname;
 	private final String title;
 	private final String category;
 	private final List<StackResponse> stacks;
 	private final List<PositionResponse> positions;
-	private final String platformUrl;
-	private final int applicantCount;
+	private final Contact contact;
+	private final String callUrl;
+	private final Integer applicantCount;
 	private final LocalDateTime recruitmentEndDateTime;
 	private final LocalDateTime startDateTime;
 	private final LocalDateTime endDateTime;
@@ -43,6 +46,7 @@ public class EditRecruitmentResponse {
 				recruitment.getStudy().getCategory().getName(),
 				stacks,
 				positions,
+				recruitment.getContact(),
 				recruitment.getCallUrl(),
 				recruitment.getApplicantsCount(),
 				recruitment.getRecruitmentEndDateTime(),

@@ -18,10 +18,10 @@ import com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant.A
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.position.Position;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.stack.Stack;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.stack.StackCategory;
-import com.ludo.study.studymatchingplatform.study.domain.study.category.Category;
 import com.ludo.study.studymatchingplatform.study.domain.study.Platform;
 import com.ludo.study.studymatchingplatform.study.domain.study.Study;
 import com.ludo.study.studymatchingplatform.study.domain.study.StudyStatus;
+import com.ludo.study.studymatchingplatform.study.domain.study.category.Category;
 import com.ludo.study.studymatchingplatform.study.fixture.recruitment.RecruitmentFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.recruitment.position.PositionFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.recruitment.stack.StackCategoryFixture;
@@ -34,9 +34,9 @@ import com.ludo.study.studymatchingplatform.study.repository.recruitment.stack.S
 import com.ludo.study.studymatchingplatform.study.repository.recruitment.stack.StackRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.study.StudyRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.study.category.CategoryRepositoryImpl;
-import com.ludo.study.studymatchingplatform.study.service.dto.request.recruitment.applicant.ApplyRecruitmentRequest;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.recruitment.EditRecruitmentRequest;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.recruitment.WriteRecruitmentRequest;
+import com.ludo.study.studymatchingplatform.study.service.dto.request.recruitment.applicant.ApplyRecruitmentRequest;
 import com.ludo.study.studymatchingplatform.user.domain.user.Social;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 import com.ludo.study.studymatchingplatform.user.repository.user.UserRepositoryImpl;
@@ -115,19 +115,18 @@ class RecruitmentServiceTestBakup {
 		);
 
 		final WriteRecruitmentRequest request = WriteRecruitmentRequest.builder()
-				.studyId(study.getId())
 				.title("recruitment")
 				.content("I want to study")
 				.stackIds(Set.of(stack.getId()))
 				.positionIds(Set.of(position.getId()))
 				.applicantCount(4)
-				.contect(Contact.KAKAO)
+				.contact(Contact.KAKAO)
 				.callUrl("x.com")
 				.recruitmentEndDateTime(LocalDateTime.now().plusMonths(3))
 				.build();
 
 		// when
-		final Recruitment recruitment = recruitmentService.write(owner, request);
+		final Recruitment recruitment = recruitmentService.write(owner, request, study.getId());
 
 		// then
 		assertThat(recruitment.getTitle()).isEqualTo("recruitment");
@@ -178,12 +177,12 @@ class RecruitmentServiceTestBakup {
 		);
 
 		final WriteRecruitmentRequest request = WriteRecruitmentRequest.builder()
-				.studyId(study.getId())
 				.title("recruitment")
 				.content("I want to study")
 				.stackIds(Set.of(stack.getId()))
 				.positionIds(Set.of(position.getId()))
 				.applicantCount(4)
+				.contact(Contact.KAKAO)
 				.callUrl("x.com")
 				.recruitmentEndDateTime(LocalDateTime.now().plusMonths(3))
 				.build();
@@ -191,7 +190,7 @@ class RecruitmentServiceTestBakup {
 		// when
 		// then
 		assertThatThrownBy(() ->
-				recruitmentService.write(user, request))
+				recruitmentService.write(user, request, study.getId()))
 				.isInstanceOf(IllegalArgumentException.class)
 				.hasMessage("모집 공고를 작성할 권한이 없습니다.");
 	}
@@ -231,24 +230,23 @@ class RecruitmentServiceTestBakup {
 		);
 
 		final WriteRecruitmentRequest request = WriteRecruitmentRequest.builder()
-				.studyId(study.getId())
 				.title("recruitment")
 				.content("I want to study")
 				.stackIds(Set.of(stack.getId()))
 				.positionIds(Set.of(position.getId()))
 				.applicantCount(4)
-				.contect(Contact.KAKAO)
+				.contact(Contact.KAKAO)
 				.callUrl("x.com")
 				.recruitmentEndDateTime(LocalDateTime.now().plusMonths(3))
 				.build();
 
-		final Recruitment recruitment = recruitmentService.write(owner, request);
+		final Recruitment recruitment = recruitmentService.write(owner, request, study.getId());
 		study.registerRecruitment(recruitment);
 
 		// when
 		// then
 		assertThatThrownBy(() ->
-				recruitmentService.write(owner, request))
+				recruitmentService.write(owner, request, study.getId()))
 				.isInstanceOf(IllegalArgumentException.class)
 				.hasMessage("이미 작성된 모집 공고가 존재합니다.");
 	}
@@ -277,12 +275,12 @@ class RecruitmentServiceTestBakup {
 		);
 
 		final WriteRecruitmentRequest request = WriteRecruitmentRequest.builder()
-				.studyId(2147483647L)
 				.title("recruitment")
 				.content("I want to study")
 				.stackIds(Set.of(stack.getId()))
 				.positionIds(Set.of(position.getId()))
 				.applicantCount(4)
+				.contact(Contact.KAKAO)
 				.callUrl("x.com")
 				.recruitmentEndDateTime(LocalDateTime.now().plusMonths(3))
 				.build();
@@ -290,7 +288,7 @@ class RecruitmentServiceTestBakup {
 		// when
 		// then
 		assertThatThrownBy(() ->
-				recruitmentService.write(owner, request))
+				recruitmentService.write(owner, request, 2147483647L))
 				.isInstanceOf(IllegalArgumentException.class)
 				.hasMessage("존재하지 않는 스터디입니다.");
 	}
@@ -877,15 +875,16 @@ class RecruitmentServiceTestBakup {
 		final LocalDateTime editedRecruitmentEndDateTime = LocalDateTime.now().plusDays(5);
 		final EditRecruitmentRequest request = EditRecruitmentRequest.builder()
 				.title("edited text")
-				// .content("edited content")
+				.content("edited content")
 				.callUrl("edited callUrl")
 				.recruitmentEndDateTime(editedRecruitmentEndDateTime)
 				.build();
-		final Recruitment editedRecruitment = recruitmentService.edit(owner, recruitment.getId(), request);
+		final Recruitment editedRecruitment = recruitmentService.edit(owner, study.getId(), request);
 
 		// edited states
 		assertThat(editedRecruitment.getTitle()).isEqualTo("edited text");
 		assertThat(editedRecruitment.getCallUrl()).isEqualTo("edited callUrl");
+		assertThat(editedRecruitment.getContent()).isEqualTo("edited content");
 		assertThat(editedRecruitment.getRecruitmentEndDateTime()).isEqualTo(editedRecruitmentEndDateTime);
 
 		// same as prev states
@@ -947,9 +946,9 @@ class RecruitmentServiceTestBakup {
 				.recruitmentEndDateTime(editedRecruitmentEndDateTime)
 				.build();
 
-		assertThatThrownBy(() -> recruitmentService.edit(user, recruitment.getId(), request))
+		assertThatThrownBy(() -> recruitmentService.edit(user, study.getId(), request))
 				.isInstanceOf(IllegalArgumentException.class)
-				.hasMessage("모집 공고를 작성할 권한이 없습니다.");
+				.hasMessage("모집 공고를 수정할 권한이 없습니다.");
 
 	}
 
@@ -966,18 +965,34 @@ class RecruitmentServiceTestBakup {
 						.build()
 		);
 
+		final Category category = categoryRepository.save(
+
+				CategoryFixture.createCategory("category1"));
+
+		final Study study = studyRepository.save(
+				StudyFixture.createStudy(
+						"study",
+						category,
+						owner,
+						4,
+						Platform.GATHER
+				)
+		);
+
 		final LocalDateTime editedRecruitmentEndDateTime = LocalDateTime.now().plusDays(5);
 		final EditRecruitmentRequest request = EditRecruitmentRequest.builder()
 				.title("edited text")
-				.content("edited content")
+				.contact(Contact.KAKAO)
 				.callUrl("edited callUrl")
+				.applicantCount(3)
 				.recruitmentEndDateTime(editedRecruitmentEndDateTime)
+				.content("edited content")
 				.build();
 
-		final Long invalidRecruitmentId = Long.MIN_VALUE;
+		// final Long invalidRecruitmentId = Long.MIN_VALUE;
 		// when
 		// then
-		assertThatThrownBy(() -> recruitmentService.edit(owner, invalidRecruitmentId, request))
+		assertThatThrownBy(() -> recruitmentService.edit(owner, study.getId(), request))
 				.isInstanceOf(IllegalArgumentException.class)
 				.hasMessage("존재하지 않는 모집 공고입니다.");
 
