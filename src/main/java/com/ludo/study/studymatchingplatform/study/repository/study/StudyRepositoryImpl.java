@@ -1,8 +1,8 @@
 package com.ludo.study.studymatchingplatform.study.repository.study;
 
 import static com.ludo.study.studymatchingplatform.study.domain.recruitment.QRecruitment.*;
-import static com.ludo.study.studymatchingplatform.study.domain.study.QParticipant.*;
 import static com.ludo.study.studymatchingplatform.study.domain.study.QStudy.*;
+import static com.ludo.study.studymatchingplatform.study.domain.study.participant.QParticipant.*;
 import static com.ludo.study.studymatchingplatform.user.domain.user.QUser.*;
 
 import java.util.Optional;
