@@ -11,8 +11,7 @@ public class ApplyRecruitmentResponse {
 
 	private final String applicantId;
 
-	// TODO
 	public static ApplyRecruitmentResponse from(final Applicant applicant) {
-		return null;
+		return new ApplyRecruitmentResponse(applicant.getId().toString());
 	}
 }
