@@ -1,6 +1,7 @@
 package com.ludo.study.studymatchingplatform.common.advice;
 
 import org.springframework.core.MethodParameter;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -41,6 +42,9 @@ public final class CommonResponseAdvice implements ResponseBodyAdvice<Object> {
 	}
 
 	private boolean isApi(final ServerHttpRequest request) {
+		if(request.getHeaders().containsKey(HttpHeaders.LOCATION)) {
+			return false;
+		}
 		return request.getURI().getPath().startsWith("/api");
 	}
 
