@@ -1,6 +1,6 @@
-package com.ludo.study.studymatchingplatform.study.repository;
+package com.ludo.study.studymatchingplatform.study.repository.recruitment.position;
 
-import static com.ludo.study.studymatchingplatform.study.domain.QPosition.*;
+import static com.ludo.study.studymatchingplatform.study.domain.recruitment.position.QPosition.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -8,7 +8,7 @@ import java.util.Set;
 
 import org.springframework.stereotype.Repository;
 
-import com.ludo.study.studymatchingplatform.study.domain.Position;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.position.Position;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;

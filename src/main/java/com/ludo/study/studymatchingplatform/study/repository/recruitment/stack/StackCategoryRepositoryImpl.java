@@ -1,12 +1,12 @@
-package com.ludo.study.studymatchingplatform.study.repository.stack;
+package com.ludo.study.studymatchingplatform.study.repository.recruitment.stack;
 
-import static com.ludo.study.studymatchingplatform.study.domain.stack.QStackCategory.*;
+import static com.ludo.study.studymatchingplatform.study.domain.recruitment.stack.QStackCategory.*;
 
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.ludo.study.studymatchingplatform.study.domain.stack.StackCategory;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.stack.StackCategory;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;

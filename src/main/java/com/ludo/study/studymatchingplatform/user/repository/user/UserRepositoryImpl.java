@@ -1,14 +1,14 @@
-package com.ludo.study.studymatchingplatform.user.repository;
+package com.ludo.study.studymatchingplatform.user.repository.user;
 
-import static com.ludo.study.studymatchingplatform.user.domain.QUser.*;
+import static com.ludo.study.studymatchingplatform.user.domain.user.QUser.*;
 
 import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
 
 import com.ludo.study.studymatchingplatform.study.service.exception.AuthenticationException;
-import com.ludo.study.studymatchingplatform.user.domain.Social;
-import com.ludo.study.studymatchingplatform.user.domain.User;
+import com.ludo.study.studymatchingplatform.user.domain.user.Social;
+import com.ludo.study.studymatchingplatform.user.domain.user.User;
 import com.ludo.study.studymatchingplatform.user.repository.jpa.UserJpaRepositoryImpl;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
