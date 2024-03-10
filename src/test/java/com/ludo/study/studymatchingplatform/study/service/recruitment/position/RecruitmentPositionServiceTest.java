@@ -1,31 +1,35 @@
-package com.ludo.study.studymatchingplatform.study.service;
+package com.ludo.study.studymatchingplatform.study.service.recruitment.position;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import com.ludo.study.studymatchingplatform.study.domain.Category;
-import com.ludo.study.studymatchingplatform.study.domain.Platform;
-import com.ludo.study.studymatchingplatform.study.domain.Position;
-import com.ludo.study.studymatchingplatform.study.domain.Study;
-import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
-import com.ludo.study.studymatchingplatform.study.domain.recruitment.RecruitmentPosition;
-import com.ludo.study.studymatchingplatform.study.fixture.CategoryFixture;
-import com.ludo.study.studymatchingplatform.study.fixture.PositionFixture;
-import com.ludo.study.studymatchingplatform.study.fixture.StudyFixture;
-import com.ludo.study.studymatchingplatform.study.repository.CategoryRepositoryImpl;
-import com.ludo.study.studymatchingplatform.study.repository.PositionRepositoryImpl;
-import com.ludo.study.studymatchingplatform.study.repository.StudyRepositoryImpl;
-import com.ludo.study.studymatchingplatform.study.service.dto.request.WriteRecruitmentRequest;
-import com.ludo.study.studymatchingplatform.user.domain.Social;
-import com.ludo.study.studymatchingplatform.user.domain.User;
-import com.ludo.study.studymatchingplatform.user.repository.UserRepositoryImpl;
+import static org.assertj.core.api.Assertions.*;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.Contact;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.position.Position;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.position.RecruitmentPosition;
+import com.ludo.study.studymatchingplatform.study.domain.study.category.Category;
+import com.ludo.study.studymatchingplatform.study.domain.study.Platform;
+import com.ludo.study.studymatchingplatform.study.domain.study.Study;
+import com.ludo.study.studymatchingplatform.study.fixture.recruitment.position.PositionFixture;
+import com.ludo.study.studymatchingplatform.study.fixture.study.StudyFixture;
+import com.ludo.study.studymatchingplatform.study.fixture.study.category.CategoryFixture;
+import com.ludo.study.studymatchingplatform.study.repository.recruitment.position.PositionRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.repository.study.StudyRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.repository.study.category.CategoryRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.service.dto.request.recruitment.WriteRecruitmentRequest;
+import com.ludo.study.studymatchingplatform.study.service.recruitment.RecruitmentService;
+import com.ludo.study.studymatchingplatform.user.domain.user.Social;
+import com.ludo.study.studymatchingplatform.user.domain.user.User;
+import com.ludo.study.studymatchingplatform.user.repository.user.UserRepositoryImpl;
 
 @SpringBootTest
 @Transactional
@@ -81,7 +85,8 @@ class RecruitmentPositionServiceTest {
 				.content("I want to study")
 				.stackIds(Set.of())
 				.positionIds(Set.of())
-				.recruitmentLimit(4)
+				.applicantCount(4)
+				.contect(Contact.KAKAO)
 				.callUrl("x.com")
 				.recruitmentEndDateTime(LocalDateTime.now().plusMonths(3))
 				.build();
@@ -131,14 +136,14 @@ class RecruitmentPositionServiceTest {
 
 		final Position position1 = positionRepository.save(PositionFixture.createPosition("position1"));
 
-
 		final WriteRecruitmentRequest request = WriteRecruitmentRequest.builder()
 				.studyId(study.getId())
 				.title("recruitment")
 				.content("I want to study")
 				.stackIds(Set.of())
 				.positionIds(Set.of(position1.getId()))
-				.recruitmentLimit(4)
+				.applicantCount(4)
+				.contect(Contact.KAKAO)
 				.callUrl("x.com")
 				.recruitmentEndDateTime(LocalDateTime.now().plusMonths(3))
 				.build();
@@ -154,7 +159,6 @@ class RecruitmentPositionServiceTest {
 				.hasMessage("이미 존재하는 포지션입니다.");
 
 	}
-
 
 	@DisplayName("update 시, 모집 공고에 등록되지 않은 스택을 전달하면 추가된다.")
 	@Test
@@ -191,7 +195,8 @@ class RecruitmentPositionServiceTest {
 				.content("I want to study")
 				.stackIds(Set.of())
 				.positionIds(Set.of())
-				.recruitmentLimit(4)
+				.applicantCount(4)
+				.contect(Contact.KAKAO)
 				.callUrl("x.com")
 				.recruitmentEndDateTime(LocalDateTime.now().plusMonths(3))
 				.build();
@@ -244,7 +249,8 @@ class RecruitmentPositionServiceTest {
 				.content("I want to study")
 				.stackIds(Set.of())
 				.positionIds(Set.of(position1.getId(), position2.getId(), position3.getId()))
-				.recruitmentLimit(4)
+				.applicantCount(4)
+				.contect(Contact.KAKAO)
 				.callUrl("x.com")
 				.recruitmentEndDateTime(LocalDateTime.now().plusMonths(3))
 				.build();
@@ -287,14 +293,14 @@ class RecruitmentPositionServiceTest {
 
 		final Position position1 = positionRepository.save(PositionFixture.createPosition("position1"));
 
-
 		final WriteRecruitmentRequest request = WriteRecruitmentRequest.builder()
 				.studyId(study.getId())
 				.title("recruitment")
 				.content("I want to study")
 				.stackIds(Set.of())
 				.positionIds(Set.of(position1.getId()))
-				.recruitmentLimit(4)
+				.applicantCount(4)
+				.contect(Contact.KAKAO)
 				.callUrl("x.com")
 				.recruitmentEndDateTime(LocalDateTime.now().plusMonths(3))
 				.build();

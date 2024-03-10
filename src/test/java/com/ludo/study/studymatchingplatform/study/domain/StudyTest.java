@@ -7,15 +7,17 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.ludo.study.studymatchingplatform.study.domain.recruitment.Applicant;
-import com.ludo.study.studymatchingplatform.study.domain.recruitment.ApplicantStatus;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
-import com.ludo.study.studymatchingplatform.study.fixture.PositionFixture;
-import com.ludo.study.studymatchingplatform.study.fixture.RecruitmentFixture;
-import com.ludo.study.studymatchingplatform.study.fixture.StudyFixture;
-import com.ludo.study.studymatchingplatform.study.fixture.UserFixture;
-import com.ludo.study.studymatchingplatform.user.domain.Social;
-import com.ludo.study.studymatchingplatform.user.domain.User;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant.Applicant;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant.ApplicantStatus;
+import com.ludo.study.studymatchingplatform.study.domain.study.Study;
+import com.ludo.study.studymatchingplatform.study.domain.study.StudyStatus;
+import com.ludo.study.studymatchingplatform.study.fixture.recruitment.RecruitmentFixture;
+import com.ludo.study.studymatchingplatform.study.fixture.recruitment.position.PositionFixture;
+import com.ludo.study.studymatchingplatform.study.fixture.study.StudyFixture;
+import com.ludo.study.studymatchingplatform.user.domain.user.Social;
+import com.ludo.study.studymatchingplatform.user.domain.user.User;
+import com.ludo.study.studymatchingplatform.user.fixture.user.UserFixture;
 
 @SpringBootTest
 class StudyTest {
@@ -272,7 +274,7 @@ class StudyTest {
 					.doesNotThrowAnyException();
 			assertThat(study.getParticipants()).isEmpty();
 			assertThat(recruitment.getApplicants()).isNotEmpty();
-			assertThat(recruitment.getApplicants().get(0).getApplicantStatus()).isEqualTo(ApplicantStatus.REJECTED);
+			assertThat(recruitment.getApplicants().get(0).getApplicantStatus()).isEqualTo(ApplicantStatus.REFUSED);
 		}
 	}
 

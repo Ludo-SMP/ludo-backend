@@ -1,49 +1,45 @@
-package com.ludo.study.studymatchingplatform.study.service;
+package com.ludo.study.studymatchingplatform.study.service.recruitment;
+
+import static org.assertj.core.api.Assertions.*;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Set;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ludo.study.studymatchingplatform.study.domain.Category;
-import com.ludo.study.studymatchingplatform.study.domain.Platform;
-import com.ludo.study.studymatchingplatform.study.domain.Position;
-import com.ludo.study.studymatchingplatform.study.domain.Study;
-import com.ludo.study.studymatchingplatform.study.domain.StudyStatus;
-import com.ludo.study.studymatchingplatform.study.domain.recruitment.Applicant;
-import com.ludo.study.studymatchingplatform.study.domain.recruitment.ApplicantStatus;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.Contact;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
-import com.ludo.study.studymatchingplatform.study.domain.recruitment.RecruitmentPosition;
-import com.ludo.study.studymatchingplatform.study.domain.recruitment.RecruitmentStack;
-import com.ludo.study.studymatchingplatform.study.domain.stack.Stack;
-import com.ludo.study.studymatchingplatform.study.domain.stack.StackCategory;
-import com.ludo.study.studymatchingplatform.study.fixture.CategoryFixture;
-import com.ludo.study.studymatchingplatform.study.fixture.PositionFixture;
-import com.ludo.study.studymatchingplatform.study.fixture.RecruitmentFixture;
-import com.ludo.study.studymatchingplatform.study.fixture.StackCategoryFixture;
-import com.ludo.study.studymatchingplatform.study.fixture.StackFixture;
-import com.ludo.study.studymatchingplatform.study.fixture.StudyFixture;
-import com.ludo.study.studymatchingplatform.study.fixture.UserFixture;
-import com.ludo.study.studymatchingplatform.study.repository.CategoryRepositoryImpl;
-import com.ludo.study.studymatchingplatform.study.repository.PositionRepositoryImpl;
-import com.ludo.study.studymatchingplatform.study.repository.StudyRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant.Applicant;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant.ApplicantStatus;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.position.Position;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.stack.Stack;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.stack.StackCategory;
+import com.ludo.study.studymatchingplatform.study.domain.study.category.Category;
+import com.ludo.study.studymatchingplatform.study.domain.study.Platform;
+import com.ludo.study.studymatchingplatform.study.domain.study.Study;
+import com.ludo.study.studymatchingplatform.study.domain.study.StudyStatus;
+import com.ludo.study.studymatchingplatform.study.fixture.recruitment.RecruitmentFixture;
+import com.ludo.study.studymatchingplatform.study.fixture.recruitment.position.PositionFixture;
+import com.ludo.study.studymatchingplatform.study.fixture.recruitment.stack.StackCategoryFixture;
+import com.ludo.study.studymatchingplatform.study.fixture.recruitment.stack.StackFixture;
+import com.ludo.study.studymatchingplatform.study.fixture.study.StudyFixture;
+import com.ludo.study.studymatchingplatform.study.fixture.study.category.CategoryFixture;
 import com.ludo.study.studymatchingplatform.study.repository.recruitment.RecruitmentRepositoryImpl;
-import com.ludo.study.studymatchingplatform.study.repository.stack.StackCategoryRepositoryImpl;
-import com.ludo.study.studymatchingplatform.study.repository.stack.StackRepositoryImpl;
-import com.ludo.study.studymatchingplatform.study.service.dto.request.ApplyRecruitmentRequest;
-import com.ludo.study.studymatchingplatform.study.service.dto.request.EditRecruitmentRequest;
-import com.ludo.study.studymatchingplatform.study.service.dto.request.WriteRecruitmentRequest;
-import com.ludo.study.studymatchingplatform.user.domain.Social;
-import com.ludo.study.studymatchingplatform.user.domain.User;
-import com.ludo.study.studymatchingplatform.user.repository.UserRepositoryImpl;
-
-import static org.assertj.core.api.Assertions.*;
+import com.ludo.study.studymatchingplatform.study.repository.recruitment.position.PositionRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.repository.recruitment.stack.StackCategoryRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.repository.recruitment.stack.StackRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.repository.study.StudyRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.repository.study.category.CategoryRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.service.dto.request.recruitment.applicant.ApplyRecruitmentRequest;
+import com.ludo.study.studymatchingplatform.study.service.dto.request.recruitment.EditRecruitmentRequest;
+import com.ludo.study.studymatchingplatform.study.service.dto.request.recruitment.WriteRecruitmentRequest;
+import com.ludo.study.studymatchingplatform.user.domain.user.Social;
+import com.ludo.study.studymatchingplatform.user.domain.user.User;
+import com.ludo.study.studymatchingplatform.user.repository.user.UserRepositoryImpl;
 
 @SpringBootTest
 @Transactional
@@ -124,7 +120,8 @@ class RecruitmentServiceTestBakup {
 				.content("I want to study")
 				.stackIds(Set.of(stack.getId()))
 				.positionIds(Set.of(position.getId()))
-				.recruitmentLimit(4)
+				.applicantCount(4)
+				.contect(Contact.KAKAO)
 				.callUrl("x.com")
 				.recruitmentEndDateTime(LocalDateTime.now().plusMonths(3))
 				.build();
@@ -186,7 +183,7 @@ class RecruitmentServiceTestBakup {
 				.content("I want to study")
 				.stackIds(Set.of(stack.getId()))
 				.positionIds(Set.of(position.getId()))
-				.recruitmentLimit(4)
+				.applicantCount(4)
 				.callUrl("x.com")
 				.recruitmentEndDateTime(LocalDateTime.now().plusMonths(3))
 				.build();
@@ -239,7 +236,8 @@ class RecruitmentServiceTestBakup {
 				.content("I want to study")
 				.stackIds(Set.of(stack.getId()))
 				.positionIds(Set.of(position.getId()))
-				.recruitmentLimit(4)
+				.applicantCount(4)
+				.contect(Contact.KAKAO)
 				.callUrl("x.com")
 				.recruitmentEndDateTime(LocalDateTime.now().plusMonths(3))
 				.build();
@@ -284,7 +282,7 @@ class RecruitmentServiceTestBakup {
 				.content("I want to study")
 				.stackIds(Set.of(stack.getId()))
 				.positionIds(Set.of(position.getId()))
-				.recruitmentLimit(4)
+				.applicantCount(4)
 				.callUrl("x.com")
 				.recruitmentEndDateTime(LocalDateTime.now().plusMonths(3))
 				.build();
@@ -580,7 +578,7 @@ class RecruitmentServiceTestBakup {
 				.isInstanceOf(IllegalArgumentException.class)
 				.hasMessage("이미 수락된 모집 공고입니다.");
 
-		applicant.changeStatus(ApplicantStatus.REJECTED);
+		applicant.changeStatus(ApplicantStatus.REFUSED);
 		assertThatThrownBy(() -> recruitmentService.apply(applier, recruitment.getId(), request))
 				.isInstanceOf(IllegalArgumentException.class)
 				.hasMessage("이미 거절된 모집 공고입니다.");
@@ -764,7 +762,7 @@ class RecruitmentServiceTestBakup {
 				.isInstanceOf(IllegalStateException.class)
 				.hasMessage("현재 모집 중인 스터디가 아닙니다.");
 
-		applicant.changeStatus(ApplicantStatus.REJECTED);
+		applicant.changeStatus(ApplicantStatus.REFUSED);
 		assertThatThrownBy(() -> recruitmentService.apply(applier, recruitment.getId(), request))
 				.isInstanceOf(IllegalStateException.class)
 				.hasMessage("현재 모집 중인 스터디가 아닙니다.");
@@ -831,7 +829,7 @@ class RecruitmentServiceTestBakup {
 
 		// when
 		// then
-		applicant.changeStatus(ApplicantStatus.REJECTED);
+		applicant.changeStatus(ApplicantStatus.REFUSED);
 		assertThatThrownBy(() -> recruitmentService.apply(applier, recruitment.getId(), request))
 				.isInstanceOf(IllegalArgumentException.class)
 				.hasMessage("이미 거절된 모집 공고입니다.");

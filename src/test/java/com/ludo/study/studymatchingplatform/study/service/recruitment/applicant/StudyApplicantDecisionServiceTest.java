@@ -1,4 +1,4 @@
-package com.ludo.study.studymatchingplatform.study.service;
+package com.ludo.study.studymatchingplatform.study.service.recruitment.applicant;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -10,29 +10,30 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ludo.study.studymatchingplatform.study.domain.Category;
-import com.ludo.study.studymatchingplatform.study.domain.Participant;
-import com.ludo.study.studymatchingplatform.study.domain.Platform;
-import com.ludo.study.studymatchingplatform.study.domain.Role;
-import com.ludo.study.studymatchingplatform.study.domain.Study;
-import com.ludo.study.studymatchingplatform.study.domain.recruitment.Applicant;
-import com.ludo.study.studymatchingplatform.study.domain.recruitment.ApplicantStatus;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
-import com.ludo.study.studymatchingplatform.study.fixture.ApplicantFixture;
-import com.ludo.study.studymatchingplatform.study.fixture.RecruitmentFixture;
-import com.ludo.study.studymatchingplatform.study.fixture.StudyFixture;
-import com.ludo.study.studymatchingplatform.study.fixture.UserFixture;
-import com.ludo.study.studymatchingplatform.study.repository.CategoryRepositoryImpl;
-import com.ludo.study.studymatchingplatform.study.repository.ParticipantRepositoryImpl;
-import com.ludo.study.studymatchingplatform.study.repository.PositionRepositoryImpl;
-import com.ludo.study.studymatchingplatform.study.repository.StudyRepositoryImpl;
-import com.ludo.study.studymatchingplatform.study.repository.recruitment.ApplicantRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant.Applicant;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant.ApplicantStatus;
+import com.ludo.study.studymatchingplatform.study.domain.study.category.Category;
+import com.ludo.study.studymatchingplatform.study.domain.study.participant.Participant;
+import com.ludo.study.studymatchingplatform.study.domain.study.Platform;
+import com.ludo.study.studymatchingplatform.study.domain.study.participant.Role;
+import com.ludo.study.studymatchingplatform.study.domain.study.Study;
+import com.ludo.study.studymatchingplatform.study.fixture.recruitment.RecruitmentFixture;
+import com.ludo.study.studymatchingplatform.study.fixture.recruitment.applicant.ApplicantFixture;
+import com.ludo.study.studymatchingplatform.study.fixture.study.StudyFixture;
 import com.ludo.study.studymatchingplatform.study.repository.recruitment.RecruitmentRepositoryImpl;
-import com.ludo.study.studymatchingplatform.study.service.dto.request.StudyApplicantDecisionRequest;
-import com.ludo.study.studymatchingplatform.study.service.dto.response.ApplyAcceptResponse;
-import com.ludo.study.studymatchingplatform.user.domain.Social;
-import com.ludo.study.studymatchingplatform.user.domain.User;
-import com.ludo.study.studymatchingplatform.user.repository.UserRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.repository.recruitment.applicant.ApplicantRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.repository.recruitment.position.PositionRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.repository.study.StudyRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.repository.study.category.CategoryRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.repository.study.participant.ParticipantRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.service.dto.request.recruitment.applicant.StudyApplicantDecisionRequest;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.applicant.ApplyAcceptResponse;
+import com.ludo.study.studymatchingplatform.study.service.study.participant.ParticipantDecisionService;
+import com.ludo.study.studymatchingplatform.user.domain.user.Social;
+import com.ludo.study.studymatchingplatform.user.domain.user.User;
+import com.ludo.study.studymatchingplatform.user.fixture.user.UserFixture;
+import com.ludo.study.studymatchingplatform.user.repository.user.UserRepositoryImpl;
 
 import jakarta.persistence.EntityManager;
 
@@ -40,7 +41,7 @@ import jakarta.persistence.EntityManager;
 class StudyApplicantDecisionServiceTest {
 
 	@Autowired
-	StudyApplicantDecisionService applicantDecisionService;
+	ParticipantDecisionService applicantDecisionService;
 
 	@Autowired
 	UserRepositoryImpl userRepository;
@@ -140,7 +141,7 @@ class StudyApplicantDecisionServiceTest {
 
 		// then
 		Applicant findApplicant = applicantRepository.find(recruitment.getId(), other.getId()).get();
-		assertApplicantStatus(findApplicant, ApplicantStatus.REJECTED);
+		assertApplicantStatus(findApplicant, ApplicantStatus.REFUSED);
 	}
 
 	private void assertApplyAcceptResponse(ApplyAcceptResponse applyAcceptResponse, User other) {

@@ -1,4 +1,4 @@
-package com.ludo.study.studymatchingplatform.study.service;
+package com.ludo.study.studymatchingplatform.study.service.recruitment;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -6,32 +6,32 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.ludo.study.studymatchingplatform.study.domain.Category;
-import com.ludo.study.studymatchingplatform.study.domain.Platform;
-import com.ludo.study.studymatchingplatform.study.domain.Study;
-import com.ludo.study.studymatchingplatform.study.domain.StudyStatus;
-import com.ludo.study.studymatchingplatform.study.domain.Way;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
-import com.ludo.study.studymatchingplatform.study.domain.recruitment.RecruitmentPosition;
-import com.ludo.study.studymatchingplatform.study.domain.recruitment.RecruitmentStack;
-import com.ludo.study.studymatchingplatform.study.domain.stack.Stack;
-import com.ludo.study.studymatchingplatform.study.domain.stack.StackCategory;
-import com.ludo.study.studymatchingplatform.study.fixture.CategoryFixture;
-import com.ludo.study.studymatchingplatform.study.fixture.PositionFixture;
-import com.ludo.study.studymatchingplatform.study.fixture.RecruitmentFixture;
-import com.ludo.study.studymatchingplatform.study.fixture.RecruitmentPositionFixture;
-import com.ludo.study.studymatchingplatform.study.fixture.StackCategoryFixture;
-import com.ludo.study.studymatchingplatform.study.fixture.StackFixture;
-import com.ludo.study.studymatchingplatform.study.fixture.StudyFixture;
-import com.ludo.study.studymatchingplatform.study.fixture.UserFixture;
-import com.ludo.study.studymatchingplatform.study.repository.CategoryRepositoryImpl;
-import com.ludo.study.studymatchingplatform.study.repository.StudyRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.position.RecruitmentPosition;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.stack.RecruitmentStack;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.stack.Stack;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.stack.StackCategory;
+import com.ludo.study.studymatchingplatform.study.domain.study.category.Category;
+import com.ludo.study.studymatchingplatform.study.domain.study.Platform;
+import com.ludo.study.studymatchingplatform.study.domain.study.Study;
+import com.ludo.study.studymatchingplatform.study.domain.study.StudyStatus;
+import com.ludo.study.studymatchingplatform.study.domain.study.Way;
+import com.ludo.study.studymatchingplatform.study.fixture.recruitment.RecruitmentFixture;
+import com.ludo.study.studymatchingplatform.study.fixture.recruitment.position.PositionFixture;
+import com.ludo.study.studymatchingplatform.study.fixture.recruitment.position.RecruitmentPositionFixture;
+import com.ludo.study.studymatchingplatform.study.fixture.recruitment.stack.StackCategoryFixture;
+import com.ludo.study.studymatchingplatform.study.fixture.recruitment.stack.StackFixture;
+import com.ludo.study.studymatchingplatform.study.fixture.study.StudyFixture;
+import com.ludo.study.studymatchingplatform.study.fixture.study.category.CategoryFixture;
 import com.ludo.study.studymatchingplatform.study.repository.recruitment.RecruitmentRepositoryImpl;
-import com.ludo.study.studymatchingplatform.study.repository.stack.StackCategoryRepositoryImpl;
-import com.ludo.study.studymatchingplatform.study.service.dto.response.RecruitmentDetailsResponse;
-import com.ludo.study.studymatchingplatform.user.domain.Social;
-import com.ludo.study.studymatchingplatform.user.domain.User;
-import com.ludo.study.studymatchingplatform.user.repository.UserRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.repository.recruitment.stack.StackCategoryRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.repository.study.StudyRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.repository.study.category.CategoryRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.RecruitmentDetailsResponse;
+import com.ludo.study.studymatchingplatform.user.domain.user.Social;
+import com.ludo.study.studymatchingplatform.user.domain.user.User;
+import com.ludo.study.studymatchingplatform.user.fixture.user.UserFixture;
+import com.ludo.study.studymatchingplatform.user.repository.user.UserRepositoryImpl;
 
 import jakarta.transaction.Transactional;
 

@@ -1,12 +1,13 @@
-package com.ludo.study.studymatchingplatform.study.service;
+package com.ludo.study.studymatchingplatform.study.service.study;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ludo.study.studymatchingplatform.study.repository.CategoryRepositoryImpl;
-import com.ludo.study.studymatchingplatform.study.repository.PositionRepositoryImpl;
-import com.ludo.study.studymatchingplatform.user.repository.UserRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.repository.study.category.CategoryRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.repository.recruitment.position.PositionRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.service.study.StudyCreateService;
+import com.ludo.study.studymatchingplatform.user.repository.user.UserRepositoryImpl;
 
 @SpringBootTest
 @Transactional
