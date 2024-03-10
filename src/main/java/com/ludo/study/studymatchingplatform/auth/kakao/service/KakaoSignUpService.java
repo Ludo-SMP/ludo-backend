@@ -31,9 +31,7 @@ public class KakaoSignUpService {
 
 		validateAlreadySignUp(kakaoUserProfileDto);
 
-		User user = kakaoUserProfileDto.toUser();
-		userRepository.save(user);
-		return user;
+		return sinup(kakaoUserProfileDto);
 	}
 
 	private void validateAlreadySignUp(final KakaoUserProfileDto userInfo) {
@@ -41,6 +39,12 @@ public class KakaoSignUpService {
 				.ifPresent(user -> {
 					throw new IllegalArgumentException("이미 가입되어 있는 회원입니다.");
 				});
+	}
+
+	private User sinup(KakaoUserProfileDto kakaoUserProfileDto) {
+		User user = userRepository.save(kakaoUserProfileDto.toUser());
+		user.setInitialDefaultNickname();
+		return user;
 	}
 
 }

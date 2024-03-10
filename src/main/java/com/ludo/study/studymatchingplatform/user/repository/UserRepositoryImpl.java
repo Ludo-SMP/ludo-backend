@@ -57,4 +57,15 @@ public class UserRepositoryImpl {
 		return userJpaRepository.findById(id)
 				.orElseThrow(() -> new AuthenticationException("로그인 되지 않은 사용자입니다."));
 	}
+
+	public boolean existsByNickname(final String nickname) {
+		Long userId = q.select(user.id)
+				.from(user)
+				.where(user.nickname.eq(nickname))
+				.limit(1L)
+				.fetchOne();
+
+		return userId != null;
+	}
+
 }

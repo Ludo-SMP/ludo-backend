@@ -13,28 +13,28 @@ public class RecruitmentPreviewResponseMapper {
 
 	public List<RecruitmentPreviewResponse> mapBy(final List<Recruitment> recruitments) {
 		return recruitments.stream()
-			.map(recruitment -> {
-				Study study = recruitment.getStudy();
-				return getRecruitmentPreviewResponse(recruitment, study);
-			})
-			.toList();
+				.map(recruitment -> {
+					Study study = recruitment.getStudy();
+					return getRecruitmentPreviewResponse(recruitment, study);
+				})
+				.toList();
 	}
 
 	private RecruitmentPreviewResponse getRecruitmentPreviewResponse(final Recruitment recruitment, final Study study) {
 		return new RecruitmentPreviewResponse(
-			recruitment.getId(),
-			recruitment.getTitle(),
-			recruitment.getCreatedDateTime().toString(),
-			recruitment.getRecruitmentEndDateTime().toString(),
-			recruitment.getHits(),
-			recruitment.getStackNames(),
-			recruitment.getPositionNames(),
+				recruitment.getId(),
+				recruitment.getTitle(),
+				recruitment.getCreatedDateTime().toString(),
+				recruitment.getRecruitmentEndDateTime().toString(),
+				recruitment.getHits(),
+				recruitment.getStackNames(),
+				recruitment.getPositionNames(),
 
-			study.getCategoryByName(),
-			study.getOwnerNickname(),
-			study.getWay().toString(),
-			study.getStartDateTime().toString(),
-			study.getEndDateTime().toString()
+				study.getCategoryByName(),
+				study.getOwnerNickname(),
+				study.getWay().toString(),
+				study.getStartDateTime().toString(),
+				study.getEndDateTime().toString()
 		);
 	}
 }

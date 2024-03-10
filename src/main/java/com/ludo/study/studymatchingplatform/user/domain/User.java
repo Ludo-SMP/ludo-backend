@@ -1,6 +1,7 @@
 package com.ludo.study.studymatchingplatform.user.domain;
 
 import com.ludo.study.studymatchingplatform.common.entity.BaseEntity;
+import com.ludo.study.studymatchingplatform.user.domain.exception.UserExceptionMessage;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,6 +18,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import lombok.extern.slf4j.Slf4j;
 
 @Entity
 @Table(name = "`user`")
@@ -24,7 +26,11 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Slf4j
 public class User extends BaseEntity {
+
+	public static final String DEFAULT_NICKNAME_PREFIX = "스따-디 %d";
+	public static final Long DEFAULT_NICKNAME_ID = 716L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,6 +53,25 @@ public class User extends BaseEntity {
 		this.social = social;
 		this.nickname = nickname;
 		this.email = email;
+	}
+
+	public void setInitialDefaultNickname() {
+		validateInitDefaultNickname();
+		this.nickname = String.format(DEFAULT_NICKNAME_PREFIX, DEFAULT_NICKNAME_ID + id);
+	}
+
+	private void validateInitDefaultNickname() {
+		if (this.id == null) {
+			throw new IllegalArgumentException(UserExceptionMessage.INIT_DEFAULT_NICKNAME.getMessage());
+		}
+	}
+
+	public void changeNickname(final String nickname) {
+		this.nickname = nickname;
+	}
+
+	public boolean equalsNickname(final String nickname) {
+		return this.nickname.equals(nickname);
 	}
 
 }
