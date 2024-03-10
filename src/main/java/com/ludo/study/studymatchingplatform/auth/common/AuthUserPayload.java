@@ -1,6 +1,6 @@
 package com.ludo.study.studymatchingplatform.auth.common;
 
-import com.ludo.study.studymatchingplatform.user.domain.User;
+import com.ludo.study.studymatchingplatform.user.domain.user.User;
 
 import io.jsonwebtoken.Claims;
 import lombok.Getter;
