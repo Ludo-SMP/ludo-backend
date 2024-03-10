@@ -3,7 +3,7 @@ package com.ludo.study.studymatchingplatform.auth.naver.repository;
 import java.util.Map;
 
 import com.ludo.study.studymatchingplatform.auth.naver.service.vo.property.ClientRegistrationAndProvider;
-import com.ludo.study.studymatchingplatform.user.domain.Social;
+import com.ludo.study.studymatchingplatform.user.domain.user.Social;
 
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
