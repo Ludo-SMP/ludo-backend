@@ -16,13 +16,7 @@ import com.ludo.study.studymatchingplatform.study.domain.Study;
 import com.ludo.study.studymatchingplatform.study.domain.StudyStatus;
 import com.ludo.study.studymatchingplatform.study.domain.Way;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
-import com.ludo.study.studymatchingplatform.study.domain.recruitment.RecruitmentStack;
-import com.ludo.study.studymatchingplatform.study.domain.stack.StackCategory;
-import com.ludo.study.studymatchingplatform.study.fixture.CategoryFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.RecruitmentFixture;
-import com.ludo.study.studymatchingplatform.study.fixture.RecruitmentStackFixture;
-import com.ludo.study.studymatchingplatform.study.fixture.StackCategoryFixture;
-import com.ludo.study.studymatchingplatform.study.fixture.StackFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.StudyFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.UserFixture;
 import com.ludo.study.studymatchingplatform.study.repository.CategoryRepositoryImpl;
@@ -61,18 +55,11 @@ class PopularRecruitmentsFindServiceTest {
 	@BeforeEach
 	void init() {
 		User user = UserFixture.createUser(Social.GOOGLE, "아카", "hihi@google.com");
-		Category project = CategoryFixture.createCategory(CategoryFixture.PROJECT);
-		Category algorithm = CategoryFixture.createCategory(CategoryFixture.CODING_TEST);
-		Category interview = CategoryFixture.createCategory(CategoryFixture.INTERVIEW);
+		Category project = categoryRepository.findByName("프로젝트").get();
+		Category algorithm = categoryRepository.findByName("코딩 테스트").get();
+		Category interview = categoryRepository.findByName("모의 면접").get();
 
-		StackCategory backend = StackCategoryFixture.createStackCategory("백엔드");
-		RecruitmentStack spring = RecruitmentStackFixture.createRecruitmentStack(
-				StackFixture.createStack("spring", backend)
-		);
 		userRepository.save(user);
-		categoryRepository.save(project);
-		categoryRepository.save(algorithm);
-		categoryRepository.save(interview);
 
 		Study studyA = StudyFixture.createStudy(StudyStatus.RECRUITING, "스터디A", Way.ONLINE, project, user, 5, 5,
 				Platform.GATHER);
