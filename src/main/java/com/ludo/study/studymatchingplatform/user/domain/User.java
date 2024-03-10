@@ -64,7 +64,7 @@ public class User extends BaseEntity {
 		if (this.id == null) {
 			throw new IllegalArgumentException(UserExceptionMessage.INIT_DEFAULT_NICKNAME.getMessage());
 		}
-  }
+	}
 
 	public void changeNickname(final String nickname) {
 		this.nickname = nickname;

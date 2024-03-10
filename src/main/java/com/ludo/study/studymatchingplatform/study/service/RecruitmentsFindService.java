@@ -24,7 +24,7 @@ public class RecruitmentsFindService {
 	@Transactional
 	public List<RecruitmentPreviewResponse> findRecruitments(final RecruitmentFindCursor recruitmentFindCursor,
 															 final RecruitmentFindCond recruitmentFindCond) {
-		
+
 		List<Recruitment> recruitments = recruitmentRepository.findRecruitments(recruitmentFindCursor,
 				recruitmentFindCond);
 

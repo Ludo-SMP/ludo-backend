@@ -3,9 +3,6 @@ package com.ludo.study.studymatchingplatform.study.service.dto.response;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import org.springframework.cglib.core.Local;
-
-import com.ludo.study.studymatchingplatform.study.domain.Position;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
 
 import lombok.Getter;
