@@ -1,8 +1,8 @@
-package com.ludo.study.studymatchingplatform.study.fixture;
+package com.ludo.study.studymatchingplatform.study.fixture.recruitment.position;
 
-import com.ludo.study.studymatchingplatform.study.domain.Position;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.position.Position;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
-import com.ludo.study.studymatchingplatform.study.domain.recruitment.RecruitmentPosition;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.position.RecruitmentPosition;
 
 public class RecruitmentPositionFixture {
 

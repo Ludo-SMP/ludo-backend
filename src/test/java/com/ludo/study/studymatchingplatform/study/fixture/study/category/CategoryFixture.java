@@ -1,6 +1,6 @@
-package com.ludo.study.studymatchingplatform.study.fixture;
+package com.ludo.study.studymatchingplatform.study.fixture.study.category;
 
-import com.ludo.study.studymatchingplatform.study.domain.Category;
+import com.ludo.study.studymatchingplatform.study.domain.study.category.Category;
 
 public class CategoryFixture {
 
@@ -10,6 +10,13 @@ public class CategoryFixture {
 
 	public static Category createCategory(String name) {
 		return Category.builder()
+				.name(name)
+				.build();
+	}
+
+	public static Category createCategory(Long id, String name) {
+		return Category.builder()
+				.id(id)
 				.name(name)
 				.build();
 	}

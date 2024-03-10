@@ -1,7 +1,7 @@
-package com.ludo.study.studymatchingplatform.study.fixture;
+package com.ludo.study.studymatchingplatform.user.fixture.user;
 
-import com.ludo.study.studymatchingplatform.user.domain.Social;
-import com.ludo.study.studymatchingplatform.user.domain.User;
+import com.ludo.study.studymatchingplatform.user.domain.user.Social;
+import com.ludo.study.studymatchingplatform.user.domain.user.User;
 
 public class UserFixture {
 

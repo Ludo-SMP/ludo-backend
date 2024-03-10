@@ -1,13 +1,14 @@
-package com.ludo.study.studymatchingplatform.study.fixture;
+package com.ludo.study.studymatchingplatform.study.fixture.study;
 
 import java.time.LocalDateTime;
 
-import com.ludo.study.studymatchingplatform.study.domain.Category;
-import com.ludo.study.studymatchingplatform.study.domain.Platform;
-import com.ludo.study.studymatchingplatform.study.domain.Study;
-import com.ludo.study.studymatchingplatform.study.domain.StudyStatus;
-import com.ludo.study.studymatchingplatform.study.domain.Way;
-import com.ludo.study.studymatchingplatform.user.domain.User;
+import com.ludo.study.studymatchingplatform.study.domain.study.category.Category;
+import com.ludo.study.studymatchingplatform.study.domain.study.Platform;
+import com.ludo.study.studymatchingplatform.study.domain.study.Study;
+import com.ludo.study.studymatchingplatform.study.domain.study.StudyStatus;
+import com.ludo.study.studymatchingplatform.study.domain.study.Way;
+import com.ludo.study.studymatchingplatform.study.fixture.study.category.CategoryFixture;
+import com.ludo.study.studymatchingplatform.user.domain.user.User;
 
 public class StudyFixture {
 
@@ -54,6 +55,23 @@ public class StudyFixture {
 				0,
 				participantLimit,
 				Platform.GATHER);
+	}
+
+	public static Study createStudy(Long id, String title, Way way, Category category, User user,
+									Integer participantCount, Integer participantLimit) {
+		return Study.builder()
+				.id(id)
+				.status(StudyStatus.RECRUITING)
+				.platform(Platform.GATHER)
+				.category(category)
+				.owner(user)
+				.title(title)
+				.way(way)
+				.participantCount(participantCount)
+				.participantLimit(participantLimit)
+				.startDateTime(LocalDateTime.now())
+				.endDateTime(LocalDateTime.now().plusDays(5))
+				.build();
 	}
 
 }

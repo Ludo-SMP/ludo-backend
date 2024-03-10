@@ -1,12 +1,13 @@
-package com.ludo.study.studymatchingplatform.study.fixture;
+package com.ludo.study.studymatchingplatform.study.fixture.recruitment;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.ludo.study.studymatchingplatform.study.domain.Study;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.Contact;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
-import com.ludo.study.studymatchingplatform.study.domain.recruitment.RecruitmentPosition;
-import com.ludo.study.studymatchingplatform.study.domain.recruitment.RecruitmentStack;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.position.RecruitmentPosition;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.stack.RecruitmentStack;
+import com.ludo.study.studymatchingplatform.study.domain.study.Study;
 
 public class RecruitmentFixture {
 
@@ -17,8 +18,10 @@ public class RecruitmentFixture {
 		endDateTime = endDateTime == null ? LocalDateTime.now().plusDays(5) : endDateTime;
 		return Recruitment.builder()
 				.study(study)
+				.contect(com.ludo.study.studymatchingplatform.study.domain.recruitment.Contact.KAKAO)
 				.callUrl(callUrl)
 				.content(content)
+				.applicantCount(3)
 				.recruitmentEndDateTime(endDateTime)
 				.title(title)
 				.hits(hits)
@@ -30,7 +33,9 @@ public class RecruitmentFixture {
 		endDateTime = endDateTime == null ? LocalDateTime.now().plusDays(5) : endDateTime;
 		return Recruitment.builder()
 				.study(study)
+				.contect(Contact.KAKAO)
 				.callUrl(callUrl)
+				.applicantCount(3)
 				.content(content)
 				.title(title)
 				.hits(0)
@@ -52,4 +57,20 @@ public class RecruitmentFixture {
 				recruitmentPositions
 		);
 	}
+
+	public static Recruitment createRecruitment(Long id, Study study, String title, String content, Integer hits,
+												String callUrl, LocalDateTime endDateTime) {
+		return Recruitment.builder()
+				.id(id)
+				.study(study)
+				.contect(com.ludo.study.studymatchingplatform.study.domain.recruitment.Contact.KAKAO)
+				.callUrl(callUrl)
+				.content(content)
+				.applicantCount(3)
+				.recruitmentEndDateTime(endDateTime)
+				.title(title)
+				.hits(hits)
+				.build();
+	}
+
 }

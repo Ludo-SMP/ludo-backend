@@ -1,8 +1,8 @@
-package com.ludo.study.studymatchingplatform.study.fixture;
+package com.ludo.study.studymatchingplatform.study.fixture.recruitment.stack;
 
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
-import com.ludo.study.studymatchingplatform.study.domain.recruitment.RecruitmentStack;
-import com.ludo.study.studymatchingplatform.study.domain.stack.Stack;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.stack.RecruitmentStack;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.stack.Stack;
 
 public class RecruitmentStackFixture {
 
