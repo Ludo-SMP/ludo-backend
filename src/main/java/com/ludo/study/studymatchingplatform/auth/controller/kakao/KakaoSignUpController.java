@@ -1,4 +1,4 @@
-package com.ludo.study.studymatchingplatform.auth.kakao.controller;
+package com.ludo.study.studymatchingplatform.auth.controller.kakao;
 
 import java.io.IOException;
 
