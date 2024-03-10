@@ -12,7 +12,7 @@ import com.ludo.study.studymatchingplatform.auth.common.provider.CookieProvider;
 import com.ludo.study.studymatchingplatform.auth.common.provider.JwtTokenProvider;
 import com.ludo.study.studymatchingplatform.auth.repository.InMemoryClientRegistrationAndProviderRepository;
 import com.ludo.study.studymatchingplatform.auth.service.google.GoogleSignUpService;
-import com.ludo.study.studymatchingplatform.auth.service.naver.dto.response.SignupResponse;
+import com.ludo.study.studymatchingplatform.auth.service.google.dto.response.SignupResponse;
 import com.ludo.study.studymatchingplatform.user.domain.Social;
 import com.ludo.study.studymatchingplatform.user.domain.User;
 
