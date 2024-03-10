@@ -1,4 +1,4 @@
-package com.ludo.study.studymatchingplatform.auth.naver.service.vo.response;
+package com.ludo.study.studymatchingplatform.auth.service.naver.vo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

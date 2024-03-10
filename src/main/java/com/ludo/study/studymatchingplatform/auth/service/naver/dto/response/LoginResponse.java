@@ -1,4 +1,4 @@
-package com.ludo.study.studymatchingplatform.auth.naver.service.dto.response;
+package com.ludo.study.studymatchingplatform.auth.service.naver.dto.response;
 
 public record LoginResponse(
 		String id,

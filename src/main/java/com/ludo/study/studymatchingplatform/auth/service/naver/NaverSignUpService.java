@@ -1,11 +1,11 @@
-package com.ludo.study.studymatchingplatform.auth.naver.service;
+package com.ludo.study.studymatchingplatform.auth.service.naver;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ludo.study.studymatchingplatform.auth.naver.service.dto.response.SignupResponse;
-import com.ludo.study.studymatchingplatform.auth.naver.service.vo.response.NaverOAuthToken;
-import com.ludo.study.studymatchingplatform.auth.naver.service.vo.response.UserProfile;
+import com.ludo.study.studymatchingplatform.auth.service.naver.dto.response.SignupResponse;
+import com.ludo.study.studymatchingplatform.auth.service.naver.vo.NaverOAuthToken;
+import com.ludo.study.studymatchingplatform.auth.service.naver.vo.UserProfile;
 import com.ludo.study.studymatchingplatform.user.domain.User;
 import com.ludo.study.studymatchingplatform.user.repository.UserRepositoryImpl;
 

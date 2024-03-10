@@ -1,4 +1,4 @@
-package com.ludo.study.studymatchingplatform.auth.naver.service;
+package com.ludo.study.studymatchingplatform.auth.service.naver;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -9,7 +9,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import com.ludo.study.studymatchingplatform.auth.naver.repository.InMemoryClientRegistrationAndProviderRepository;
-import com.ludo.study.studymatchingplatform.auth.naver.service.vo.response.NaverOAuthToken;
+import com.ludo.study.studymatchingplatform.auth.service.naver.vo.NaverOAuthToken;
 import com.ludo.study.studymatchingplatform.user.domain.Social;
 
 import lombok.RequiredArgsConstructor;
