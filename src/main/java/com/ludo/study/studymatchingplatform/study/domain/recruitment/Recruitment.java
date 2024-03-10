@@ -78,10 +78,10 @@ public class Recruitment extends BaseEntity {
 	@Builder.Default
 	private List<RecruitmentPosition> recruitmentPositions = new ArrayList<>();
 
-	// contect 추가 (연결 방법)
+	// contact 추가 (연결 방법)
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false, columnDefinition = "char(20)")
-	private Contact contect;
+	private Contact contact;
 
 	@Column(nullable = false, length = 2048)
 	@Size(max = 2048)
@@ -174,16 +174,17 @@ public class Recruitment extends BaseEntity {
 
 	public void edit(
 			final String title,
-			final String content,
+			final Contact contact,
 			final String callUrl,
 			final Integer applicantCount,
-			final LocalDateTime recruitmentEndDateTime
+			final LocalDateTime recruitmentEndDateTime,
+			final String content
 	) {
 		if (title != null) {
 			this.title = title;
 		}
-		if (content != null) {
-			this.content = content;
+		if (contact != null) {
+			this.contact = contact;
 		}
 		if (callUrl != null) {
 			this.callUrl = callUrl;
@@ -193,6 +194,9 @@ public class Recruitment extends BaseEntity {
 		}
 		if (recruitmentEndDateTime != null) {
 			this.recruitmentEndDateTime = recruitmentEndDateTime;
+		}
+		if (content != null) {
+			this.content = content;
 		}
 	}
 
