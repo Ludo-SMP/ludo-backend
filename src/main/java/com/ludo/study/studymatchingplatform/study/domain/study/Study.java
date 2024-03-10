@@ -1,4 +1,4 @@
-package com.ludo.study.studymatchingplatform.study.domain;
+package com.ludo.study.studymatchingplatform.study.domain.study;
 
 import static jakarta.persistence.FetchType.*;
 
@@ -9,9 +9,12 @@ import java.util.List;
 import java.util.Objects;
 
 import com.ludo.study.studymatchingplatform.common.entity.BaseEntity;
-import com.ludo.study.studymatchingplatform.study.domain.recruitment.Applicant;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant.Applicant;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
-import com.ludo.study.studymatchingplatform.user.domain.User;
+import com.ludo.study.studymatchingplatform.study.domain.study.category.Category;
+import com.ludo.study.studymatchingplatform.study.domain.study.participant.Participant;
+import com.ludo.study.studymatchingplatform.study.domain.study.participant.Role;
+import com.ludo.study.studymatchingplatform.user.domain.user.User;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -97,7 +100,6 @@ public class Study extends BaseEntity {
 	public void registerRecruitment(final Recruitment recruitment) {
 		this.recruitment = recruitment;
 		this.recruitment.connectToStudy(this);
-
 	}
 
 	public void changeStatus(final StudyStatus status) {

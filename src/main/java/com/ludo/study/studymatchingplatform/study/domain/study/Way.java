@@ -1,4 +1,4 @@
-package com.ludo.study.studymatchingplatform.study.domain;
+package com.ludo.study.studymatchingplatform.study.domain.study;
 
 import java.util.Arrays;
 

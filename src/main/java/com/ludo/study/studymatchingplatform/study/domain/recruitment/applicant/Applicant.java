@@ -1,12 +1,13 @@
-package com.ludo.study.studymatchingplatform.study.domain.recruitment;
+package com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant;
 
 import static jakarta.persistence.FetchType.*;
 
 import com.ludo.study.studymatchingplatform.common.entity.BaseEntity;
-import com.ludo.study.studymatchingplatform.study.domain.Position;
-import com.ludo.study.studymatchingplatform.study.domain.StudyStatus;
-import com.ludo.study.studymatchingplatform.study.domain.recruitment.id.ApplicantId;
-import com.ludo.study.studymatchingplatform.user.domain.User;
+import com.ludo.study.studymatchingplatform.study.domain.id.ApplicantId;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.position.Position;
+import com.ludo.study.studymatchingplatform.study.domain.study.StudyStatus;
+import com.ludo.study.studymatchingplatform.user.domain.user.User;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
@@ -65,7 +66,7 @@ public class Applicant extends BaseEntity {
 		if (recruitment.isOwner(user)) {
 			throw new IllegalArgumentException("스터디장은 자신의 스터디에 지원할 수 없습니다.");
 		}
-		if (applicantStatus == ApplicantStatus.REJECTED) {
+		if (applicantStatus == ApplicantStatus.REFUSED) {
 			throw new IllegalArgumentException("이미 거절된 모집 공고입니다.");
 		}
 		if (applicantStatus == ApplicantStatus.ACCEPTED) {
@@ -97,7 +98,7 @@ public class Applicant extends BaseEntity {
 		if (studyStatus != StudyStatus.RECRUITING) {
 			throw new IllegalStateException("이미 모집이 종료된 공고입니다.");
 		}
-		if (applicantStatus == ApplicantStatus.REJECTED) {
+		if (applicantStatus == ApplicantStatus.REFUSED) {
 			throw new IllegalStateException("이미 거절된 모집 공고입니다.");
 		}
 		if (applicantStatus == ApplicantStatus.CANCELLED) {

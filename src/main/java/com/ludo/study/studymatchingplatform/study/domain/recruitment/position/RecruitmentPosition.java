@@ -1,10 +1,10 @@
-package com.ludo.study.studymatchingplatform.study.domain.recruitment;
+package com.ludo.study.studymatchingplatform.study.domain.recruitment.position;
 
 import static jakarta.persistence.FetchType.*;
 
 import com.ludo.study.studymatchingplatform.common.entity.BaseEntity;
-import com.ludo.study.studymatchingplatform.study.domain.Position;
-import com.ludo.study.studymatchingplatform.study.domain.recruitment.id.RecruitmentPositionId;
+import com.ludo.study.studymatchingplatform.study.domain.id.RecruitmentPositionId;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
 
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;

@@ -1,4 +1,4 @@
-package com.ludo.study.studymatchingplatform.study.domain;
+package com.ludo.study.studymatchingplatform.study.domain.study.participant;
 
 import static jakarta.persistence.FetchType.*;
 
@@ -6,7 +6,9 @@ import java.util.Objects;
 
 import com.ludo.study.studymatchingplatform.common.entity.BaseEntity;
 import com.ludo.study.studymatchingplatform.study.domain.id.ParticipantId;
-import com.ludo.study.studymatchingplatform.user.domain.User;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.position.Position;
+import com.ludo.study.studymatchingplatform.study.domain.study.Study;
+import com.ludo.study.studymatchingplatform.user.domain.user.User;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;

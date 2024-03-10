@@ -1,4 +1,4 @@
-package com.ludo.study.studymatchingplatform.study.domain.recruitment.id;
+package com.ludo.study.studymatchingplatform.study.domain.id;
 
 import java.io.Serializable;
 

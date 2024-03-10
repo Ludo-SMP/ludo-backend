@@ -1,10 +1,9 @@
-package com.ludo.study.studymatchingplatform.study.domain.stack;
+package com.ludo.study.studymatchingplatform.study.domain.recruitment.stack;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.ludo.study.studymatchingplatform.common.entity.BaseEntity;
-import com.ludo.study.studymatchingplatform.study.domain.recruitment.RecruitmentStack;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

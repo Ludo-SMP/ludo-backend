@@ -1,4 +1,4 @@
-package com.ludo.study.studymatchingplatform.user.domain;
+package com.ludo.study.studymatchingplatform.user.domain.user;
 
 public enum Social {
 

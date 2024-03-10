@@ -1,4 +1,4 @@
-package com.ludo.study.studymatchingplatform.study.domain.stack;
+package com.ludo.study.studymatchingplatform.study.domain.recruitment.stack;
 
 import com.ludo.study.studymatchingplatform.common.entity.BaseEntity;
 

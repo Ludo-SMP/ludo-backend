@@ -1,4 +1,4 @@
-package com.ludo.study.studymatchingplatform.user.domain;
+package com.ludo.study.studymatchingplatform.user.domain.user;
 
 import com.ludo.study.studymatchingplatform.common.entity.BaseEntity;
 
@@ -50,4 +50,3 @@ public class User extends BaseEntity {
 	}
 
 }
-
