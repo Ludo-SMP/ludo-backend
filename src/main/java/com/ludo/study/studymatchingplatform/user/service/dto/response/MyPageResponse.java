@@ -2,7 +2,7 @@ package com.ludo.study.studymatchingplatform.user.service.dto.response;
 
 import java.util.List;
 
-import com.ludo.study.studymatchingplatform.study.domain.study.Participant;
+import com.ludo.study.studymatchingplatform.study.domain.study.participant.Participant;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant.Applicant;
 
 import lombok.Builder;

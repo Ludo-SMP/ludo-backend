@@ -2,7 +2,7 @@ package com.ludo.study.studymatchingplatform.study.service.dto.request.study;
 
 import java.time.LocalDateTime;
 
-import com.ludo.study.studymatchingplatform.study.domain.study.Category;
+import com.ludo.study.studymatchingplatform.study.domain.study.category.Category;
 import com.ludo.study.studymatchingplatform.study.domain.study.Platform;
 import com.ludo.study.studymatchingplatform.study.domain.study.Study;
 import com.ludo.study.studymatchingplatform.study.domain.study.StudyStatus;

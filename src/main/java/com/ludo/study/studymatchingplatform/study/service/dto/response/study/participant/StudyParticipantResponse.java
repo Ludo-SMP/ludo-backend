@@ -1,7 +1,7 @@
 package com.ludo.study.studymatchingplatform.study.service.dto.response.study.participant;
 
-import com.ludo.study.studymatchingplatform.study.domain.study.Participant;
-import com.ludo.study.studymatchingplatform.study.domain.study.Role;
+import com.ludo.study.studymatchingplatform.study.domain.study.participant.Participant;
+import com.ludo.study.studymatchingplatform.study.domain.study.participant.Role;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

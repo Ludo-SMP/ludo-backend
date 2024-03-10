@@ -1,6 +1,6 @@
 package com.ludo.study.studymatchingplatform.study.service.dto.response.study.category;
 
-import com.ludo.study.studymatchingplatform.study.domain.study.Category;
+import com.ludo.study.studymatchingplatform.study.domain.study.category.Category;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

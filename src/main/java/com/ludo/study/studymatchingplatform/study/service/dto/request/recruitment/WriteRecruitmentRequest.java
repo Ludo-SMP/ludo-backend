@@ -23,7 +23,7 @@ public final class WriteRecruitmentRequest {
 	private final Contact contect;
 	private final String callUrl;
 
-	public Recruitment toRecruitment(final Study study, final Contact contect) {
+	public Recruitment toRecruitment(final Study study) {
 		return Recruitment.builder()
 				.title(title)
 				.content(content)
