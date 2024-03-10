@@ -1,6 +1,5 @@
 package com.ludo.study.studymatchingplatform.study.repository.recruitment;
 
-import static com.ludo.study.studymatchingplatform.study.domain.QCategory.*;
 import static com.ludo.study.studymatchingplatform.study.domain.QStudy.*;
 import static com.ludo.study.studymatchingplatform.study.domain.recruitment.QRecruitment.*;
 import static com.ludo.study.studymatchingplatform.study.domain.recruitment.QRecruitmentPosition.*;
@@ -72,13 +71,12 @@ public class RecruitmentRepositoryImpl {
 		recruitmentJpaRepository.delete(recruitment);
 	}
 
-	public List<Recruitment> findPopularRecruitments(final String categoryName,
+	public List<Recruitment> findPopularRecruitments(final Long categoryId,
 													 final PopularRecruitmentCond cond) {
 		return q.select(recruitment)
 				.from(recruitment)
 				.join(recruitment.study, study)
-				.join(study.category, category)
-				.where(category.name.eq(categoryName))
+				.where(study.category.id.eq(categoryId))
 				.limit(cond.count())
 				.orderBy(recruitment.hits.desc())
 				.fetch();

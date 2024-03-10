@@ -23,15 +23,27 @@ public class PopularRecruitmentsFindService {
 	@Transactional
 	public PopularRecruitmentsResponse findPopularRecruitments(final PopularRecruitmentCond cond) {
 
-		List<Recruitment> popularCoding = recruitmentRepository.findPopularRecruitments("코딩 테스트", cond);
-		List<Recruitment> popularInterview = recruitmentRepository.findPopularRecruitments("모의 면접", cond);
-		List<Recruitment> popularProject = recruitmentRepository.findPopularRecruitments("프로젝트", cond);
+		List<Recruitment> popularProject = findPopularProjects(cond);
+		List<Recruitment> popularCoding = findPopularCodingTests(cond);
+		List<Recruitment> popularInterview = findPopularInterviews(cond);
 
 		return new PopularRecruitmentsResponse(
 				recruitmentPreviewResponseMapper.mapBy(popularCoding),
 				recruitmentPreviewResponseMapper.mapBy(popularInterview),
 				recruitmentPreviewResponseMapper.mapBy(popularProject)
 		);
+	}
+
+	private List<Recruitment> findPopularProjects(final PopularRecruitmentCond cond) {
+		return recruitmentRepository.findPopularRecruitments(1L, cond);
+	}
+
+	private List<Recruitment> findPopularCodingTests(final PopularRecruitmentCond cond) {
+		return recruitmentRepository.findPopularRecruitments(2L, cond);
+	}
+
+	private List<Recruitment> findPopularInterviews(final PopularRecruitmentCond cond) {
+		return recruitmentRepository.findPopularRecruitments(3L, cond);
 	}
 
 }
