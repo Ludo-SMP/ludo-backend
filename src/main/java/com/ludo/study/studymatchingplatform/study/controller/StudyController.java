@@ -1,7 +1,6 @@
 package com.ludo.study.studymatchingplatform.study.controller;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,8 +14,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ludo.study.studymatchingplatform.auth.common.AuthUser;
-import com.ludo.study.studymatchingplatform.auth.common.IsAuthenticated;
-import com.ludo.study.studymatchingplatform.study.controller.dto.response.BaseApiResponse;
+import com.ludo.study.studymatchingplatform.common.annotation.DataFieldName;
 import com.ludo.study.studymatchingplatform.study.domain.Study;
 import com.ludo.study.studymatchingplatform.study.domain.StudyStatus;
 import com.ludo.study.studymatchingplatform.study.service.StudyApplicantDecisionService;
@@ -30,6 +28,10 @@ import com.ludo.study.studymatchingplatform.study.service.dto.response.ApplyAcce
 import com.ludo.study.studymatchingplatform.study.service.dto.response.StudyResponse;
 import com.ludo.study.studymatchingplatform.user.domain.User;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -43,68 +45,77 @@ public class StudyController {
 	private final StudyService studyService;
 	private final StudyApplicantDecisionService applicantDecisionService;
 
-	@IsAuthenticated
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public ResponseEntity<BaseApiResponse<StudyResponse>> create(@RequestBody final WriteStudyRequest request,
-																 @AuthUser final User user) {
+	@DataFieldName("study")
+	@Operation(description = "스터디 생성")
+	@ApiResponse(description = "스터디 생성 성공", responseCode = "201", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
+	public StudyResponse create(@RequestBody final WriteStudyRequest request,
+								@Parameter(hidden = true) @AuthUser final User user) {
 		final Study study = studyCreateService.create(request, user);
-		final StudyResponse response = StudyResponse.from(study);
-		return ResponseEntity.ok(BaseApiResponse.success("스터디 생성이 완료되었습니다.", response));
+		return StudyResponse.from(study);
 	}
 
-	@IsAuthenticated
 	@Transactional
 	@PatchMapping("/{studyId}")
-	public ResponseEntity<BaseApiResponse<StudyResponse>> changeStatus(@PathVariable final Long studyId,
-																	   @RequestParam("status") final StudyStatus status,
-																	   @AuthUser final User user) {
+	@DataFieldName("study")
+	@ResponseStatus(HttpStatus.OK)
+	@Operation(description = "스터디 상태 변경")
+	@ApiResponse(description = "스터디 상태 변경 성공", responseCode = "200", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
+	public StudyResponse changeStatus(@PathVariable final Long studyId,
+									  @RequestParam("status") final StudyStatus status,
+									  @Parameter(hidden = true) @AuthUser final User user) {
 		final Study study = studyStatusService.changeStatus(studyId, status, user);
-		final StudyResponse response = StudyResponse.from(study);
-		return ResponseEntity.ok(BaseApiResponse.success("스터디 상태 변경이 완료되었습니다.", response));
+		return StudyResponse.from(study);
 	}
 
 	@DeleteMapping("/{studyId}/participants")
-	public ResponseEntity<BaseApiResponse<Void>> leave(@AuthUser final User user,
-													   @PathVariable("studyId") final Long studyId) {
+	@ResponseStatus(HttpStatus.OK)
+	@Operation(description = "스터디 탈퇴")
+	@ApiResponse(description = "스터디 탈퇴 성공", responseCode = "200", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
+	public void leave(@Parameter(hidden = true) @AuthUser final User user,
+					  @PathVariable("studyId") final Long studyId) {
 		studyService.leave(user, studyId);
-		return ResponseEntity.ok(BaseApiResponse.success("스터디 탈퇴가 완료되었습니다.", null));
 	}
 
 	@GetMapping("/{studyId}")
-	public ResponseEntity<BaseApiResponse<StudyResponse>> getStudyDetails(@AuthUser final User user,
-																		  @PathVariable("studyId") final Long studyId) {
+	@ResponseStatus(HttpStatus.OK)
+	@DataFieldName("study")
+	@Operation(description = "스터디 상세 정보 조회")
+	@ApiResponse(description = "스터디 조회 성공", responseCode = "200", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
+	public StudyResponse getStudyDetails(
+			@Parameter(hidden = true) @AuthUser final User user,
+			@PathVariable("studyId") final Long studyId) {
 		final Study study = studyFetchService.getStudyDetails(user, studyId);
-		final StudyResponse response = StudyResponse.from(study);
-
-		return ResponseEntity.ok(BaseApiResponse.success("스터디 조회가 완료되었습니다.", response));
+		return StudyResponse.from(study);
 	}
 
-	@IsAuthenticated
 	@PostMapping("/{studyId}/apply-accept/{applicantUserId}")
-	public ResponseEntity<BaseApiResponse<ApplyAcceptResponse>> applicantAccept(@AuthUser final User user,
-																				@PathVariable final Long studyId,
-																				@PathVariable Long applicantUserId) {
+	@ResponseStatus(HttpStatus.OK)
+	@DataFieldName("participant")
+	@Operation(description = "스터디 지원 수락")
+	@ApiResponse(description = "스터디 지원 수락 성공", responseCode = "200", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
+	public ApplyAcceptResponse applicantAccept(@Parameter(hidden = true) @AuthUser final User user,
+											   @PathVariable final Long studyId,
+											   @PathVariable Long applicantUserId) {
 
 		final StudyApplicantDecisionRequest studyApplicantDecisionRequest = new StudyApplicantDecisionRequest(studyId,
 				applicantUserId);
-		ApplyAcceptResponse applyAcceptResponse = applicantDecisionService.applicantAccept(user,
+		return applicantDecisionService.applicantAccept(user,
 				studyApplicantDecisionRequest);
-
-		return ResponseEntity.ok(BaseApiResponse.success("지원자 수락 성공", applyAcceptResponse));
 	}
 
-	@IsAuthenticated
 	@PostMapping("/{studyId}/apply-refuse/{applicantUserId}")
-	public ResponseEntity<BaseApiResponse<Void>> applicantRefuse(@AuthUser final User user,
-																 @PathVariable final Long studyId,
-																 @PathVariable Long applicantUserId) {
+	@ResponseStatus(HttpStatus.OK)
+	@Operation(description = "스터디 지원 거절")
+	@ApiResponse(description = "스터디 지원 거절 성공", responseCode = "200", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
+	public void applicantRefuse(@Parameter(hidden = true) @AuthUser final User user,
+								@PathVariable final Long studyId,
+								@PathVariable Long applicantUserId) {
 
 		final StudyApplicantDecisionRequest studyApplicantDecisionRequest = new StudyApplicantDecisionRequest(studyId,
 				applicantUserId);
 		applicantDecisionService.applicantReject(user, studyApplicantDecisionRequest);
-
-		return ResponseEntity.ok(new BaseApiResponse<>(true, "지원자 거절 성공", null));
 	}
 
 }

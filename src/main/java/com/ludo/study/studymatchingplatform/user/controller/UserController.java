@@ -23,6 +23,10 @@ import com.ludo.study.studymatchingplatform.user.service.dto.request.ChangeUserN
 import com.ludo.study.studymatchingplatform.user.service.dto.response.ChangeUserNicknameResponse;
 import com.ludo.study.studymatchingplatform.user.service.dto.response.UserResponse;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -41,17 +45,22 @@ public class UserController {
 	private final Redirection redirection;
 
 	@DeleteMapping("/users/deactivate")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void withdraw(@AuthUser final User user, final HttpServletResponse response) throws IOException {
+	@ResponseStatus(HttpStatus.OK)
+	@Operation(description = "회원 탈퇴")
+	@ApiResponse(description = "회원 탈퇴 성공", responseCode = "200", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
+	public void withdraw(@Parameter(hidden = true) @AuthUser final User user, final HttpServletResponse response) throws
+			IOException {
 		userService.withdraw(user);
 		cookieProvider.clearAuthCookie(response);
 		redirection.to("/", response);
 	}
 
 	@GetMapping("/users/me")
-	public ResponseEntity<BaseApiResponse<UserResponse>> fetchMe(@AuthUser final User user) {
-		final UserResponse response = UserResponse.from(user);
-		return ResponseEntity.ok(BaseApiResponse.success("사용자 조회 성공", response));
+	@ResponseStatus(HttpStatus.OK)
+	@Operation(description = "로그인 된 사용자 정보 조회")
+	@ApiResponse(description = "조회 성공", responseCode = "200", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
+	public UserResponse getMe(@Parameter(hidden = true) @AuthUser final User user) {
+		return UserResponse.from(user);
 	}
 
 	@PostMapping("/users/me/nickname")
