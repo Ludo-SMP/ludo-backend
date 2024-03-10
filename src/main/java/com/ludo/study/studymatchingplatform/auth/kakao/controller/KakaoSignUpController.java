@@ -15,8 +15,8 @@ import com.ludo.study.studymatchingplatform.auth.common.provider.JwtTokenProvide
 import com.ludo.study.studymatchingplatform.auth.kakao.service.KakaoSignUpService;
 import com.ludo.study.studymatchingplatform.auth.naver.repository.InMemoryClientRegistrationAndProviderRepository;
 import com.ludo.study.studymatchingplatform.study.controller.dto.response.BaseApiResponse;
-import com.ludo.study.studymatchingplatform.user.domain.Social;
-import com.ludo.study.studymatchingplatform.user.domain.User;
+import com.ludo.study.studymatchingplatform.user.domain.user.Social;
+import com.ludo.study.studymatchingplatform.user.domain.user.User;
 import com.ludo.study.studymatchingplatform.user.service.dto.response.UserResponse;
 
 import jakarta.servlet.http.HttpServletResponse;

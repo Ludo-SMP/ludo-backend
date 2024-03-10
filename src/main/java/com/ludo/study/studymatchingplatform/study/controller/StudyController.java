@@ -17,16 +17,17 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ludo.study.studymatchingplatform.auth.common.AuthUser;
 import com.ludo.study.studymatchingplatform.auth.common.IsAuthenticated;
 import com.ludo.study.studymatchingplatform.study.controller.dto.response.BaseApiResponse;
-import com.ludo.study.studymatchingplatform.study.domain.Study;
-import com.ludo.study.studymatchingplatform.study.domain.StudyStatus;
-import com.ludo.study.studymatchingplatform.study.service.RecruitmentDeleteService;
-import com.ludo.study.studymatchingplatform.study.service.StudyCreateService;
-import com.ludo.study.studymatchingplatform.study.service.StudyFetchService;
-import com.ludo.study.studymatchingplatform.study.service.StudyService;
-import com.ludo.study.studymatchingplatform.study.service.StudyStatusService;
-import com.ludo.study.studymatchingplatform.study.service.dto.request.WriteStudyRequest;
-import com.ludo.study.studymatchingplatform.study.service.dto.response.StudyResponse;
-import com.ludo.study.studymatchingplatform.user.domain.User;
+import com.ludo.study.studymatchingplatform.study.domain.study.Study;
+import com.ludo.study.studymatchingplatform.study.domain.study.StudyStatus;
+import com.ludo.study.studymatchingplatform.study.service.recruitment.RecruitmentDeleteService;
+import com.ludo.study.studymatchingplatform.study.service.study.StudyCreateService;
+import com.ludo.study.studymatchingplatform.study.service.study.StudyFetchService;
+import com.ludo.study.studymatchingplatform.study.service.study.StudyService;
+import com.ludo.study.studymatchingplatform.study.service.study.StudyStatusService;
+import com.ludo.study.studymatchingplatform.study.service.dto.request.study.WriteStudyRequest;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.study.StudyResponse;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.applicant.ApplicantResponse;
+import com.ludo.study.studymatchingplatform.user.domain.user.User;
 
 import lombok.RequiredArgsConstructor;
 
@@ -44,11 +45,10 @@ public class StudyController {
 	@IsAuthenticated
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public ResponseEntity<BaseApiResponse<StudyResponse>> create(@RequestBody final WriteStudyRequest request,
-																 @AuthUser final User user) {
+	public ResponseEntity<BaseApiResponse<Void>> create(@RequestBody final WriteStudyRequest request,
+														@AuthUser final User user) {
 		final Study study = studyCreateService.create(request, user);
-		final StudyResponse response = StudyResponse.from(study);
-		return ResponseEntity.ok(BaseApiResponse.success("스터디 생성이 완료되었습니다.", response));
+		return ResponseEntity.ok(BaseApiResponse.success("success", null));
 	}
 
 	@IsAuthenticated
@@ -76,6 +76,13 @@ public class StudyController {
 		final StudyResponse response = StudyResponse.from(study);
 
 		return ResponseEntity.ok(BaseApiResponse.success("스터디 조회가 완료되었습니다.", response));
+	}
+
+	@GetMapping("/{studyId}/applicants")
+	public ResponseEntity<BaseApiResponse<ApplicantResponse>> findApplicantsInfo(@AuthUser final User user,
+																				 @PathVariable("studyId") final Long studyId) {
+		final ApplicantResponse response = studyService.findApplicantsInfo(user, studyId);
+		return ResponseEntity.ok(BaseApiResponse.success("스터디 지원자 조회가 완료되었습니다.", response));
 	}
 
 }

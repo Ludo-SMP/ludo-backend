@@ -18,29 +18,29 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ludo.study.studymatchingplatform.auth.common.AuthUser;
 import com.ludo.study.studymatchingplatform.auth.common.IsAuthenticated;
 import com.ludo.study.studymatchingplatform.study.controller.dto.response.BaseApiResponse;
-import com.ludo.study.studymatchingplatform.study.domain.recruitment.Applicant;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant.Applicant;
 import com.ludo.study.studymatchingplatform.study.repository.dto.request.RecruitmentFindCond;
 import com.ludo.study.studymatchingplatform.study.repository.dto.request.RecruitmentFindCursor;
-import com.ludo.study.studymatchingplatform.study.service.PopularRecruitmentsFindService;
-import com.ludo.study.studymatchingplatform.study.service.RecruitmentDetailsFindService;
-import com.ludo.study.studymatchingplatform.study.service.RecruitmentService;
-import com.ludo.study.studymatchingplatform.study.service.RecruitmentsFindService;
-import com.ludo.study.studymatchingplatform.study.service.StudyApplicantDecisionService;
-import com.ludo.study.studymatchingplatform.study.service.dto.request.ApplyRecruitmentRequest;
-import com.ludo.study.studymatchingplatform.study.service.dto.request.EditRecruitmentRequest;
-import com.ludo.study.studymatchingplatform.study.service.dto.request.StudyApplicantDecisionRequest;
-import com.ludo.study.studymatchingplatform.study.service.dto.request.WriteRecruitmentRequest;
-import com.ludo.study.studymatchingplatform.study.service.dto.response.ApplyAcceptResponse;
-import com.ludo.study.studymatchingplatform.study.service.dto.response.ApplyRecruitmentResponse;
-import com.ludo.study.studymatchingplatform.study.service.dto.response.DeleteRecruitmentResponse;
-import com.ludo.study.studymatchingplatform.study.service.dto.response.EditRecruitmentResponse;
-import com.ludo.study.studymatchingplatform.study.service.dto.response.PopularRecruitmentsResponse;
-import com.ludo.study.studymatchingplatform.study.service.dto.response.RecruitmentDetailsResponse;
-import com.ludo.study.studymatchingplatform.study.service.dto.response.RecruitmentPreviewResponse;
-import com.ludo.study.studymatchingplatform.study.service.dto.response.RecruitmentPreviewResponses;
-import com.ludo.study.studymatchingplatform.study.service.dto.response.WriteRecruitmentResponse;
-import com.ludo.study.studymatchingplatform.user.domain.User;
+import com.ludo.study.studymatchingplatform.study.service.dto.request.recruitment.EditRecruitmentRequest;
+import com.ludo.study.studymatchingplatform.study.service.dto.request.recruitment.WriteRecruitmentRequest;
+import com.ludo.study.studymatchingplatform.study.service.dto.request.recruitment.applicant.ApplyRecruitmentRequest;
+import com.ludo.study.studymatchingplatform.study.service.dto.request.recruitment.applicant.StudyApplicantDecisionRequest;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.DeleteRecruitmentResponse;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.EditRecruitmentResponse;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.PopularRecruitmentsResponse;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.RecruitmentDetailsResponse;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.RecruitmentPreviewResponse;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.RecruitmentPreviewResponses;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.WriteRecruitmentResponse;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.applicant.ApplyAcceptResponse;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.applicant.ApplyRecruitmentResponse;
+import com.ludo.study.studymatchingplatform.study.service.recruitment.PopularRecruitmentsFindService;
+import com.ludo.study.studymatchingplatform.study.service.recruitment.RecruitmentDetailsFindService;
+import com.ludo.study.studymatchingplatform.study.service.recruitment.RecruitmentService;
+import com.ludo.study.studymatchingplatform.study.service.recruitment.RecruitmentsFindService;
+import com.ludo.study.studymatchingplatform.study.service.study.participant.ParticipantDecisionService;
+import com.ludo.study.studymatchingplatform.user.domain.user.User;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -55,7 +55,7 @@ public class RecruitmentController {
 	private final RecruitmentsFindService recruitmentsFindService;
 	private final PopularRecruitmentsFindService popularRecruitmentsFindService;
 	private final RecruitmentService recruitmentService;
-	private final StudyApplicantDecisionService applicantDecisionService;
+	private final ParticipantDecisionService applicantDecisionService;
 
 	@GetMapping("/recruitments")
 	public ResponseEntity<BaseApiResponse<RecruitmentPreviewResponses>> readRecruitments(
