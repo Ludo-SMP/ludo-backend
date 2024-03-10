@@ -18,6 +18,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import lombok.extern.slf4j.Slf4j;
 
 @Entity
 @Table(name = "`user`")
@@ -25,6 +26,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Slf4j
 public class User extends BaseEntity {
 
 	public static final String DEFAULT_NICKNAME_PREFIX = "스따-디 %d";
@@ -62,6 +64,14 @@ public class User extends BaseEntity {
 		if (this.id == null) {
 			throw new IllegalArgumentException(UserExceptionMessage.INIT_DEFAULT_NICKNAME.getMessage());
 		}
+  }
+
+	public void changeNickname(final String nickname) {
+		this.nickname = nickname;
+	}
+
+	public boolean equalsNickname(final String nickname) {
+		return this.nickname.equals(nickname);
 	}
 
 }
