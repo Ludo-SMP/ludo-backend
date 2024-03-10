@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import com.ludo.study.studymatchingplatform.auth.config.property.ClientRegistrationAndProvider;
 import com.ludo.study.studymatchingplatform.auth.config.property.ClientRegistrationAndProviderMapper;
 import com.ludo.study.studymatchingplatform.auth.config.property.OAuthProperties;
-import com.ludo.study.studymatchingplatform.auth.naver.repository.InMemoryClientRegistrationAndProviderRepository;
+import com.ludo.study.studymatchingplatform.auth.repository.InMemoryClientRegistrationAndProviderRepository;
 
 import lombok.extern.slf4j.Slf4j;
 

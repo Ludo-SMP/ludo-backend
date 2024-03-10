@@ -1,4 +1,4 @@
-package com.ludo.study.studymatchingplatform.auth.naver.repository;
+package com.ludo.study.studymatchingplatform.auth.repository;
 
 import java.util.Map;
 

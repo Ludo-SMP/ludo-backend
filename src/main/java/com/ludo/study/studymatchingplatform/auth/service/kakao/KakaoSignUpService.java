@@ -3,7 +3,7 @@ package com.ludo.study.studymatchingplatform.auth.service.kakao;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ludo.study.studymatchingplatform.auth.naver.repository.InMemoryClientRegistrationAndProviderRepository;
+import com.ludo.study.studymatchingplatform.auth.repository.InMemoryClientRegistrationAndProviderRepository;
 import com.ludo.study.studymatchingplatform.auth.service.kakao.dto.KakaoOAuthToken;
 import com.ludo.study.studymatchingplatform.auth.service.kakao.dto.KakaoUserProfileDto;
 import com.ludo.study.studymatchingplatform.user.domain.Social;
