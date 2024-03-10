@@ -2,9 +2,9 @@ package com.ludo.study.studymatchingplatform.user.service.dto.response;
 
 import java.time.LocalDateTime;
 
-import com.ludo.study.studymatchingplatform.study.domain.Position;
-import com.ludo.study.studymatchingplatform.study.domain.Study;
-import com.ludo.study.studymatchingplatform.study.service.dto.response.PositionResponse;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.position.Position;
+import com.ludo.study.studymatchingplatform.study.domain.study.Study;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.position.PositionResponse;
 
 import lombok.Builder;
 
