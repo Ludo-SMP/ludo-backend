@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ludo.study.studymatchingplatform.auth.common.AuthUser;
 import com.ludo.study.studymatchingplatform.auth.common.IsAuthenticated;
-import com.ludo.study.studymatchingplatform.study.controller.dto.BaseApiResponse;
-import com.ludo.study.studymatchingplatform.study.domain.study.participant.Participant;
+import com.ludo.study.studymatchingplatform.study.controller.dto.response.BaseApiResponse;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant.Applicant;
+import com.ludo.study.studymatchingplatform.study.domain.study.participant.Participant;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 import com.ludo.study.studymatchingplatform.user.service.MyPageService;
 import com.ludo.study.studymatchingplatform.user.service.dto.response.MyPageResponse;
@@ -33,7 +33,7 @@ public class MyPageController {
 		final List<Applicant> applicants = myPageService.retrieveApplicantRecruitment(user);
 		final List<Participant> completedStudies = myPageService.retrieveCompletedStudy(user);
 		final MyPageResponse response = MyPageResponse.from(participants, applicants, completedStudies);
-		return ResponseEntity.ok(BaseApiResponse.success("마이페이지 조회가 완료되었습니다.", response));
+		return ResponseEntity.ok(BaseApiResponse.success(response));
 	}
 
 }

@@ -19,14 +19,13 @@ import com.ludo.study.studymatchingplatform.auth.common.IsAuthenticated;
 import com.ludo.study.studymatchingplatform.study.controller.dto.response.BaseApiResponse;
 import com.ludo.study.studymatchingplatform.study.domain.study.Study;
 import com.ludo.study.studymatchingplatform.study.domain.study.StudyStatus;
-import com.ludo.study.studymatchingplatform.study.service.recruitment.RecruitmentDeleteService;
+import com.ludo.study.studymatchingplatform.study.service.dto.request.study.WriteStudyRequest;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.applicant.ApplicantResponse;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.study.StudyResponse;
 import com.ludo.study.studymatchingplatform.study.service.study.StudyCreateService;
 import com.ludo.study.studymatchingplatform.study.service.study.StudyFetchService;
 import com.ludo.study.studymatchingplatform.study.service.study.StudyService;
 import com.ludo.study.studymatchingplatform.study.service.study.StudyStatusService;
-import com.ludo.study.studymatchingplatform.study.service.dto.request.study.WriteStudyRequest;
-import com.ludo.study.studymatchingplatform.study.service.dto.response.study.StudyResponse;
-import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.applicant.ApplicantResponse;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 
 import lombok.RequiredArgsConstructor;
@@ -38,17 +37,17 @@ public class StudyController {
 
 	private final StudyCreateService studyCreateService;
 	private final StudyFetchService studyFetchService;
-	private final RecruitmentDeleteService recruitmentCreateService;
 	private final StudyStatusService studyStatusService;
 	private final StudyService studyService;
 
 	@IsAuthenticated
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public ResponseEntity<BaseApiResponse<Void>> create(@RequestBody final WriteStudyRequest request,
-														@AuthUser final User user) {
+	public ResponseEntity<BaseApiResponse<StudyResponse>> create(@RequestBody final WriteStudyRequest request,
+																 @AuthUser final User user) {
 		final Study study = studyCreateService.create(request, user);
-		return ResponseEntity.ok(BaseApiResponse.success("success", null));
+		final StudyResponse response = StudyResponse.from(study);
+		return ResponseEntity.ok(BaseApiResponse.success(response));
 	}
 
 	@IsAuthenticated
@@ -59,14 +58,14 @@ public class StudyController {
 																	   @AuthUser final User user) {
 		final Study study = studyStatusService.changeStatus(studyId, status, user);
 		final StudyResponse response = StudyResponse.from(study);
-		return ResponseEntity.ok(BaseApiResponse.success("스터디 상태 변경이 완료되었습니다.", response));
+		return ResponseEntity.ok(BaseApiResponse.success(response));
 	}
 
 	@DeleteMapping("/{studyId}/participants")
 	public ResponseEntity<BaseApiResponse<Void>> leave(@AuthUser final User user,
 													   @PathVariable("studyId") final Long studyId) {
 		studyService.leave(user, studyId);
-		return ResponseEntity.ok(BaseApiResponse.success("스터디 탈퇴가 완료되었습니다.", null));
+		return ResponseEntity.ok(BaseApiResponse.success(null));
 	}
 
 	@GetMapping("/{studyId}")
@@ -74,15 +73,14 @@ public class StudyController {
 																		  @PathVariable("studyId") final Long studyId) {
 		final Study study = studyFetchService.getStudyDetails(user, studyId);
 		final StudyResponse response = StudyResponse.from(study);
-
-		return ResponseEntity.ok(BaseApiResponse.success("스터디 조회가 완료되었습니다.", response));
+		return ResponseEntity.ok(BaseApiResponse.success(response));
 	}
 
 	@GetMapping("/{studyId}/applicants")
 	public ResponseEntity<BaseApiResponse<ApplicantResponse>> findApplicantsInfo(@AuthUser final User user,
 																				 @PathVariable("studyId") final Long studyId) {
 		final ApplicantResponse response = studyService.findApplicantsInfo(user, studyId);
-		return ResponseEntity.ok(BaseApiResponse.success("스터디 지원자 조회가 완료되었습니다.", response));
+		return ResponseEntity.ok(BaseApiResponse.success(response));
 	}
 
 }

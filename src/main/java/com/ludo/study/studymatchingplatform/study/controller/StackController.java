@@ -29,7 +29,7 @@ public class StackController {
 		List<StackCategory> stackCategories = stackCategoryRepository.findAll();
 		List<Stack> stacks = stackRepository.findAll();
 		StackResponses stackResponses = new StackResponses(stacks, stackCategories);
-		return ResponseEntity.ok(BaseApiResponse.success("기술 스택 조회 성공", stackResponses));
+		return ResponseEntity.ok(BaseApiResponse.success(stackResponses));
 	}
 
 }

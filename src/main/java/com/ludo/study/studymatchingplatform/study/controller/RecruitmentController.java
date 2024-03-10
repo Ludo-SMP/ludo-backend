@@ -19,14 +19,12 @@ import com.ludo.study.studymatchingplatform.auth.common.AuthUser;
 import com.ludo.study.studymatchingplatform.auth.common.IsAuthenticated;
 import com.ludo.study.studymatchingplatform.study.controller.dto.response.BaseApiResponse;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
-import com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant.Applicant;
 import com.ludo.study.studymatchingplatform.study.repository.dto.request.RecruitmentFindCond;
 import com.ludo.study.studymatchingplatform.study.repository.dto.request.RecruitmentFindCursor;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.recruitment.EditRecruitmentRequest;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.recruitment.WriteRecruitmentRequest;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.recruitment.applicant.ApplyRecruitmentRequest;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.recruitment.applicant.StudyApplicantDecisionRequest;
-import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.DeleteRecruitmentResponse;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.EditRecruitmentResponse;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.PopularRecruitmentsResponse;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.RecruitmentDetailsResponse;
@@ -34,7 +32,6 @@ import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitme
 import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.RecruitmentPreviewResponses;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.WriteRecruitmentResponse;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.applicant.ApplyAcceptResponse;
-import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.applicant.ApplyRecruitmentResponse;
 import com.ludo.study.studymatchingplatform.study.service.recruitment.PopularRecruitmentsFindService;
 import com.ludo.study.studymatchingplatform.study.service.recruitment.RecruitmentDetailsFindService;
 import com.ludo.study.studymatchingplatform.study.service.recruitment.RecruitmentService;
@@ -73,7 +70,7 @@ public class RecruitmentController {
 				recruitmentFindCursor, recruitmentFindCond);
 		final RecruitmentPreviewResponses recruitmentPreviewResponses = new RecruitmentPreviewResponses(recruitments);
 
-		return ResponseEntity.ok(BaseApiResponse.success("모집 공고 목록 조회 성공", recruitmentPreviewResponses));
+		return ResponseEntity.ok(BaseApiResponse.success(recruitmentPreviewResponses));
 	}
 
 	@GetMapping("/recruitments/{recruitmentId}")
@@ -84,7 +81,7 @@ public class RecruitmentController {
 			final RecruitmentDetailsResponse recruitmentDetails = recruitmentDetailsFindService.findRecruitmentDetails(
 					recruitmentId);
 
-			return ResponseEntity.ok(BaseApiResponse.success("모집 공고 상세 조회 성공", recruitmentDetails));
+			return ResponseEntity.ok(BaseApiResponse.success(recruitmentDetails));
 		} catch (IllegalArgumentException exception) {
 
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -95,40 +92,37 @@ public class RecruitmentController {
 	public ResponseEntity<BaseApiResponse<PopularRecruitmentsResponse>> readPopularRecruitments() {
 		PopularRecruitmentsResponse popularRecruitments = popularRecruitmentsFindService.findPopularRecruitments();
 
-		return ResponseEntity.ok(BaseApiResponse.success("인기 모집 공고 목록 조회 성공", popularRecruitments));
+		return ResponseEntity.ok(BaseApiResponse.success(popularRecruitments));
 	}
 
 	@IsAuthenticated
 	@PostMapping("/studies/{studyId}/recruitments")
 	@ResponseStatus(HttpStatus.CREATED)
-	public ResponseEntity<BaseApiResponse<WriteRecruitmentResponse>> write(
-			@RequestBody final WriteRecruitmentRequest request,
-			@AuthUser final User user) {
-		final Recruitment recruitment = recruitmentService.write(user, request);
+	public ResponseEntity<BaseApiResponse<WriteRecruitmentResponse>> write(@PathVariable("studyId") final Long studyId,
+																		   @RequestBody final WriteRecruitmentRequest request,
+																		   @AuthUser final User user) {
+		final Recruitment recruitment = recruitmentService.write(user, request, studyId);
 		final WriteRecruitmentResponse response = WriteRecruitmentResponse.from(recruitment);
 
-		return ResponseEntity.ok(BaseApiResponse.success("모집 공고 작성 성공", response));
+		return ResponseEntity.ok(BaseApiResponse.success(response));
 	}
 
 	@IsAuthenticated
 	@PutMapping("/studies/{studyId}/recruitments")
 	public ResponseEntity<BaseApiResponse<EditRecruitmentResponse>> edit(@AuthUser final User user,
 																		 @PathVariable("studyId") final Long studyId,
-																		 @PathVariable("recruitmentId") final Long recruitmentId,
 																		 @RequestBody final EditRecruitmentRequest request) {
-		final Recruitment recruitment = recruitmentService.edit(user, recruitmentId, request);
-		return ResponseEntity.ok(BaseApiResponse.success("모집 공고 수정", EditRecruitmentResponse.from(recruitment)));
+		final Recruitment recruitment = recruitmentService.edit(user, studyId, request);
+		return ResponseEntity.ok(BaseApiResponse.success(EditRecruitmentResponse.from(recruitment)));
 	}
 
 	@IsAuthenticated
-	@PostMapping("/studies/{studyId}/recruitments/{recruitmentId}/apply")
-	@ResponseStatus(HttpStatus.CREATED)
-	public ResponseEntity<BaseApiResponse<ApplyRecruitmentResponse>> apply(
-			@PathVariable("recruitmentId") final Long recruitmentId,
-			@RequestBody final ApplyRecruitmentRequest request,
-			@AuthUser final User user) {
-		final Applicant applicant = recruitmentService.apply(user, recruitmentId, request);
-		return ResponseEntity.ok(BaseApiResponse.success("지원 성공", ApplyRecruitmentResponse.from(applicant)));
+	@PostMapping("/recruitments/{recruitmentId}/apply")
+	public ResponseEntity<BaseApiResponse<Void>> apply(@PathVariable("recruitmentId") final Long recruitmentId,
+													   @RequestBody final ApplyRecruitmentRequest request,
+													   @AuthUser final User user) {
+		recruitmentService.apply(user, recruitmentId, request);
+		return ResponseEntity.ok(BaseApiResponse.success(null));
 	}
 
 	@IsAuthenticated
@@ -143,7 +137,7 @@ public class RecruitmentController {
 		ApplyAcceptResponse applyAcceptResponse = applicantDecisionService.applicantAccept(user,
 				studyApplicantDecisionRequest);
 
-		return ResponseEntity.ok(BaseApiResponse.success("지원자 수락 성공", applyAcceptResponse));
+		return ResponseEntity.ok(BaseApiResponse.success(applyAcceptResponse));
 	}
 
 	@IsAuthenticated
@@ -157,14 +151,14 @@ public class RecruitmentController {
 				recruitmentId, applicantUserId);
 		applicantDecisionService.applicantReject(user, studyApplicantDecisionRequest);
 
-		return ResponseEntity.ok(new BaseApiResponse<>(true, "지원자 거절 성공", null));
+		return ResponseEntity.ok(BaseApiResponse.success(null));
 	}
 
 	@DeleteMapping("/studies/{studyId}/recruitments")
-	public ResponseEntity<BaseApiResponse<DeleteRecruitmentResponse>> delete(@PathVariable Long studyId,
-																			 @AuthUser final User user) {
+	public ResponseEntity<BaseApiResponse<Void>> delete(@PathVariable Long studyId,
+														@AuthUser final User user) {
 		recruitmentService.delete(user, studyId);
-		return ResponseEntity.ok(BaseApiResponse.success("모집 공고가 비활성화 되었습니다.", null));
+		return ResponseEntity.ok(BaseApiResponse.success(null));
 	}
 
 }

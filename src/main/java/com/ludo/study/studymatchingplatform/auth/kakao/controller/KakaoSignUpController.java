@@ -54,7 +54,7 @@ public class KakaoSignUpController {
 		final UserResponse userResponse = UserResponse.from(user);
 		cookieProvider.setAuthCookie(accessToken, response);
 		response.sendRedirect("https://local.ludoapi.store:3000");
-		return ResponseEntity.ok(BaseApiResponse.success("회원가입 성공", userResponse));
+		return ResponseEntity.ok(BaseApiResponse.success(userResponse));
 	}
 
 }
