@@ -19,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/auth/signup")
-public class SignUpController {
+public class NaverSignUpController {
 
 	private final InMemoryClientRegistrationAndProviderRepository clientRegistrationAndProviderRepository;
 	private final NaverSignUpService naverSignUpService;
