@@ -8,7 +8,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.ludo.study.studymatchingplatform.auth.google.GoogleUserInfo;
 import com.ludo.study.studymatchingplatform.auth.naver.repository.InMemoryClientRegistrationAndProviderRepository;
-import com.ludo.study.studymatchingplatform.user.domain.Social;
+import com.ludo.study.studymatchingplatform.user.domain.user.Social;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

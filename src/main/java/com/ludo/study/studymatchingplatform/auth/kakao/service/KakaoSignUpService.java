@@ -6,9 +6,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ludo.study.studymatchingplatform.auth.kakao.service.dto.KakaoOAuthToken;
 import com.ludo.study.studymatchingplatform.auth.kakao.service.dto.KakaoUserProfileDto;
 import com.ludo.study.studymatchingplatform.auth.naver.repository.InMemoryClientRegistrationAndProviderRepository;
-import com.ludo.study.studymatchingplatform.user.domain.Social;
-import com.ludo.study.studymatchingplatform.user.domain.User;
-import com.ludo.study.studymatchingplatform.user.repository.UserRepositoryImpl;
+import com.ludo.study.studymatchingplatform.user.domain.user.Social;
+import com.ludo.study.studymatchingplatform.user.domain.user.User;
+import com.ludo.study.studymatchingplatform.user.repository.user.UserRepositoryImpl;
 
 import lombok.RequiredArgsConstructor;
 
