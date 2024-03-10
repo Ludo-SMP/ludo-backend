@@ -39,9 +39,10 @@ public class KakaoOAuthTokenRequestService {
 	private MultiValueMap<String, String> createBody(final String authorizationCode, final String redirectUri) {
 		final String clientId = clientRegistrationAndProviderRepository.findClientId(Social.KAKAO);
 		final String clientSecret = clientRegistrationAndProviderRepository.findClientSecret(Social.KAKAO);
+		final String grantType = clientRegistrationAndProviderRepository.findAuthorizationGrantType(Social.KAKAO);
 
 		MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-		body.add("grant_type", "authorization_code");
+		body.add("grant_type", grantType);
 		body.add("client_id", clientId);
 		body.add("redirect_uri", redirectUri);
 		body.add("code", authorizationCode);

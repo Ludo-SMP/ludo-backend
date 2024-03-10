@@ -39,14 +39,15 @@ public class GoogleOAuthTokenRequestService {
 	}
 
 	private MultiValueMap<String, String> createBody(final String authorizationCode, final boolean isForSignup) {
-		String clientId = clientRegistrationAndProviderRepository.findClientId(Social.GOOGLE);
-		String clientSecret = clientRegistrationAndProviderRepository.findClientSecret(Social.GOOGLE);
-		String redirectUri =
+		final String clientId = clientRegistrationAndProviderRepository.findClientId(Social.GOOGLE);
+		final String clientSecret = clientRegistrationAndProviderRepository.findClientSecret(Social.GOOGLE);
+		final String redirectUri =
 				isForSignup ? clientRegistrationAndProviderRepository.findSignupRedirectUri(Social.GOOGLE) :
 						clientRegistrationAndProviderRepository.findLoginRedirectUri(Social.GOOGLE);
+		final String grantType = clientRegistrationAndProviderRepository.findAuthorizationGrantType(Social.GOOGLE);
 
 		MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-		body.add("grant_type", "authorization_code");
+		body.add("grant_type", grantType);
 		body.add("client_id", clientId);
 		body.add("client_secret", clientSecret);
 		body.add("redirect_uri", redirectUri);
