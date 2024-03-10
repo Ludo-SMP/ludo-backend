@@ -1,4 +1,4 @@
-package com.ludo.study.studymatchingplatform.auth.google.controller;
+package com.ludo.study.studymatchingplatform.auth.controller.google;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -10,9 +10,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.ludo.study.studymatchingplatform.auth.common.AuthUserPayload;
 import com.ludo.study.studymatchingplatform.auth.common.provider.CookieProvider;
 import com.ludo.study.studymatchingplatform.auth.common.provider.JwtTokenProvider;
-import com.ludo.study.studymatchingplatform.auth.google.service.GoogleSignUpService;
+import com.ludo.study.studymatchingplatform.auth.google.service.GoogleLoginService;
 import com.ludo.study.studymatchingplatform.auth.naver.repository.InMemoryClientRegistrationAndProviderRepository;
-import com.ludo.study.studymatchingplatform.auth.service.naver.dto.response.SignupResponse;
+import com.ludo.study.studymatchingplatform.auth.service.naver.dto.response.LoginResponse;
 import com.ludo.study.studymatchingplatform.user.domain.Social;
 import com.ludo.study.studymatchingplatform.user.domain.User;
 
@@ -23,38 +23,39 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/auth/signup")
-public class GoogleSignUpController {
+@RequestMapping("/auth/login")
+public class GoogleLoginController {
 
 	private final InMemoryClientRegistrationAndProviderRepository clientRegistrationAndProviderRepository;
-	private final GoogleSignUpService googleSignUpService;
+	private final GoogleLoginService googleLoginService;
 	private final JwtTokenProvider jwtTokenProvider;
 	private final CookieProvider cookieProvider;
 
 	@GetMapping("/google")
-	public String googleSignup(final RedirectAttributes redirectAttributes) {
+	public String googleLogin(RedirectAttributes redirectAttributes) {
+
 		redirectAttributes.addAttribute(
 				"response_type", "code");
 		redirectAttributes.addAttribute(
 				"client_id", clientRegistrationAndProviderRepository.findClientId(Social.GOOGLE));
 		redirectAttributes.addAttribute(
-				"redirect_uri", clientRegistrationAndProviderRepository.findSignupRedirectUri(Social.GOOGLE));
-		// redirectAttributes.addAttribute("scope",
-		// 		"https://www.googleapis.com/auth/userinfo.email,https://www.googleapis.com/auth/userinfo.profile");
+				"redirect_uri", clientRegistrationAndProviderRepository.findLoginRedirectUri(Social.GOOGLE));
 		redirectAttributes.addAttribute("scope", "email profile");
 
 		return "redirect:" + clientRegistrationAndProviderRepository.findAuthorizationUri(Social.GOOGLE);
 	}
 
 	@GetMapping("/google/callback")
-	public ResponseEntity<SignupResponse> googleSignupback(
-			@RequestParam(name = "code") final String authorizationCode, final HttpServletResponse response) {
-		final User user = googleSignUpService.googleSignUp(authorizationCode);
+	public ResponseEntity<LoginResponse> googleLoginCallback(
+			@RequestParam(name = "code") String authorizationCode,
+			HttpServletResponse response
+	) {
+		final User user = googleLoginService.login(authorizationCode);
 		final String accessToken = jwtTokenProvider.createAccessToken(AuthUserPayload.from(user));
 		cookieProvider.setAuthCookie(accessToken, response);
 
 		return ResponseEntity.ok()
-				.body(new SignupResponse(true, "회원 가입에 성공했습니다."));
+				.body(new LoginResponse(user.getId().toString(), user.getNickname(), user.getEmail()));
 	}
 
 }

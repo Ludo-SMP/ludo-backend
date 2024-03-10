@@ -1,4 +1,4 @@
-package com.ludo.study.studymatchingplatform.auth.google.controller;
+package com.ludo.study.studymatchingplatform.auth.controller.google;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
