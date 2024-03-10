@@ -1,4 +1,4 @@
-package com.ludo.study.studymatchingplatform.auth.google;
+package com.ludo.study.studymatchingplatform.auth.service.google.vo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

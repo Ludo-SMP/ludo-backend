@@ -1,10 +1,10 @@
-package com.ludo.study.studymatchingplatform.auth.google.service;
+package com.ludo.study.studymatchingplatform.auth.service.google;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ludo.study.studymatchingplatform.auth.google.GoogleOAuthToken;
-import com.ludo.study.studymatchingplatform.auth.google.GoogleUserInfo;
+import com.ludo.study.studymatchingplatform.auth.service.google.vo.GoogleOAuthToken;
+import com.ludo.study.studymatchingplatform.auth.service.google.vo.GoogleUserInfo;
 import com.ludo.study.studymatchingplatform.user.domain.User;
 import com.ludo.study.studymatchingplatform.user.repository.UserRepositoryImpl;
 

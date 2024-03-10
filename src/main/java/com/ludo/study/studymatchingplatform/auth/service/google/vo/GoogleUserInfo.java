@@ -1,4 +1,4 @@
-package com.ludo.study.studymatchingplatform.auth.google;
+package com.ludo.study.studymatchingplatform.auth.service.google.vo;
 
 import com.ludo.study.studymatchingplatform.user.domain.Social;
 import com.ludo.study.studymatchingplatform.user.domain.User;

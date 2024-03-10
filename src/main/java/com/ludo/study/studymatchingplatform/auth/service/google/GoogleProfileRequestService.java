@@ -1,4 +1,4 @@
-package com.ludo.study.studymatchingplatform.auth.google.service;
+package com.ludo.study.studymatchingplatform.auth.service.google;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -6,8 +6,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import com.ludo.study.studymatchingplatform.auth.google.GoogleUserInfo;
 import com.ludo.study.studymatchingplatform.auth.naver.repository.InMemoryClientRegistrationAndProviderRepository;
+import com.ludo.study.studymatchingplatform.auth.service.google.vo.GoogleUserInfo;
 import com.ludo.study.studymatchingplatform.user.domain.Social;
 
 import lombok.RequiredArgsConstructor;
