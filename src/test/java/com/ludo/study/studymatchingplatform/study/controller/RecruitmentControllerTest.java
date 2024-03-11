@@ -15,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ludo.study.studymatchingplatform.auth.common.AuthUserPayload;
@@ -93,6 +94,7 @@ class RecruitmentControllerTest {
 
 	@DisplayName("[Success] Write recruitment")
 	@Test
+	@Transactional
 	void writeRecruitment() throws Exception {
 		final User user = UserFixture.createUser(Social.GOOGLE, "user", "email@gmail.com");
 		userRepository.save(user);
@@ -162,6 +164,7 @@ class RecruitmentControllerTest {
 
 	@DisplayName("[Success] Edit recruitment")
 	@Test
+	@Transactional
 	void editRecruitment() throws Exception {
 		final User user = UserFixture.createUser(Social.GOOGLE, "user", "email@gmail.com");
 		userRepository.save(user);
@@ -238,6 +241,7 @@ class RecruitmentControllerTest {
 
 	@DisplayName("[Success] Apply recruitment")
 	@Test
+	@Transactional
 	void applyRecruitment() throws Exception {
 		final User user = UserFixture.createUser(Social.GOOGLE, "user", "email@gmail.com");
 		userRepository.save(user);
@@ -303,6 +307,7 @@ class RecruitmentControllerTest {
 
 	@DisplayName("[Success] Delete recruitment")
 	@Test
+	@Transactional
 	void deleteRecruitment() throws Exception {
 
 		final User user = UserFixture.createUser(Social.GOOGLE, "user", "email@gmail.com");
@@ -363,6 +368,7 @@ class RecruitmentControllerTest {
 
 	@DisplayName("[Success] Cancel apply recruitment")
 	@Test
+	@Transactional
 	void cancelRecruitment() throws Exception {
 		final User user = UserFixture.createUser(Social.GOOGLE, "user", "email@gmail.com");
 		userRepository.save(user);
