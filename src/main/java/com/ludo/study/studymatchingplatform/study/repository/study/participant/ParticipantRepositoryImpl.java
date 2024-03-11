@@ -32,21 +32,18 @@ public class ParticipantRepositoryImpl {
 				.fetchOne());
 	}
 
-	public Optional<List<Participant>> findByUserId(final Long id) {
-		return Optional.ofNullable(
-				q.selectFrom(participant)
-						.where(participant.user.id.eq(id))
-						.fetch()
-		);
+	public List<Participant> findByUserId(final Long id) {
+		return q.selectFrom(participant)
+				.where(participant.user.id.eq(id))
+				.where(participant.study.status.eq(StudyStatus.RECRUITING))
+				.fetch();
 	}
 
-	public Optional<List<Participant>> findCompletedStudyByUserId(final Long id) {
-		return Optional.ofNullable(
-				q.selectFrom(participant)
-						.where(participant.user.id.eq(id))
-						.where(participant.study.status.eq(StudyStatus.COMPLETED))
-						.fetch()
-		);
+	public List<Participant> findCompletedStudyByUserId(final Long id) {
+		return q.selectFrom(participant)
+				.where(participant.user.id.eq(id))
+				.where(participant.study.status.eq(StudyStatus.COMPLETED))
+				.fetch();
 	}
 
 }
