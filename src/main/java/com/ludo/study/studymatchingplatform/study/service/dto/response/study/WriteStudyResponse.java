@@ -18,6 +18,7 @@ public record WriteStudyResponse(
 
 		Long id,
 		StudyStatus status,
+		Boolean hasRecruitment,
 		String title,
 		Platform platform,
 		Way way,
@@ -27,7 +28,9 @@ public record WriteStudyResponse(
 		LocalDateTime endDateTime,
 		CategoryResponse category,
 		UserResponse.InnerUserResponse owner,
-		List<ParticipantUserResponse> participants
+		List<ParticipantUserResponse> participants,
+		LocalDateTime createdDateTime,
+		LocalDateTime updatedDateTime
 
 ) {
 
@@ -42,6 +45,7 @@ public record WriteStudyResponse(
 		return WriteStudyResponse.builder()
 				.id(study.getId())
 				.status(study.getStatus())
+				.hasRecruitment(study.ensureHasRecruitment())
 				.category(category)
 				.owner(owner)
 				.title(study.getTitle())
@@ -52,6 +56,8 @@ public record WriteStudyResponse(
 				.participantCount(study.getParticipantCount())
 				.startDateTime(study.getStartDateTime())
 				.endDateTime(study.getEndDateTime())
+				.createdDateTime(study.getCreatedDateTime())
+				.updatedDateTime(study.getUpdatedDateTime())
 				.build();
 	}
 
