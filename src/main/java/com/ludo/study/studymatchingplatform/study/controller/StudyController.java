@@ -15,9 +15,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ludo.study.studymatchingplatform.auth.common.AuthUser;
-import com.ludo.study.studymatchingplatform.auth.common.IsAuthenticated;
 import com.ludo.study.studymatchingplatform.study.controller.dto.response.BaseApiResponse;
-import com.ludo.study.studymatchingplatform.study.domain.study.Study;
 import com.ludo.study.studymatchingplatform.study.domain.study.StudyStatus;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.study.WriteStudyRequest;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.applicant.ApplicantResponse;
@@ -40,24 +38,20 @@ public class StudyController {
 	private final StudyStatusService studyStatusService;
 	private final StudyService studyService;
 
-	@IsAuthenticated
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public ResponseEntity<BaseApiResponse<StudyResponse>> create(@RequestBody final WriteStudyRequest request,
 																 @AuthUser final User user) {
-		final Study study = studyCreateService.create(request, user);
-		final StudyResponse response = StudyResponse.from(study);
+		final StudyResponse response = studyCreateService.create(request, user);
 		return ResponseEntity.ok(BaseApiResponse.success(response));
 	}
 
-	@IsAuthenticated
 	@Transactional
 	@PatchMapping("/{studyId}")
 	public ResponseEntity<BaseApiResponse<StudyResponse>> changeStatus(@PathVariable final Long studyId,
 																	   @RequestParam("status") final StudyStatus status,
 																	   @AuthUser final User user) {
-		final Study study = studyStatusService.changeStatus(studyId, status, user);
-		final StudyResponse response = StudyResponse.from(study);
+		final StudyResponse response = studyStatusService.changeStatus(studyId, status, user);
 		return ResponseEntity.ok(BaseApiResponse.success(response));
 	}
 
@@ -71,8 +65,7 @@ public class StudyController {
 	@GetMapping("/{studyId}")
 	public ResponseEntity<BaseApiResponse<StudyResponse>> getStudyDetails(@AuthUser final User user,
 																		  @PathVariable("studyId") final Long studyId) {
-		final Study study = studyFetchService.getStudyDetails(user, studyId);
-		final StudyResponse response = StudyResponse.from(study);
+		final StudyResponse response = studyFetchService.getStudyDetails(user, studyId);
 		return ResponseEntity.ok(BaseApiResponse.success(response));
 	}
 

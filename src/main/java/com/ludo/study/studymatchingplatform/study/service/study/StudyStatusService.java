@@ -7,6 +7,7 @@ import com.ludo.study.studymatchingplatform.study.domain.study.Study;
 import com.ludo.study.studymatchingplatform.study.domain.study.StudyStatus;
 import com.ludo.study.studymatchingplatform.study.repository.recruitment.RecruitmentRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.study.StudyRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.study.StudyResponse;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 
 import lombok.RequiredArgsConstructor;
@@ -19,13 +20,14 @@ public class StudyStatusService {
 	private final StudyRepositoryImpl studyRepository;
 
 	@Transactional
-	public Study changeStatus(final Long studyId, final StudyStatus status, final User user) {
+	public StudyResponse changeStatus(final Long studyId, final StudyStatus status, final User user) {
 		final Study study = studyRepository.findByIdWithRecruitment(studyId)
 				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 스터디 입니다."));
 		study.ensureStudyEditable(user);
 		study.modifyStatus(status);
 		hasRecruitment(study);
-		return studyRepository.save(study);
+		studyRepository.save(study);
+		return StudyResponse.from(study);
 	}
 
 	private void hasRecruitment(final Study study) {

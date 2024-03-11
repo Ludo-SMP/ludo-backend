@@ -41,4 +41,9 @@ public abstract class BaseEntity {
 	public void softDelete() {
 		deletedDateTime = LocalDateTime.now();
 	}
+
+	public void activate() {
+		deletedDateTime = null;
+	}
+
 }
