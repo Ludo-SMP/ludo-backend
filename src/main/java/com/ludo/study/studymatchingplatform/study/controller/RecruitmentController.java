@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ludo.study.studymatchingplatform.auth.common.AuthUser;
-import com.ludo.study.studymatchingplatform.auth.common.IsAuthenticated;
 import com.ludo.study.studymatchingplatform.common.annotation.DataFieldName;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Applicant;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
@@ -42,8 +42,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -60,7 +58,7 @@ public class RecruitmentController {
 	private final RecruitmentService recruitmentService;
 
 	@GetMapping("/recruitments")
- 	@ResponseStatus(HttpStatus.OK)
+	@ResponseStatus(HttpStatus.OK)
 	@DataFieldName("recruitments")
 	@Operation(description = "여러 모집 공고 조회")
 	@ApiResponse(description = "조회 성공", responseCode = "200", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
@@ -81,7 +79,7 @@ public class RecruitmentController {
 	}
 
 	@GetMapping("/recruitments/{recruitmentId}")
- 	@ResponseStatus(HttpStatus.OK)
+	@ResponseStatus(HttpStatus.OK)
 	@DataFieldName("recruitment")
 	@Operation(description = "특정 모집 공고 조회")
 	@ApiResponse(description = "조회 성공", responseCode = "200", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
@@ -93,8 +91,8 @@ public class RecruitmentController {
 	}
 
 	@GetMapping("/recruitments/popular")
-  @ResponseStatus(HttpStatus.OK)
-  @DataFieldName("recruitments")
+	@ResponseStatus(HttpStatus.OK)
+	@DataFieldName("recruitments")
 	@Operation(description = "인기 있는 다수의 모집 공고 조회")
 	@ApiResponse(description = "조회 성공", responseCode = "200", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
 	public PopularRecruitmentsResponse readPopularRecruitments(
@@ -102,7 +100,6 @@ public class RecruitmentController {
 		return popularRecruitmentsFindService.findPopularRecruitments(
 				request);
 	}
-
 
 	@PostMapping("/studies/{studyId}/recruitments")
 	@ResponseStatus(HttpStatus.CREATED)
@@ -116,7 +113,7 @@ public class RecruitmentController {
 	}
 
 	@PutMapping("/studies/{studyId}/recruitments")
-  @ResponseStatus(HttpStatus.OK)
+	@ResponseStatus(HttpStatus.OK)
 	@DataFieldName("recruitment")
 	@Operation(description = "모집 공고 수정")
 	@ApiResponse(description = "모집 공고 수정 성공", responseCode = "200", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
@@ -145,7 +142,7 @@ public class RecruitmentController {
 		final Applicant applicant = recruitmentService.apply(user, recruitmentId, request);
 		return ApplyRecruitmentResponse.from(applicant);
 	}
-  
+
 	@DeleteMapping("/studies/{studyId}/recruitments")
 	@ResponseStatus(HttpStatus.OK)
 	@Operation(description = "모집 공고 삭제")
@@ -155,8 +152,8 @@ public class RecruitmentController {
 	}
 
 	@PostMapping("/studies/{studyId}/recruitments/{recruitmentId}/cancel")
-  @ResponseStatus(HttpStatus.OK)
-  @Operation(description = "모집 공고 지원 취소")
+	@ResponseStatus(HttpStatus.OK)
+	@Operation(description = "모집 공고 지원 취소")
 	@ApiResponse(description = "지원 취소", responseCode = "200", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
 	public void cancel(
 			@Parameter(name = "studyId", description = "스터디 id", required = true) @PathVariable("studyId") final Long studyId,
@@ -164,5 +161,5 @@ public class RecruitmentController {
 			@Parameter(hidden = true) @AuthUser final User user) {
 		recruitmentService.cancel(user, recruitmentId);
 	}
-  
+
 }
