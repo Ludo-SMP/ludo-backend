@@ -35,7 +35,7 @@ public class ParticipantRepositoryImpl {
 	public List<Participant> findByUserId(final Long id) {
 		return q.selectFrom(participant)
 				.where(participant.user.id.eq(id))
-				.where(participant.study.status.eq(StudyStatus.RECRUITING))
+				.where(participant.study.status.ne(StudyStatus.COMPLETED))
 				.fetch();
 	}
 
