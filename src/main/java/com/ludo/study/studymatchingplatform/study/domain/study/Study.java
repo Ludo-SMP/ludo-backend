@@ -148,11 +148,11 @@ public class Study extends BaseEntity {
 		}
 	}
 
-	public boolean isOwner(final User user) {
+	public Boolean isOwner(final User user) {
 		return Objects.equals(owner.getId(), user.getId());
 	}
 
-	public boolean isOwner(final Participant participant) {
+	public Boolean isOwner(final Participant participant) {
 		return participant.matchesUser(owner);
 	}
 
@@ -224,16 +224,16 @@ public class Study extends BaseEntity {
 		addParticipant(Participant.from(this, applicantUser, applicant.getPosition(), Role.MEMBER));
 	}
 
-	private boolean isMaxParticipantCount() {
+	private Boolean isMaxParticipantCount() {
 		return Objects.equals(participantCount, participantLimit);
 	}
 
-	public boolean isParticipating(final User user) {
+	public Boolean isParticipating(final User user) {
 		return participants.stream()
 				.anyMatch(p -> p.matchesUser(user));
 	}
 
-	public int getDday() {
+	public Integer getDday() {
 		return Period.between(startDateTime.toLocalDate(), endDateTime.toLocalDate()).getDays();
 	}
 
@@ -292,6 +292,13 @@ public class Study extends BaseEntity {
 
 	public void activateForRecruitment() {
 		this.recruitment.activate();
+	}
+
+	public Boolean ensureHasRecruitment() {
+		if (this.recruitment != null && !this.recruitment.isDeleted()) {
+			return Boolean.TRUE;
+		}
+		return Boolean.FALSE;
 	}
 
 }
