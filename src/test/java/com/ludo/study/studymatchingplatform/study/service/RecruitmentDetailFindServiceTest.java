@@ -36,7 +36,7 @@ import com.ludo.study.studymatchingplatform.user.repository.UserRepositoryImpl;
 import jakarta.transaction.Transactional;
 
 @SpringBootTest
-class RecruitmentDetailsFindServiceTest {
+class RecruitmentDetailFindServiceTest {
 
 	@Autowired
 	RecruitmentDetailsFindService recruitmentDetailsFindService;
@@ -76,11 +76,15 @@ class RecruitmentDetailsFindServiceTest {
 				.findRecruitmentDetails(saveRecruitment.getId());
 		// then
 		assertThat(recruitmentDetailsResponse.recruitment().title()).isEqualTo(RECRUITMENT_TITLE);
-		assertThat(recruitmentDetailsResponse.recruitment().ownerNickname()).isEqualTo(NICKNAME);
-		assertThat(recruitmentDetailsResponse.recruitment().way()).isEqualTo(Way.ONLINE.toString());
-		assertThat(recruitmentDetailsResponse.recruitment().category()).isEqualTo(CATEGORY);
-		assertThat(recruitmentDetailsResponse.recruitment().positions()).contains("백엔드");
-		assertThat(recruitmentDetailsResponse.recruitment().stacks()).contains("spring", "react");
+		assertThat(recruitmentDetailsResponse.recruitment().positions())
+				.extracting("name")
+				.contains("백엔드");
+		assertThat(recruitmentDetailsResponse.recruitment().stacks())
+				.extracting("name")
+				.contains("spring", "react");
+		assertThat(recruitmentDetailsResponse.study().owner().nickname()).isEqualTo(NICKNAME);
+		assertThat(recruitmentDetailsResponse.study().way()).isEqualTo(Way.ONLINE.toString());
+		assertThat(recruitmentDetailsResponse.study().category().name()).isEqualTo(CATEGORY);
 	}
 
 	@Test
