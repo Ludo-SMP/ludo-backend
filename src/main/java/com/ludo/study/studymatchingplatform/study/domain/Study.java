@@ -118,7 +118,7 @@ public class Study extends BaseEntity {
 
 	public Long getCategoryId() {
 		return category.getId();
-  }
+	}
 
 	public Long getOwnerId() {
 		return owner.getId();
@@ -130,10 +130,6 @@ public class Study extends BaseEntity {
 
 	public String getOwnerEmail() {
 		return owner.getEmail();
-	}
-
-	public Long getCategoryId() {
-		return category.getId();
 	}
 
 	public String getCategoryName() {
