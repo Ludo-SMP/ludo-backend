@@ -1,12 +1,10 @@
 package com.ludo.study.studymatchingplatform.user.controller;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ludo.study.studymatchingplatform.auth.common.AuthUser;
@@ -31,7 +29,6 @@ public class MyPageController {
 	private final RecruitmentService recruitmentService;
 
 	@GetMapping("/users/mypage")
-	@ResponseStatus(HttpStatus.CREATED)
 	@DataFieldName("user")
 	@Operation(description = "로그인 된 사용자 정보 조회")
 	@ApiResponse(description = "조회 성공", responseCode = "200", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
