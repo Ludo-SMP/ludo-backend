@@ -22,7 +22,7 @@ public class MyPageService {
 
 	public MyPageResponse retrieveMyPage(final User user) {
 		final List<Participant> participants = retrieveParticipantStudies(user);
-		final List<Applicant> applicants = retrieveApplicantRecruitment(user);
+		final List<Applicant> applicants = retrieveApplyRecruitment(user);
 		final List<Participant> completedStudies = retrieveCompletedStudy(user);
 		return MyPageResponse.from(user, participants, applicants, completedStudies);
 	}
@@ -31,8 +31,8 @@ public class MyPageService {
 		return participantRepository.findByUserId(user.getId());
 	}
 
-	private List<Applicant> retrieveApplicantRecruitment(final User user) {
-		return applicantRepository.findByUserId(user.getId());
+	private List<Applicant> retrieveApplyRecruitment(final User user) {
+		return applicantRepository.findMyPageApplyRecruitmentInfoByUserId(user.getId());
 	}
 
 	private List<Participant> retrieveCompletedStudy(final User user) {
