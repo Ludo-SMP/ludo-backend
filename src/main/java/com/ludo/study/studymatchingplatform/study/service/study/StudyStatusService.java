@@ -5,8 +5,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ludo.study.studymatchingplatform.study.domain.study.Study;
 import com.ludo.study.studymatchingplatform.study.domain.study.StudyStatus;
+import com.ludo.study.studymatchingplatform.study.repository.recruitment.RecruitmentRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.study.StudyRepositoryImpl;
-import com.ludo.study.studymatchingplatform.study.service.recruitment.RecruitmentService;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 
 import lombok.RequiredArgsConstructor;
@@ -15,21 +15,29 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class StudyStatusService {
 
+	private final RecruitmentRepositoryImpl recruitmentRepository;
 	private final StudyRepositoryImpl studyRepository;
-	private final RecruitmentService recruitmentService;
 
 	@Transactional
 	public Study changeStatus(final Long studyId, final StudyStatus status, final User user) {
 		final Study study = studyRepository.findByIdWithRecruitment(studyId)
 				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 스터디 입니다."));
-
 		study.ensureStudyEditable(user);
-		study.edit(status);
-
-		if (studyRepository.hasRecruitment(studyId) && status != StudyStatus.RECRUITING) {
-			recruitmentService.delete(user, studyId);
-		}
+		study.modifyStatus(status);
+		hasRecruitment(study);
 		return studyRepository.save(study);
+	}
+
+	private void hasRecruitment(final Study study) {
+		if (studyRepository.hasRecruitment(study.getId())) {
+			if (study.getStatus() == StudyStatus.RECRUITING) {
+				study.activateForRecruitment();
+			}
+			if (study.getStatus() != StudyStatus.RECRUITING) {
+				study.deactivateForRecruitment();
+			}
+			recruitmentRepository.save(study.getRecruitment());
+		}
 	}
 
 }

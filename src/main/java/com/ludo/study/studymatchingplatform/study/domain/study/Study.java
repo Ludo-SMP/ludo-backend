@@ -133,7 +133,7 @@ public class Study extends BaseEntity {
 	}
 
 	public Recruitment ensureRecruitmentEditable(final User user) {
-		if (owner != user) {
+		if (!owner.getId().equals(user.getId())) {
 			throw new IllegalArgumentException("모집 공고를 수정할 권한이 없습니다.");
 		}
 		if (recruitment == null || recruitment.isDeleted()) {
@@ -143,17 +143,8 @@ public class Study extends BaseEntity {
 	}
 
 	public void ensureStudyEditable(final User user) {
-		if (owner.getId() != user.getId()) {
+		if (!owner.getId().equals(user.getId())) {
 			throw new IllegalArgumentException("스터디를 수정할 권한이 없습니다.");
-		}
-	}
-
-	public void ensureRecruitmentDeletable(final User user) {
-		if (owner.getId() != user.getId()) {
-			throw new IllegalArgumentException("모집 공고를 삭제할 권한이 없습니다.");
-		}
-		if (recruitment.isDeleted()) {
-			throw new IllegalArgumentException("존재하지 않는 모집 공고입니다.");
 		}
 	}
 
@@ -257,10 +248,50 @@ public class Study extends BaseEntity {
 		participants.removeIf(p -> Objects.equals(p, participant));
 	}
 
-	public void edit(final StudyStatus status) {
-		if (status != null) {
-			this.status = status;
+	public void modifyStatus(final StudyStatus status) {
+		// 모집 중 상태는 언제나 반영
+		if (status == StudyStatus.RECRUITING) {
+			this.status = StudyStatus.RECRUITING;
 		}
+		// 모집 마감 상태는 시간에 따라 다른 결과 반영
+		if (status == StudyStatus.RECRUITED) {
+			final LocalDateTime now = LocalDateTime.now();
+			modifyStatusToRecruited(now);
+			modifyStatusToProgress(now);
+			modifyStatusToCompleted(now);
+		}
+	}
+
+	public void ensureModifiableStatus() {
+		final LocalDateTime now = LocalDateTime.now();
+		modifyStatusToProgress(now);
+		modifyStatusToCompleted(now);
+	}
+
+	private void modifyStatusToRecruited(final LocalDateTime now) {
+		if (this.startDateTime.isAfter(now)) {
+			this.status = StudyStatus.RECRUITED;
+		}
+	}
+
+	private void modifyStatusToProgress(final LocalDateTime now) {
+		if (this.startDateTime.isBefore(now) && this.endDateTime.isAfter(now)) {
+			this.status = StudyStatus.PROGRESS;
+		}
+	}
+
+	private void modifyStatusToCompleted(final LocalDateTime now) {
+		if (this.endDateTime.isBefore(now)) {
+			this.status = StudyStatus.COMPLETED;
+		}
+	}
+
+	public void deactivateForRecruitment() {
+		this.recruitment.softDelete();
+	}
+
+	public void activateForRecruitment() {
+		this.recruitment.activate();
 	}
 
 }
