@@ -1,7 +1,17 @@
 package com.ludo.study.studymatchingplatform.study.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.ludo.study.studymatchingplatform.study.domain.Category;
 import com.ludo.study.studymatchingplatform.study.domain.Platform;
 import com.ludo.study.studymatchingplatform.study.domain.Position;
@@ -18,14 +28,6 @@ import com.ludo.study.studymatchingplatform.study.service.dto.request.WriteRecru
 import com.ludo.study.studymatchingplatform.user.domain.Social;
 import com.ludo.study.studymatchingplatform.user.domain.User;
 import com.ludo.study.studymatchingplatform.user.repository.UserRepositoryImpl;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Set;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 @Transactional
@@ -49,7 +51,7 @@ class RecruitmentPositionServiceTest {
 	@Autowired
 	private RecruitmentPositionService recruitmentPositionService;
 
-	@DisplayName("모집 공고에 등록하지 않은 포지션을 추가할 수 있다.")
+	@DisplayName("[Success] 모집 공고에 등록하지 않은 포지션을 추가할 수 있다.")
 	@Test
 	void createRecruitmentPositionSuccess() {
 
@@ -104,7 +106,7 @@ class RecruitmentPositionServiceTest {
 
 	}
 
-	@DisplayName("모집 공고에 이미 등록된 포지션을 중복해서 추가하면 예외 발생")
+	@DisplayName("[Exception] 모집 공고에 이미 등록된 포지션을 중복해서 추가하면 예외 발생")
 	@Test
 	void createRecruitmentPositionFailure() {
 
@@ -131,7 +133,6 @@ class RecruitmentPositionServiceTest {
 
 		final Position position1 = positionRepository.save(PositionFixture.createPosition("position1"));
 
-
 		final WriteRecruitmentRequest request = WriteRecruitmentRequest.builder()
 				.studyId(study.getId())
 				.title("recruitment")
@@ -155,8 +156,7 @@ class RecruitmentPositionServiceTest {
 
 	}
 
-
-	@DisplayName("update 시, 모집 공고에 등록되지 않은 스택을 전달하면 추가된다.")
+	@DisplayName("[Success] update 시, 모집 공고에 등록되지 않은 스택을 전달하면 추가된다.")
 	@Test
 	void updateRecruitmentStackSuccess1() {
 
@@ -209,7 +209,7 @@ class RecruitmentPositionServiceTest {
 
 	}
 
-	@DisplayName("update 시, 모집 공고에 등록된 포지션을 전달하지 않으면 제거된다.")
+	@DisplayName("[Success] update 시, 모집 공고에 등록된 포지션을 전달하지 않으면 제거된다.")
 	@Test
 	void updateRecruitmentPositionSuccess2() {
 
@@ -260,7 +260,7 @@ class RecruitmentPositionServiceTest {
 
 	}
 
-	@DisplayName("update 시, 모집 공고에 등록된 포지션을 전달하면 아무런 변화도 일어나지 않는다.")
+	@DisplayName("[Success] update 시, 모집 공고에 등록된 포지션을 전달하면 아무런 변화도 일어나지 않는다.")
 	@Test
 	void updateRecruitmentPositionSuccess3() {
 
@@ -286,7 +286,6 @@ class RecruitmentPositionServiceTest {
 		);
 
 		final Position position1 = positionRepository.save(PositionFixture.createPosition("position1"));
-
 
 		final WriteRecruitmentRequest request = WriteRecruitmentRequest.builder()
 				.studyId(study.getId())

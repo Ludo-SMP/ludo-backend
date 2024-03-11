@@ -118,10 +118,26 @@ public class Study extends BaseEntity {
 
 	public Long getCategoryId() {
 		return category.getId();
+  }
+
+	public Long getOwnerId() {
+		return owner.getId();
 	}
 
 	public String getOwnerNickname() {
 		return owner.getNickname();
+	}
+
+	public String getOwnerEmail() {
+		return owner.getEmail();
+	}
+
+	public Long getCategoryId() {
+		return category.getId();
+	}
+
+	public String getCategoryName() {
+		return category.getName();
 	}
 
 	public void ensureRecruitmentWritableBy(final User user) {
