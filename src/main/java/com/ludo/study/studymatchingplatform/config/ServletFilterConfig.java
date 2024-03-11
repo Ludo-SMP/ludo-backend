@@ -31,8 +31,6 @@ public class ServletFilterConfig {
 	private void addAuthenticationEndpoints(FilterRegistrationBean<Filter> filterRegistrationBean) {
 		filterRegistrationBean.addUrlPatterns("/api/users/*");
 		filterRegistrationBean.addUrlPatterns("/api/studies/*");
-		filterRegistrationBean.addUrlPatterns("/api/studies/{studyId}/recruitments/{recruitmentId}/cancel");
-		filterRegistrationBean.addUrlPatterns("/api/studies/{studyId}/recruitments/{recruitmentId}/apply");
 	}
 
 }
