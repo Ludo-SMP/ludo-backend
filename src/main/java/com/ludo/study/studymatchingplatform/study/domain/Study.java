@@ -116,6 +116,10 @@ public class Study extends BaseEntity {
 		return category.getName();
 	}
 
+	public Long getCategoryId() {
+		return category.getId();
+  }
+
 	public Long getOwnerId() {
 		return owner.getId();
 	}

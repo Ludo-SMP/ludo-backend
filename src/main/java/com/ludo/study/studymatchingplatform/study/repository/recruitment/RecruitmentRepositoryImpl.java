@@ -107,8 +107,8 @@ public class RecruitmentRepositoryImpl {
 						eqPosition(recruitmentFindCond.positionId()),
 						eqStack(recruitmentFindCond.stackIds()))
 				.where(lessThan(recruitmentFindCursor.last()))
+				.orderBy(recruitment.updatedDateTime.desc())
 				.limit(recruitmentFindCursor.count())
-				.orderBy(recruitment.id.desc())
 				.fetch();
 
 	}
