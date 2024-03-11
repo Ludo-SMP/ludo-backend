@@ -6,12 +6,12 @@ import com.ludo.study.studymatchingplatform.study.domain.recruitment.position.Po
 import com.ludo.study.studymatchingplatform.study.domain.study.Study;
 import com.ludo.study.studymatchingplatform.study.domain.study.category.Category;
 import com.ludo.study.studymatchingplatform.study.domain.study.participant.Role;
-import com.ludo.study.studymatchingplatform.study.repository.recruitment.RecruitmentRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.recruitment.position.PositionRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.study.StudyRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.study.category.CategoryRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.study.WriteStudyRequest;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.study.StudyResponse;
+import com.ludo.study.studymatchingplatform.study.service.exception.NotFoundException;
 import com.ludo.study.studymatchingplatform.study.service.study.participant.ParticipantService;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 
@@ -27,19 +27,23 @@ public class StudyCreateService {
 	private final StudyRepositoryImpl studyRepository;
 	private final CategoryRepositoryImpl categoryRepository;
 	private final PositionRepositoryImpl positionRepository;
-	private final RecruitmentRepositoryImpl recruitmentRepository;
 	private final ParticipantService participantService;
 
 	@Transactional
 	public StudyResponse create(final WriteStudyRequest request, final User user) {
 		final Category category = findCategoryById(request.categoryId());
 		final Study study = request.toStudy(user, category, request.platform());
-		final Position ownerPosition = positionRepository.findById(request.positionId());
+		final Position ownerPosition = findPositionById(request.positionId());
 		// startDateTime / endDateTime 에 따른 상태 변경
 		study.ensureModifiableStatus();
 		studyRepository.save(study);
 		participantService.add(study, user, ownerPosition, Role.OWNER);
 		return StudyResponse.from(study);
+	}
+
+	private Position findPositionById(final Long positionId) {
+		return positionRepository.findById(positionId)
+				.orElseThrow(() -> new NotFoundException("존재하지 않는 포지션입니다."));
 	}
 
 	private Category findCategoryById(final Long categoryId) {
