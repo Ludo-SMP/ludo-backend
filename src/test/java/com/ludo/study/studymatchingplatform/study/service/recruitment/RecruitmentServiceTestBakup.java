@@ -879,7 +879,7 @@ class RecruitmentServiceTestBakup {
 				.callUrl("edited callUrl")
 				.recruitmentEndDateTime(editedRecruitmentEndDateTime)
 				.build();
-		final Recruitment editedRecruitment = recruitmentService.edit(owner, study.getId(), request);
+		final Recruitment editedRecruitment = recruitmentService.edit(owner, recruitment.getId(), request);
 
 		// edited states
 		assertThat(editedRecruitment.getTitle()).isEqualTo("edited text");
@@ -946,9 +946,9 @@ class RecruitmentServiceTestBakup {
 				.recruitmentEndDateTime(editedRecruitmentEndDateTime)
 				.build();
 
-		assertThatThrownBy(() -> recruitmentService.edit(user, study.getId(), request))
+		assertThatThrownBy(() -> recruitmentService.edit(user, recruitment.getId(), request))
 				.isInstanceOf(IllegalArgumentException.class)
-				.hasMessage("모집 공고를 수정할 권한이 없습니다.");
+				.hasMessage("모집 공고를 작성할 권한이 없습니다.");
 
 	}
 

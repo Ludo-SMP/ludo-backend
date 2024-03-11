@@ -7,7 +7,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,9 +26,9 @@ import com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant.A
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.position.Position;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.stack.Stack;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.stack.StackCategory;
-import com.ludo.study.studymatchingplatform.study.domain.study.category.Category;
 import com.ludo.study.studymatchingplatform.study.domain.study.Platform;
 import com.ludo.study.studymatchingplatform.study.domain.study.Study;
+import com.ludo.study.studymatchingplatform.study.domain.study.category.Category;
 import com.ludo.study.studymatchingplatform.study.fixture.recruitment.RecruitmentFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.recruitment.position.PositionFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.recruitment.stack.StackCategoryFixture;
@@ -45,6 +44,7 @@ import com.ludo.study.studymatchingplatform.study.repository.study.category.Cate
 import com.ludo.study.studymatchingplatform.study.service.dto.request.recruitment.EditRecruitmentRequest;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.recruitment.WriteRecruitmentRequest;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.recruitment.applicant.ApplyRecruitmentRequest;
+import com.ludo.study.studymatchingplatform.study.service.recruitment.RecruitmentService;
 import com.ludo.study.studymatchingplatform.user.domain.user.Social;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 import com.ludo.study.studymatchingplatform.user.fixture.user.UserFixture;
@@ -135,12 +135,11 @@ class RecruitmentControllerTest {
 		final Cookie authCookie = cookieProvider.createAuthCookie(accessToken, 300000);
 
 		final WriteRecruitmentRequest body = WriteRecruitmentRequest.builder()
-				.studyId(study.getId())
 				.title("recruitment")
 				.content("I want to study")
 				.stackIds(Set.of(stacks.get(0).getId(), stacks.get(1).getId(), stacks.get(2).getId()))
 				.positionIds(Set.of(positions.get(0).getId(), positions.get(1).getId(), positions.get(2).getId()))
-				.recruitmentLimit(4)
+				.applicantCount(4)
 				.callUrl("gather")
 				.recruitmentEndDateTime(LocalDateTime.now().plusMonths(3))
 				.build();

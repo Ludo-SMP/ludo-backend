@@ -3,10 +3,10 @@ package com.ludo.study.studymatchingplatform.user.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ludo.study.studymatchingplatform.user.domain.User;
 import com.ludo.study.studymatchingplatform.user.domain.exception.CurrentNicknameEqualsException;
 import com.ludo.study.studymatchingplatform.user.domain.exception.DuplicateNicknameException;
-import com.ludo.study.studymatchingplatform.user.repository.UserRepositoryImpl;
+import com.ludo.study.studymatchingplatform.user.domain.user.User;
+import com.ludo.study.studymatchingplatform.user.repository.user.UserRepositoryImpl;
 import com.ludo.study.studymatchingplatform.user.service.dto.response.ChangeUserNicknameResponse;
 
 import lombok.RequiredArgsConstructor;
@@ -43,4 +43,5 @@ public class ChangeNicknameService {
 			throw new DuplicateNicknameException();
 		}
 	}
+
 }

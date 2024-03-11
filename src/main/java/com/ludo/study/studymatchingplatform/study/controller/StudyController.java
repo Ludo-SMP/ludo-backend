@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ludo.study.studymatchingplatform.auth.common.AuthUser;
 import com.ludo.study.studymatchingplatform.common.annotation.DataFieldName;
 import com.ludo.study.studymatchingplatform.study.controller.dto.response.BaseApiResponse;
-import com.ludo.study.studymatchingplatform.study.domain.study.Study;
 import com.ludo.study.studymatchingplatform.study.domain.study.StudyStatus;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.recruitment.applicant.StudyApplicantDecisionRequest;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.study.StudyUpdateRequest;
@@ -26,12 +25,12 @@ import com.ludo.study.studymatchingplatform.study.service.dto.request.study.Writ
 import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.applicant.ApplicantResponse;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.applicant.ApplyAcceptResponse;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.study.StudyResponse;
+import com.ludo.study.studymatchingplatform.study.service.recruitment.applicant.StudyApplicantDecisionService;
 import com.ludo.study.studymatchingplatform.study.service.study.StudyCreateService;
 import com.ludo.study.studymatchingplatform.study.service.study.StudyFetchService;
 import com.ludo.study.studymatchingplatform.study.service.study.StudyService;
 import com.ludo.study.studymatchingplatform.study.service.study.StudyStatusService;
 import com.ludo.study.studymatchingplatform.study.service.study.StudyUpdateService;
-import com.ludo.study.studymatchingplatform.study.service.study.participant.StudyApplicantDecisionService;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 
 import io.swagger.v3.oas.annotations.Operation;

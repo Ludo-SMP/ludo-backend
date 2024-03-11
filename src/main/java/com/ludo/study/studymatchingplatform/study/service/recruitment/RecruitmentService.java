@@ -67,10 +67,11 @@ public class RecruitmentService {
 		return WriteRecruitmentStudyInfoResponse.from(study);
 	}
 
-	public Recruitment edit(final User user, final Long studyId, final EditRecruitmentRequest request) {
-		final Study study = studyRepository.findByIdWithRecruitment(studyId)
-				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 스터디 입니다."));
-		final Recruitment recruitment = study.ensureRecruitmentEditable(user);
+	public Recruitment edit(final User user, final Long recruitmentId, final EditRecruitmentRequest request) {
+		final Recruitment recruitment = recruitmentRepository.findByIdWithStudy(recruitmentId)
+				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 모집 공고입니다."));
+
+		recruitment.ensureEditable(user);
 
 		recruitmentStackService.update(recruitment, request.getStackIds());
 		recruitmentPositionService.update(recruitment, request.getPositionIds());
@@ -107,8 +108,10 @@ public class RecruitmentService {
 			final Applicant reapplicant = applicant.get();
 			reapplicant.ensureApplicable();
 			reapplicant.reapply();
+
 			return reapplicant;
 		}
+
 	}
 
 	public Applicant cancel(final User user, final Long recruitmentId) {

@@ -1,6 +1,6 @@
 package com.ludo.study.studymatchingplatform.user.service.dto.response;
 
-import com.ludo.study.studymatchingplatform.user.domain.User;
+import com.ludo.study.studymatchingplatform.user.domain.user.User;
 
 public record ChangeUserNicknameResponse(
 		UserResponse user
@@ -15,4 +15,3 @@ public record ChangeUserNicknameResponse(
 		this(new UserResponse(user.getId(), user.getNickname()));
 	}
 }
-

@@ -13,11 +13,11 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant.Applicant;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant.ApplicantStatus;
+import com.ludo.study.studymatchingplatform.study.domain.study.Platform;
+import com.ludo.study.studymatchingplatform.study.domain.study.Study;
 import com.ludo.study.studymatchingplatform.study.domain.study.category.Category;
 import com.ludo.study.studymatchingplatform.study.domain.study.participant.Participant;
-import com.ludo.study.studymatchingplatform.study.domain.study.Platform;
 import com.ludo.study.studymatchingplatform.study.domain.study.participant.Role;
-import com.ludo.study.studymatchingplatform.study.domain.study.Study;
 import com.ludo.study.studymatchingplatform.study.fixture.recruitment.RecruitmentFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.recruitment.applicant.ApplicantFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.study.StudyFixture;
@@ -29,7 +29,6 @@ import com.ludo.study.studymatchingplatform.study.repository.study.category.Cate
 import com.ludo.study.studymatchingplatform.study.repository.study.participant.ParticipantRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.recruitment.applicant.StudyApplicantDecisionRequest;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.applicant.ApplyAcceptResponse;
-import com.ludo.study.studymatchingplatform.study.service.study.participant.ParticipantDecisionService;
 import com.ludo.study.studymatchingplatform.user.domain.user.Social;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 import com.ludo.study.studymatchingplatform.user.fixture.user.UserFixture;
@@ -41,7 +40,7 @@ import jakarta.persistence.EntityManager;
 class StudyApplicantDecisionServiceTest {
 
 	@Autowired
-	ParticipantDecisionService applicantDecisionService;
+	StudyApplicantDecisionService applicantDecisionService;
 
 	@Autowired
 	UserRepositoryImpl userRepository;

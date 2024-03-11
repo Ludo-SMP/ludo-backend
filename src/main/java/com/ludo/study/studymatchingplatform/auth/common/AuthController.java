@@ -28,6 +28,6 @@ public class AuthController {
 	public ResponseEntity<BaseApiResponse<Object>> logout(
 			@Parameter(hidden = true) final HttpServletResponse response) {
 		cookieProvider.clearAuthCookie(response);
-		return ResponseEntity.ok(BaseApiResponse.success("로그아웃 성공", null));
+		return ResponseEntity.ok(BaseApiResponse.success(null));
 	}
 }

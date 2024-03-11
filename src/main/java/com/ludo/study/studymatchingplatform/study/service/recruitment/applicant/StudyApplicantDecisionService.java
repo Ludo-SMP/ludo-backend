@@ -1,12 +1,12 @@
-package com.ludo.study.studymatchingplatform.study.service.study.participant;
+package com.ludo.study.studymatchingplatform.study.service.recruitment.applicant;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ludo.study.studymatchingplatform.study.domain.study.participant.Participant;
 import com.ludo.study.studymatchingplatform.study.domain.study.Study;
-import com.ludo.study.studymatchingplatform.study.repository.study.participant.ParticipantRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.domain.study.participant.Participant;
 import com.ludo.study.studymatchingplatform.study.repository.study.StudyRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.repository.study.participant.ParticipantRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.recruitment.applicant.StudyApplicantDecisionRequest;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.applicant.ApplyAcceptResponse;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
@@ -29,7 +29,7 @@ public class StudyApplicantDecisionService {
 		final Study study = findStudy(request.studyId());
 		final User applicantUser = findUser(request.applicantUserId());
 
-		study.acceptApplicant(owner, applicantUser, request.recruitmentId());
+		study.acceptApplicant(owner, applicantUser);
 		Participant participant = findParticipant(study, applicantUser);
 
 		return ApplyAcceptResponse.from(participant);
@@ -40,7 +40,7 @@ public class StudyApplicantDecisionService {
 		final Study study = findStudy(request.studyId());
 		final User applicantUser = findUser(request.applicantUserId());
 
-		study.rejectApplicant(owner, applicantUser, request.recruitmentId());
+		study.rejectApplicant(owner, applicantUser);
 	}
 
 	private User findUser(final Long applicantUserId) {
