@@ -33,12 +33,10 @@ public class ApplicantRepositoryImpl {
 						.fetchOne());
 	}
 
-	public Optional<List<Applicant>> findByUserId(final Long id) {
-		return Optional.ofNullable(
-				q.selectFrom(applicant)
-						.where(applicant.user.id.eq(id))
-						.fetch()
-		);
+	public List<Applicant> findByUserId(final Long id) {
+		return q.selectFrom(applicant)
+				.where(applicant.user.id.eq(id))
+				.fetch();
 	}
 
 }

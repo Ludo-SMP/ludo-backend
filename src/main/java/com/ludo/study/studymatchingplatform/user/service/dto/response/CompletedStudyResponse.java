@@ -6,6 +6,7 @@ import com.ludo.study.studymatchingplatform.study.domain.recruitment.position.Po
 import com.ludo.study.studymatchingplatform.study.domain.study.Study;
 import com.ludo.study.studymatchingplatform.study.domain.study.StudyStatus;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.position.PositionResponse;
+import com.ludo.study.studymatchingplatform.user.domain.user.User;
 
 import lombok.Builder;
 
@@ -18,11 +19,13 @@ public record CompletedStudyResponse(
 		StudyStatus status,
 		LocalDateTime startDateTime,
 		LocalDateTime endDateTime,
-		Integer participantCount
+		Integer participantCount,
+		Boolean isOwner,
+		Boolean hasRecruitment
 
 ) {
 
-	public static CompletedStudyResponse from(final Study study, final Position pos) {
+	public static CompletedStudyResponse from(final User user, final Study study, final Position pos) {
 		final PositionResponse positionResponse = PositionResponse.from(pos);
 		return CompletedStudyResponse.builder()
 				.studyId(study.getId())
@@ -32,6 +35,8 @@ public record CompletedStudyResponse(
 				.startDateTime(study.getStartDateTime())
 				.endDateTime(study.getEndDateTime())
 				.participantCount(study.getParticipantCount())
+				.isOwner(study.isOwner(user))
+				.hasRecruitment(study.ensureHasRecruitment())
 				.build();
 	}
 
