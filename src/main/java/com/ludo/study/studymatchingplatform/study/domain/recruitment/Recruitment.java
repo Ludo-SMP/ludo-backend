@@ -9,19 +9,22 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.SQLRestriction;
-
 import com.ludo.study.studymatchingplatform.common.entity.BaseEntity;
-import com.ludo.study.studymatchingplatform.study.domain.Position;
-import com.ludo.study.studymatchingplatform.study.domain.Study;
-import com.ludo.study.studymatchingplatform.study.domain.recruitment.id.ApplicantId;
-import com.ludo.study.studymatchingplatform.study.domain.stack.Stack;
-import com.ludo.study.studymatchingplatform.user.domain.User;
+import com.ludo.study.studymatchingplatform.study.domain.id.ApplicantId;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant.Applicant;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant.ApplicantStatus;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.position.Position;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.position.RecruitmentPosition;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.stack.RecruitmentStack;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.stack.Stack;
+import com.ludo.study.studymatchingplatform.study.domain.study.Study;
+import com.ludo.study.studymatchingplatform.user.domain.user.User;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -45,8 +48,8 @@ import lombok.extern.slf4j.Slf4j;
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@SQLDelete(sql = "UPDATE recruitment SET deleted_date_time = NOW() WHERE recruitment_id = ?")
-@SQLRestriction("deleted_date_time is null")
+// @SQLDelete(sql = "UPDATE recruitment SET deleted_date_time = NOW() WHERE recruitment_id = ?")
+// @SQLRestriction("deleted_date_time is null")
 @ToString(of = {"id", "title"}, callSuper = true)
 @Slf4j
 public class Recruitment extends BaseEntity {
@@ -72,6 +75,11 @@ public class Recruitment extends BaseEntity {
 	@Builder.Default
 	private List<RecruitmentPosition> recruitmentPositions = new ArrayList<>();
 
+	// contact 추가 (연결 방법)
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false, columnDefinition = "char(20)")
+	private Contact contact;
+
 	@Column(nullable = false, length = 2048)
 	@Size(max = 2048)
 	private String callUrl;
@@ -95,7 +103,7 @@ public class Recruitment extends BaseEntity {
 
 	@Column(nullable = false)
 	@PositiveOrZero
-	private int recruitmentLimit;
+	private Integer applicantCount;
 
 	public static Recruitment of(
 			final String title,
@@ -111,7 +119,7 @@ public class Recruitment extends BaseEntity {
 				.content(content)
 				.callUrl(callUrl)
 				.hits(hits)
-				.recruitmentLimit(recruitmentLimit)
+				.applicantCount(recruitmentLimit)
 				.recruitmentEndDateTime(recruitmentEndDateTime)
 				.study(study)
 				.build();
@@ -163,25 +171,29 @@ public class Recruitment extends BaseEntity {
 
 	public void edit(
 			final String title,
-			final String content,
+			final Contact contact,
 			final String callUrl,
-			final Integer recruitmentLimit,
-			final LocalDateTime recruitmentEndDateTime
+			final Integer applicantCount,
+			final LocalDateTime recruitmentEndDateTime,
+			final String content
 	) {
 		if (title != null) {
 			this.title = title;
 		}
-		if (content != null) {
-			this.content = content;
+		if (contact != null) {
+			this.contact = contact;
 		}
 		if (callUrl != null) {
 			this.callUrl = callUrl;
 		}
-		if (recruitmentLimit != null) {
-			this.recruitmentLimit = recruitmentLimit;
+		if (applicantCount != null) {
+			this.applicantCount = applicantCount;
 		}
 		if (recruitmentEndDateTime != null) {
 			this.recruitmentEndDateTime = recruitmentEndDateTime;
+		}
+		if (content != null) {
+			this.content = content;
 		}
 	}
 
@@ -325,7 +337,7 @@ public class Recruitment extends BaseEntity {
 
 	public void rejectApplicant(final User applicantUser) {
 		final Applicant applicant = getApplicant(applicantUser);
-		applicant.changeStatus(ApplicantStatus.REJECTED);
+		applicant.changeStatus(ApplicantStatus.REFUSED);
 	}
 
 	public Applicant getApplicant(final User applicantUser) {

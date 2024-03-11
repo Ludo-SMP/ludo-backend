@@ -7,9 +7,9 @@ import com.ludo.study.studymatchingplatform.auth.repository.InMemoryClientRegist
 import com.ludo.study.studymatchingplatform.auth.service.kakao.dto.KakaoOAuthToken;
 import com.ludo.study.studymatchingplatform.auth.service.kakao.dto.KakaoUserProfileDto;
 import com.ludo.study.studymatchingplatform.study.service.exception.NotFoundException;
-import com.ludo.study.studymatchingplatform.user.domain.Social;
-import com.ludo.study.studymatchingplatform.user.domain.User;
-import com.ludo.study.studymatchingplatform.user.repository.UserRepositoryImpl;
+import com.ludo.study.studymatchingplatform.user.domain.user.Social;
+import com.ludo.study.studymatchingplatform.user.domain.user.User;
+import com.ludo.study.studymatchingplatform.user.repository.user.UserRepositoryImpl;
 
 import lombok.RequiredArgsConstructor;
 

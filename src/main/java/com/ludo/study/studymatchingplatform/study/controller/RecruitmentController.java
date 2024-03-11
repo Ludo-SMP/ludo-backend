@@ -10,33 +10,39 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ludo.study.studymatchingplatform.auth.common.AuthUser;
+import com.ludo.study.studymatchingplatform.auth.common.IsAuthenticated;
 import com.ludo.study.studymatchingplatform.common.annotation.DataFieldName;
-import com.ludo.study.studymatchingplatform.study.domain.recruitment.Applicant;
+import com.ludo.study.studymatchingplatform.study.controller.dto.response.BaseApiResponse;
+import com.ludo.study.studymatchingplatform.common.annotation.DataFieldName;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant.Applicant;
 import com.ludo.study.studymatchingplatform.study.repository.dto.request.PopularRecruitmentCond;
+import com.ludo.study.studymatchingplatform.study.service.dto.request.recruitment.applicant.ApplyRecruitmentRequest;
 import com.ludo.study.studymatchingplatform.study.repository.dto.request.RecruitmentFindCond;
 import com.ludo.study.studymatchingplatform.study.repository.dto.request.RecruitmentFindCursor;
-import com.ludo.study.studymatchingplatform.study.service.PopularRecruitmentsFindService;
-import com.ludo.study.studymatchingplatform.study.service.RecruitmentDetailsFindService;
-import com.ludo.study.studymatchingplatform.study.service.RecruitmentService;
-import com.ludo.study.studymatchingplatform.study.service.RecruitmentsFindService;
-import com.ludo.study.studymatchingplatform.study.service.dto.request.ApplyRecruitmentRequest;
-import com.ludo.study.studymatchingplatform.study.service.dto.request.EditRecruitmentRequest;
-import com.ludo.study.studymatchingplatform.study.service.dto.request.WriteRecruitmentRequest;
-import com.ludo.study.studymatchingplatform.study.service.dto.response.ApplyRecruitmentResponse;
-import com.ludo.study.studymatchingplatform.study.service.dto.response.EditRecruitmentResponse;
-import com.ludo.study.studymatchingplatform.study.service.dto.response.PopularRecruitmentsResponse;
-import com.ludo.study.studymatchingplatform.study.service.dto.response.RecruitmentDetailsResponse;
-import com.ludo.study.studymatchingplatform.study.service.dto.response.RecruitmentPreviewResponse;
-import com.ludo.study.studymatchingplatform.study.service.dto.response.RecruitmentPreviewResponses;
-import com.ludo.study.studymatchingplatform.study.service.dto.response.WriteRecruitmentResponse;
-import com.ludo.study.studymatchingplatform.user.domain.User;
+import com.ludo.study.studymatchingplatform.study.service.dto.request.recruitment.EditRecruitmentRequest;
+import com.ludo.study.studymatchingplatform.study.service.dto.request.recruitment.WriteRecruitmentRequest;
+import com.ludo.study.studymatchingplatform.study.service.dto.request.recruitment.applicant.StudyApplicantDecisionRequest;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.EditRecruitmentResponse;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.PopularRecruitmentsResponse;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.RecruitmentDetailsResponse;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.RecruitmentPreviewResponse;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.RecruitmentPreviewResponses;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.WriteRecruitmentResponse;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.WriteRecruitmentStudyInfoResponse;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.applicant.ApplyAcceptResponse;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.applicant.ApplyRecruitmentResponse;
+import com.ludo.study.studymatchingplatform.study.service.recruitment.PopularRecruitmentsFindService;
+import com.ludo.study.studymatchingplatform.study.service.recruitment.RecruitmentDetailsFindService;
+import com.ludo.study.studymatchingplatform.study.service.recruitment.RecruitmentService;
+import com.ludo.study.studymatchingplatform.study.service.recruitment.RecruitmentsFindService;
+import com.ludo.study.studymatchingplatform.study.service.study.participant.StudyApplicantDecisionService;
+import com.ludo.study.studymatchingplatform.user.domain.user.User;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -48,7 +54,6 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
-@RequestMapping
 @RequiredArgsConstructor
 public class RecruitmentController {
 
@@ -83,11 +88,8 @@ public class RecruitmentController {
 	@DataFieldName("recruitment")
 	@Operation(description = "특정 모집 공고 조회")
 	@ApiResponse(description = "조회 성공", responseCode = "200", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
-	public RecruitmentDetailsResponse readRecruitmentDetails(
-			@PathVariable("recruitmentId") final Long recruitmentId
-	) {
-		return recruitmentDetailsFindService.findRecruitmentDetails(
-				recruitmentId);
+	public RecruitmentDetailsResponse readRecruitmentDetails(@PathVariable("recruitmentId") final Long recruitmentId) {
+		return recruitmentDetailsFindService.findRecruitmentDetails(recruitmentId);
 	}
 
 	@GetMapping("/recruitments/popular")
@@ -95,10 +97,8 @@ public class RecruitmentController {
 	@DataFieldName("recruitments")
 	@Operation(description = "인기 있는 다수의 모집 공고 조회")
 	@ApiResponse(description = "조회 성공", responseCode = "200", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
-	public PopularRecruitmentsResponse readPopularRecruitments(
-			@ModelAttribute PopularRecruitmentCond request) {
-		return popularRecruitmentsFindService.findPopularRecruitments(
-				request);
+	public PopularRecruitmentsResponse readPopularRecruitments(@ModelAttribute PopularRecruitmentCond request) {
+		return popularRecruitmentsFindService.findPopularRecruitments(request);
 	}
 
 	@PostMapping("/studies/{studyId}/recruitments")
@@ -106,9 +106,10 @@ public class RecruitmentController {
 	@DataFieldName("recruitment")
 	@Operation(description = "모집 공고 작성")
 	@ApiResponse(description = "모집 공고 작성 성공", responseCode = "201", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
-	public WriteRecruitmentResponse write(
-			@RequestBody final WriteRecruitmentRequest request, @Parameter(hidden = true) @AuthUser final User user) {
-		final Recruitment recruitment = recruitmentService.write(user, request);
+	public WriteRecruitmentResponse write(@PathVariable("studyId") final Long studyId,
+										  @RequestBody final WriteRecruitmentRequest request,
+										  @Parameter(hidden = true) @AuthUser final User user) {
+		final Recruitment recruitment = recruitmentService.write(user, request, studyId);
 		return WriteRecruitmentResponse.from(recruitment);
 	}
 
@@ -121,11 +122,10 @@ public class RecruitmentController {
 			@Parameter(name = "studyId", description = "모집 공고에 대한 스터디 id", required = true),
 			@Parameter(name = "recruitmentId", description = "지원할 모집 공고 id", required = true)
 	})
-	public EditRecruitmentResponse edit(
-			@Parameter(hidden = true) @AuthUser final User user,
-			@PathVariable("studyId") final Long studyId,
-			@PathVariable("recruitmentId") final Long recruitmentId,
-			@RequestBody final EditRecruitmentRequest request) {
+	public EditRecruitmentResponse edit(@Parameter(hidden = true) @AuthUser final User user,
+										@PathVariable("studyId") final Long studyId,
+										@PathVariable("recruitmentId") final Long recruitmentId,
+										@RequestBody final EditRecruitmentRequest request) {
 		final Recruitment recruitment = recruitmentService.edit(user, recruitmentId, request);
 		return EditRecruitmentResponse.from(recruitment);
 	}
@@ -135,10 +135,9 @@ public class RecruitmentController {
 	@DataFieldName("recruitment")
 	@Operation(description = "모집 공고 지원")
 	@ApiResponse(description = "모집 공고 지원 성공", responseCode = "200", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
-	public ApplyRecruitmentResponse apply(
-			@PathVariable("recruitmentId") final Long recruitmentId,
-			@RequestBody final ApplyRecruitmentRequest request,
-			@Parameter(hidden = true) @AuthUser final User user) {
+	public ApplyRecruitmentResponse apply(@PathVariable("recruitmentId") final Long recruitmentId,
+										  @RequestBody final ApplyRecruitmentRequest request,
+										  @Parameter(hidden = true) @AuthUser final User user) {
 		final Applicant applicant = recruitmentService.apply(user, recruitmentId, request);
 		return ApplyRecruitmentResponse.from(applicant);
 	}

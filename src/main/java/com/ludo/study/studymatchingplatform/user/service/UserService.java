@@ -6,8 +6,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.ludo.study.studymatchingplatform.study.service.exception.NotFoundException;
-import com.ludo.study.studymatchingplatform.user.domain.User;
-import com.ludo.study.studymatchingplatform.user.repository.UserRepositoryImpl;
+import com.ludo.study.studymatchingplatform.user.domain.user.User;
+import com.ludo.study.studymatchingplatform.user.repository.user.UserRepositoryImpl;
 
 import lombok.RequiredArgsConstructor;
 

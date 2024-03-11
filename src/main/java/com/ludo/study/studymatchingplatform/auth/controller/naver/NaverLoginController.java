@@ -12,7 +12,7 @@ import com.ludo.study.studymatchingplatform.auth.common.provider.JwtTokenProvide
 import com.ludo.study.studymatchingplatform.auth.repository.InMemoryClientRegistrationAndProviderRepository;
 import com.ludo.study.studymatchingplatform.auth.service.naver.NaverLoginService;
 import com.ludo.study.studymatchingplatform.auth.service.naver.dto.response.LoginResponse;
-import com.ludo.study.studymatchingplatform.user.domain.Social;
+import com.ludo.study.studymatchingplatform.user.domain.user.Social;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;

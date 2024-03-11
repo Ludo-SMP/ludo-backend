@@ -5,12 +5,12 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import com.ludo.study.studymatchingplatform.common.ResourcePath;
-import com.ludo.study.studymatchingplatform.study.domain.Category;
-import com.ludo.study.studymatchingplatform.study.domain.Position;
-import com.ludo.study.studymatchingplatform.study.domain.Study;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.position.Position;
+import com.ludo.study.studymatchingplatform.study.domain.study.Study;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
-import com.ludo.study.studymatchingplatform.study.domain.stack.Stack;
-import com.ludo.study.studymatchingplatform.study.service.dto.response.RecruitmentPreviewResponse;
+import com.ludo.study.studymatchingplatform.study.domain.study.category.Category;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.stack.Stack;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.RecruitmentPreviewResponse;
 
 import lombok.extern.slf4j.Slf4j;
 

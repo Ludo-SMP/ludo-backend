@@ -14,9 +14,9 @@ import com.ludo.study.studymatchingplatform.auth.common.provider.CookieProvider;
 import com.ludo.study.studymatchingplatform.auth.common.provider.JwtTokenProvider;
 import com.ludo.study.studymatchingplatform.auth.repository.InMemoryClientRegistrationAndProviderRepository;
 import com.ludo.study.studymatchingplatform.auth.service.kakao.KakaoLoginService;
-import com.ludo.study.studymatchingplatform.study.controller.dto.BaseApiResponse;
-import com.ludo.study.studymatchingplatform.user.domain.Social;
-import com.ludo.study.studymatchingplatform.user.domain.User;
+import com.ludo.study.studymatchingplatform.study.controller.dto.response.BaseApiResponse;
+import com.ludo.study.studymatchingplatform.user.domain.user.Social;
+import com.ludo.study.studymatchingplatform.user.domain.user.User;
 import com.ludo.study.studymatchingplatform.user.service.dto.response.UserResponse;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -54,7 +54,7 @@ public class KakaoLoginController {
 		final UserResponse userResponse = UserResponse.from(user);
 		cookieProvider.setAuthCookie(accessToken, response);
 		response.sendRedirect("https://local.ludoapi.store:3000");
-		return ResponseEntity.ok(BaseApiResponse.success("로그인 성공", userResponse));
+		return ResponseEntity.ok(BaseApiResponse.success(userResponse));
 	}
 
 }

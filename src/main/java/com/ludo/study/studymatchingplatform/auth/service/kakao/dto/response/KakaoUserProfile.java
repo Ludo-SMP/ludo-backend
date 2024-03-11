@@ -1,8 +1,8 @@
 package com.ludo.study.studymatchingplatform.auth.service.kakao.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.ludo.study.studymatchingplatform.user.domain.Social;
-import com.ludo.study.studymatchingplatform.user.domain.User;
+import com.ludo.study.studymatchingplatform.user.domain.user.Social;
+import com.ludo.study.studymatchingplatform.user.domain.user.User;
 
 import lombok.Getter;
 import lombok.ToString;

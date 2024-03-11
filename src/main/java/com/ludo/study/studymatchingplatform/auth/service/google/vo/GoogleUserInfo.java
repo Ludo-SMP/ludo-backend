@@ -1,7 +1,7 @@
 package com.ludo.study.studymatchingplatform.auth.service.google.vo;
 
-import com.ludo.study.studymatchingplatform.user.domain.Social;
-import com.ludo.study.studymatchingplatform.user.domain.User;
+import com.ludo.study.studymatchingplatform.user.domain.user.Social;
+import com.ludo.study.studymatchingplatform.user.domain.user.User;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

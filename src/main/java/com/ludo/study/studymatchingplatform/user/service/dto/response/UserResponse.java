@@ -1,6 +1,6 @@
 package com.ludo.study.studymatchingplatform.user.service.dto.response;
 
-import com.ludo.study.studymatchingplatform.user.domain.User;
+import com.ludo.study.studymatchingplatform.user.domain.user.User;
 
 import lombok.Builder;
 

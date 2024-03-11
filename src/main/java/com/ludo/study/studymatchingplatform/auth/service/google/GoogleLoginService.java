@@ -4,8 +4,8 @@ import org.springframework.stereotype.Service;
 
 import com.ludo.study.studymatchingplatform.auth.service.google.vo.GoogleOAuthToken;
 import com.ludo.study.studymatchingplatform.auth.service.google.vo.GoogleUserInfo;
-import com.ludo.study.studymatchingplatform.user.domain.User;
-import com.ludo.study.studymatchingplatform.user.repository.UserRepositoryImpl;
+import com.ludo.study.studymatchingplatform.user.domain.user.User;
+import com.ludo.study.studymatchingplatform.user.repository.user.UserRepositoryImpl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

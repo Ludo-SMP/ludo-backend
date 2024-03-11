@@ -13,8 +13,8 @@ import com.ludo.study.studymatchingplatform.auth.common.provider.JwtTokenProvide
 import com.ludo.study.studymatchingplatform.auth.repository.InMemoryClientRegistrationAndProviderRepository;
 import com.ludo.study.studymatchingplatform.auth.service.google.GoogleLoginService;
 import com.ludo.study.studymatchingplatform.auth.service.google.dto.response.LoginResponse;
-import com.ludo.study.studymatchingplatform.user.domain.Social;
-import com.ludo.study.studymatchingplatform.user.domain.User;
+import com.ludo.study.studymatchingplatform.user.domain.user.Social;
+import com.ludo.study.studymatchingplatform.user.domain.user.User;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

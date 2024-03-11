@@ -6,8 +6,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ludo.study.studymatchingplatform.auth.service.naver.dto.response.SignupResponse;
 import com.ludo.study.studymatchingplatform.auth.service.naver.vo.NaverOAuthToken;
 import com.ludo.study.studymatchingplatform.auth.service.naver.vo.UserProfile;
-import com.ludo.study.studymatchingplatform.user.domain.User;
-import com.ludo.study.studymatchingplatform.user.repository.UserRepositoryImpl;
+import com.ludo.study.studymatchingplatform.user.domain.user.User;
+import com.ludo.study.studymatchingplatform.user.repository.user.UserRepositoryImpl;
 
 import lombok.RequiredArgsConstructor;
 

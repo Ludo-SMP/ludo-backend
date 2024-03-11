@@ -1,8 +1,8 @@
 package com.ludo.study.studymatchingplatform.user.service.dto.response;
 
-import com.ludo.study.studymatchingplatform.study.domain.recruitment.Applicant;
-import com.ludo.study.studymatchingplatform.study.domain.recruitment.ApplicantStatus;
-import com.ludo.study.studymatchingplatform.study.service.dto.response.PositionResponse;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant.Applicant;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant.ApplicantStatus;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.position.PositionResponse;
 
 import lombok.Builder;
 

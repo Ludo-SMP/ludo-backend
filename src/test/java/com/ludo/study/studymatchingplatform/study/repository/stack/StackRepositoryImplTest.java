@@ -10,10 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ludo.study.studymatchingplatform.study.domain.stack.Stack;
-import com.ludo.study.studymatchingplatform.study.domain.stack.StackCategory;
-import com.ludo.study.studymatchingplatform.study.fixture.StackCategoryFixture;
-import com.ludo.study.studymatchingplatform.study.fixture.StackFixture;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.stack.Stack;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.stack.StackCategory;
+import com.ludo.study.studymatchingplatform.study.fixture.recruitment.stack.StackCategoryFixture;
+import com.ludo.study.studymatchingplatform.study.fixture.recruitment.stack.StackFixture;
+import com.ludo.study.studymatchingplatform.study.repository.recruitment.stack.StackCategoryRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.repository.recruitment.stack.StackRepositoryImpl;
 
 @SpringBootTest
 class StackRepositoryImplTest {

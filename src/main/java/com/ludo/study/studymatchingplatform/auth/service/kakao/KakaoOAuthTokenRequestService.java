@@ -11,7 +11,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.ludo.study.studymatchingplatform.auth.repository.InMemoryClientRegistrationAndProviderRepository;
 import com.ludo.study.studymatchingplatform.auth.service.kakao.dto.KakaoOAuthToken;
-import com.ludo.study.studymatchingplatform.user.domain.Social;
+import com.ludo.study.studymatchingplatform.user.domain.user.Social;
 
 import lombok.RequiredArgsConstructor;
 

@@ -9,7 +9,7 @@ import org.springframework.web.client.RestTemplate;
 import com.ludo.study.studymatchingplatform.auth.repository.InMemoryClientRegistrationAndProviderRepository;
 import com.ludo.study.studymatchingplatform.auth.service.naver.vo.NaverOAuthToken;
 import com.ludo.study.studymatchingplatform.auth.service.naver.vo.UserProfile;
-import com.ludo.study.studymatchingplatform.user.domain.Social;
+import com.ludo.study.studymatchingplatform.user.domain.user.Social;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

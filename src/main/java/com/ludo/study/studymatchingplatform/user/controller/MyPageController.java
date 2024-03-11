@@ -1,18 +1,19 @@
 package com.ludo.study.studymatchingplatform.user.controller;
 
-import java.util.List;
-
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ludo.study.studymatchingplatform.auth.common.AuthUser;
 import com.ludo.study.studymatchingplatform.common.annotation.DataFieldName;
-import com.ludo.study.studymatchingplatform.study.domain.Participant;
-import com.ludo.study.studymatchingplatform.study.domain.recruitment.Applicant;
-import com.ludo.study.studymatchingplatform.user.domain.User;
+import com.ludo.study.studymatchingplatform.study.controller.dto.response.BaseApiResponse;
+import com.ludo.study.studymatchingplatform.study.service.recruitment.RecruitmentService;
+import com.ludo.study.studymatchingplatform.user.domain.user.User;
 import com.ludo.study.studymatchingplatform.user.service.MyPageService;
 import com.ludo.study.studymatchingplatform.user.service.dto.response.MyPageResponse;
 
@@ -27,6 +28,7 @@ import lombok.RequiredArgsConstructor;
 public class MyPageController {
 
 	private final MyPageService myPageService;
+	private final RecruitmentService recruitmentService;
 
 	@GetMapping("/users/mypage")
 	@ResponseStatus(HttpStatus.CREATED)
@@ -36,10 +38,14 @@ public class MyPageController {
 	public MyPageResponse retrieveMyPage(
 			@CookieValue(name = "Authorization") final String auth,
 			@Parameter(hidden = true) @AuthUser final User user) {
-		final List<Participant> participants = myPageService.retrieveParticipantStudies(user);
-		final List<Applicant> applicants = myPageService.retrieveApplicantRecruitment(user);
-		final List<Participant> completedStudies = myPageService.retrieveCompletedStudy(user);
-		return MyPageResponse.from(participants, applicants, completedStudies);
+		return myPageService.retrieveMyPage(user);
+	}
+
+	@DeleteMapping("/users/recruitments/{recruitmentId}/apply-history")
+	public ResponseEntity<BaseApiResponse<Void>> deleteApplyHistory(@PathVariable Long recruitmentId,
+																	@AuthUser final User user) {
+		recruitmentService.deleteApplyHistory(user, recruitmentId);
+		return ResponseEntity.ok(BaseApiResponse.success(null));
 	}
 
 }

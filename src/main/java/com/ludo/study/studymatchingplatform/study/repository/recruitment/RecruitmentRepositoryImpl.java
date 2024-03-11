@@ -1,17 +1,18 @@
 package com.ludo.study.studymatchingplatform.study.repository.recruitment;
 
-import static com.ludo.study.studymatchingplatform.study.domain.QStudy.*;
 import static com.ludo.study.studymatchingplatform.study.domain.recruitment.QRecruitment.*;
-import static com.ludo.study.studymatchingplatform.study.domain.recruitment.QRecruitmentPosition.*;
-import static com.ludo.study.studymatchingplatform.study.domain.recruitment.QRecruitmentStack.*;
+import static com.ludo.study.studymatchingplatform.study.domain.recruitment.position.QRecruitmentPosition.*;
+import static com.ludo.study.studymatchingplatform.study.domain.recruitment.stack.QRecruitmentStack.*;
+import static com.ludo.study.studymatchingplatform.study.domain.study.QStudy.*;
+import static com.ludo.study.studymatchingplatform.study.domain.study.category.QCategory.*;
 
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
 
-import com.ludo.study.studymatchingplatform.study.domain.Way;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
+import com.ludo.study.studymatchingplatform.study.domain.study.Way;
 import com.ludo.study.studymatchingplatform.study.repository.dto.request.PopularRecruitmentCond;
 import com.ludo.study.studymatchingplatform.study.repository.dto.request.RecruitmentFindCond;
 import com.ludo.study.studymatchingplatform.study.repository.dto.request.RecruitmentFindCursor;

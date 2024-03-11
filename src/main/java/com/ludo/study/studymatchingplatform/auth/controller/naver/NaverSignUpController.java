@@ -10,7 +10,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.ludo.study.studymatchingplatform.auth.repository.InMemoryClientRegistrationAndProviderRepository;
 import com.ludo.study.studymatchingplatform.auth.service.naver.NaverSignUpService;
 import com.ludo.study.studymatchingplatform.auth.service.naver.dto.response.SignupResponse;
-import com.ludo.study.studymatchingplatform.user.domain.Social;
+import com.ludo.study.studymatchingplatform.user.domain.user.Social;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

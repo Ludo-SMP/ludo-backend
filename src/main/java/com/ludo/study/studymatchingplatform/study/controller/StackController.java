@@ -8,11 +8,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ludo.study.studymatchingplatform.common.annotation.DataFieldName;
-import com.ludo.study.studymatchingplatform.study.domain.stack.Stack;
-import com.ludo.study.studymatchingplatform.study.domain.stack.StackCategory;
-import com.ludo.study.studymatchingplatform.study.repository.stack.StackCategoryRepositoryImpl;
-import com.ludo.study.studymatchingplatform.study.repository.stack.StackRepositoryImpl;
-import com.ludo.study.studymatchingplatform.study.service.dto.response.StackResponses;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.stack.Stack;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.stack.StackCategory;
+import com.ludo.study.studymatchingplatform.study.repository.recruitment.stack.StackCategoryRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.repository.recruitment.stack.StackRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.stack.StackResponses;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
