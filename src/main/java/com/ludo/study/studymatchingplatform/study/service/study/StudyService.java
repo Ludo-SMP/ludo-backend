@@ -1,10 +1,14 @@
 package com.ludo.study.studymatchingplatform.study.service.study;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant.Applicant;
 import com.ludo.study.studymatchingplatform.study.domain.study.Study;
 import com.ludo.study.studymatchingplatform.study.domain.study.participant.Participant;
+import com.ludo.study.studymatchingplatform.study.repository.recruitment.applicant.ApplicantRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.study.StudyRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.applicant.ApplicantResponse;
 import com.ludo.study.studymatchingplatform.study.service.exception.NotFoundException;
@@ -17,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 public class StudyService {
 
 	private final StudyRepositoryImpl studyRepository;
+	private final ApplicantRepositoryImpl applicantRepository;
 
 	public void leave(final User user, final Long studyId) {
 		final Study study = studyRepository.findByIdWithRecruitment(studyId)
@@ -34,7 +39,9 @@ public class StudyService {
 		// 스터디 참여자 검증
 		study.getParticipant(user);
 		final Recruitment recruitment = study.getRecruitment();
-		return ApplicantResponse.from(study, recruitment.getApplicants());
+		final List<Applicant> applicants =
+				applicantRepository.findStudyApplicantInfoByRecruitmentId(recruitment.getId());
+		return ApplicantResponse.from(study, applicants);
 	}
 
 	private Study findByIdWithRecruitment(final Long studyId) {
