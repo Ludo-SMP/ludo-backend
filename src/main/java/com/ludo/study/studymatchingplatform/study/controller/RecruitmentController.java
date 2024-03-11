@@ -31,6 +31,7 @@ import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitme
 import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.RecruitmentPreviewResponse;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.RecruitmentPreviewResponses;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.WriteRecruitmentResponse;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.WriteRecruitmentStudyInfoResponse;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.applicant.ApplyAcceptResponse;
 import com.ludo.study.studymatchingplatform.study.service.recruitment.PopularRecruitmentsFindService;
 import com.ludo.study.studymatchingplatform.study.service.recruitment.RecruitmentDetailsFindService;
@@ -104,6 +105,14 @@ public class RecruitmentController {
 		final Recruitment recruitment = recruitmentService.write(user, request, studyId);
 		final WriteRecruitmentResponse response = WriteRecruitmentResponse.from(recruitment);
 
+		return ResponseEntity.ok(BaseApiResponse.success(response));
+	}
+
+	@GetMapping("/studies/{studyId}/recruitments")
+	public ResponseEntity<BaseApiResponse<WriteRecruitmentStudyInfoResponse>> write(
+			@PathVariable("studyId") final Long studyId,
+			@AuthUser final User user) {
+		final WriteRecruitmentStudyInfoResponse response = recruitmentService.getStudyInfo(user, studyId);
 		return ResponseEntity.ok(BaseApiResponse.success(response));
 	}
 
