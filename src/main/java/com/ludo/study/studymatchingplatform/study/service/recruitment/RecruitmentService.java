@@ -87,11 +87,11 @@ public class RecruitmentService {
 		return recruitment;
 	}
 
-	public Applicant apply(final User user, final long recruitmentId, final ApplyRecruitmentRequest request) {
+	public Applicant apply(final User user, final Long recruitmentId, final ApplyRecruitmentRequest request) {
 		final Recruitment recruitment = recruitmentRepository.findByIdWithStudy(recruitmentId)
 				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 모집 공고입니다."));
 		recruitment.ensureRecruiting();
-
+		recruitment.ensureApplicable(user);
 		final Optional<Applicant> applicant = recruitment.findApplicant(user);
 		final Position position = positionRepository.findById(request.positionId())
 				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 포지션입니다."));
@@ -107,10 +107,8 @@ public class RecruitmentService {
 			final Applicant reapplicant = applicant.get();
 			reapplicant.ensureApplicable();
 			reapplicant.reapply();
-
 			return reapplicant;
 		}
-
 	}
 
 	public Applicant cancel(final User user, final Long recruitmentId) {
@@ -134,6 +132,13 @@ public class RecruitmentService {
 		study.ensureRecruitmentEditable(user);
 		study.deactivateForRecruitment();
 		recruitmentRepository.save(study.getRecruitment());
+	}
+
+	public void deleteApplyHistory(final User user, final Long recruitmentId) {
+		final Applicant applicant = applicantRepository.find(recruitmentId, user.getId())
+				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 지원 기록 입니다."));
+		applicant.softDelete();
+		applicantRepository.save(applicant);
 	}
 
 }
