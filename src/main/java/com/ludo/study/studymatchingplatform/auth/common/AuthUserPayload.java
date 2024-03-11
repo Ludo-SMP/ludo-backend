@@ -12,7 +12,7 @@ import lombok.ToString;
 @ToString
 public final class AuthUserPayload {
 
-	private final long id;
+	private final Long id;
 
 	public static AuthUserPayload from(final Claims claims) {
 		return new AuthUserPayload(claims.get("id", Long.class));
