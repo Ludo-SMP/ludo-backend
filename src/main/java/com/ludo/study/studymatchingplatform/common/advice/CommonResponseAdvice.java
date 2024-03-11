@@ -42,7 +42,7 @@ public final class CommonResponseAdvice implements ResponseBodyAdvice<Object> {
 	}
 
 	private boolean isApi(final ServerHttpRequest request) {
-		if(request.getHeaders().containsKey(HttpHeaders.LOCATION)) {
+		if (request.getHeaders().containsKey(HttpHeaders.LOCATION)) {
 			return false;
 		}
 		return request.getURI().getPath().startsWith("/api");

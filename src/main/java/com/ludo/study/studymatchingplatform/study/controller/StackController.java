@@ -3,13 +3,11 @@ package com.ludo.study.studymatchingplatform.study.controller;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ludo.study.studymatchingplatform.common.annotation.DataFieldName;
-import com.ludo.study.studymatchingplatform.study.controller.dto.response.BaseApiResponse;
 import com.ludo.study.studymatchingplatform.study.domain.stack.Stack;
 import com.ludo.study.studymatchingplatform.study.domain.stack.StackCategory;
 import com.ludo.study.studymatchingplatform.study.repository.stack.StackCategoryRepositoryImpl;
