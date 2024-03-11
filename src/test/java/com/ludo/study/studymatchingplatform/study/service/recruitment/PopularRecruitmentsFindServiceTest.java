@@ -11,19 +11,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
-import com.ludo.study.studymatchingplatform.study.domain.recruitment.stack.RecruitmentStack;
-import com.ludo.study.studymatchingplatform.study.domain.recruitment.stack.StackCategory;
 import com.ludo.study.studymatchingplatform.study.domain.study.category.Category;
 import com.ludo.study.studymatchingplatform.study.domain.study.Platform;
 import com.ludo.study.studymatchingplatform.study.domain.study.Study;
 import com.ludo.study.studymatchingplatform.study.domain.study.StudyStatus;
 import com.ludo.study.studymatchingplatform.study.domain.study.Way;
 import com.ludo.study.studymatchingplatform.study.fixture.recruitment.RecruitmentFixture;
-import com.ludo.study.studymatchingplatform.study.fixture.recruitment.stack.RecruitmentStackFixture;
-import com.ludo.study.studymatchingplatform.study.fixture.recruitment.stack.StackCategoryFixture;
-import com.ludo.study.studymatchingplatform.study.fixture.recruitment.stack.StackFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.study.StudyFixture;
-import com.ludo.study.studymatchingplatform.study.fixture.study.category.CategoryFixture;
+import com.ludo.study.studymatchingplatform.study.repository.dto.request.PopularRecruitmentCond;
 import com.ludo.study.studymatchingplatform.study.repository.recruitment.RecruitmentRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.study.StudyRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.study.category.CategoryRepositoryImpl;
@@ -60,18 +55,11 @@ class PopularRecruitmentsFindServiceTest {
 	@BeforeEach
 	void init() {
 		User user = UserFixture.createUser(Social.GOOGLE, "아카", "hihi@google.com");
-		Category project = CategoryFixture.createCategory("프로젝트");
-		Category algorithm = CategoryFixture.createCategory("코딩테스트");
-		Category interview = CategoryFixture.createCategory("모의면접");
+		Category project = categoryRepository.findByName("프로젝트").get();
+		Category algorithm = categoryRepository.findByName("코딩 테스트").get();
+		Category interview = categoryRepository.findByName("모의 면접").get();
 
-		StackCategory backend = StackCategoryFixture.createStackCategory("백엔드");
-		RecruitmentStack spring = RecruitmentStackFixture.createRecruitmentStack(
-				StackFixture.createStack("spring", backend)
-		);
 		userRepository.save(user);
-		categoryRepository.save(project);
-		categoryRepository.save(algorithm);
-		categoryRepository.save(interview);
 
 		Study studyA = StudyFixture.createStudy(StudyStatus.RECRUITING, "스터디A", Way.ONLINE, project, user, 5, 5,
 				Platform.GATHER);
@@ -121,21 +109,23 @@ class PopularRecruitmentsFindServiceTest {
 
 	@Test
 	void 인기있는_프로젝트_모집공고_조회() {
-		PopularRecruitmentsResponse result = popularRecruitmentsFindService.findPopularRecruitments();
+		PopularRecruitmentCond request = new PopularRecruitmentCond(6);
+		PopularRecruitmentsResponse result = popularRecruitmentsFindService.findPopularRecruitments(request);
 		List<RecruitmentPreviewResponse> popularProjectRecruitments = result.popularProjectRecruitments();
 
 		assertThat(popularProjectRecruitments)
 				.size()
-				.isLessThanOrEqualTo(3);
+				.isLessThanOrEqualTo(6);
 
 		assertThat(popularProjectRecruitments)
 				.extracting("title")
-				.containsExactly("모집공고C", "모집공고B", "모집공고A");
+				.containsExactly("모집공고C", "모집공고B", "모집공고A", "모집공고D");
 	}
 
 	@Test
 	void 인기있는_코딩테스트_모집공고_조회() {
-		PopularRecruitmentsResponse result = popularRecruitmentsFindService.findPopularRecruitments();
+		PopularRecruitmentCond request = new PopularRecruitmentCond(6);
+		PopularRecruitmentsResponse result = popularRecruitmentsFindService.findPopularRecruitments(request);
 		List<RecruitmentPreviewResponse> popularCodingRecruitments = result.popularCodingRecruitments();
 
 		assertThat(popularCodingRecruitments)
@@ -149,7 +139,8 @@ class PopularRecruitmentsFindServiceTest {
 
 	@Test
 	void 인기있는_모의면접_모집공고_조회() {
-		PopularRecruitmentsResponse result = popularRecruitmentsFindService.findPopularRecruitments();
+		PopularRecruitmentCond request = new PopularRecruitmentCond(6);
+		PopularRecruitmentsResponse result = popularRecruitmentsFindService.findPopularRecruitments(request);
 		List<RecruitmentPreviewResponse> popularInterviewRecruitments = result.popularInterviewRecruitments();
 
 		assertThat(popularInterviewRecruitments)

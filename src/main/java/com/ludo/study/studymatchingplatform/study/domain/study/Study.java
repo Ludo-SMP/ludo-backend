@@ -118,8 +118,24 @@ public class Study extends BaseEntity {
 		return category.getName();
 	}
 
+	public Long getCategoryId() {
+		return category.getId();
+	}
+
+	public Long getOwnerId() {
+		return owner.getId();
+	}
+
 	public String getOwnerNickname() {
 		return owner.getNickname();
+	}
+
+	public String getOwnerEmail() {
+		return owner.getEmail();
+	}
+
+	public String getCategoryName() {
+		return category.getName();
 	}
 
 	public void ensureRecruitmentWritableBy(final User user) {
@@ -162,23 +178,22 @@ public class Study extends BaseEntity {
 		}
 	}
 
-	public void acceptApplicant(final User owner, final User applicantUser, final Long recruitmentId) {
-		ensureAcceptApplicant(owner, applicantUser, recruitmentId);
+	public void acceptApplicant(final User owner, final User applicantUser) {
+		ensureAcceptApplicant(owner, applicantUser);
 		accept(applicantUser);
 		if (isMaxParticipantCount()) {
 			changeStatus(StudyStatus.RECRUITED);
 		}
 	}
 
-	public void rejectApplicant(final User owner, final User applicantUser, final Long recruitmentId) {
-		ensureRejectApplicant(owner, applicantUser, recruitmentId);
+	public void rejectApplicant(final User owner, final User applicantUser) {
+		ensureRejectApplicant(owner, applicantUser);
 		recruitment.rejectApplicant(applicantUser);
 	}
 
-	private void ensureRejectApplicant(final User owner, final User applicantUser, final Long recruitmentId) {
+	private void ensureRejectApplicant(final User owner, final User applicantUser) {
 		ensureCorrectOwner(owner);
 		ensureApplicantUserIsNotOwner(owner, applicantUser);
-		ensureCorrectRecruitment(recruitmentId);
 		recruitment.ensureCorrectApplicantUser(applicantUser);
 	}
 
@@ -188,12 +203,11 @@ public class Study extends BaseEntity {
 		}
 	}
 
-	private void ensureAcceptApplicant(final User owner, final User applicantUser, final Long recruitmentId) {
+	private void ensureAcceptApplicant(final User owner, final User applicantUser) {
 		ensureCorrectOwner(owner);
 		ensureApplicantUserIsNotOwner(owner, applicantUser);
 		ensureRecruiting();
 		ensureRemainParticipantLimit();
-		ensureCorrectRecruitment(recruitmentId);
 		recruitment.ensureCorrectApplicantUser(applicantUser);
 	}
 
@@ -209,12 +223,6 @@ public class Study extends BaseEntity {
 	private void ensureRemainParticipantLimit() {
 		if (Objects.equals(getParticipantCount(), participantLimit)) {
 			throw new IllegalStateException("남아있는 자리가 없습니다.");
-		}
-	}
-
-	private void ensureCorrectRecruitment(final Long recruitmentId) {
-		if (!this.recruitment.isIdEquals(recruitmentId)) {
-			throw new IllegalArgumentException("해당 스터디의 모집공고가 아닙니다.");
 		}
 	}
 

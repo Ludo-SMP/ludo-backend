@@ -8,7 +8,9 @@ import lombok.RequiredArgsConstructor;
 public class BaseApiResponse<T> {
 
 	private final boolean ok;
+
 	private final String message;
+
 	private final T data;
 
 	public static <T> BaseApiResponse<T> success(T data) {

@@ -83,7 +83,8 @@ class RecruitmentsFindServiceTest {
 
 		@Test
 		@Transactional
-		void 모집공고를_21개씩_조회한다() {
+		@DisplayName("[Success] 모집 공고를 페이징 크기 만큼 조회")
+		void findRecruitmentsPagingSize() {
 			RecruitmentFindCursor recruitmentFindCursor1 = new RecruitmentFindCursor(null, DEFAULT_PAGING_SIZE);
 			RecruitmentFindCond recruitmentFindCond = new RecruitmentFindCond(null, null, null, null);
 
@@ -106,7 +107,8 @@ class RecruitmentsFindServiceTest {
 
 		@Test
 		@Transactional
-		void 모집공고를_생성날짜기준_내림차순_조회한다() {
+		@DisplayName("[Success] 모집 공고 수정 날짜 기준 내림차순 조회")
+		void findRecruitmentsByRecentlyUpdate() {
 			RecruitmentFindCursor recruitmentFindCursor1 = new RecruitmentFindCursor(null, DEFAULT_PAGING_SIZE);
 			RecruitmentFindCond recruitmentFindCond = new RecruitmentFindCond(null, null, null, null);
 			List<RecruitmentPreviewResponse> firstSearchResults = recruitmentsFindService

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
 import com.ludo.study.studymatchingplatform.study.domain.study.Way;
+import com.ludo.study.studymatchingplatform.study.repository.dto.request.PopularRecruitmentCond;
 import com.ludo.study.studymatchingplatform.study.repository.dto.request.RecruitmentFindCond;
 import com.ludo.study.studymatchingplatform.study.repository.dto.request.RecruitmentFindCursor;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -67,13 +68,17 @@ public class RecruitmentRepositoryImpl {
 		return recruitmentJpaRepository.save(recruitment);
 	}
 
-	public List<Recruitment> findPopularRecruitments(final String categoryName) {
+	public void delete(final Recruitment recruitment) {
+		recruitmentJpaRepository.delete(recruitment);
+	}
+
+	public List<Recruitment> findPopularRecruitments(final Long categoryId,
+													 final PopularRecruitmentCond cond) {
 		return q.select(recruitment)
 				.from(recruitment)
 				.join(recruitment.study, study)
-				.join(study.category, category)
-				.where(category.name.eq(categoryName))
-				.limit(3)
+				.where(study.category.id.eq(categoryId))
+				.limit(cond.count())
 				.orderBy(recruitment.hits.desc())
 				.fetch();
 	}
@@ -103,8 +108,8 @@ public class RecruitmentRepositoryImpl {
 						eqPosition(recruitmentFindCond.positionId()),
 						eqStack(recruitmentFindCond.stackIds()))
 				.where(lessThan(recruitmentFindCursor.last()))
+				.orderBy(recruitment.updatedDateTime.desc())
 				.limit(recruitmentFindCursor.count())
-				.orderBy(recruitment.id.desc())
 				.fetch();
 
 	}

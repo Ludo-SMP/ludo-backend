@@ -79,7 +79,7 @@ class RecruitmentServiceTestBakup {
 				.build();
 	}
 
-	@DisplayName("스터디장은 모집 공고를 작성할 수 있다")
+	@DisplayName("[Success] 스터디장은 모집 공고를 작성할 수 있다")
 	@Test
 	void writeRecruitment() {
 
@@ -135,7 +135,7 @@ class RecruitmentServiceTestBakup {
 
 	}
 
-	@DisplayName("스터디장이 아니면 모집 공고를 작성할 수 없다")
+	@DisplayName("[Exception] 스터디장이 아니면 모집 공고를 작성할 수 없다")
 	@Test
 	void writeRecruitmentFailure() {
 
@@ -195,7 +195,7 @@ class RecruitmentServiceTestBakup {
 				.hasMessage("모집 공고를 작성할 권한이 없습니다.");
 	}
 
-	@DisplayName("스터디에 이미 작성된 모집 공고가 존재 하면 모집 공고를 작성할 수 없다")
+	@DisplayName("[Exception] 스터디에 이미 작성된 모집 공고가 존재 하면 모집 공고를 작성할 수 없다")
 	@Test
 	void writeDuplicateRecruitmentFailure() {
 
@@ -251,7 +251,7 @@ class RecruitmentServiceTestBakup {
 				.hasMessage("이미 작성된 모집 공고가 존재합니다.");
 	}
 
-	@DisplayName("스터디가 존재하지 않으면 모집 공고를 작성할 수 없다")
+	@DisplayName("[Exception] 스터디가 존재하지 않으면 모집 공고를 작성할 수 없다")
 	@Test
 	void writeRecruitmentFailureWithoutStudy() {
 
@@ -293,7 +293,7 @@ class RecruitmentServiceTestBakup {
 				.hasMessage("존재하지 않는 스터디입니다.");
 	}
 
-	@DisplayName("스터디에 지원한 적 없는 사용자는 스터디에 지원할 수 있다")
+	@DisplayName("[Success] 스터디에 지원한 적 없는 사용자는 스터디에 지원할 수 있다")
 	@Test
 	void applyRecruitment() {
 
@@ -347,7 +347,7 @@ class RecruitmentServiceTestBakup {
 		assertThat(applicant.getUser()).isEqualTo(applier);
 	}
 
-	@DisplayName("이미 지원한 모집 공고에 지원할 수 없다")
+	@DisplayName("[Exception] 이미 지원한 모집 공고에 지원할 수 없다")
 	@Test
 	void applyRecruitmentFailIfAlreadyApplied() {
 
@@ -403,7 +403,7 @@ class RecruitmentServiceTestBakup {
 				.hasMessage("이미 지원한 모집 공고입니다.");
 	}
 
-	@DisplayName("모집 중이 아닌 스터디의 모집 공고에 지원할 수 없다")
+	@DisplayName("[Exception] 모집 중이 아닌 스터디의 모집 공고에 지원할 수 없다")
 	@Test
 	void applyRecruitmentFailIfNotRecruiting() {
 
@@ -467,7 +467,7 @@ class RecruitmentServiceTestBakup {
 				.hasMessage("현재 모집 중인 스터디가 아닙니다.");
 	}
 
-	@DisplayName("지원 취소한 모집 공고에 다시 지원할 수 있다")
+	@DisplayName("[Success] 지원 취소한 모집 공고에 다시 지원할 수 있다")
 	@Test
 	void applyRecruitmentIfCancelled() {
 
@@ -521,7 +521,7 @@ class RecruitmentServiceTestBakup {
 		recruitmentService.apply(applier, recruitment.getId(), request);
 	}
 
-	@DisplayName("지원 취소 상태가 아닌 경우, 모집 공고에 다시 지원할 수 없다")
+	@DisplayName("[Exception] 지원 취소 상태가 아닌 경우, 모집 공고에 다시 지원할 수 없다")
 	@Test
 	void applyRecruitmentIfNotCancelled() {
 
@@ -583,7 +583,7 @@ class RecruitmentServiceTestBakup {
 
 	}
 
-	@DisplayName("모집 공고 지원 후 UNCHECKED 상태인 경우 지원 취소 가능")
+	@DisplayName("[Success] 모집 공고 지원 후 UNCHECKED 상태인 경우 지원 취소 가능")
 	@Test
 	void cancelApplicant() {
 
@@ -640,7 +640,7 @@ class RecruitmentServiceTestBakup {
 
 	}
 
-	@DisplayName("모집 공고 지원 후 ACCEPTED 상태이며, 스터디가 모집 중인 경우 지원 취소 가능")
+	@DisplayName("[Success] 모집 공고 지원 후 ACCEPTED 상태이며, 스터디가 모집 중인 경우 지원 취소 가능")
 	@Test
 	void cancelFailureIfAcceptedAndRecruiting() {
 
@@ -698,7 +698,7 @@ class RecruitmentServiceTestBakup {
 
 	}
 
-	@DisplayName("모집 중이 아닌 스터디의 모집 공고는 취소할 수 없다.")
+	@DisplayName("[Exception] 모집 중이 아닌 스터디의 모집 공고는 취소할 수 없다.")
 	@Test
 	void cancelFailureIfNotRecruiting() {
 
@@ -777,7 +777,7 @@ class RecruitmentServiceTestBakup {
 
 	}
 
-	@DisplayName("거절된 모집 공고는 지원 취소할 수 없다.")
+	@DisplayName("[Exception] 거절된 모집 공고는 지원 취소할 수 없다.")
 	@Test
 	void cancelFailureIfAlreadyRejected() {
 
@@ -834,7 +834,7 @@ class RecruitmentServiceTestBakup {
 
 	}
 
-	@DisplayName("스터디장은 모집 공고를 수정할 수 있다.")
+	@DisplayName("[Success] 스터디장은 모집 공고를 수정할 수 있다.")
 	@Test
 	void editRecruitmentSuccess() {
 
@@ -893,7 +893,7 @@ class RecruitmentServiceTestBakup {
 		assertThat(editedRecruitment.getHits()).isEqualTo(recruitment.getHits());
 	}
 
-	@DisplayName("스터디장이 아니면 모집 공고를 수정할 수 없다.")
+	@DisplayName("[Exception] 스터디장이 아니면 모집 공고를 수정할 수 없다.")
 	@Test
 	void editRecruitmentFailure() {
 
@@ -952,7 +952,7 @@ class RecruitmentServiceTestBakup {
 
 	}
 
-	@DisplayName("존재하지 않는 모집 공고는 수정할 수 없다.")
+	@DisplayName("[Exception] 존재하지 않는 모집 공고는 수정할 수 없다.")
 	@Test
 	void editRecruitmentFailureIfNotExists() {
 
@@ -989,10 +989,10 @@ class RecruitmentServiceTestBakup {
 				.content("edited content")
 				.build();
 
-		// final Long invalidRecruitmentId = Long.MIN_VALUE;
+		final Long invalidRecruitmentId = Long.MIN_VALUE;
 		// when
 		// then
-		assertThatThrownBy(() -> recruitmentService.edit(owner, study.getId(), request))
+		assertThatThrownBy(() -> recruitmentService.edit(owner, invalidRecruitmentId, request))
 				.isInstanceOf(IllegalArgumentException.class)
 				.hasMessage("존재하지 않는 모집 공고입니다.");
 

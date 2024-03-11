@@ -6,7 +6,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ludo.study.studymatchingplatform.study.domain.study.participant.Participant;
 import com.ludo.study.studymatchingplatform.study.domain.study.Study;
 import com.ludo.study.studymatchingplatform.study.repository.study.participant.ParticipantRepositoryImpl;
-import com.ludo.study.studymatchingplatform.study.repository.recruitment.position.PositionRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.study.StudyRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.recruitment.applicant.StudyApplicantDecisionRequest;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.applicant.ApplyAcceptResponse;
@@ -19,12 +18,11 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class ParticipantDecisionService {
+public class StudyApplicantDecisionService {
 
 	private final StudyRepositoryImpl studyRepository;
 	private final UserRepositoryImpl userRepository;
 	private final ParticipantRepositoryImpl participantRepository;
-	private final PositionRepositoryImpl positionRepository;
 
 	@Transactional
 	public ApplyAcceptResponse applicantAccept(final User owner, final StudyApplicantDecisionRequest request) {

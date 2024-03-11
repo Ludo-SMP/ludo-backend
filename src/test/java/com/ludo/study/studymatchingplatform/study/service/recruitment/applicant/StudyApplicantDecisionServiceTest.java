@@ -97,7 +97,7 @@ class StudyApplicantDecisionServiceTest {
 
 		// when
 		StudyApplicantDecisionRequest studyApplicantDecisionRequest = new StudyApplicantDecisionRequest(study.getId(),
-				recruitment.getId(), other.getId());
+				other.getId());
 		ApplyAcceptResponse applyAcceptResponse = applicantDecisionService.applicantAccept(owner,
 				studyApplicantDecisionRequest);
 
@@ -136,7 +136,7 @@ class StudyApplicantDecisionServiceTest {
 
 		// when
 		StudyApplicantDecisionRequest studyApplicantDecisionRequest = new StudyApplicantDecisionRequest(study.getId(),
-				recruitment.getId(), other.getId());
+				other.getId());
 		applicantDecisionService.applicantReject(owner, studyApplicantDecisionRequest);
 
 		// then

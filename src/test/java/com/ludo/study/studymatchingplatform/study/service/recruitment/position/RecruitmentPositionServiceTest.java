@@ -53,7 +53,7 @@ class RecruitmentPositionServiceTest {
 	@Autowired
 	private RecruitmentPositionService recruitmentPositionService;
 
-	@DisplayName("모집 공고에 등록하지 않은 포지션을 추가할 수 있다.")
+	@DisplayName("[Success] 모집 공고에 등록하지 않은 포지션을 추가할 수 있다.")
 	@Test
 	void createRecruitmentPositionSuccess() {
 
@@ -108,7 +108,7 @@ class RecruitmentPositionServiceTest {
 
 	}
 
-	@DisplayName("모집 공고에 이미 등록된 포지션을 중복해서 추가하면 예외 발생")
+	@DisplayName("[Exception] 모집 공고에 이미 등록된 포지션을 중복해서 추가하면 예외 발생")
 	@Test
 	void createRecruitmentPositionFailure() {
 
@@ -158,7 +158,7 @@ class RecruitmentPositionServiceTest {
 
 	}
 
-	@DisplayName("update 시, 모집 공고에 등록되지 않은 스택을 전달하면 추가된다.")
+	@DisplayName("[Success] update 시, 모집 공고에 등록되지 않은 스택을 전달하면 추가된다.")
 	@Test
 	void updateRecruitmentStackSuccess1() {
 
@@ -211,7 +211,7 @@ class RecruitmentPositionServiceTest {
 
 	}
 
-	@DisplayName("update 시, 모집 공고에 등록된 포지션을 전달하지 않으면 제거된다.")
+	@DisplayName("[Success] update 시, 모집 공고에 등록된 포지션을 전달하지 않으면 제거된다.")
 	@Test
 	void updateRecruitmentPositionSuccess2() {
 
@@ -262,7 +262,7 @@ class RecruitmentPositionServiceTest {
 
 	}
 
-	@DisplayName("update 시, 모집 공고에 등록된 포지션을 전달하면 아무런 변화도 일어나지 않는다.")
+	@DisplayName("[Success] update 시, 모집 공고에 등록된 포지션을 전달하면 아무런 변화도 일어나지 않는다.")
 	@Test
 	void updateRecruitmentPositionSuccess3() {
 

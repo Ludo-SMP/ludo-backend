@@ -3,9 +3,9 @@ package com.ludo.study.studymatchingplatform.study.controller;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -16,13 +16,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ludo.study.studymatchingplatform.auth.common.AuthUser;
 import com.ludo.study.studymatchingplatform.auth.common.IsAuthenticated;
+import com.ludo.study.studymatchingplatform.common.annotation.DataFieldName;
 import com.ludo.study.studymatchingplatform.study.controller.dto.response.BaseApiResponse;
+import com.ludo.study.studymatchingplatform.common.annotation.DataFieldName;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant.Applicant;
+import com.ludo.study.studymatchingplatform.study.repository.dto.request.PopularRecruitmentCond;
+import com.ludo.study.studymatchingplatform.study.service.dto.request.recruitment.applicant.ApplyRecruitmentRequest;
 import com.ludo.study.studymatchingplatform.study.repository.dto.request.RecruitmentFindCond;
 import com.ludo.study.studymatchingplatform.study.repository.dto.request.RecruitmentFindCursor;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.recruitment.EditRecruitmentRequest;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.recruitment.WriteRecruitmentRequest;
-import com.ludo.study.studymatchingplatform.study.service.dto.request.recruitment.applicant.ApplyRecruitmentRequest;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.recruitment.applicant.StudyApplicantDecisionRequest;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.EditRecruitmentResponse;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.PopularRecruitmentsResponse;
@@ -32,13 +36,19 @@ import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitme
 import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.WriteRecruitmentResponse;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.WriteRecruitmentStudyInfoResponse;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.applicant.ApplyAcceptResponse;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.applicant.ApplyRecruitmentResponse;
 import com.ludo.study.studymatchingplatform.study.service.recruitment.PopularRecruitmentsFindService;
 import com.ludo.study.studymatchingplatform.study.service.recruitment.RecruitmentDetailsFindService;
 import com.ludo.study.studymatchingplatform.study.service.recruitment.RecruitmentService;
 import com.ludo.study.studymatchingplatform.study.service.recruitment.RecruitmentsFindService;
-import com.ludo.study.studymatchingplatform.study.service.study.participant.ParticipantDecisionService;
+import com.ludo.study.studymatchingplatform.study.service.study.participant.StudyApplicantDecisionService;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -51,10 +61,13 @@ public class RecruitmentController {
 	private final RecruitmentsFindService recruitmentsFindService;
 	private final PopularRecruitmentsFindService popularRecruitmentsFindService;
 	private final RecruitmentService recruitmentService;
-	private final ParticipantDecisionService applicantDecisionService;
 
 	@GetMapping("/recruitments")
-	public ResponseEntity<BaseApiResponse<RecruitmentPreviewResponses>> readRecruitments(
+	@ResponseStatus(HttpStatus.OK)
+	@DataFieldName("recruitments")
+	@Operation(description = "여러 모집 공고 조회")
+	@ApiResponse(description = "조회 성공", responseCode = "200", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
+	public RecruitmentPreviewResponses readRecruitments(
 			@RequestParam(required = false) Long last,
 			@RequestParam Integer count,
 			@RequestParam(required = false) Long category,
@@ -67,105 +80,85 @@ public class RecruitmentController {
 
 		final List<RecruitmentPreviewResponse> recruitments = recruitmentsFindService.findRecruitments(
 				recruitmentFindCursor, recruitmentFindCond);
-		final RecruitmentPreviewResponses recruitmentPreviewResponses = new RecruitmentPreviewResponses(recruitments);
-
-		return ResponseEntity.ok(BaseApiResponse.success(recruitmentPreviewResponses));
+		return new RecruitmentPreviewResponses(recruitments);
 	}
 
 	@GetMapping("/recruitments/{recruitmentId}")
-	public ResponseEntity<BaseApiResponse<RecruitmentDetailsResponse>> readRecruitmentDetails(
-			@PathVariable("recruitmentId") final Long recruitmentId
-	) {
-		try {
-			final RecruitmentDetailsResponse recruitmentDetails = recruitmentDetailsFindService.findRecruitmentDetails(
-					recruitmentId);
-
-			return ResponseEntity.ok(BaseApiResponse.success(recruitmentDetails));
-		} catch (IllegalArgumentException exception) {
-
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-		}
+	@ResponseStatus(HttpStatus.OK)
+	@DataFieldName("recruitment")
+	@Operation(description = "특정 모집 공고 조회")
+	@ApiResponse(description = "조회 성공", responseCode = "200", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
+	public RecruitmentDetailsResponse readRecruitmentDetails(@PathVariable("recruitmentId") final Long recruitmentId) {
+		return recruitmentDetailsFindService.findRecruitmentDetails(recruitmentId);
 	}
 
 	@GetMapping("/recruitments/popular")
-	public ResponseEntity<BaseApiResponse<PopularRecruitmentsResponse>> readPopularRecruitments() {
-		PopularRecruitmentsResponse popularRecruitments = popularRecruitmentsFindService.findPopularRecruitments();
-
-		return ResponseEntity.ok(BaseApiResponse.success(popularRecruitments));
+	@ResponseStatus(HttpStatus.OK)
+	@DataFieldName("recruitments")
+	@Operation(description = "인기 있는 다수의 모집 공고 조회")
+	@ApiResponse(description = "조회 성공", responseCode = "200", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
+	public PopularRecruitmentsResponse readPopularRecruitments(@ModelAttribute PopularRecruitmentCond request) {
+		return popularRecruitmentsFindService.findPopularRecruitments(request);
 	}
 
-	@IsAuthenticated
 	@PostMapping("/studies/{studyId}/recruitments")
 	@ResponseStatus(HttpStatus.CREATED)
-	public ResponseEntity<BaseApiResponse<WriteRecruitmentResponse>> write(@PathVariable("studyId") final Long studyId,
-																		   @RequestBody final WriteRecruitmentRequest request,
-																		   @AuthUser final User user) {
+	@DataFieldName("recruitment")
+	@Operation(description = "모집 공고 작성")
+	@ApiResponse(description = "모집 공고 작성 성공", responseCode = "201", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
+	public WriteRecruitmentResponse write(@PathVariable("studyId") final Long studyId,
+										  @RequestBody final WriteRecruitmentRequest request,
+										  @Parameter(hidden = true) @AuthUser final User user) {
 		final Recruitment recruitment = recruitmentService.write(user, request, studyId);
-		final WriteRecruitmentResponse response = WriteRecruitmentResponse.from(recruitment);
-
-		return ResponseEntity.ok(BaseApiResponse.success(response));
+		return WriteRecruitmentResponse.from(recruitment);
 	}
 
-	@GetMapping("/studies/{studyId}/recruitments")
-	public ResponseEntity<BaseApiResponse<WriteRecruitmentStudyInfoResponse>> write(
-			@PathVariable("studyId") final Long studyId,
-			@AuthUser final User user) {
-		final WriteRecruitmentStudyInfoResponse response = recruitmentService.getStudyInfo(user, studyId);
-		return ResponseEntity.ok(BaseApiResponse.success(response));
-	}
-
-	@IsAuthenticated
 	@PutMapping("/studies/{studyId}/recruitments")
-	public ResponseEntity<BaseApiResponse<EditRecruitmentResponse>> edit(@AuthUser final User user,
-																		 @PathVariable("studyId") final Long studyId,
-																		 @RequestBody final EditRecruitmentRequest request) {
-		final Recruitment recruitment = recruitmentService.edit(user, studyId, request);
-		return ResponseEntity.ok(BaseApiResponse.success(EditRecruitmentResponse.from(recruitment)));
+	@ResponseStatus(HttpStatus.OK)
+	@DataFieldName("recruitment")
+	@Operation(description = "모집 공고 수정")
+	@ApiResponse(description = "모집 공고 수정 성공", responseCode = "200", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
+	@Parameters({
+			@Parameter(name = "studyId", description = "모집 공고에 대한 스터디 id", required = true),
+			@Parameter(name = "recruitmentId", description = "지원할 모집 공고 id", required = true)
+	})
+	public EditRecruitmentResponse edit(@Parameter(hidden = true) @AuthUser final User user,
+										@PathVariable("studyId") final Long studyId,
+										@PathVariable("recruitmentId") final Long recruitmentId,
+										@RequestBody final EditRecruitmentRequest request) {
+		final Recruitment recruitment = recruitmentService.edit(user, recruitmentId, request);
+		return EditRecruitmentResponse.from(recruitment);
 	}
 
-	@IsAuthenticated
 	@PostMapping("/studies/{studyId}/recruitments/{recruitmentId}/apply")
-	public ResponseEntity<BaseApiResponse<Void>> apply(@PathVariable("recruitmentId") final Long recruitmentId,
-													   @RequestBody final ApplyRecruitmentRequest request,
-													   @AuthUser final User user) {
-		recruitmentService.apply(user, recruitmentId, request);
-		return ResponseEntity.ok(BaseApiResponse.success(null));
-	}
-
-	@IsAuthenticated
-	@PostMapping("/studies/{studyId}/recruitments/{recruitmentId}/apply-accept/{applicantUserId}")
-	public ResponseEntity<BaseApiResponse<ApplyAcceptResponse>> applicantAccept(@AuthUser final User user,
-																				@PathVariable final Long studyId,
-																				@PathVariable Long recruitmentId,
-																				@PathVariable Long applicantUserId) {
-
-		final StudyApplicantDecisionRequest studyApplicantDecisionRequest = new StudyApplicantDecisionRequest(studyId,
-				recruitmentId, applicantUserId);
-		ApplyAcceptResponse applyAcceptResponse = applicantDecisionService.applicantAccept(user,
-				studyApplicantDecisionRequest);
-
-		return ResponseEntity.ok(BaseApiResponse.success(applyAcceptResponse));
-	}
-
-	@IsAuthenticated
-	@PostMapping("/studies/{studyId}/recruitments/{recruitmentId}/apply-refuse/{applicantUserId}")
-	public ResponseEntity<BaseApiResponse<Void>> applicantRefuse(@AuthUser final User user,
-																 @PathVariable final Long studyId,
-																 @PathVariable Long recruitmentId,
-																 @PathVariable Long applicantUserId) {
-
-		final StudyApplicantDecisionRequest studyApplicantDecisionRequest = new StudyApplicantDecisionRequest(studyId,
-				recruitmentId, applicantUserId);
-		applicantDecisionService.applicantReject(user, studyApplicantDecisionRequest);
-
-		return ResponseEntity.ok(BaseApiResponse.success(null));
+	@ResponseStatus(HttpStatus.OK)
+	@DataFieldName("recruitment")
+	@Operation(description = "모집 공고 지원")
+	@ApiResponse(description = "모집 공고 지원 성공", responseCode = "200", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
+	public ApplyRecruitmentResponse apply(@PathVariable("recruitmentId") final Long recruitmentId,
+										  @RequestBody final ApplyRecruitmentRequest request,
+										  @Parameter(hidden = true) @AuthUser final User user) {
+		final Applicant applicant = recruitmentService.apply(user, recruitmentId, request);
+		return ApplyRecruitmentResponse.from(applicant);
 	}
 
 	@DeleteMapping("/studies/{studyId}/recruitments")
-	public ResponseEntity<BaseApiResponse<Void>> delete(@PathVariable Long studyId,
-														@AuthUser final User user) {
+	@ResponseStatus(HttpStatus.OK)
+	@Operation(description = "모집 공고 삭제")
+	@ApiResponse(description = "모집 공고 삭제 성공", responseCode = "200", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
+	public void delete(@PathVariable Long studyId, @Parameter(hidden = true) @AuthUser final User user) {
 		recruitmentService.delete(user, studyId);
-		return ResponseEntity.ok(BaseApiResponse.success(null));
+	}
+
+	@PostMapping("/studies/{studyId}/recruitments/{recruitmentId}/cancel")
+	@ResponseStatus(HttpStatus.OK)
+	@Operation(description = "모집 공고 지원 취소")
+	@ApiResponse(description = "지원 취소", responseCode = "200", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
+	public void cancel(
+			@Parameter(name = "studyId", description = "스터디 id", required = true) @PathVariable("studyId") final Long studyId,
+			@Parameter(name = "recruitmentId", description = "모집 공고 id", required = true) @PathVariable("recruitmentId") final Long recruitmentId,
+			@Parameter(hidden = true) @AuthUser final User user) {
+		recruitmentService.cancel(user, recruitmentId);
 	}
 
 }
