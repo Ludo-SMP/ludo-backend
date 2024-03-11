@@ -301,4 +301,29 @@ public class Study extends BaseEntity {
 		return Boolean.FALSE;
 	}
 
+	public void update(final String title, final Category category, final Integer participantLimit, final Way way,
+					   final Platform platform, final LocalDateTime startDateTime, final LocalDateTime endDateTime) {
+		if (title != null) {
+			this.title = title;
+		}
+		if (category != null) {
+			this.category = category;
+		}
+		if (participantLimit != null) {
+			this.participantLimit = participantLimit;
+		}
+		if (way != null) {
+			this.way = way;
+		}
+		if (platform != null) {
+			this.platform = platform;
+		}
+		if (startDateTime != null) {
+			this.startDateTime = startDateTime;
+		}
+		if (endDateTime != null) {
+			this.endDateTime = endDateTime;
+		}
+	}
+
 }

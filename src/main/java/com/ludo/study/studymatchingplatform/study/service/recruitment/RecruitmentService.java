@@ -85,7 +85,8 @@ public class RecruitmentService {
 		recruitment.ensureRecruiting();
 
 		final Optional<Applicant> applicant = recruitment.findApplicant(user);
-		final Position position = positionRepository.findById(request.positionId());
+		final Position position = positionRepository.findById(request.positionId())
+				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 포지션입니다."));
 
 		if (applicant.isEmpty()) {
 			final Applicant newApplicant = Applicant.of(recruitment, user, position);

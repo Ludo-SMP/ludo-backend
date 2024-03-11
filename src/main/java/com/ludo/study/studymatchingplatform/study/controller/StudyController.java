@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ludo.study.studymatchingplatform.auth.common.AuthUser;
 import com.ludo.study.studymatchingplatform.study.controller.dto.response.BaseApiResponse;
 import com.ludo.study.studymatchingplatform.study.domain.study.StudyStatus;
+import com.ludo.study.studymatchingplatform.study.service.dto.request.study.StudyUpdateRequest;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.study.WriteStudyRequest;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.applicant.ApplicantResponse;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.study.StudyResponse;
@@ -24,6 +26,7 @@ import com.ludo.study.studymatchingplatform.study.service.study.StudyCreateServi
 import com.ludo.study.studymatchingplatform.study.service.study.StudyFetchService;
 import com.ludo.study.studymatchingplatform.study.service.study.StudyService;
 import com.ludo.study.studymatchingplatform.study.service.study.StudyStatusService;
+import com.ludo.study.studymatchingplatform.study.service.study.StudyUpdateService;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 
 import lombok.RequiredArgsConstructor;
@@ -37,6 +40,7 @@ public class StudyController {
 	private final StudyFetchService studyFetchService;
 	private final StudyStatusService studyStatusService;
 	private final StudyService studyService;
+	private final StudyUpdateService studyUpdateService;
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
@@ -73,6 +77,14 @@ public class StudyController {
 	public ResponseEntity<BaseApiResponse<ApplicantResponse>> findApplicantsInfo(@AuthUser final User user,
 																				 @PathVariable("studyId") final Long studyId) {
 		final ApplicantResponse response = studyService.findApplicantsInfo(user, studyId);
+		return ResponseEntity.ok(BaseApiResponse.success(response));
+	}
+
+	@PutMapping("/{studyId}")
+	public ResponseEntity<BaseApiResponse<StudyResponse>> update(@AuthUser final User user,
+																 @PathVariable final Long studyId,
+																 @RequestBody final StudyUpdateRequest request) {
+		final StudyResponse response = studyUpdateService.update(user, studyId, request);
 		return ResponseEntity.ok(BaseApiResponse.success(response));
 	}
 

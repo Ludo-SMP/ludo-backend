@@ -88,4 +88,9 @@ public class Participant extends BaseEntity {
 		this.study = null;
 		this.softDelete();
 	}
+
+	public void updatePosition(final Position position) {
+		this.position = position;
+	}
+
 }

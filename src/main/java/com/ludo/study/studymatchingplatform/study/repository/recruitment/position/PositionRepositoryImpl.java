@@ -31,10 +31,11 @@ public class PositionRepositoryImpl {
 				.fetch();
 	}
 
-	public Position findById(final Long id) {
-		return q.selectFrom(position)
-				.where(position.id.eq(id))
-				.fetchOne();
+	public Optional<Position> findById(final Long id) {
+		return Optional.ofNullable(
+				q.selectFrom(position)
+						.where(position.id.eq(id))
+						.fetchOne());
 	}
 
 	public Optional<Position> findByName(final String name) {
