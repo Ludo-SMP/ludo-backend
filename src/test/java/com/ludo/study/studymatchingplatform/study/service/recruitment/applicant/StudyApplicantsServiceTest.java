@@ -17,23 +17,24 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant.Applicant;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.position.Position;
-import com.ludo.study.studymatchingplatform.study.domain.study.category.Category;
-import com.ludo.study.studymatchingplatform.study.domain.study.participant.Participant;
-import com.ludo.study.studymatchingplatform.study.domain.study.participant.Role;
 import com.ludo.study.studymatchingplatform.study.domain.study.Study;
 import com.ludo.study.studymatchingplatform.study.domain.study.StudyStatus;
 import com.ludo.study.studymatchingplatform.study.domain.study.Way;
+import com.ludo.study.studymatchingplatform.study.domain.study.category.Category;
+import com.ludo.study.studymatchingplatform.study.domain.study.participant.Participant;
+import com.ludo.study.studymatchingplatform.study.domain.study.participant.Role;
 import com.ludo.study.studymatchingplatform.study.fixture.recruitment.RecruitmentFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.recruitment.applicant.ApplicantFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.recruitment.position.PositionFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.study.StudyFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.study.category.CategoryFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.study.participant.ParticipantFixture;
+import com.ludo.study.studymatchingplatform.study.repository.recruitment.applicant.ApplicantRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.study.StudyRepositoryImpl;
-import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.position.PositionResponse;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.applicant.ApplicantResponse;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.applicant.ApplicantStudyResponse;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.applicant.ApplicantUserResponse;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.position.PositionResponse;
 import com.ludo.study.studymatchingplatform.study.service.study.StudyService;
 import com.ludo.study.studymatchingplatform.user.domain.user.Social;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
@@ -45,6 +46,9 @@ class StudyApplicantsServiceTest {
 
 	@Mock
 	private StudyRepositoryImpl studyRepository;
+
+	@Mock
+	private ApplicantRepositoryImpl applicantRepository;
 
 	@InjectMocks
 	private StudyService studyService;
@@ -69,6 +73,9 @@ class StudyApplicantsServiceTest {
 
 		when(studyRepository.findByIdWithRecruitment(anyLong()))
 				.thenReturn(Optional.of(study));
+		when(applicantRepository.findStudyApplicantInfoByRecruitmentId(anyLong()))
+				.thenReturn(applicants);
+
 		// when
 		final ApplicantResponse applicantResponse = studyService.findApplicantsInfo(owner, 1L);
 
@@ -144,6 +151,9 @@ class StudyApplicantsServiceTest {
 
 		when(studyRepository.findByIdWithRecruitment(anyLong()))
 				.thenReturn(Optional.of(study));
+		when(applicantRepository.findStudyApplicantInfoByRecruitmentId(anyLong()))
+				.thenReturn(applicants);
+
 		// when
 		final ApplicantResponse applicantResponse = studyService.findApplicantsInfo(member, 1L);
 
