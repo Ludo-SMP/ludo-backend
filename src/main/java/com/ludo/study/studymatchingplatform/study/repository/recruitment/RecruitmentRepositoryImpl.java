@@ -67,10 +67,6 @@ public class RecruitmentRepositoryImpl {
 		return recruitmentJpaRepository.save(recruitment);
 	}
 
-	public void delete(final Recruitment recruitment) {
-		recruitmentJpaRepository.delete(recruitment);
-	}
-
 	public List<Recruitment> findPopularRecruitments(final String categoryName) {
 		return q.select(recruitment)
 				.from(recruitment)
