@@ -1,7 +1,6 @@
 package com.ludo.study.studymatchingplatform.study.controller;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ludo.study.studymatchingplatform.auth.common.AuthUser;
 import com.ludo.study.studymatchingplatform.common.annotation.DataFieldName;
-import com.ludo.study.studymatchingplatform.study.controller.dto.response.BaseApiResponse;
 import com.ludo.study.studymatchingplatform.study.domain.study.StudyStatus;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.recruitment.applicant.StudyApplicantDecisionRequest;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.study.StudyUpdateRequest;
@@ -124,22 +122,20 @@ public class StudyController {
 	@ResponseStatus(HttpStatus.OK)
 	@Operation(description = "스터디 지원자 정보")
 	@ApiResponse(description = "스터디 지원자 정보 조회 성공", responseCode = "200", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
-	public ResponseEntity<BaseApiResponse<ApplicantResponse>> findApplicantsInfo(
+	public ApplicantResponse findApplicantsInfo(
 			@Parameter(hidden = true) @AuthUser final User user,
 			@PathVariable("studyId") final Long studyId) {
-		final ApplicantResponse response = studyService.findApplicantsInfo(user, studyId);
-		return ResponseEntity.ok(BaseApiResponse.success(response));
+		return studyService.findApplicantsInfo(user, studyId);
 	}
 
 	@PutMapping("/{studyId}")
 	@ResponseStatus(HttpStatus.OK)
 	@Operation(description = "스터디 수정")
 	@ApiResponse(description = "스터디 수정 성공", responseCode = "200", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
-	public ResponseEntity<BaseApiResponse<StudyResponse>> update(@Parameter(hidden = true) @AuthUser final User user,
-																 @PathVariable final Long studyId,
-																 @RequestBody final StudyUpdateRequest request) {
-		final StudyResponse response = studyUpdateService.update(user, studyId, request);
-		return ResponseEntity.ok(BaseApiResponse.success(response));
+	public StudyResponse update(@Parameter(hidden = true) @AuthUser final User user,
+								@PathVariable final Long studyId,
+								@RequestBody final StudyUpdateRequest request) {
+		return studyUpdateService.update(user, studyId, request);
 	}
 
 }

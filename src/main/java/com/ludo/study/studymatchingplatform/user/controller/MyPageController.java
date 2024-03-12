@@ -1,6 +1,5 @@
 package com.ludo.study.studymatchingplatform.user.controller;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,7 +8,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ludo.study.studymatchingplatform.auth.common.AuthUser;
 import com.ludo.study.studymatchingplatform.common.annotation.DataFieldName;
-import com.ludo.study.studymatchingplatform.study.controller.dto.response.BaseApiResponse;
 import com.ludo.study.studymatchingplatform.study.service.recruitment.RecruitmentService;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 import com.ludo.study.studymatchingplatform.user.service.MyPageService;
@@ -41,10 +39,9 @@ public class MyPageController {
 	@DataFieldName("user")
 	@Operation(description = "모집 공고 지원 기록 삭제")
 	@ApiResponse(description = "조회 성공", responseCode = "200", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
-	public ResponseEntity<BaseApiResponse<Void>> deleteApplyHistory(@PathVariable Long recruitmentId,
-																	@Parameter(hidden = true) @AuthUser final User user) {
+	public void deleteApplyHistory(@PathVariable Long recruitmentId,
+								   @Parameter(hidden = true) @AuthUser final User user) {
 		recruitmentService.deleteApplyHistory(user, recruitmentId);
-		return ResponseEntity.ok(BaseApiResponse.success(null));
 	}
 
 }
