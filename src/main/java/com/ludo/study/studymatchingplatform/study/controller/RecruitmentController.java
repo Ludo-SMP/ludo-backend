@@ -3,7 +3,6 @@ package com.ludo.study.studymatchingplatform.study.controller;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ludo.study.studymatchingplatform.auth.common.AuthUser;
 import com.ludo.study.studymatchingplatform.common.annotation.DataFieldName;
-import com.ludo.study.studymatchingplatform.study.controller.dto.response.BaseApiResponse;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant.Applicant;
 import com.ludo.study.studymatchingplatform.study.repository.dto.request.PopularRecruitmentCond;
@@ -31,7 +29,6 @@ import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitme
 import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.RecruitmentDetailsResponse;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.RecruitmentPreviewResponse;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.RecruitmentPreviewResponses;
-import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.WriteRecruitmentResponse;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.WriteRecruitmentStudyInfoResponse;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.applicant.ApplyRecruitmentResponse;
 import com.ludo.study.studymatchingplatform.study.service.recruitment.PopularRecruitmentsFindService;
@@ -102,11 +99,10 @@ public class RecruitmentController {
 	@DataFieldName("recruitment")
 	@Operation(description = "모집 공고 작성")
 	@ApiResponse(description = "모집 공고 작성 성공", responseCode = "201", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
-	public WriteRecruitmentResponse write(@PathVariable("studyId") final Long studyId,
-										  @RequestBody final WriteRecruitmentRequest request,
-										  @Parameter(hidden = true) @AuthUser final User user) {
-		final Recruitment recruitment = recruitmentService.write(user, request, studyId);
-		return WriteRecruitmentResponse.from(recruitment);
+	public RecruitmentDetailsResponse write(@PathVariable("studyId") final Long studyId,
+											@RequestBody final WriteRecruitmentRequest request,
+											@Parameter(hidden = true) @AuthUser final User user) {
+		return recruitmentService.write(user, request, studyId);
 	}
 
 	@GetMapping("/studies/{studyId}/recruitments")
@@ -114,11 +110,10 @@ public class RecruitmentController {
 	@DataFieldName("recruitment")
 	@Operation(description = "모집 공고 생성시 필요한 간략한 스터디 정보")
 	@ApiResponse(description = "스터디 정보 조회 성공", responseCode = "200", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
-	public ResponseEntity<BaseApiResponse<WriteRecruitmentStudyInfoResponse>> write(
+	public WriteRecruitmentStudyInfoResponse write(
 			@PathVariable("studyId") final Long studyId,
-			@AuthUser final User user) {
-		final WriteRecruitmentStudyInfoResponse response = recruitmentService.getStudyInfo(user, studyId);
-		return ResponseEntity.ok(BaseApiResponse.success(response));
+			@Parameter(hidden = true) @AuthUser final User user) {
+		return recruitmentService.getStudyInfo(user, studyId);
 	}
 
 	@PutMapping("/studies/{studyId}/recruitments")

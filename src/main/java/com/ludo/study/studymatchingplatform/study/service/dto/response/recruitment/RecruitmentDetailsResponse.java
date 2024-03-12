@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.ludo.study.studymatchingplatform.common.ResourcePath;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.Contact;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
 import com.ludo.study.studymatchingplatform.study.domain.study.Study;
 
@@ -13,7 +14,7 @@ public record RecruitmentDetailsResponse(RecruitmentDetail recruitment,
 
 	public record RecruitmentDetail(Long id, Integer applicantCount,
 									List<PositionDetail> positions, List<StackDetail> stacks,
-									String contact, String callUrl, String title, String content,
+									Contact contact, String callUrl, String title, String content,
 									LocalDateTime endDateTime,
 									LocalDateTime createdDateTime, LocalDateTime updatedDateTime) {
 	}
@@ -45,7 +46,7 @@ public record RecruitmentDetailsResponse(RecruitmentDetail recruitment,
 								.map(stack -> new StackDetail(stack.getId(), stack.getName(),
 										ResourcePath.STACK_IMAGE.getPath() + stack.getImageUrl()))
 								.toList(),
-						null,
+						recruitment.getContact(),
 						recruitment.getCallUrl(),
 						recruitment.getTitle(),
 						recruitment.getContent(),

@@ -95,7 +95,7 @@ public class Recruitment extends BaseEntity {
 	@Column(nullable = false)
 	@PositiveOrZero
 	@Builder.Default
-	private int hits = 0;
+	private Integer hits = 0;
 
 	@Column(nullable = false)
 	@FutureOrPresent
@@ -108,18 +108,20 @@ public class Recruitment extends BaseEntity {
 	public static Recruitment of(
 			final String title,
 			final String content,
+			final Contact contact,
 			final String callUrl,
-			final int hits,
-			final int recruitmentLimit,
+			final Integer hits,
+			final Integer applicantCount,
 			final LocalDateTime recruitmentEndDateTime,
 			final Study study
 	) {
 		return Recruitment.builder()
 				.title(title)
 				.content(content)
+				.contact(contact)
 				.callUrl(callUrl)
 				.hits(hits)
-				.applicantCount(recruitmentLimit)
+				.applicantCount(applicantCount)
 				.recruitmentEndDateTime(recruitmentEndDateTime)
 				.study(study)
 				.build();

@@ -21,6 +21,7 @@ import com.ludo.study.studymatchingplatform.study.repository.study.StudyReposito
 import com.ludo.study.studymatchingplatform.study.service.dto.request.recruitment.EditRecruitmentRequest;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.recruitment.WriteRecruitmentRequest;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.recruitment.applicant.ApplyRecruitmentRequest;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.RecruitmentDetailsResponse;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.WriteRecruitmentStudyInfoResponse;
 import com.ludo.study.studymatchingplatform.study.service.recruitment.position.RecruitmentPositionService;
 import com.ludo.study.studymatchingplatform.study.service.recruitment.stack.RecruitmentStackService;
@@ -44,7 +45,8 @@ public class RecruitmentService {
 	private final ApplicantRepositoryImpl applicantRepository;
 
 	@Transactional
-	public Recruitment write(final User user, final WriteRecruitmentRequest request, final Long studyId) {
+	public RecruitmentDetailsResponse write(final User user, final WriteRecruitmentRequest request,
+											final Long studyId) {
 		final Study study = studyRepository.findByIdWithRecruitment(studyId)
 				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 스터디입니다."));
 
@@ -57,7 +59,7 @@ public class RecruitmentService {
 		recruitmentPositionService.addMany(recruitment, request.getPositionIds());
 		study.registerRecruitment(recruitment);
 
-		return recruitment;
+		return new RecruitmentDetailsResponse(recruitment, study);
 	}
 
 	public WriteRecruitmentStudyInfoResponse getStudyInfo(final User user, final Long studyId) {
