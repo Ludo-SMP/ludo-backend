@@ -122,7 +122,7 @@ public class StudyController {
 
 	@GetMapping("/{studyId}/applicants")
 	@ResponseStatus(HttpStatus.OK)
-	@Operation(description = "스터디 지원 지원자 정보")
+	@Operation(description = "스터디 지원자 정보")
 	@ApiResponse(description = "스터디 지원자 정보 조회 성공", responseCode = "200", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
 	public ResponseEntity<BaseApiResponse<ApplicantResponse>> findApplicantsInfo(
 			@Parameter(hidden = true) @AuthUser final User user,
@@ -133,8 +133,8 @@ public class StudyController {
 
 	@PutMapping("/{studyId}")
 	@ResponseStatus(HttpStatus.OK)
-	@Operation(description = "스터디 지원 지원자 정보")
-	@ApiResponse(description = "스터디 지원자 정보 조회 성공", responseCode = "200", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
+	@Operation(description = "스터디 수정")
+	@ApiResponse(description = "스터디 수정 성공", responseCode = "200", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
 	public ResponseEntity<BaseApiResponse<StudyResponse>> update(@Parameter(hidden = true) @AuthUser final User user,
 																 @PathVariable final Long studyId,
 																 @RequestBody final StudyUpdateRequest request) {
