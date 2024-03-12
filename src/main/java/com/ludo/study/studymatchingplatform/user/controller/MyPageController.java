@@ -32,15 +32,17 @@ public class MyPageController {
 	@DataFieldName("user")
 	@Operation(description = "로그인 된 사용자 정보 조회")
 	@ApiResponse(description = "조회 성공", responseCode = "200", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
-	public MyPageResponse retrieveMyPage(
-			@CookieValue(name = "Authorization") final String auth,
-			@Parameter(hidden = true) @AuthUser final User user) {
+	public MyPageResponse retrieveMyPage(@CookieValue(name = "Authorization") final String auth,
+										 @Parameter(hidden = true) @AuthUser final User user) {
 		return myPageService.retrieveMyPage(user);
 	}
 
 	@DeleteMapping("/users/recruitments/{recruitmentId}/apply-history")
+	@DataFieldName("user")
+	@Operation(description = "모집 공고 지원 기록 삭제")
+	@ApiResponse(description = "조회 성공", responseCode = "200", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
 	public ResponseEntity<BaseApiResponse<Void>> deleteApplyHistory(@PathVariable Long recruitmentId,
-																	@AuthUser final User user) {
+																	@Parameter(hidden = true) @AuthUser final User user) {
 		recruitmentService.deleteApplyHistory(user, recruitmentId);
 		return ResponseEntity.ok(BaseApiResponse.success(null));
 	}

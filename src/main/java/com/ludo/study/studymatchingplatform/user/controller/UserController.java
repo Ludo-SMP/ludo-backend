@@ -65,8 +65,12 @@ public class UserController {
 	}
 
 	@PostMapping("/users/me/nickname")
-	public ResponseEntity<BaseApiResponse<ChangeUserNicknameResponse>> changeNickname(@AuthUser final User user,
-																					  @RequestBody @Valid final ChangeUserNicknameRequest changeNickname) {
+	@ResponseStatus(HttpStatus.OK)
+	@Operation(description = "사용자 닉네임 변경")
+	@ApiResponse(description = "닉네임 변경 성공", responseCode = "200", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
+	public ResponseEntity<BaseApiResponse<ChangeUserNicknameResponse>> changeNickname(
+			@Parameter(hidden = true) @AuthUser final User user,
+			@RequestBody @Valid final ChangeUserNicknameRequest changeNickname) {
 
 		try {
 			final ChangeUserNicknameResponse response = changeNicknameService.changeUserNickname(user,
