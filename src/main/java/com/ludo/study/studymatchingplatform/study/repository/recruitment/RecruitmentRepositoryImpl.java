@@ -4,7 +4,6 @@ import static com.ludo.study.studymatchingplatform.study.domain.recruitment.QRec
 import static com.ludo.study.studymatchingplatform.study.domain.recruitment.position.QRecruitmentPosition.*;
 import static com.ludo.study.studymatchingplatform.study.domain.recruitment.stack.QRecruitmentStack.*;
 import static com.ludo.study.studymatchingplatform.study.domain.study.QStudy.*;
-import static com.ludo.study.studymatchingplatform.study.domain.study.category.QCategory.*;
 
 import java.util.List;
 import java.util.Optional;

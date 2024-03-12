@@ -2,10 +2,10 @@ package com.ludo.study.studymatchingplatform.config;
 
 import org.springframework.stereotype.Component;
 
-import com.ludo.study.studymatchingplatform.study.domain.study.category.Category;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.position.Position;
-import com.ludo.study.studymatchingplatform.study.repository.study.category.CategoryRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.domain.study.category.Category;
 import com.ludo.study.studymatchingplatform.study.repository.recruitment.position.PositionRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.repository.study.category.CategoryRepositoryImpl;
 
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;

@@ -34,7 +34,8 @@ public class EditRecruitmentResponse {
 		private final String content;
 		private final LocalDateTime createdDateTime;
 		private final LocalDateTime updatedDateTime;
-}
+	}
+
 	public static EditRecruitmentResponse from(final Recruitment recruitment) {
 		final List<PositionResponse> positions = recruitment.getPositions().stream()
 				.map(PositionResponse::from)

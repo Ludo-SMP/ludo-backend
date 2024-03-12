@@ -2,8 +2,8 @@ package com.ludo.study.studymatchingplatform.study.service.dto.response.recruitm
 
 import java.util.List;
 
-import com.ludo.study.studymatchingplatform.study.domain.study.Study;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant.Applicant;
+import com.ludo.study.studymatchingplatform.study.domain.study.Study;
 
 public record ApplicantResponse(
 

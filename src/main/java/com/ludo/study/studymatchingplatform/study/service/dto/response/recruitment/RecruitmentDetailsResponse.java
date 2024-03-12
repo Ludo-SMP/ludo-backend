@@ -4,8 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.ludo.study.studymatchingplatform.common.ResourcePath;
-import com.ludo.study.studymatchingplatform.study.domain.study.Study;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
+import com.ludo.study.studymatchingplatform.study.domain.study.Study;
 
 public record RecruitmentDetailsResponse(RecruitmentDetail recruitment,
 										 StudyDetail study

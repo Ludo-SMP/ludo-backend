@@ -2,11 +2,11 @@ package com.ludo.study.studymatchingplatform.study.service.dto.request.study;
 
 import java.time.LocalDateTime;
 
-import com.ludo.study.studymatchingplatform.study.domain.study.category.Category;
 import com.ludo.study.studymatchingplatform.study.domain.study.Platform;
 import com.ludo.study.studymatchingplatform.study.domain.study.Study;
 import com.ludo.study.studymatchingplatform.study.domain.study.StudyStatus;
 import com.ludo.study.studymatchingplatform.study.domain.study.Way;
+import com.ludo.study.studymatchingplatform.study.domain.study.category.Category;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 
 import lombok.Builder;
