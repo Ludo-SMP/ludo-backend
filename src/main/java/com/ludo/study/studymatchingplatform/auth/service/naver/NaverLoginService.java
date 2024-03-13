@@ -2,7 +2,6 @@ package com.ludo.study.studymatchingplatform.auth.service.naver;
 
 import org.springframework.stereotype.Service;
 
-import com.ludo.study.studymatchingplatform.auth.service.naver.dto.response.LoginResponse;
 import com.ludo.study.studymatchingplatform.auth.service.naver.vo.NaverOAuthToken;
 import com.ludo.study.studymatchingplatform.auth.service.naver.vo.UserProfile;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
@@ -20,16 +19,11 @@ public class NaverLoginService {
 	private final NaverProfileRequestService naverProfileRequestService;
 	private final UserRepositoryImpl userRepository;
 
-	public LoginResponse login(final String authorizationCode) {
+	public User login(final String authorizationCode) {
 		final NaverOAuthToken oAuthToken = naverOAuthTokenRequestService.createOAuthToken(authorizationCode);
 		final UserProfile profileResponse = naverProfileRequestService.createNaverProfile(oAuthToken);
 
-		final User user = validateNotSignUp(profileResponse);
-
-		return new LoginResponse(
-				String.valueOf(user.getId()),
-				user.getNickname(),
-				user.getEmail());
+		return validateNotSignUp(profileResponse);
 	}
 
 	private User validateNotSignUp(final UserProfile profileResponse) {
