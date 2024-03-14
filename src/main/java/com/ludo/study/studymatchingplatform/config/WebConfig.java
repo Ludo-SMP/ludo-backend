@@ -27,7 +27,7 @@ public class WebConfig implements WebMvcConfigurer {
 	@Override
 	public void addCorsMappings(CorsRegistry registry) {
 		registry.addMapping("/**")
-				.allowedOrigins("https://local.ludoapi.store:3000")
+				.allowedOrigins("https://local.ludoapi.store:3000", "https://ludoapi.store")
 				.allowedMethods("*")
 				.allowedHeaders("*")
 				.allowCredentials(true)
