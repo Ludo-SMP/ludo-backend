@@ -16,8 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ludo.study.studymatchingplatform.auth.common.AuthUser;
 import com.ludo.study.studymatchingplatform.common.annotation.DataFieldName;
-import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
-import com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant.Applicant;
 import com.ludo.study.studymatchingplatform.study.repository.dto.request.PopularRecruitmentCond;
 import com.ludo.study.studymatchingplatform.study.repository.dto.request.RecruitmentFindCond;
 import com.ludo.study.studymatchingplatform.study.repository.dto.request.RecruitmentFindCursor;
@@ -129,8 +127,8 @@ public class RecruitmentController {
 										@PathVariable("studyId") final Long studyId,
 										@PathVariable("recruitmentId") final Long recruitmentId,
 										@RequestBody final EditRecruitmentRequest request) {
-		final Recruitment recruitment = recruitmentService.edit(user, recruitmentId, request);
-		return EditRecruitmentResponse.from(recruitment);
+		return EditRecruitmentResponse.from(recruitmentService.edit(user, recruitmentId, request));
+
 	}
 
 	@PostMapping("/studies/{studyId}/recruitments/{recruitmentId}/apply")
@@ -141,8 +139,7 @@ public class RecruitmentController {
 	public ApplyRecruitmentResponse apply(@PathVariable("recruitmentId") final Long recruitmentId,
 										  @RequestBody final ApplyRecruitmentRequest request,
 										  @Parameter(hidden = true) @AuthUser final User user) {
-		final Applicant applicant = recruitmentService.apply(user, recruitmentId, request);
-		return ApplyRecruitmentResponse.from(applicant);
+		return ApplyRecruitmentResponse.from(recruitmentService.apply(user, recruitmentId, request));
 	}
 
 	@DeleteMapping("/studies/{studyId}/recruitments")

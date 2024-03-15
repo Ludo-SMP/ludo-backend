@@ -1,18 +1,21 @@
 package com.ludo.study.studymatchingplatform.auth.controller.google;
 
-import org.springframework.http.ResponseEntity;
+import java.io.IOException;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.ludo.study.studymatchingplatform.auth.common.AuthUserPayload;
+import com.ludo.study.studymatchingplatform.auth.common.Redirection;
 import com.ludo.study.studymatchingplatform.auth.common.provider.CookieProvider;
 import com.ludo.study.studymatchingplatform.auth.common.provider.JwtTokenProvider;
 import com.ludo.study.studymatchingplatform.auth.repository.InMemoryClientRegistrationAndProviderRepository;
 import com.ludo.study.studymatchingplatform.auth.service.google.GoogleSignUpService;
-import com.ludo.study.studymatchingplatform.auth.service.google.dto.response.SignupResponse;
 import com.ludo.study.studymatchingplatform.user.domain.user.Social;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 
@@ -30,9 +33,12 @@ public class GoogleSignUpController {
 	private final GoogleSignUpService googleSignUpService;
 	private final JwtTokenProvider jwtTokenProvider;
 	private final CookieProvider cookieProvider;
+	private final Redirection redirection;
 
 	@GetMapping("/google")
-	public String googleSignup(final RedirectAttributes redirectAttributes) {
+	@ResponseStatus(HttpStatus.FOUND)
+	public void googleSignup(final RedirectAttributes redirectAttributes, final HttpServletResponse response) throws
+			IOException {
 		redirectAttributes.addAttribute(
 				"response_type", "code");
 		redirectAttributes.addAttribute(
@@ -43,18 +49,18 @@ public class GoogleSignUpController {
 		// 		"https://www.googleapis.com/auth/userinfo.email,https://www.googleapis.com/auth/userinfo.profile");
 		redirectAttributes.addAttribute("scope", "email profile");
 
-		return "redirect:" + clientRegistrationAndProviderRepository.findAuthorizationUri(Social.GOOGLE);
+		response.sendRedirect(clientRegistrationAndProviderRepository.findAuthorizationUri(Social.GOOGLE));
 	}
 
 	@GetMapping("/google/callback")
-	public ResponseEntity<SignupResponse> googleSignupback(
-			@RequestParam(name = "code") final String authorizationCode, final HttpServletResponse response) {
+	@ResponseStatus(HttpStatus.FOUND)
+	public void googleSignupback(
+			@RequestParam(name = "code") final String authorizationCode, final HttpServletResponse response) throws
+			IOException {
 		final User user = googleSignUpService.googleSignUp(authorizationCode);
 		final String accessToken = jwtTokenProvider.createAccessToken(AuthUserPayload.from(user));
 		cookieProvider.setAuthCookie(accessToken, response);
-
-		return ResponseEntity.ok()
-				.body(new SignupResponse(true, "회원 가입에 성공했습니다."));
+		redirection.to("/", response);
 	}
 
 }

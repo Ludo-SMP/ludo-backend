@@ -11,7 +11,7 @@ import lombok.Builder;
 @Builder
 public record MyPageResponse(
 
-		UserResponse.InnerUserResponse user,
+		UserResponse user,
 		List<ParticipateStudyResponse> participateStudies,
 		List<ApplicantRecruitmentResponse> applicantRecruitments,
 		List<CompletedStudyResponse> completedStudies
@@ -22,7 +22,7 @@ public record MyPageResponse(
 									  final List<Participant> participants,
 									  final List<Applicant> applicants,
 									  final List<Participant> completedStudies) {
-		final UserResponse.InnerUserResponse userResponse = UserResponse.InnerUserResponse.from(user);
+		final UserResponse userResponse = UserResponse.from(user);
 		return MyPageResponse.builder()
 				.user(userResponse)
 				.participateStudies(makeParticipateStudies(user, participants))

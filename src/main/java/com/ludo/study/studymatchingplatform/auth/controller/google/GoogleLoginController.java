@@ -1,18 +1,23 @@
 package com.ludo.study.studymatchingplatform.auth.controller.google;
 
-import org.springframework.http.ResponseEntity;
+import java.io.IOException;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.ludo.study.studymatchingplatform.auth.common.AuthUserPayload;
+import com.ludo.study.studymatchingplatform.auth.common.Redirection;
 import com.ludo.study.studymatchingplatform.auth.common.provider.CookieProvider;
 import com.ludo.study.studymatchingplatform.auth.common.provider.JwtTokenProvider;
 import com.ludo.study.studymatchingplatform.auth.repository.InMemoryClientRegistrationAndProviderRepository;
 import com.ludo.study.studymatchingplatform.auth.service.google.GoogleLoginService;
 import com.ludo.study.studymatchingplatform.auth.service.google.dto.response.LoginResponse;
+import com.ludo.study.studymatchingplatform.common.annotation.DataFieldName;
 import com.ludo.study.studymatchingplatform.user.domain.user.Social;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 
@@ -30,9 +35,12 @@ public class GoogleLoginController {
 	private final GoogleLoginService googleLoginService;
 	private final JwtTokenProvider jwtTokenProvider;
 	private final CookieProvider cookieProvider;
+	private final Redirection redirection;
 
 	@GetMapping("/google")
-	public String googleLogin(RedirectAttributes redirectAttributes) {
+	@ResponseStatus(HttpStatus.FOUND)
+	public void googleLogin(final RedirectAttributes redirectAttributes, final HttpServletResponse response) throws
+			IOException {
 
 		redirectAttributes.addAttribute(
 				"response_type", "code");
@@ -42,20 +50,22 @@ public class GoogleLoginController {
 				"redirect_uri", clientRegistrationAndProviderRepository.findLoginRedirectUri(Social.GOOGLE));
 		redirectAttributes.addAttribute("scope", "email profile");
 
-		return "redirect:" + clientRegistrationAndProviderRepository.findAuthorizationUri(Social.GOOGLE);
+		response.sendRedirect(clientRegistrationAndProviderRepository.findAuthorizationUri(Social.GOOGLE));
 	}
 
 	@GetMapping("/google/callback")
-	public ResponseEntity<LoginResponse> googleLoginCallback(
+	@ResponseStatus(HttpStatus.FOUND)
+	@DataFieldName("user")
+	public LoginResponse googleLoginCallback(
 			@RequestParam(name = "code") String authorizationCode,
 			HttpServletResponse response
-	) {
+	) throws IOException {
 		final User user = googleLoginService.login(authorizationCode);
 		final String accessToken = jwtTokenProvider.createAccessToken(AuthUserPayload.from(user));
 		cookieProvider.setAuthCookie(accessToken, response);
+		redirection.to("/", response);
 
-		return ResponseEntity.ok()
-				.body(new LoginResponse(user.getId().toString(), user.getNickname(), user.getEmail()));
+		return new LoginResponse(user.getId().toString(), user.getNickname(), user.getEmail());
 	}
 
 }

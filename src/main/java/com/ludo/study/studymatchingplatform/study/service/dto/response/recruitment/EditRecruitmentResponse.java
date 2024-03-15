@@ -8,33 +8,11 @@ import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment
 import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.position.PositionResponse;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.stack.StackResponse;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-
-@Getter
-@RequiredArgsConstructor
-public class EditRecruitmentResponse {
-	private final EditRecruitment recruitment;
-
-	@Getter
-	@RequiredArgsConstructor
-	static class EditRecruitment {
-		private final Long id;
-		private final String ownerNickname;
-		private final String title;
-		private final String category;
-		private final List<StackResponse> stacks;
-		private final List<PositionResponse> positions;
-		private final Contact contact;
-		private final String callUrl;
-		private final Integer applicantCount;
-		private final LocalDateTime recruitmentEndDateTime;
-		private final LocalDateTime startDateTime;
-		private final LocalDateTime endDateTime;
-		private final String content;
-		private final LocalDateTime createdDateTime;
-		private final LocalDateTime updatedDateTime;
-	}
+public record EditRecruitmentResponse(
+		Long id, String ownerNickname, String title, String category, List<StackResponse> stacks,
+		List<PositionResponse> positions, Contact contact, String callUrl, Integer applicantCount,
+		LocalDateTime recruitmentEndDateTime, LocalDateTime startDateTime, LocalDateTime endDateTime,
+		String content, LocalDateTime createdDateTime, LocalDateTime updatedDateTime) {
 
 	public static EditRecruitmentResponse from(final Recruitment recruitment) {
 		final List<PositionResponse> positions = recruitment.getPositions().stream()
@@ -44,7 +22,7 @@ public class EditRecruitmentResponse {
 				.map(StackResponse::from)
 				.toList();
 
-		final EditRecruitment editRecruitment = new EditRecruitment(
+		return new EditRecruitmentResponse(
 				recruitment.getId(),
 				recruitment.getStudy().getOwnerNickname(),
 				recruitment.getTitle(),
@@ -62,7 +40,6 @@ public class EditRecruitmentResponse {
 				recruitment.getUpdatedDateTime()
 		);
 
-		return new EditRecruitmentResponse(editRecruitment);
 	}
 
 }
