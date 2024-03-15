@@ -1,9 +1,12 @@
 package com.ludo.study.studymatchingplatform.auth.controller.kakao;
 
+import java.io.IOException;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.ludo.study.studymatchingplatform.auth.common.AuthUserPayload;
@@ -19,7 +22,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-@RestController
+@Controller
 @RequiredArgsConstructor
 @Slf4j
 @RequestMapping("/auth/signup")
@@ -31,6 +34,7 @@ public class KakaoSignUpController {
 	private final CookieProvider cookieProvider;
 
 	@GetMapping("/kakao")
+	@Transactional
 	public String kakaoSignUp(RedirectAttributes redirectAttributes) {
 		redirectAttributes.addAttribute(
 				"response_type", "code");
@@ -42,14 +46,15 @@ public class KakaoSignUpController {
 	}
 
 	@GetMapping("/kakao/callback")
-	public UserResponse kakaoSignUpCallback(
+	public void kakaoSignUpCallback(
 			@RequestParam(name = "code") String authorizationCode,
-			final HttpServletResponse response) {
+			final HttpServletResponse response) throws IOException {
+		System.out.println("출력");
 		final User user = kakaoSignUpService.kakaoSignUp(authorizationCode);
 		final String accessToken = jwtTokenProvider.createAccessToken(AuthUserPayload.from(user));
 		final UserResponse userResponse = UserResponse.from(user);
 		cookieProvider.setAuthCookie(accessToken, response);
-		return userResponse;
+		response.sendRedirect("https://ludoapi.store");
 	}
 
 }

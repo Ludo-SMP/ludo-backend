@@ -1,9 +1,11 @@
 package com.ludo.study.studymatchingplatform.auth.controller.kakao;
 
+import java.io.IOException;
+
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.ludo.study.studymatchingplatform.auth.common.AuthUserPayload;
@@ -19,7 +21,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-@RestController
+@Controller
 @RequiredArgsConstructor
 @Slf4j
 @RequestMapping("/auth/login")
@@ -42,14 +44,14 @@ public class KakaoLoginController {
 	}
 
 	@GetMapping("/kakao/callback")
-	public UserResponse kakaoLoginCallback(
+	public void kakaoLoginCallback(
 			@RequestParam(name = "code") String authorizationCode,
-			final HttpServletResponse response) {
+			final HttpServletResponse response) throws IOException {
 		final User user = kakaoLoginService.login(authorizationCode);
 		final String accessToken = jwtTokenProvider.createAccessToken(AuthUserPayload.from(user));
 		final UserResponse userResponse = UserResponse.from(user);
 		cookieProvider.setAuthCookie(accessToken, response);
-		return userResponse;
+		response.sendRedirect("https://ludoapi.store");
 	}
 
 }
