@@ -1,5 +1,6 @@
 package com.ludo.study.studymatchingplatform.study.service.recruitment;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -49,7 +50,8 @@ public class RecruitmentService {
 											final Long studyId) {
 		final Study study = studyRepository.findByIdWithRecruitment(studyId)
 				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 스터디입니다."));
-
+		// 모집 마감을을 과거의 시간으로 설정할 경우 예외 발생
+		validateRecruitmentEndDateTime(request.getRecruitmentEndDateTime());
 		study.ensureRecruitmentWritableBy(user);
 
 		final Recruitment recruitment = request.toRecruitment(study);
@@ -60,6 +62,12 @@ public class RecruitmentService {
 		study.registerRecruitment(recruitment);
 
 		return new RecruitmentDetailsResponse(recruitment, study);
+	}
+
+	public void validateRecruitmentEndDateTime(final LocalDateTime recruitmentEndDateTime) {
+		if (recruitmentEndDateTime.isBefore(LocalDateTime.now())) {
+			throw new IllegalStateException("모집 마감일은 과거의 시간일 수 없습니다.");
+		}
 	}
 
 	public WriteRecruitmentStudyInfoResponse getStudyInfo(final User user, final Long studyId) {
@@ -127,6 +135,7 @@ public class RecruitmentService {
 		final StudyStatus studyStatus = recruitment.getStudy().getStatus();
 		applicant.ensureCancellable(studyStatus);
 		applicant.changeStatus(ApplicantStatus.CANCELLED);
+		applicant.softDelete();
 
 		return applicant;
 	}
