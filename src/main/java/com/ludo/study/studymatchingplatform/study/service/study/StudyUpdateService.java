@@ -33,7 +33,9 @@ public class StudyUpdateService {
 		study.ensureStudyEditable(user);
 		study.update(request.title(), category, request.participantLimit(), request.way(), request.platform(),
 				request.startDateTime(), request.endDateTime());
-		study.ensureModifiableStatus();
+
+		// 수정된 endDateTime이 현재 시간 이전일 경우 진행 완료 상태로 변경
+		study.modifyStatusToCompleted();
 
 		final Position ownerPosition = findPositionById(request.positionId());
 		final Participant participant = findParticipantByIds(study.getId(), user.getId());
