@@ -34,8 +34,10 @@ public class StudyCreateService {
 		final Category category = findCategoryById(request.categoryId());
 		final Study study = request.toStudy(user, category, request.platform());
 		final Position ownerPosition = findPositionById(request.positionId());
-		// startDateTime / endDateTime 에 따른 상태 변경
-		study.ensureModifiableStatus();
+
+		// 생성된 스터디의 endDateTime 이 현재보다 이전일 경우 진행 완료 상태로 변경
+		study.modifyStatusToCompleted();
+
 		studyRepository.save(study);
 		participantService.add(study, user, ownerPosition, Role.OWNER);
 		return StudyResponse.from(study);
