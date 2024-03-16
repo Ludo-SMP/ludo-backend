@@ -15,7 +15,6 @@ import com.ludo.study.studymatchingplatform.auth.repository.InMemoryClientRegist
 import com.ludo.study.studymatchingplatform.auth.service.kakao.KakaoLoginService;
 import com.ludo.study.studymatchingplatform.user.domain.user.Social;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
-import com.ludo.study.studymatchingplatform.user.service.dto.response.UserResponse;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -49,9 +48,9 @@ public class KakaoLoginController {
 			final HttpServletResponse response) throws IOException {
 		final User user = kakaoLoginService.login(authorizationCode);
 		final String accessToken = jwtTokenProvider.createAccessToken(AuthUserPayload.from(user));
-		final UserResponse userResponse = UserResponse.from(user);
 		cookieProvider.setAuthCookie(accessToken, response);
-		response.sendRedirect("https://ludoapi.store");
+		// response.sendRedirect("https://ludoapi.store");
+		response.sendRedirect("http://localhost:3000");
 	}
 
 }
