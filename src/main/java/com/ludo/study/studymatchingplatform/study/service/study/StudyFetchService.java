@@ -23,8 +23,8 @@ public class StudyFetchService {
 		if (!study.isParticipating(user)) {
 			throw new IllegalArgumentException("스터디원만 조회 가능합니다.");
 		}
-		// startDateTime / endDateTime 에 따른 상태 변경
-		study.ensureModifiableStatus();
+		// endDateTime 에 따른 진행 완료 상태 변경
+		study.modifyStatusToCompleted();
 		return StudyResponse.from(study);
 	}
 
