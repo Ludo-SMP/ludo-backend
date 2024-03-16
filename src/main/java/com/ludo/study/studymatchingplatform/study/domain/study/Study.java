@@ -266,7 +266,7 @@ public class Study extends BaseEntity {
 	}
 
 	public void modifyStatusToRecruiting() {
-		this.status = StudyStatus.RECRUITED;
+		this.status = StudyStatus.RECRUITING;
 	}
 
 	private void modifyStatusToRecruited(final LocalDateTime now) {
