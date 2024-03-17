@@ -49,10 +49,14 @@ public class User extends BaseEntity {
 	@Email
 	private String email;
 
-	public User(final Social social, final String nickname, final String email) {
+	@Column(nullable = false)
+	private String refresh;
+
+	public User(final Social social, final String nickname, final String email, final String refresh) {
 		this.social = social;
 		this.nickname = nickname;
 		this.email = email;
+		this.refresh = refresh;
 	}
 
 	public void setInitialDefaultNickname() {
@@ -72,6 +76,10 @@ public class User extends BaseEntity {
 
 	public boolean equalsNickname(final String nickname) {
 		return this.nickname.equals(nickname);
+	}
+
+	public void changeRefreshToken(final String refresh) {
+		this.refresh = refresh;
 	}
 
 }

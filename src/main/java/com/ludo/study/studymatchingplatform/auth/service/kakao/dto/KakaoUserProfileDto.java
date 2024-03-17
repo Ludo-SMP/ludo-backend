@@ -17,11 +17,12 @@ public record KakaoUserProfileDto(
 		return kakao_account.email();
 	}
 
-	public User toUser() {
+	public User toUser(final String refresh) {
 		return User.builder()
 				.social(Social.KAKAO)
 				.nickname(properties.nickname())
 				.email(kakao_account.email())
+				.refresh(refresh)
 				.build();
 	}
 

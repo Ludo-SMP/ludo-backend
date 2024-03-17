@@ -22,4 +22,14 @@ public class UserFixture {
 				.build();
 	}
 
+	public static User createUserWithId(Long userId, Social social, String nickname, String email, String refresh) {
+		return User.builder()
+				.id(userId)
+				.social(social)
+				.nickname(nickname)
+				.email(email)
+				.refresh(refresh)
+				.build();
+	}
+
 }
