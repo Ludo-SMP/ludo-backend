@@ -68,4 +68,8 @@ public class UserRepositoryImpl {
 		return userId != null;
 	}
 
+	public void deleteAll() {
+		userJpaRepository.deleteAll();
+	}
+
 }
