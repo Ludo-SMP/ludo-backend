@@ -2,6 +2,11 @@ spring:
   profiles:
     active: dev
 
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
   datasource:
     url: ${DB_URL}
     username: ${DB_USERNAME}
@@ -33,6 +38,7 @@ oauth2:
         login-redirect-uri: ${KAKAO_LOGIN_CALLBACK_URL}
         signup-redirect-uri: ${KAKAO_SIGNUP_CALLBACK_URL}
         authorization-grant-type: code
+        refresh-grant-type: refresh_token
       google:
         client-id: ${GOOGLE_CLIENT_ID}
         client-secret: ${GOOGLE_CLIENT_SECRET}

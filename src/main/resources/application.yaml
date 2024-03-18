@@ -3,6 +3,11 @@ spring:
     active: local
     default: local
 
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
   devtools:
     livereload:
       enabled: true
@@ -53,6 +58,7 @@ oauth2:
         token-uri: ${KAKAO_TOKEN_API}
         user-info-uri: ${KAKAO_USER_PROFILE_API}
         authorization-grant-type: authorization_code
+        refresh-grant-type: refresh_token
       google:
         authorization-uri: ${GOOGLE_LOGIN_API}
         token-uri: ${GOOGLE_TOKEN_API}
