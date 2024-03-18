@@ -41,6 +41,7 @@ public class JwtTokenProvider {
 	private Claims createClaims(final AuthUserPayload payload) {
 		final Claims claims = Jwts.claims();
 		claims.put("id", payload.getId());
+		claims.put("accessToken", payload.getAccessToken());
 		return claims;
 	}
 

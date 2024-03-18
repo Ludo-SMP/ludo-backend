@@ -13,21 +13,22 @@ import lombok.ToString;
 public final class AuthUserPayload {
 
 	private final Long id;
+	private final String accessToken;
 
 	public static AuthUserPayload from(final Claims claims) {
-		return new AuthUserPayload(claims.get("id", Long.class));
+		return new AuthUserPayload(claims.get("id", Long.class), claims.get("accessToken", String.class));
 	}
 
 	@Deprecated
-	public static AuthUserPayload from(final String userId) {
-		return new AuthUserPayload(Long.parseLong(userId));
+	public static AuthUserPayload from(final String userId, final String accessToken) {
+		return new AuthUserPayload(Long.parseLong(userId), accessToken);
 	}
 
-	public static AuthUserPayload from(final Long userId) {
-		return new AuthUserPayload(userId);
+	public static AuthUserPayload from(final Long userId, final String accessToken) {
+		return new AuthUserPayload(userId, accessToken);
 	}
 
-	public static AuthUserPayload from(final User user) {
-		return new AuthUserPayload(user.getId());
+	public static AuthUserPayload from(final User user, final String accessToken) {
+		return new AuthUserPayload(user.getId(), accessToken);
 	}
 }
