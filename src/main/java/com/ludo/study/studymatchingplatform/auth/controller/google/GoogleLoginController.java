@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.ludo.study.studymatchingplatform.auth.common.AuthUserPayload;
 import com.ludo.study.studymatchingplatform.auth.common.provider.CookieProvider;
 import com.ludo.study.studymatchingplatform.auth.common.provider.JwtTokenProvider;
 import com.ludo.study.studymatchingplatform.auth.repository.InMemoryClientRegistrationAndProviderRepository;
@@ -51,8 +50,8 @@ public class GoogleLoginController {
 			HttpServletResponse response
 	) {
 		final User user = googleLoginService.login(authorizationCode);
-		final String accessToken = jwtTokenProvider.createAccessToken(AuthUserPayload.from(user));
-		cookieProvider.setAuthCookie(accessToken, response);
+		// final String accessToken = jwtTokenProvider.createAccessToken(AuthUserPayload.from(user));
+		// cookieProvider.setAuthCookie(accessToken, response);
 
 		return ResponseEntity.ok()
 				.body(new LoginResponse(user.getId().toString(), user.getNickname(), user.getEmail()));

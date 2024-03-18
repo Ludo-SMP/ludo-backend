@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.ludo.study.studymatchingplatform.auth.common.AuthUserPayload;
 import com.ludo.study.studymatchingplatform.auth.common.provider.CookieProvider;
 import com.ludo.study.studymatchingplatform.auth.common.provider.JwtTokenProvider;
 import com.ludo.study.studymatchingplatform.auth.repository.InMemoryClientRegistrationAndProviderRepository;
@@ -50,8 +49,8 @@ public class GoogleSignUpController {
 	public ResponseEntity<SignupResponse> googleSignupback(
 			@RequestParam(name = "code") final String authorizationCode, final HttpServletResponse response) {
 		final User user = googleSignUpService.googleSignUp(authorizationCode);
-		final String accessToken = jwtTokenProvider.createAccessToken(AuthUserPayload.from(user));
-		cookieProvider.setAuthCookie(accessToken, response);
+		// final String accessToken = jwtTokenProvider.createAccessToken(AuthUserPayload.from(user));
+		// cookieProvider.setAuthCookie(accessToken, response);
 
 		return ResponseEntity.ok()
 				.body(new SignupResponse(true, "회원 가입에 성공했습니다."));
