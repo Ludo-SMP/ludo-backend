@@ -30,10 +30,30 @@ public class KakaoOAuthTokenRequestService {
 		return responseKakaoOAuthToken(tokenUri, headers, body);
 	}
 
+	public KakaoOAuthToken createRefreshOAuthToken(final String refreshToken) {
+		final String tokenUri = clientRegistrationAndProviderRepository.findTokenUri(Social.KAKAO);
+		final HttpHeaders headers = createHeaders();
+		final MultiValueMap<String, String> body = createRefreshBody(refreshToken);
+		return responseKakaoOAuthToken(tokenUri, headers, body);
+	}
+
 	private HttpHeaders createHeaders() {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 		return headers;
+	}
+
+	private MultiValueMap<String, String> createRefreshBody(final String refreshToken) {
+		final String clientId = clientRegistrationAndProviderRepository.findClientId(Social.KAKAO);
+		final String clientSecret = clientRegistrationAndProviderRepository.findClientSecret(Social.KAKAO);
+		final String grantType = clientRegistrationAndProviderRepository.findRefreshGrantType(Social.KAKAO);
+
+		MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+		body.add("grant_type", grantType);
+		body.add("client_id", clientId);
+		body.add("refresh_token", refreshToken);
+		body.add("client_secret", clientSecret);
+		return body;
 	}
 
 	private MultiValueMap<String, String> createBody(final String authorizationCode, final String redirectUri) {
