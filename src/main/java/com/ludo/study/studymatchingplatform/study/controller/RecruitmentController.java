@@ -102,7 +102,8 @@ public class RecruitmentController {
 	public RecruitmentDetailsResponse write(@PathVariable("studyId") final Long studyId,
 											@RequestBody final WriteRecruitmentRequest request,
 											@Parameter(hidden = true) @AuthUser final User user) {
-		return recruitmentService.write(user, request, studyId);
+		final Recruitment recruitment = recruitmentService.write(user, request, studyId);
+		return new RecruitmentDetailsResponse(recruitment, recruitment.getStudy());
 	}
 
 	@GetMapping("/studies/{studyId}/recruitments")
