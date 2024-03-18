@@ -41,7 +41,7 @@ public class KakaoSignUpController {
 			@RequestParam(name = "code") String authorizationCode,
 			final HttpServletResponse response) throws IOException {
 		kakaoSignUpService.kakaoSignUp(authorizationCode, response);
-		response.sendRedirect("http://localhost:3000");
+		response.sendRedirect("https://ludoapi.store/");
 	}
 
 }
