@@ -7,7 +7,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ludo.study.studymatchingplatform.auth.common.provider.CookieProvider;
+import com.ludo.study.studymatchingplatform.auth.service.kakao.KakaoRefreshService;
 import com.ludo.study.studymatchingplatform.study.controller.dto.response.BaseApiResponse;
+import com.ludo.study.studymatchingplatform.user.domain.user.User;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -20,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 public class AuthController {
 
 	private final CookieProvider cookieProvider;
+	private final KakaoRefreshService kakaoRefreshService;
 
 	@PostMapping("/auth/logout")
 	@ResponseStatus(HttpStatus.FOUND)
@@ -30,4 +33,16 @@ public class AuthController {
 		cookieProvider.clearAuthCookie(response);
 		return ResponseEntity.ok(BaseApiResponse.success(null));
 	}
+
+	@PostMapping("/auth/refresh")
+	@ResponseStatus(HttpStatus.CONTINUE)
+	@Operation(description = "현재 카카오 사용자 토큰 갱신")
+	@ApiResponse(description = "토큰 갱신", responseCode = "302")
+	public ResponseEntity kakaoRefresh(@Parameter(hidden = true) final HttpServletResponse response,
+									   @Parameter(hidden = true) @AuthUser User user) {
+		final String accessToken = kakaoRefreshService.refreshToRDB(user);
+		cookieProvider.setAuthCookie(accessToken, response);
+		return ResponseEntity.ok().build();
+	}
+
 }
