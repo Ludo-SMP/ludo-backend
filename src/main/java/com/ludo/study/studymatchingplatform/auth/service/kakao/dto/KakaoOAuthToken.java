@@ -19,6 +19,6 @@ public class KakaoOAuthToken {
 	private String refreshToken;
 
 	@JsonProperty("expires_in")
-	private Long expiresIn;
+	private Integer expiresIn;
 
 }

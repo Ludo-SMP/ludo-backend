@@ -58,7 +58,7 @@ class KakaoRefreshServiceTest {
 		for (int i = 1; i <= 10000; i++) {
 			final User user = UserFixture.createUserWithId((long)i, Social.KAKAO, "닉네임" + i,
 					"lee@kakao.com", "리프레시" + i);
-			final RefreshToken refreshToken = new RefreshToken((long)i, "리프레시" + i, 123435254L);
+			final RefreshToken refreshToken = new RefreshToken((long)i, "리프레시" + i, 123435254);
 			refreshTokenRepository.save(refreshToken);
 			userRepository.save(user);
 		}
@@ -122,7 +122,7 @@ class KakaoRefreshServiceTest {
 				.orElseThrow(() -> new NotFoundException("존재하지 않는 토큰 입니다."));
 		final KakaoOAuthTokenTestResponse token = createRefreshOAuthToken(refreshToken.getToken());
 		if (token.refreshToken() != null) {
-			refreshToken.update(token.refreshToken(), 213152345L);
+			refreshToken.update(token.refreshToken(), 213152345);
 			refreshTokenRepository.save(refreshToken);
 		}
 		return jwtTokenProvider.createAccessToken(AuthUserPayload.from(user, token.refreshToken()));

@@ -27,7 +27,7 @@ class RefreshTokenTest {
 	void redisConnectionTest() {
 		// given
 		final Long id = 1L;
-		RefreshToken refreshToken = new RefreshToken(id, "refreshToken", 12345556L);
+		RefreshToken refreshToken = new RefreshToken(id, "refreshToken", 12345556);
 
 		// when
 		refreshTokenRepository.save(refreshToken);
