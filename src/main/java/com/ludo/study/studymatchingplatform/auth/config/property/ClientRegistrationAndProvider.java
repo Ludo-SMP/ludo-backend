@@ -16,6 +16,7 @@ public class ClientRegistrationAndProvider {
 	private final String tokenUri;
 	private final String userInfoUri;
 	private final String authorizationGrantType;
+	private final String refreshGrantType;
 
 	public ClientRegistrationAndProvider(OAuthProperties.Registration registration, OAuthProperties.Provider provider) {
 		this.clientId = registration.getClientId();
@@ -27,6 +28,7 @@ public class ClientRegistrationAndProvider {
 		this.tokenUri = provider.getTokenUri();
 		this.userInfoUri = provider.getUserInfoUri();
 		this.authorizationGrantType = provider.getAuthorizationGrantType();
+		this.refreshGrantType = provider.getRefreshGrantType();
 	}
 
 }

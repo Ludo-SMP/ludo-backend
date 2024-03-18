@@ -46,6 +46,10 @@ public class InMemoryClientRegistrationAndProviderRepository {
 		return findByName(social.getName()).getAuthorizationGrantType();
 	}
 
+	public String findRefreshGrantType(final Social social) {
+		return findByName(social.getName()).getRefreshGrantType();
+	}
+
 	private ClientRegistrationAndProvider findByName(final String name) {
 		return providers.get(name);
 	}
