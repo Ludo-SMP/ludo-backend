@@ -31,6 +31,7 @@ public class ServletFilterConfig {
 	private void addAuthenticationEndpoints(FilterRegistrationBean<Filter> filterRegistrationBean) {
 		filterRegistrationBean.addUrlPatterns("/api/users/*");
 		filterRegistrationBean.addUrlPatterns("/api/studies/*");
+		filterRegistrationBean.addUrlPatterns("/api/auth/kakao/refresh");
 	}
 
 }

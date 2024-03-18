@@ -34,7 +34,7 @@ public class AuthController {
 		return ResponseEntity.ok(BaseApiResponse.success(null));
 	}
 
-	@PostMapping("/auth/refresh")
+	@PostMapping("/auth/kakao/refresh")
 	@ResponseStatus(HttpStatus.CONTINUE)
 	@Operation(description = "현재 카카오 사용자 토큰 갱신")
 	@ApiResponse(description = "토큰 갱신", responseCode = "302")
