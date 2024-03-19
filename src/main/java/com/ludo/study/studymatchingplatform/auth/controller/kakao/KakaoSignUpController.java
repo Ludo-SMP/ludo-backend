@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,7 +19,6 @@ import com.ludo.study.studymatchingplatform.auth.service.kakao.KakaoSignUpServic
 import com.ludo.study.studymatchingplatform.common.annotation.DataFieldName;
 import com.ludo.study.studymatchingplatform.user.domain.user.Social;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
-import com.ludo.study.studymatchingplatform.user.service.dto.response.UserResponse;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +36,7 @@ public class KakaoSignUpController {
 	private final CookieProvider cookieProvider;
 
 	@GetMapping("/kakao")
+	@Transactional
 	@ResponseStatus(HttpStatus.FOUND)
 	public String kakaoSignUp(RedirectAttributes redirectAttributes) {
 		redirectAttributes.addAttribute(
@@ -47,18 +48,16 @@ public class KakaoSignUpController {
 		return "redirect:" + clientRegistrationAndProviderRepository.findAuthorizationUri(Social.KAKAO);
 	}
 
-	@GetMapping("/kakao/callback")
-	@DataFieldName("user")
+  @DataFieldName("user")
 	@ResponseStatus(HttpStatus.FOUND)
-	public UserResponse kakaoSignUpCallback(
+	@GetMapping("/kakao/callback")
+	public void kakaoSignUpCallback(
 			@RequestParam(name = "code") String authorizationCode,
 			final HttpServletResponse response) throws IOException {
 		final User user = kakaoSignUpService.kakaoSignUp(authorizationCode);
 		final String accessToken = jwtTokenProvider.createAccessToken(AuthUserPayload.from(user));
-		final UserResponse userResponse = UserResponse.from(user);
 		cookieProvider.setAuthCookie(accessToken, response);
-		response.sendRedirect("https://local.ludoapi.store:3000");
-		return userResponse;
+		response.sendRedirect("https://ludoapi.store");
 	}
 
 }

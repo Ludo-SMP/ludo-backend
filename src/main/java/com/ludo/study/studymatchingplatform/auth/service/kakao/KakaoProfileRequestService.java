@@ -37,7 +37,7 @@ public class KakaoProfileRequestService {
 	private KakaoUserProfileDto requestUserProfile(final String userInfoUri, final HttpHeaders headers) {
 		return restTemplate.exchange(
 						userInfoUri,
-						HttpMethod.GET,
+						HttpMethod.POST,
 						new HttpEntity<>(headers),
 						KakaoUserProfileDto.class)
 				.getBody();

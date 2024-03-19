@@ -31,7 +31,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
-import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
@@ -98,7 +97,6 @@ public class Recruitment extends BaseEntity {
 	private Integer hits = 0;
 
 	@Column(nullable = false)
-	@FutureOrPresent
 	private LocalDateTime recruitmentEndDateTime;
 
 	@Column(nullable = false)

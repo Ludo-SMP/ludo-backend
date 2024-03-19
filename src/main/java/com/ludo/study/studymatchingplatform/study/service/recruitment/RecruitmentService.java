@@ -1,5 +1,6 @@
 package com.ludo.study.studymatchingplatform.study.service.recruitment;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -21,7 +22,6 @@ import com.ludo.study.studymatchingplatform.study.repository.study.StudyReposito
 import com.ludo.study.studymatchingplatform.study.service.dto.request.recruitment.EditRecruitmentRequest;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.recruitment.WriteRecruitmentRequest;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.recruitment.applicant.ApplyRecruitmentRequest;
-import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.RecruitmentDetailsResponse;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.WriteRecruitmentStudyInfoResponse;
 import com.ludo.study.studymatchingplatform.study.service.recruitment.position.RecruitmentPositionService;
 import com.ludo.study.studymatchingplatform.study.service.recruitment.stack.RecruitmentStackService;
@@ -45,11 +45,12 @@ public class RecruitmentService {
 	private final ApplicantRepositoryImpl applicantRepository;
 
 	@Transactional
-	public RecruitmentDetailsResponse write(final User user, final WriteRecruitmentRequest request,
-											final Long studyId) {
+	public Recruitment write(final User user, final WriteRecruitmentRequest request,
+							 final Long studyId) {
 		final Study study = studyRepository.findByIdWithRecruitment(studyId)
 				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 스터디입니다."));
-
+		// 모집 마감을을 과거의 시간으로 설정할 경우 예외 발생
+		validateRecruitmentEndDateTime(request.getRecruitmentEndDateTime());
 		study.ensureRecruitmentWritableBy(user);
 
 		final Recruitment recruitment = request.toRecruitment(study);
@@ -59,7 +60,16 @@ public class RecruitmentService {
 		recruitmentPositionService.addMany(recruitment, request.getPositionIds());
 		study.registerRecruitment(recruitment);
 
-		return new RecruitmentDetailsResponse(recruitment, study);
+		// 모집 공고 생성시 스터디 상태를 모집중으로 변경
+		study.modifyStatusToRecruiting();
+
+		return recruitment;
+	}
+
+	public void validateRecruitmentEndDateTime(final LocalDateTime recruitmentEndDateTime) {
+		if (recruitmentEndDateTime.isBefore(LocalDateTime.now())) {
+			throw new IllegalStateException("모집 마감일은 과거의 시간일 수 없습니다.");
+		}
 	}
 
 	public WriteRecruitmentStudyInfoResponse getStudyInfo(final User user, final Long studyId) {
@@ -127,6 +137,7 @@ public class RecruitmentService {
 		final StudyStatus studyStatus = recruitment.getStudy().getStatus();
 		applicant.ensureCancellable(studyStatus);
 		applicant.changeStatus(ApplicantStatus.CANCELLED);
+		applicant.softDelete();
 
 		return applicant;
 	}

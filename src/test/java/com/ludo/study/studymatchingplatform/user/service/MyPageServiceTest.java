@@ -1,153 +1,296 @@
 package com.ludo.study.studymatchingplatform.user.service;
 
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
+import static org.mockito.Mockito.*;
 
-@SpringBootTest
-@Transactional
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant.Applicant;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant.ApplicantStatus;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.position.Position;
+import com.ludo.study.studymatchingplatform.study.domain.study.Platform;
+import com.ludo.study.studymatchingplatform.study.domain.study.Study;
+import com.ludo.study.studymatchingplatform.study.domain.study.StudyStatus;
+import com.ludo.study.studymatchingplatform.study.domain.study.Way;
+import com.ludo.study.studymatchingplatform.study.domain.study.category.Category;
+import com.ludo.study.studymatchingplatform.study.domain.study.participant.Participant;
+import com.ludo.study.studymatchingplatform.study.domain.study.participant.Role;
+import com.ludo.study.studymatchingplatform.study.fixture.recruitment.RecruitmentFixture;
+import com.ludo.study.studymatchingplatform.study.fixture.recruitment.applicant.ApplicantFixture;
+import com.ludo.study.studymatchingplatform.study.fixture.recruitment.position.PositionFixture;
+import com.ludo.study.studymatchingplatform.study.fixture.study.StudyFixture;
+import com.ludo.study.studymatchingplatform.study.fixture.study.category.CategoryFixture;
+import com.ludo.study.studymatchingplatform.study.fixture.study.participant.ParticipantFixture;
+import com.ludo.study.studymatchingplatform.study.repository.recruitment.applicant.ApplicantRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.repository.study.StudyRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.repository.study.participant.ParticipantRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.position.PositionResponse;
+import com.ludo.study.studymatchingplatform.user.domain.user.Social;
+import com.ludo.study.studymatchingplatform.user.domain.user.User;
+import com.ludo.study.studymatchingplatform.user.fixture.user.UserFixture;
+import com.ludo.study.studymatchingplatform.user.service.dto.response.ApplicantRecruitmentResponse;
+import com.ludo.study.studymatchingplatform.user.service.dto.response.CompletedStudyResponse;
+import com.ludo.study.studymatchingplatform.user.service.dto.response.MyPageResponse;
+import com.ludo.study.studymatchingplatform.user.service.dto.response.ParticipateStudyResponse;
+import com.ludo.study.studymatchingplatform.user.service.dto.response.UserResponse;
+
+@ExtendWith(MockitoExtension.class)
 class MyPageServiceTest {
-	//
-	// @Autowired
-	// UserRepositoryImpl userRepository;
-	//
-	// @Autowired
-	// CategoryRepositoryImpl categoryRepository;
-	//
-	// @Autowired
-	// StudyRepositoryImpl studyRepository;
-	//
-	// @Autowired
-	// PositionRepositoryImpl positionRepository;
-	//
-	// @Autowired
-	// StackRepositoryImpl stackRepository;
-	//
-	// @Autowired
-	// StackCategoryRepositoryImpl stackCategoryRepository;
-	//
-	// @Autowired
-	// RecruitmentService recruitmentService;
-	//
-	// @Autowired
-	// ParticipantRepositoryImpl participantRepository;
-	//
-	// @Autowired
-	// ApplicantRepositoryImpl applicantRepository;
-	//
-	// @Autowired
-	// StudyStatusService studyStatusService;
-	//
-	// @Autowired
-	// RecruitmentRepositoryImpl recruitmentRepository;
-	//
-	// User createUser(final String nickname, final String email, final Social social) {
-	// 	return userRepository.save(
-	// 			User.builder()
-	// 					.nickname(nickname)
-	// 					.email(email)
-	// 					.social(social)
-	// 					.build());
-	// }
-	//
-	// Study createStudy(final User user) {
-	// 	Category category = categoryRepository.save(
-	// 			CategoryFixture.createCategory("testCategory"));
-	//
-	// 	return studyRepository.save(
-	// 			StudyFixture.createStudy(
-	// 					"study",
-	// 					category,
-	// 					user,
-	// 					4,
-	// 					Platform.GATHER
-	// 			)
-	// 	);
-	// }
-	//
-	// Recruitment createRecruitment(final User user, final Study study) {
-	// 	StackCategory stackCategory = stackCategoryRepository.save(
-	// 			StackCategoryFixture.createStackCategory("stackCategory")
-	// 	);
-	//
-	// 	Stack stack = stackRepository.save(
-	// 			StackFixture.createStack("stack", stackCategory)
-	// 	);
-	// 	Position position = positionRepository.save(
-	// 			PositionFixture.createPosition("position")
-	// 	);
-	//
-	// 	WriteRecruitmentRequest request = WriteRecruitmentRequest.builder()
-	// 			.studyId(study.getId())
-	// 			.title("recruitment")
-	// 			.content("I want to study")
-	// 			.stackIds(Set.of(stack.getId()))
-	// 			.positionIds(Set.of(position.getId()))
-	// 			.recruitmentLimit(4)
-	// 			.callUrl("x.com")
-	// 			.recruitmentEndDateTime(LocalDateTime.now().plusMonths(3))
-	// 			.build();
-	//
-	// 	return recruitmentService.write(user, request);
-	// }
-	//
-	// @Test
-	// @Transactional
-	// void 사용자는_마이페이지를_조회할_수_있어야_한다() {
-	// 	// given
-	// 	// 사용자1, 스터디1, 모집 공고1 생성
-	// 	User user1 = createUser("user1", "aaa@kakao.com", Social.KAKAO);
-	// 	Study study1 = createStudy(user1);
-	// 	Recruitment recruitment1 = createRecruitment(user1, study1);
-	//
-	// 	// 사용자2, 스터디2, 모집 공고2 생성
-	// 	User user2 = createUser("user2", "bbb@google.com", Social.GOOGLE);
-	// 	Study study2 = createStudy(user2);
-	// 	Recruitment recruitment2 = createRecruitment(user2, study2);
-	//
-	// 	// 사용자3, 스터디3, 모집 공고3 생성
-	// 	User user3 = createUser("user3", "ccc@naver.com", Social.NAVER);
-	// 	Study study3 = createStudy(user3);
-	// 	Recruitment recruitment3 = createRecruitment(user3, study3);
-	//
-	// 	// 사용자4, 스터디4, 모집 공고4 생성
-	// 	User user4 = createUser("user4", "ddd@naver.com", Social.NAVER);
-	// 	Study study4 = createStudy(user4);
-	// 	Recruitment recruitment4 = createRecruitment(user4, study4);
-	//
-	// 	// when
-	// 	// 사용자1 -> 스터디1 참여
-	// 	Position position1 = positionRepository.findById(1L);
-	// 	Participant participant1 = participantRepository.save(
-	// 			ParticipantFixture.createParticipant(study1, user1, position1, Role.OWNER)
-	// 	);
-	// 	study1.addParticipant(participant1);
-	//
-	// 	// 사용자1 -> 스터디2 참여
-	// 	Position position2 = positionRepository.findById(2L);
-	// 	Participant participant2 = participantRepository.save(
-	// 			ParticipantFixture.createParticipant(study2, user1, position2, Role.MEMBER)
-	// 	);
-	// 	study2.addParticipant(participant2);
-	//
-	// 	// 스터디2 완료됨 상태로 변경
-	// 	studyStatusService.changeStatus(updatedStudy2.getId(), StudyStatus.COMPLETED, user2);
-	//
-	// 	// 사용자1 -> 모집 공고3 지원
-	// 	Position position3 = positionRepository.findById(3L);
-	// 	recruitment3.addApplicant(applicantRepository.save(
-	// 			ApplicantFixture.createApplicant(recruitment3, user1, position3)));
-	//
-	// 	// 사용자1 -> 모집 공고4 지원
-	// 	Position position4 = positionRepository.findById(4L);
-	// 	recruitment4.addApplicant(applicantRepository.save(
-	// 			ApplicantFixture.createApplicant(recruitment4, user1, position4)));
-	//
-	// 	// then
-	// 	assertThat(study2.getParticipants()).hasSize(1);
-	// 	assertThat(study2.getParticipants()).hasSize(1);
-	// 	assertThat(study2.getStatus()).isEqualTo(StudyStatus.COMPLETED);
-	// 	assertThat(recruitment3.getApplicants()).hasSize(1);
-	// 	assertThat(recruitment4.getApplicants()).hasSize(1);
-	// }
+
+	@Mock
+	private StudyRepositoryImpl studyRepository;
+
+	@Mock
+	private ParticipantRepositoryImpl participantRepository;
+
+	@Mock
+	private ApplicantRepositoryImpl applicantRepository;
+
+	@InjectMocks
+	private MyPageService myPageService;
+
+	@DisplayName("[Success] 회원 가입 후 마이 페이지 조회시 해당 사용자의 정보와 비어있는 스터디 리스트를 반환한다.")
+	@Test
+	void retrieveMyPageInfoWithEmptyStudyList() {
+		// given
+		final User user = createUser(1L);
+		// when
+		final MyPageResponse myPageResponse = myPageService.retrieveMyPage(user);
+		// then
+		final MyPageResponse expectedResponse = new MyPageResponse(
+				new UserResponse.InnerUserResponse(1L, "닉네임", "이메일"),
+				List.of(), List.of(), List.of());
+
+		// 실제 객체와 expected 객체의 필드를 제귀적으로 비교한다.
+		// 프로덕션 코드에 테스트를 위한 코드가 포함되지 않도록 만들 수 있음
+		Assertions.assertThat(myPageResponse)
+				.usingRecursiveComparison()
+				.isEqualTo(expectedResponse);
+	}
+
+	@DisplayName("[Success] 스터디 생성 후 마이 페이지 조회시 참여중인 스터디 리스트에 생성한 항목을 포함한다.")
+	@Test
+	void retrieveMyPageInfoWithParticipatedStudies() {
+		// given
+		final User owner = createUser(1L);
+		final Category category = createCategory(1L);
+		final Position position = createPosition(1L);
+		final Study study = createStudy(1L, owner, category,
+				LocalDateTime.of(2024, 3, 18, 11, 11),
+				LocalDateTime.of(2024, 3, 21, 11, 11));
+		final Participant participantOwner = createParticipant(study, owner, position, Role.OWNER);
+		study.addParticipant(participantOwner);
+		final List<Participant> participants = study.getParticipants();
+
+		when(participantRepository.findByUserId(anyLong()))
+				.thenReturn(participants);
+
+		// when
+		final MyPageResponse myPageResponse = myPageService.retrieveMyPage(owner);
+
+		// then
+		final MyPageResponse expectedResponse = new MyPageResponse(
+				new UserResponse.InnerUserResponse(1L, "닉네임", "이메일"),
+				List.of(new ParticipateStudyResponse(1L, "타이틀",
+						new PositionResponse(1L, "포지션"), StudyStatus.RECRUITING,
+						LocalDateTime.of(2024, 3, 18, 11, 11),
+						LocalDateTime.of(2024, 3, 21, 11, 11),
+						1, Boolean.TRUE, Boolean.FALSE)), List.of(), List.of());
+
+		Assertions.assertThat(myPageResponse)
+				.usingRecursiveComparison()
+				.isEqualTo(expectedResponse);
+	}
+
+	@DisplayName("[Success] 모집 공고 지원 후 마이 페이지 조회시 내가 지원한 스터디 리스트에 해당 모집 공고 항목을 포함한다.")
+	@Test
+	void retrieveMyPageInfoWithApplicationRecruitments() {
+		// given
+		final User owner = createUser(1L);
+		final Category category = createCategory(1L);
+		final Position position = createPosition(1L);
+		final Study study = createStudy(1L, owner, category,
+				LocalDateTime.of(2024, 3, 18, 11, 11),
+				LocalDateTime.of(2024, 3, 21, 11, 11));
+		final Participant participantOwner = createParticipant(study, owner, position, Role.OWNER);
+		final Recruitment recruitment = createRecruitment(1L, study);
+		study.addParticipant(participantOwner);
+		study.registerRecruitment(recruitment);
+
+		final User member = createUser(2L);
+		final List<Applicant> applicants = createApplicants(recruitment, member, position);
+		recruitment.addApplicant(applicants.get(0));
+
+		when(applicantRepository.findMyPageApplyRecruitmentInfoByUserId(anyLong()))
+				.thenReturn(applicants);
+
+		// when
+		final MyPageResponse myPageResponse = myPageService.retrieveMyPage(member);
+
+		// then
+		final MyPageResponse expectedResponse = new MyPageResponse(
+				new UserResponse.InnerUserResponse(2L, "닉네임", "이메일"),
+				List.of(), List.of(new ApplicantRecruitmentResponse(1L, "모집 공고",
+				new PositionResponse(1L, "포지션"), ApplicantStatus.UNCHECKED)), List.of());
+
+		Assertions.assertThat(myPageResponse)
+				.usingRecursiveComparison()
+				.isEqualTo(expectedResponse);
+	}
+
+	@DisplayName("[Success] 참가한 스터디가 진행 완료된 경우 마이 페이지 조회시 진행 완료된 스터디 리스트로 항목을 이동한다.")
+	@Test
+	void retrieveMyPageInfoWithCompletedStudies() {
+		// given
+		final User owner = createUser(1L);
+		final Category category = createCategory(1L);
+		final Position position = createPosition(1L);
+		final Study study = createStudy(1L, owner, category,
+				LocalDateTime.of(2024, 3, 18, 11, 11),
+				LocalDateTime.of(2024, 3, 21, 11, 11));
+		final Participant participantOwner = createParticipant(study, owner, position, Role.OWNER);
+		study.addParticipant(participantOwner);
+
+		study.update("타이틀", category, 3, Way.ONLINE, Platform.GATHER,
+				LocalDateTime.of(2024, 3, 13, 11, 11),
+				LocalDateTime.of(2024, 3, 14, 11, 11));
+		study.modifyStatusToCompleted();
+		final List<Participant> completedStudies = study.getParticipants();
+
+		when(participantRepository.findCompletedStudyByUserId(anyLong()))
+				.thenReturn(completedStudies);
+
+		// when
+		final MyPageResponse myPageResponse = myPageService.retrieveMyPage(owner);
+
+		// then
+		final MyPageResponse expectedResponse = new MyPageResponse(
+				new UserResponse.InnerUserResponse(1L, "닉네임", "이메일"),
+				List.of(), List.of(), List.of(new CompletedStudyResponse(1L, "타이틀",
+				new PositionResponse(1L, "포지션"), StudyStatus.COMPLETED,
+				LocalDateTime.of(2024, 3, 13, 11, 11),
+				LocalDateTime.of(2024, 3, 14, 11, 11),
+				1, Boolean.TRUE, Boolean.FALSE)));
+
+		Assertions.assertThat(myPageResponse)
+				.usingRecursiveComparison()
+				.isEqualTo(expectedResponse);
+	}
+
+	@DisplayName("[Success] 스터디가 진행 기간 이전 모집 마감 상태로 변경된 경우"
+			+ " 마이 페이지 조회시 참여중인 스터디 리스트에 모집 마감 상태로 항목을 포함한다.")
+	@Test
+	void retrieveMyPageInfoWithParticipatedStudiesForRecruitedStatus() {
+		// given
+		final User owner = createUser(1L);
+		final Category category = createCategory(1L);
+		final Position position = createPosition(1L);
+		final Study study = createStudy(1L, owner, category,
+				LocalDateTime.of(2024, 3, 18, 11, 11),
+				LocalDateTime.of(2024, 3, 21, 11, 11));
+		final Participant participantOwner = createParticipant(study, owner, position, Role.OWNER);
+		study.addParticipant(participantOwner);
+		study.modifyStatus(StudyStatus.RECRUITED);
+		final List<Participant> participants = study.getParticipants();
+
+		when(participantRepository.findByUserId(anyLong()))
+				.thenReturn(participants);
+
+		// when
+		final MyPageResponse myPageResponse = myPageService.retrieveMyPage(owner);
+
+		// then
+		final MyPageResponse expectedResponse = new MyPageResponse(
+				new UserResponse.InnerUserResponse(1L, "닉네임", "이메일"),
+				List.of(new ParticipateStudyResponse(1L, "타이틀",
+						new PositionResponse(1L, "포지션"), StudyStatus.RECRUITED,
+						LocalDateTime.of(2024, 3, 18, 11, 11),
+						LocalDateTime.of(2024, 3, 21, 11, 11),
+						1, Boolean.TRUE, Boolean.FALSE)), List.of(), List.of());
+
+		Assertions.assertThat(myPageResponse)
+				.usingRecursiveComparison()
+				.isEqualTo(expectedResponse);
+	}
+
+	@DisplayName("[Success] 스터디가 진행 기간 동안 모집 마감 상태로 변경된 경우"
+			+ " 마이 페이지 조회시 참여중인 스터디 리스트에 진행중 상태로 항목을 포함한다.")
+	@Test
+	void retrieveMyPageInfoWithParticipatedStudiesForProgressStatus() {
+		// given
+		final User owner = createUser(1L);
+		final Category category = createCategory(1L);
+		final Position position = createPosition(1L);
+		final Study study = createStudy(1L, owner, category,
+				LocalDateTime.of(2024, 3, 15, 11, 11),
+				LocalDateTime.of(2024, 3, 21, 11, 11));
+		final Participant participantOwner = createParticipant(study, owner, position, Role.OWNER);
+		study.addParticipant(participantOwner);
+		study.modifyStatus(StudyStatus.RECRUITED);
+		final List<Participant> participants = study.getParticipants();
+
+		when(participantRepository.findByUserId(anyLong()))
+				.thenReturn(participants);
+
+		// when
+		final MyPageResponse myPageResponse = myPageService.retrieveMyPage(owner);
+
+		// then
+		final MyPageResponse expectedResponse = new MyPageResponse(
+				new UserResponse.InnerUserResponse(1L, "닉네임", "이메일"),
+				List.of(new ParticipateStudyResponse(1L, "타이틀",
+						new PositionResponse(1L, "포지션"), StudyStatus.PROGRESS,
+						LocalDateTime.of(2024, 3, 15, 11, 11),
+						LocalDateTime.of(2024, 3, 21, 11, 11),
+						1, Boolean.TRUE, Boolean.FALSE)), List.of(), List.of());
+
+		Assertions.assertThat(myPageResponse)
+				.usingRecursiveComparison()
+				.isEqualTo(expectedResponse);
+	}
+
+	private User createUser(final Long id) {
+		return UserFixture.createUserWithId(id, Social.KAKAO, "닉네임", "이메일");
+	}
+
+	private Category createCategory(final Long id) {
+		return CategoryFixture.createCategory(id, "카테고리");
+	}
+
+	private Study createStudy(final Long id, final User owner, final Category category,
+							  final LocalDateTime startDateTime, final LocalDateTime endDateTime) {
+		return StudyFixture.createStudy(
+				id, "타이틀", Way.ONLINE, category, owner, 1, 3,
+				startDateTime, endDateTime);
+
+	}
+
+	private Recruitment createRecruitment(final Long id, final Study study) {
+		return RecruitmentFixture.createRecruitment(
+				id, study, "모집 공고", "콘텐츠", 2, "URL", LocalDateTime.now().plusDays(1));
+	}
+
+	private Position createPosition(final Long id) {
+		return PositionFixture.createPosition(id, "포지션");
+	}
+
+	private Participant createParticipant(final Study study, final User user, final Position position,
+										  final Role role) {
+		return ParticipantFixture.createParticipant(study, user, position, role);
+	}
+
+	private List<Applicant> createApplicants(final Recruitment recruitment, final User user, final Position position) {
+		final Applicant applicant = ApplicantFixture.createApplicant(recruitment, user, position);
+		return List.of(applicant);
+	}
 
 }

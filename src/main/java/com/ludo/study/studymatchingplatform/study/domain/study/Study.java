@@ -257,23 +257,16 @@ public class Study extends BaseEntity {
 	}
 
 	public void modifyStatus(final StudyStatus status) {
-		// 모집 중 상태는 언제나 반영
-		if (status == StudyStatus.RECRUITING) {
-			this.status = StudyStatus.RECRUITING;
-		}
 		// 모집 마감 상태는 시간에 따라 다른 결과 반영
 		if (status == StudyStatus.RECRUITED) {
 			final LocalDateTime now = LocalDateTime.now();
 			modifyStatusToRecruited(now);
 			modifyStatusToProgress(now);
-			modifyStatusToCompleted(now);
 		}
 	}
 
-	public void ensureModifiableStatus() {
-		final LocalDateTime now = LocalDateTime.now();
-		modifyStatusToProgress(now);
-		modifyStatusToCompleted(now);
+	public void modifyStatusToRecruiting() {
+		this.status = StudyStatus.RECRUITING;
 	}
 
 	private void modifyStatusToRecruited(final LocalDateTime now) {
@@ -288,7 +281,8 @@ public class Study extends BaseEntity {
 		}
 	}
 
-	private void modifyStatusToCompleted(final LocalDateTime now) {
+	public void modifyStatusToCompleted() {
+		final LocalDateTime now = LocalDateTime.now();
 		if (this.endDateTime.isBefore(now)) {
 			this.status = StudyStatus.COMPLETED;
 		}
