@@ -82,7 +82,7 @@ class StudyApplicantsServiceTest {
 		// then
 		final ApplicantResponse expectedResponse = new ApplicantResponse(
 				new ApplicantStudyResponse(1L,
-						new UserResponse.InnerUserResponse(1L, "닉네임", "이메일"),
+						new UserResponse(1L, "닉네임", "이메일"),
 						StudyStatus.RECRUITING, "타이틀", 3, 1),
 				List.of(new ApplicantUserResponse(2L, "닉네임", "이메일",
 								new PositionResponse(1L, "포지션")),
@@ -118,7 +118,7 @@ class StudyApplicantsServiceTest {
 		// then
 		final ApplicantResponse expectedResponse = new ApplicantResponse(
 				new ApplicantStudyResponse(1L,
-						new UserResponse.InnerUserResponse(1L, "닉네임", "이메일"),
+						new UserResponse(1L, "닉네임", "이메일"),
 						StudyStatus.RECRUITING, "타이틀", 3, 1),
 				List.of()
 		);
@@ -160,7 +160,7 @@ class StudyApplicantsServiceTest {
 		// then
 		final ApplicantResponse expectedResponse = new ApplicantResponse(
 				new ApplicantStudyResponse(1L,
-						new UserResponse.InnerUserResponse(1L, "닉네임", "이메일"),
+						new UserResponse(1L, "닉네임", "이메일"),
 						StudyStatus.RECRUITING, "타이틀", 3, 2),
 				List.of(new ApplicantUserResponse(2L, "닉네임", "이메일",
 								new PositionResponse(1L, "포지션")),
@@ -199,7 +199,7 @@ class StudyApplicantsServiceTest {
 		// then
 		final ApplicantResponse expectedResponse = new ApplicantResponse(
 				new ApplicantStudyResponse(1L,
-						new UserResponse.InnerUserResponse(1L, "닉네임", "이메일"),
+						new UserResponse(1L, "닉네임", "이메일"),
 						StudyStatus.RECRUITING, "타이틀", 3, 2),
 				List.of()
 		);
