@@ -67,7 +67,7 @@ class MyPageServiceTest {
 		final MyPageResponse myPageResponse = myPageService.retrieveMyPage(user);
 		// then
 		final MyPageResponse expectedResponse = new MyPageResponse(
-				new UserResponse.InnerUserResponse(1L, "닉네임", "이메일"),
+				new UserResponse(1L, "닉네임", "이메일"),
 				List.of(), List.of(), List.of());
 
 		// 실제 객체와 expected 객체의 필드를 제귀적으로 비교한다.
@@ -99,7 +99,7 @@ class MyPageServiceTest {
 
 		// then
 		final MyPageResponse expectedResponse = new MyPageResponse(
-				new UserResponse.InnerUserResponse(1L, "닉네임", "이메일"),
+				new UserResponse(1L, "닉네임", "이메일"),
 				List.of(new ParticipateStudyResponse(1L, "타이틀",
 						new PositionResponse(1L, "포지션"), StudyStatus.RECRUITING,
 						LocalDateTime.of(2024, 3, 18, 11, 11),
@@ -138,7 +138,7 @@ class MyPageServiceTest {
 
 		// then
 		final MyPageResponse expectedResponse = new MyPageResponse(
-				new UserResponse.InnerUserResponse(2L, "닉네임", "이메일"),
+				new UserResponse(2L, "닉네임", "이메일"),
 				List.of(), List.of(new ApplicantRecruitmentResponse(1L, "모집 공고",
 				new PositionResponse(1L, "포지션"), ApplicantStatus.UNCHECKED)), List.of());
 
@@ -174,7 +174,7 @@ class MyPageServiceTest {
 
 		// then
 		final MyPageResponse expectedResponse = new MyPageResponse(
-				new UserResponse.InnerUserResponse(1L, "닉네임", "이메일"),
+				new UserResponse(1L, "닉네임", "이메일"),
 				List.of(), List.of(), List.of(new CompletedStudyResponse(1L, "타이틀",
 				new PositionResponse(1L, "포지션"), StudyStatus.COMPLETED,
 				LocalDateTime.of(2024, 3, 13, 11, 11),
@@ -210,7 +210,7 @@ class MyPageServiceTest {
 
 		// then
 		final MyPageResponse expectedResponse = new MyPageResponse(
-				new UserResponse.InnerUserResponse(1L, "닉네임", "이메일"),
+				new UserResponse(1L, "닉네임", "이메일"),
 				List.of(new ParticipateStudyResponse(1L, "타이틀",
 						new PositionResponse(1L, "포지션"), StudyStatus.RECRUITED,
 						LocalDateTime.of(2024, 3, 18, 11, 11),
@@ -246,7 +246,7 @@ class MyPageServiceTest {
 
 		// then
 		final MyPageResponse expectedResponse = new MyPageResponse(
-				new UserResponse.InnerUserResponse(1L, "닉네임", "이메일"),
+				new UserResponse(1L, "닉네임", "이메일"),
 				List.of(new ParticipateStudyResponse(1L, "타이틀",
 						new PositionResponse(1L, "포지션"), StudyStatus.PROGRESS,
 						LocalDateTime.of(2024, 3, 15, 11, 11),
