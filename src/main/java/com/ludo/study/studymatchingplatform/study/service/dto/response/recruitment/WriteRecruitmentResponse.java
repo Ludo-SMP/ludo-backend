@@ -10,67 +10,24 @@ import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitme
 import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.stack.StackResponse;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
-@Getter
-@RequiredArgsConstructor
-public class WriteRecruitmentResponse {
-
-	private final WriteRecruitment recruitment;
-
-	@Getter
-	@RequiredArgsConstructor
-	@Schema(description = "작성된 모집 공고")
-	static class WriteRecruitment {
-
-		@Schema(description = "모집 공고 id")
-		private final Long id;
-
-		@Schema(description = "모집 공고 작성자명")
-		private final String ownerNickname;
-
-		@Schema(description = "모집 공고 제목")
-		private final String title;
-
-		@Schema(description = "스터디 카테고리")
-		private final String category;
-
-		@Schema(description = "사용 스택 목록")
-		private final List<StackResponse> stacks;
-
-		@Schema(description = "모집 포지션 목록")
-		private final List<PositionResponse> positions;
-
-		@Schema(description = "사용할 미팅 플랫폼")
-		private final Platform platform;
-
-		@Schema(description = "지원자 수")
-		private final Integer applicantCount;
-
-		@Schema(description = "모집 마감 날짜")
-		private final LocalDateTime recruitmentEndDateTime;
-
-		@Schema(description = "스터디 시작 날짜")
-		private final LocalDateTime startDateTime;
-
-		@Schema(description = "스터디 종료 날짜")
-		private final LocalDateTime endDateTime;
-
-		@Schema(description = "모집 공고 생성 날짜")
-		private final LocalDateTime createdDateTime;
-
-		@Schema(description = "모집 공고 연락 방법")
-		private final Contact contact;
-
-		@Schema(description = "모집 공고 연락 URL")
-		private final String callUrl;
-
-		@Schema(description = "모집 공고 내용")
-		private final String content;
-
-	}
-
+@Schema(description = "작성된 모집 공고")
+public record WriteRecruitmentResponse(@Schema(description = "모집 공고 id") Long id,
+									   @Schema(description = "모집 공고 작성자명") String ownerNickname,
+									   @Schema(description = "모집 공고 제목") String title,
+									   @Schema(description = "스터디 카테고리") String category,
+									   @Schema(description = "사용 스택 목록") List<StackResponse> stacks,
+									   @Schema(description = "모집 포지션 목록") List<PositionResponse> positions,
+									   @Schema(description = "사용할 미팅 플랫폼") Platform platform,
+									   @Schema(description = "지원자 수") Integer applicantCount,
+									   @Schema(description = "모집 마감 날짜") LocalDateTime recruitmentEndDateTime,
+									   @Schema(description = "스터디 시작 날짜") LocalDateTime startDateTime,
+									   @Schema(description = "스터디 종료 날짜") LocalDateTime endDateTime,
+									   @Schema(description = "모집 공고 생성 날짜") LocalDateTime createdDateTime,
+									   @Schema(description = "모집 공고 연락 방법") Contact contact,
+									   @Schema(description = "모집 공고 연락 URL") String callUrl,
+									   @Schema(description = "모집 공고 내용") String content
+) {
 	public static WriteRecruitmentResponse from(final Recruitment recruitment) {
 		final List<StackResponse> stacks = recruitment.getRecruitmentStacks().stream()
 				.map(recruitmentStack -> StackResponse.from(recruitmentStack.getStack()))
@@ -79,7 +36,7 @@ public class WriteRecruitmentResponse {
 				.map(recruitmentPosition -> PositionResponse.from(recruitmentPosition.getPosition()))
 				.toList();
 
-		return new WriteRecruitmentResponse(new WriteRecruitment(
+		return new WriteRecruitmentResponse(
 				recruitment.getId(),
 				recruitment.getStudy().getOwnerNickname(),
 				recruitment.getTitle(),
@@ -95,6 +52,6 @@ public class WriteRecruitmentResponse {
 				recruitment.getContact(),
 				recruitment.getCallUrl(),
 				recruitment.getContent()
-		));
+		);
 	}
 }

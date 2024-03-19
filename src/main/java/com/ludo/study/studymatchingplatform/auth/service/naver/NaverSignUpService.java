@@ -3,7 +3,6 @@ package com.ludo.study.studymatchingplatform.auth.service.naver;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ludo.study.studymatchingplatform.auth.service.naver.dto.response.SignupResponse;
 import com.ludo.study.studymatchingplatform.auth.service.naver.vo.NaverOAuthToken;
 import com.ludo.study.studymatchingplatform.auth.service.naver.vo.UserProfile;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
@@ -20,14 +19,12 @@ public class NaverSignUpService {
 	private final UserRepositoryImpl userRepository;
 
 	@Transactional
-	public SignupResponse naverSignUp(final String authorizationCode) {
+	public User naverSignUp(final String authorizationCode) {
 		final NaverOAuthToken oAuthToken = naverOAuthTokenRequestService.createOAuthToken(authorizationCode);
 		final UserProfile userProfile = naverProfileRequestService.createNaverProfile(oAuthToken);
 
 		validateAlreadySignUp(userProfile);
-		signup(userProfile);
-
-		return new SignupResponse(true, "회원가입을 완료했습니다.");
+		return signup(userProfile);
 	}
 
 	private void validateAlreadySignUp(final UserProfile userProfile) {
@@ -37,9 +34,10 @@ public class NaverSignUpService {
 				});
 	}
 
-	private void signup(final UserProfile userProfile) {
+	private User signup(final UserProfile userProfile) {
 		User user = userRepository.save(userProfile.toUser());
 		user.setInitialDefaultNickname();
+		return user;
 	}
 
 }

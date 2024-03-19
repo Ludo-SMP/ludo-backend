@@ -2,11 +2,13 @@ package com.ludo.study.studymatchingplatform.auth.controller.kakao;
 
 import java.io.IOException;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.ludo.study.studymatchingplatform.auth.common.AuthUserPayload;
@@ -14,6 +16,7 @@ import com.ludo.study.studymatchingplatform.auth.common.provider.CookieProvider;
 import com.ludo.study.studymatchingplatform.auth.common.provider.JwtTokenProvider;
 import com.ludo.study.studymatchingplatform.auth.repository.InMemoryClientRegistrationAndProviderRepository;
 import com.ludo.study.studymatchingplatform.auth.service.kakao.KakaoSignUpService;
+import com.ludo.study.studymatchingplatform.common.annotation.DataFieldName;
 import com.ludo.study.studymatchingplatform.user.domain.user.Social;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 
@@ -34,6 +37,7 @@ public class KakaoSignUpController {
 
 	@GetMapping("/kakao")
 	@Transactional
+	@ResponseStatus(HttpStatus.FOUND)
 	public String kakaoSignUp(RedirectAttributes redirectAttributes) {
 		redirectAttributes.addAttribute(
 				"response_type", "code");
@@ -44,6 +48,8 @@ public class KakaoSignUpController {
 		return "redirect:" + clientRegistrationAndProviderRepository.findAuthorizationUri(Social.KAKAO);
 	}
 
+  @DataFieldName("user")
+	@ResponseStatus(HttpStatus.FOUND)
 	@GetMapping("/kakao/callback")
 	public void kakaoSignUpCallback(
 			@RequestParam(name = "code") String authorizationCode,
@@ -51,8 +57,7 @@ public class KakaoSignUpController {
 		final User user = kakaoSignUpService.kakaoSignUp(authorizationCode);
 		final String accessToken = jwtTokenProvider.createAccessToken(AuthUserPayload.from(user));
 		cookieProvider.setAuthCookie(accessToken, response);
-		// response.sendRedirect("https://ludoapi.store");
-		response.sendRedirect("http://localhost:3000");
+		response.sendRedirect("https://ludoapi.store");
 	}
 
 }

@@ -7,7 +7,7 @@ import com.ludo.study.studymatchingplatform.user.service.dto.response.UserRespon
 public record ApplicantStudyResponse(
 
 		Long id,
-		UserResponse.InnerUserResponse owner,
+		UserResponse owner,
 		StudyStatus status,
 		String title,
 		Integer participantLimit,
@@ -16,8 +16,8 @@ public record ApplicantStudyResponse(
 ) {
 
 	public static ApplicantStudyResponse from(final Study study) {
-		final UserResponse.InnerUserResponse ownerResponse =
-				UserResponse.InnerUserResponse.from(study.getOwner());
+		final UserResponse ownerResponse =
+				UserResponse.from(study.getOwner());
 		return new ApplicantStudyResponse(
 				study.getId(),
 				ownerResponse,
