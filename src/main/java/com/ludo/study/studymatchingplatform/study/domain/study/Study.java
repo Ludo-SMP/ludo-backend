@@ -256,10 +256,9 @@ public class Study extends BaseEntity {
 		participants.removeIf(p -> Objects.equals(p, participant));
 	}
 
-	public void modifyStatus(final StudyStatus status) {
+	public void modifyStatus(final StudyStatus status, final LocalDateTime now) {
 		// 모집 마감 상태는 시간에 따라 다른 결과 반영
 		if (status == StudyStatus.RECRUITED) {
-			final LocalDateTime now = LocalDateTime.now();
 			modifyStatusToRecruited(now);
 			modifyStatusToProgress(now);
 		}

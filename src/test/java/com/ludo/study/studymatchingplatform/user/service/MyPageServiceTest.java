@@ -199,7 +199,8 @@ class MyPageServiceTest {
 				LocalDateTime.of(2024, 3, 21, 11, 11));
 		final Participant participantOwner = createParticipant(study, owner, position, Role.OWNER);
 		study.addParticipant(participantOwner);
-		study.modifyStatus(StudyStatus.RECRUITED);
+		final LocalDateTime testDate = LocalDateTime.of(2024, 3, 15, 11, 11);
+		study.modifyStatus(StudyStatus.RECRUITED, testDate);
 		final List<Participant> participants = study.getParticipants();
 
 		when(participantRepository.findByUserId(anyLong()))
@@ -235,7 +236,8 @@ class MyPageServiceTest {
 				LocalDateTime.of(2024, 3, 21, 11, 11));
 		final Participant participantOwner = createParticipant(study, owner, position, Role.OWNER);
 		study.addParticipant(participantOwner);
-		study.modifyStatus(StudyStatus.RECRUITED);
+		final LocalDateTime testDate = LocalDateTime.of(2024, 3, 16, 11, 11);
+		study.modifyStatus(StudyStatus.RECRUITED, testDate);
 		final List<Participant> participants = study.getParticipants();
 
 		when(participantRepository.findByUserId(anyLong()))

@@ -1,5 +1,7 @@
 package com.ludo.study.studymatchingplatform.study.service.study;
 
+import java.time.LocalDateTime;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,7 +26,7 @@ public class StudyStatusService {
 		final Study study = studyRepository.findByIdWithRecruitment(studyId)
 				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 스터디 입니다."));
 		study.ensureStudyEditable(user);
-		study.modifyStatus(status);
+		study.modifyStatus(status, LocalDateTime.now());
 		hasRecruitment(study);
 		studyRepository.save(study);
 		return StudyResponse.from(study);
