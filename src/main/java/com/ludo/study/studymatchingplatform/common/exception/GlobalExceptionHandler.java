@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.ludo.study.studymatchingplatform.common.advice.CommonResponse;
-import com.ludo.study.studymatchingplatform.study.service.exception.NotFoundException;
 import com.ludo.study.studymatchingplatform.study.service.exception.AuthenticationException;
 import com.ludo.study.studymatchingplatform.study.service.exception.BusinessException;
+import com.ludo.study.studymatchingplatform.study.service.exception.NotFoundException;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -33,9 +33,23 @@ public final class GlobalExceptionHandler {
 		return toResponseEntity(e, HttpStatus.UNAUTHORIZED);
 	}
 
-	@ExceptionHandler(value = {BusinessException.class, IllegalArgumentException.class, IllegalStateException.class})
+	@ExceptionHandler(value = {BusinessException.class, IllegalStateException.class})
 	public ResponseEntity<CommonResponse> handleException(final IllegalArgumentException e) {
 		return toResponseEntity(e, HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(value = IllegalArgumentException.class)
+	public ResponseEntity duplicatedSignUp(IllegalArgumentException e,
+										   HttpServletResponse response) throws IOException {
+		response.sendRedirect("https://ludoapi.store");
+		return toResponseEntity(e, HttpStatus.CONFLICT);
+	}
+
+	@ExceptionHandler(value = NotFoundException.class)
+	public ResponseEntity noSignUpInformation(NotFoundException e,
+											  HttpServletResponse response) throws IOException {
+		response.sendRedirect("https://ludoapi.store");
+		return toResponseEntity(e, HttpStatus.NOT_FOUND);
 	}
 
 	private ResponseEntity toResponseEntity(final Exception e, final HttpStatus status) {
@@ -44,22 +58,6 @@ public final class GlobalExceptionHandler {
 		return new ResponseEntity<>(resp, status);
 	}
 
-	@ExceptionHandler(value = IllegalArgumentException.class)
-	public ResponseEntity<CommonResponse> duplicatedSignUp(IllegalArgumentException e,
-														   HttpServletResponse response) throws IOException {
-		final CommonResponse resp = CommonResponse.error(e.getMessage());
-		response.sendRedirect("https://ludoapi.store");
-		return new ResponseEntity<>(resp, HttpStatus.CONFLICT);
-	}
-
-	@ExceptionHandler(value = NotFoundException.class)
-	public ResponseEntity<CommonResponse> noSignUpInformation(NotFoundException e,
-															  HttpServletResponse response) throws IOException {
-		final CommonResponse resp = CommonResponse.error(e.getMessage());
-		response.sendRedirect("https://ludoapi.store");
-		return new ResponseEntity<>(resp, HttpStatus.NOT_FOUND);
-  }
-    
 	private void log(final Exception e) {
 		log.info("[] [Exception]: Kind: {}, Message: {}", e.getClass().getSimpleName(), e.getMessage());
 	}
