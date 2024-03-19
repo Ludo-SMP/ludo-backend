@@ -2,7 +2,7 @@ package com.ludo.study.studymatchingplatform.common;
 
 public enum ResourcePath {
 
-	STACK_IMAGE("/static/stack/images/", "/static/stack/images/**", "classpath:/static/stack/images/");
+	STACK_IMAGE("/api/static/stack/images/", "/api/static/stack/images/**", "classpath:/api/static/stack/images/");
 
 	private final String path;
 	private final String pathPattern;

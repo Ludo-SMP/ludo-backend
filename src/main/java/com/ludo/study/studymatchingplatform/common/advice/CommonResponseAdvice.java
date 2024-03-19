@@ -33,27 +33,29 @@ public final class CommonResponseAdvice implements ResponseBodyAdvice<Object> {
 								  final MediaType selectedContentType,
 								  final Class<? extends HttpMessageConverter<?>> selectedConverterType,
 								  final ServerHttpRequest request, final ServerHttpResponse response) {
-		if (isApi(request) && isOk(body)) {
-			final DataFieldName annotation = returnType.getMethodAnnotation(DataFieldName.class);
-			body = (annotation != null && body instanceof String) ? CommonResponse.success(annotation.value(), body) :
-					CommonResponse.success(body);
+		if (hasError(body) || isStatic(request) || isLocation(response)) {
+			return body;
 		}
+		final DataFieldName annotation = returnType.getMethodAnnotation(DataFieldName.class);
+		body = (annotation != null && body instanceof String) ? CommonResponse.success(annotation.value(), body) :
+				CommonResponse.success(body);
 		return body;
 	}
 
-	private boolean isApi(final ServerHttpRequest request) {
-		if (request.getHeaders().containsKey(HttpHeaders.LOCATION)) {
-			return false;
-		}
-		return request.getURI().getPath().startsWith("/api");
+	private boolean isStatic(final ServerHttpRequest request) {
+		return request.getURI().getPath().startsWith("/api/static");
 	}
 
-	private boolean isOk(final Object body) {
+	private boolean hasError(final Object body) {
 		if (CommonResponse.class.isAssignableFrom(body.getClass())) {
 			final CommonResponse resp = (CommonResponse)body;
 			return resp.isOk();
 		}
 		return true;
+	}
+
+	private boolean isLocation(final ServerHttpResponse response) {
+		return response.getHeaders().containsKey(HttpHeaders.LOCATION);
 	}
 
 }
