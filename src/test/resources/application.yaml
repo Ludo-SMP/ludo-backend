@@ -76,3 +76,7 @@ logging.level:
 
 server:
   port: ${PORT}
+
+springdoc:
+  swagger-ui:
+    path: /api/swagger-ui.html
