@@ -28,7 +28,6 @@ import com.ludo.study.studymatchingplatform.study.repository.study.StudyReposito
 import com.ludo.study.studymatchingplatform.study.repository.study.category.CategoryRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.study.participant.ParticipantRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.recruitment.applicant.StudyApplicantDecisionRequest;
-import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.applicant.ApplyAcceptResponse;
 import com.ludo.study.studymatchingplatform.user.domain.user.Social;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 import com.ludo.study.studymatchingplatform.user.fixture.user.UserFixture;

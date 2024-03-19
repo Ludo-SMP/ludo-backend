@@ -21,8 +21,8 @@ import com.ludo.study.studymatchingplatform.study.service.dto.request.recruitmen
 import com.ludo.study.studymatchingplatform.study.service.dto.request.study.StudyUpdateRequest;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.study.WriteStudyRequest;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.applicant.ApplicantResponse;
-import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.applicant.ApplyAcceptResponse;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.study.StudyResponse;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.study.participant.ParticipantUserResponse;
 import com.ludo.study.studymatchingplatform.study.service.recruitment.applicant.StudyApplicantDecisionService;
 import com.ludo.study.studymatchingplatform.study.service.study.StudyCreateService;
 import com.ludo.study.studymatchingplatform.study.service.study.StudyFetchService;
@@ -95,9 +95,9 @@ public class StudyController {
 	@DataFieldName("participant")
 	@Operation(description = "스터디 지원 수락")
 	@ApiResponse(description = "스터디 지원 수락 성공", responseCode = "200", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
-	public ApplyAcceptResponse applicantAccept(@Parameter(hidden = true) @AuthUser final User user,
-											   @PathVariable final Long studyId,
-											   @PathVariable Long applicantUserId) {
+	public ParticipantUserResponse applicantAccept(@Parameter(hidden = true) @AuthUser final User user,
+												   @PathVariable final Long studyId,
+												   @PathVariable Long applicantUserId) {
 
 		final StudyApplicantDecisionRequest studyApplicantDecisionRequest = new StudyApplicantDecisionRequest(studyId,
 				applicantUserId);
@@ -132,6 +132,7 @@ public class StudyController {
 	@ResponseStatus(HttpStatus.OK)
 	@Operation(description = "스터디 수정")
 	@ApiResponse(description = "스터디 수정 성공", responseCode = "200", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
+	@DataFieldName("study")
 	public StudyResponse update(@Parameter(hidden = true) @AuthUser final User user,
 								@PathVariable final Long studyId,
 								@RequestBody final StudyUpdateRequest request) {

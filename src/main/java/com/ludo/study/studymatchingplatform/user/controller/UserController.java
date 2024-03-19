@@ -3,7 +3,6 @@ package com.ludo.study.studymatchingplatform.user.controller;
 import java.io.IOException;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,8 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ludo.study.studymatchingplatform.auth.common.AuthUser;
 import com.ludo.study.studymatchingplatform.auth.common.Redirection;
 import com.ludo.study.studymatchingplatform.auth.common.provider.CookieProvider;
-import com.ludo.study.studymatchingplatform.study.controller.dto.response.BaseApiResponse;
-import com.ludo.study.studymatchingplatform.study.service.exception.BusinessException;
+import com.ludo.study.studymatchingplatform.common.annotation.DataFieldName;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 import com.ludo.study.studymatchingplatform.user.service.ChangeNicknameService;
 import com.ludo.study.studymatchingplatform.user.service.UserService;
@@ -60,6 +58,7 @@ public class UserController {
 	@ResponseStatus(HttpStatus.OK)
 	@Operation(description = "로그인 된 사용자 정보 조회")
 	@ApiResponse(description = "조회 성공", responseCode = "200", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
+	@DataFieldName("me")
 	public UserResponse getMe(@Parameter(hidden = true) @AuthUser final User user) {
 		return UserResponse.from(user);
 	}
@@ -68,20 +67,12 @@ public class UserController {
 	@ResponseStatus(HttpStatus.OK)
 	@Operation(description = "사용자 닉네임 변경")
 	@ApiResponse(description = "닉네임 변경 성공", responseCode = "200", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
-	public ResponseEntity<BaseApiResponse<ChangeUserNicknameResponse>> changeNickname(
+	@DataFieldName("user")
+	public ChangeUserNicknameResponse changeNickname(
 			@Parameter(hidden = true) @AuthUser final User user,
 			@RequestBody @Valid final ChangeUserNicknameRequest changeNickname) {
-
-		try {
-			final ChangeUserNicknameResponse response = changeNicknameService.changeUserNickname(user,
-					changeNickname.changeNickname());
-
-			return ResponseEntity.ok(BaseApiResponse.success(response));
-		} catch (BusinessException e) {
-
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-					.body(BaseApiResponse.fail(e.getMessage(), null));
-		}
+		return changeNicknameService.changeUserNickname(user,
+				changeNickname.changeNickname());
 	}
 
 }
