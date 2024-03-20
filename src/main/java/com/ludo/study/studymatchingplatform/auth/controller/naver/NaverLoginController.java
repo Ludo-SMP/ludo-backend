@@ -18,7 +18,6 @@ import com.ludo.study.studymatchingplatform.auth.service.naver.NaverLoginService
 import com.ludo.study.studymatchingplatform.common.annotation.DataFieldName;
 import com.ludo.study.studymatchingplatform.user.domain.user.Social;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
-import com.ludo.study.studymatchingplatform.user.service.dto.response.UserResponse;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -52,18 +51,15 @@ public class NaverLoginController {
 	@GetMapping("/naver/callback")
 	@ResponseStatus(HttpStatus.FOUND)
 	@DataFieldName("user")
-	public UserResponse naverLoginCallback(
+	public void naverLoginCallback(
 			@RequestParam(name = "code") final String authorizationCode,
 			final HttpServletResponse response) throws IOException {
 
 		final User user = naverLoginService.login(authorizationCode);
 		final String accessToken = jwtTokenProvider.createAccessToken(AuthUserPayload.from(user));
-		final UserResponse userResponse = UserResponse.from(user);
 
 		cookieProvider.setAuthCookie(accessToken, response);
-		response.sendRedirect("https://local.ludoapi.store:3000");
-
-		return userResponse;
+		response.sendRedirect("https://ludoapi.store");
 	}
 
 }
