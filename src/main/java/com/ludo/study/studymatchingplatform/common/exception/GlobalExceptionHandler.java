@@ -25,17 +25,22 @@ import lombok.extern.slf4j.Slf4j;
 public final class GlobalExceptionHandler {
 
 	@ExceptionHandler(value = Exception.class)
-	public ResponseEntity<CommonResponse> handleException(final Exception e) {
+	public ResponseEntity<CommonResponse> handleException(Exception e) {
 		return toResponseEntity(e, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
-	@ExceptionHandler(value = {AuthenticationException.class})
-	public ResponseEntity<CommonResponse> handleException(final AuthenticationException e) {
+	@ExceptionHandler(value = AuthenticationException.class)
+	public ResponseEntity<CommonResponse> handleException(AuthenticationException e) {
 		return toResponseEntity(e, HttpStatus.UNAUTHORIZED);
 	}
 
-	@ExceptionHandler(value = {BusinessException.class, IllegalStateException.class})
-	public ResponseEntity<CommonResponse> handleException(final BusinessException e) {
+	@ExceptionHandler(value = BusinessException.class)
+	public ResponseEntity<CommonResponse> handleException(BusinessException e) {
+		return toResponseEntity(e, HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(value = IllegalStateException.class)
+	public ResponseEntity<CommonResponse> handleException(IllegalStateException e) {
 		return toResponseEntity(e, HttpStatus.BAD_REQUEST);
 	}
 
@@ -53,7 +58,7 @@ public final class GlobalExceptionHandler {
 		return toResponseEntity(e, HttpStatus.NOT_FOUND);
 	}
 
-	private ResponseEntity<CommonResponse> toResponseEntity(final Exception e, final HttpStatus status) {
+	private ResponseEntity<CommonResponse> toResponseEntity(Exception e, HttpStatus status) {
 		final CommonResponse resp = CommonResponse.error(e.getMessage());
 		log(e);
 		return new ResponseEntity<>(resp, status);

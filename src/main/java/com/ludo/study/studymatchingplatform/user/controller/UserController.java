@@ -58,7 +58,7 @@ public class UserController {
 	@ResponseStatus(HttpStatus.OK)
 	@Operation(description = "로그인 된 사용자 정보 조회")
 	@ApiResponse(description = "조회 성공", responseCode = "200", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
-	@DataFieldName("me")
+	@DataFieldName("user")
 	public UserResponse getMe(@Parameter(hidden = true) @AuthUser final User user) {
 		return UserResponse.from(user);
 	}

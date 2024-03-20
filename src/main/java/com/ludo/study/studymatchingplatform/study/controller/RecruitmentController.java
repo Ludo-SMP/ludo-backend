@@ -77,7 +77,6 @@ public class RecruitmentController {
 
 	@GetMapping("/recruitments/{recruitmentId}")
 	@ResponseStatus(HttpStatus.OK)
-	@DataFieldName("recruitment")
 	@Operation(description = "특정 모집 공고 조회")
 	@ApiResponse(description = "조회 성공", responseCode = "200", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
 	public RecruitmentDetailsResponse readRecruitmentDetails(@PathVariable("recruitmentId") final Long recruitmentId) {
@@ -86,7 +85,6 @@ public class RecruitmentController {
 
 	@GetMapping("/recruitments/popular")
 	@ResponseStatus(HttpStatus.OK)
-	@DataFieldName("recruitments")
 	@Operation(description = "인기 있는 다수의 모집 공고 조회")
 	@ApiResponse(description = "조회 성공", responseCode = "200", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
 	public PopularRecruitmentsResponse readPopularRecruitments(@ModelAttribute PopularRecruitmentCond request) {
@@ -95,7 +93,6 @@ public class RecruitmentController {
 
 	@PostMapping("/studies/{studyId}/recruitments")
 	@ResponseStatus(HttpStatus.CREATED)
-	@DataFieldName("recruitment")
 	@Operation(description = "모집 공고 작성")
 	@ApiResponse(description = "모집 공고 작성 성공", responseCode = "201", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
 	public RecruitmentDetailsResponse write(@PathVariable("studyId") final Long studyId,
@@ -107,7 +104,7 @@ public class RecruitmentController {
 
 	@GetMapping("/studies/{studyId}/recruitments")
 	@ResponseStatus(HttpStatus.OK)
-	@DataFieldName("recruitment")
+	@DataFieldName("study")
 	@Operation(description = "모집 공고 생성시 필요한 간략한 스터디 정보")
 	@ApiResponse(description = "스터디 정보 조회 성공", responseCode = "200", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
 	public WriteRecruitmentStudyInfoResponse write(
@@ -135,7 +132,6 @@ public class RecruitmentController {
 
 	@PostMapping("/studies/{studyId}/recruitments/{recruitmentId}/apply")
 	@ResponseStatus(HttpStatus.OK)
-	@DataFieldName("recruitment")
 	@Operation(description = "모집 공고 지원")
 	@ApiResponse(description = "모집 공고 지원 성공", responseCode = "200", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
 	public ApplyRecruitmentResponse apply(@PathVariable("recruitmentId") final Long recruitmentId,
@@ -148,7 +144,8 @@ public class RecruitmentController {
 	@ResponseStatus(HttpStatus.OK)
 	@Operation(description = "모집 공고 삭제")
 	@ApiResponse(description = "모집 공고 삭제 성공", responseCode = "200", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
-	public void delete(@PathVariable Long studyId, @Parameter(hidden = true) @AuthUser final User user) {
+	public void delete(@PathVariable Long studyId,
+					   @Parameter(hidden = true) @AuthUser final User user) {
 		recruitmentService.delete(user, studyId);
 	}
 

@@ -130,9 +130,9 @@ public class StudyController {
 
 	@PutMapping("/{studyId}")
 	@ResponseStatus(HttpStatus.OK)
+	@DataFieldName("study")
 	@Operation(description = "스터디 수정")
 	@ApiResponse(description = "스터디 수정 성공", responseCode = "200", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
-	@DataFieldName("study")
 	public StudyResponse update(@Parameter(hidden = true) @AuthUser final User user,
 								@PathVariable final Long studyId,
 								@RequestBody final StudyUpdateRequest request) {

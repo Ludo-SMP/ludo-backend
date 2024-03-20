@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ludo.study.studymatchingplatform.auth.common.AuthUser;
-import com.ludo.study.studymatchingplatform.common.annotation.DataFieldName;
 import com.ludo.study.studymatchingplatform.study.service.recruitment.RecruitmentService;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 import com.ludo.study.studymatchingplatform.user.service.MyPageService;
@@ -27,7 +26,6 @@ public class MyPageController {
 	private final RecruitmentService recruitmentService;
 
 	@GetMapping("/users/mypage")
-	@DataFieldName("user")
 	@Operation(description = "로그인 된 사용자 정보 조회")
 	@ApiResponse(description = "조회 성공", responseCode = "200", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
 	public MyPageResponse retrieveMyPage(@CookieValue(name = "Authorization") final String auth,
@@ -36,7 +34,6 @@ public class MyPageController {
 	}
 
 	@DeleteMapping("/users/recruitments/{recruitmentId}/apply-history")
-	@DataFieldName("user")
 	@Operation(description = "모집 공고 지원 기록 삭제")
 	@ApiResponse(description = "조회 성공", responseCode = "200", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
 	public void deleteApplyHistory(@PathVariable Long recruitmentId,

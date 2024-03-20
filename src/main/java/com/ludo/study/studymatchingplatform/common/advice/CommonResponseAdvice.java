@@ -37,7 +37,7 @@ public final class CommonResponseAdvice implements ResponseBodyAdvice<Object> {
 			return body;
 		}
 		final DataFieldName annotation = returnType.getMethodAnnotation(DataFieldName.class);
-		body = (annotation != null && body instanceof String) ? CommonResponse.success(annotation.value(), body) :
+		body = (annotation != null) ? CommonResponse.success(annotation.value(), body) :
 				CommonResponse.success(body);
 		return body;
 	}

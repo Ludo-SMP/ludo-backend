@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ludo.study.studymatchingplatform.common.annotation.DataFieldName;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.stack.Stack;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.stack.StackCategory;
 import com.ludo.study.studymatchingplatform.study.repository.recruitment.stack.StackCategoryRepositoryImpl;
@@ -30,7 +29,6 @@ public class StackController {
 
 	@GetMapping("/stacks")
 	@ResponseStatus(HttpStatus.OK)
-	@DataFieldName("stacks")
 	@Operation(description = "기술 스택 조회")
 	@ApiResponse(description = "기술 스택 조회 성공", responseCode = "200", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
 	public StackResponses getStacks() {
