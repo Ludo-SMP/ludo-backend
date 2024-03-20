@@ -35,6 +35,7 @@ public class ParticipantRepositoryImpl {
 	public List<Participant> findByUserId(final Long id) {
 		return q.selectFrom(participant)
 				.where(participant.user.id.eq(id))
+				.where(participant.deletedDateTime.isNull())
 				.where(participant.study.status.ne(StudyStatus.COMPLETED))
 				.fetch();
 	}
@@ -42,6 +43,7 @@ public class ParticipantRepositoryImpl {
 	public List<Participant> findCompletedStudyByUserId(final Long id) {
 		return q.selectFrom(participant)
 				.where(participant.user.id.eq(id))
+				.where(participant.deletedDateTime.isNull())
 				.where(participant.study.status.eq(StudyStatus.COMPLETED))
 				.fetch();
 	}

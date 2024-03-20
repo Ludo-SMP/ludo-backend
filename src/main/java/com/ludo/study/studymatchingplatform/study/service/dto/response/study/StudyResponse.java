@@ -36,6 +36,7 @@ public record StudyResponse(
 
 	public static StudyResponse from(final Study study) {
 		final List<ParticipantUserResponse> participants = study.getParticipants().stream()
+				.filter(participant -> participant.getDeletedDateTime() == null)
 				.map(ParticipantUserResponse::from)
 				.toList();
 
