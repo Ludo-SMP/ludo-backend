@@ -47,11 +47,7 @@ public final class CommonResponseAdvice implements ResponseBodyAdvice<Object> {
 	}
 
 	private boolean hasError(final Object body) {
-		if (CommonResponse.class.isAssignableFrom(body.getClass())) {
-			final CommonResponse resp = (CommonResponse)body;
-			return resp.isOk();
-		}
-		return true;
+		return CommonResponse.class.isAssignableFrom(body.getClass());
 	}
 
 	private boolean isLocation(final ServerHttpResponse response) {

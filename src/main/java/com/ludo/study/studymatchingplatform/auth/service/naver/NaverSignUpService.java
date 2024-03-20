@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ludo.study.studymatchingplatform.auth.service.naver.vo.NaverOAuthToken;
 import com.ludo.study.studymatchingplatform.auth.service.naver.vo.UserProfile;
+import com.ludo.study.studymatchingplatform.study.service.exception.DuplicatedSignUpException;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 import com.ludo.study.studymatchingplatform.user.repository.user.UserRepositoryImpl;
 
@@ -30,7 +31,7 @@ public class NaverSignUpService {
 	private void validateAlreadySignUp(final UserProfile userProfile) {
 		userRepository.findByEmail(userProfile.getEmail())
 				.ifPresent(user -> {
-					throw new IllegalArgumentException("이미 가입되어 있는 회원입니다.");
+					throw new DuplicatedSignUpException("이미 가입되어 있는 회원입니다.");
 				});
 	}
 
