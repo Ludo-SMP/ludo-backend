@@ -139,7 +139,7 @@ class MyPageServiceTest {
 		// then
 		final MyPageResponse expectedResponse = new MyPageResponse(
 				new UserResponse(2L, "닉네임", "이메일"),
-				List.of(), List.of(new ApplicantRecruitmentResponse(1L, "모집 공고",
+				List.of(), List.of(new ApplicantRecruitmentResponse(1L, 1L, "모집 공고",
 				new PositionResponse(1L, "포지션"), ApplicantStatus.UNCHECKED)), List.of());
 
 		Assertions.assertThat(myPageResponse)
