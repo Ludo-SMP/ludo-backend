@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ludo.study.studymatchingplatform.auth.repository.InMemoryClientRegistrationAndProviderRepository;
 import com.ludo.study.studymatchingplatform.auth.service.kakao.dto.KakaoOAuthToken;
 import com.ludo.study.studymatchingplatform.auth.service.kakao.dto.KakaoUserProfileDto;
+import com.ludo.study.studymatchingplatform.study.service.exception.DuplicatedSignUpException;
 import com.ludo.study.studymatchingplatform.user.domain.user.Social;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 import com.ludo.study.studymatchingplatform.user.repository.user.UserRepositoryImpl;
@@ -37,7 +38,7 @@ public class KakaoSignUpService {
 	private void validateAlreadySignUp(final KakaoUserProfileDto userInfo) {
 		userRepository.findByEmail(userInfo.getEmail())
 				.ifPresent(user -> {
-					throw new IllegalArgumentException("이미 가입되어 있는 회원입니다.");
+					throw new DuplicatedSignUpException("이미 가입되어 있는 회원입니다.");
 				});
 	}
 

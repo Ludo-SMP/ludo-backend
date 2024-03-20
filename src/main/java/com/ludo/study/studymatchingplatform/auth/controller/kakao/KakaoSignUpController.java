@@ -48,7 +48,7 @@ public class KakaoSignUpController {
 		return "redirect:" + clientRegistrationAndProviderRepository.findAuthorizationUri(Social.KAKAO);
 	}
 
-  @DataFieldName("user")
+	@DataFieldName("user")
 	@ResponseStatus(HttpStatus.FOUND)
 	@GetMapping("/kakao/callback")
 	public void kakaoSignUpCallback(

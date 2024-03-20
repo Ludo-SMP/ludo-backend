@@ -46,9 +46,9 @@ public class KakaoLoginController {
 		return "redirect:" + clientRegistrationAndProviderRepository.findAuthorizationUri(Social.KAKAO);
 	}
 
-  @DataFieldName("user")
+	@DataFieldName("user")
 	@GetMapping("/kakao/callback")
-  @ResponseStatus(HttpStatus.FOUND)
+	@ResponseStatus(HttpStatus.FOUND)
 	public void kakaoLoginCallback(
 			@RequestParam(name = "code") String authorizationCode,
 			final HttpServletResponse response) throws IOException {
