@@ -66,7 +66,3 @@ client:
 
 server:
   port: ${PORT}
-
-springdoc:
-  swagger-ui:
-    path: /api/swagger-ui.html

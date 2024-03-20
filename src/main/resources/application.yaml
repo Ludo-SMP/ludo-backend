@@ -63,8 +63,8 @@ jwt:
     access-token-expiresin: ${JWT_ACCESS_TOKEN_EXPIRES_IN}
 
 client:
-  scheme: http
-  domain: localhost
+  scheme: https
+  domain: local.ludoapi.store
   port: 3000
   url: ${client.scheme}://${client.domain}:${client.port}
 
@@ -74,7 +74,3 @@ logging.level:
 
 server:
   port: ${PORT}
-
-springdoc:
-  swagger-ui:
-    path: /api/swagger-ui.html
