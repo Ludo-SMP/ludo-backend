@@ -102,8 +102,8 @@ class StudyApplicantDecisionServiceTest {
 
 		// then
 		assertApplyAcceptResponse(applyAcceptResponse, other);
-		Applicant findApplicant = applicantRepository.find(recruitment.getId(), other.getId()).get();
-		assertApplicantStatus(findApplicant, ApplicantStatus.ACCEPTED);
+		// Applicant findApplicant = applicantRepository.find(recruitment.getId(), other.getId()).get();
+		assertApplicantStatus(applicant, ApplicantStatus.ACCEPTED);
 
 		Optional<Participant> findParticipant = participantRepository.find(study.getId(), other.getId());
 		assertParticipant(findParticipant, other, study);
@@ -139,8 +139,8 @@ class StudyApplicantDecisionServiceTest {
 		applicantDecisionService.applicantReject(owner, studyApplicantDecisionRequest);
 
 		// then
-		Applicant findApplicant = applicantRepository.find(recruitment.getId(), other.getId()).get();
-		assertApplicantStatus(findApplicant, ApplicantStatus.REFUSED);
+		// Applicant findApplicant = applicantRepository.find(recruitment.getId(), other.getId()).get();
+		assertApplicantStatus(applicant, ApplicantStatus.REFUSED);
 	}
 
 	private void assertApplyAcceptResponse(ParticipantUserResponse applyAcceptResponse, User other) {
