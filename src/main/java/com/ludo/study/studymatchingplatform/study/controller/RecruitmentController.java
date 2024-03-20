@@ -56,7 +56,6 @@ public class RecruitmentController {
 
 	@GetMapping("/recruitments")
 	@ResponseStatus(HttpStatus.OK)
-	@DataFieldName("recruitments")
 	@Operation(description = "여러 모집 공고 조회")
 	@ApiResponse(description = "조회 성공", responseCode = "200", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
 	public RecruitmentPreviewResponses readRecruitments(
