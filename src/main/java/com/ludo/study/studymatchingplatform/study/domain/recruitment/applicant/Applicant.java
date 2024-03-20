@@ -17,6 +17,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,6 +30,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Table(name = "recruitment_user_lnk")
 public class Applicant extends BaseEntity {
 
 	@EmbeddedId
@@ -36,14 +38,14 @@ public class Applicant extends BaseEntity {
 	private ApplicantId id = new ApplicantId();
 
 	@ManyToOne(fetch = LAZY)
-	@MapsId("userId")
-	@JoinColumn(name = "user_id")
-	private User user;
-
-	@ManyToOne(fetch = LAZY)
 	@MapsId("recruitmentId")
 	@JoinColumn(name = "recruitment_id")
 	private Recruitment recruitment;
+
+	@ManyToOne(fetch = LAZY)
+	@MapsId("userId")
+	@JoinColumn(name = "user_id")
+	private User user;
 
 	@ManyToOne
 	@JoinColumn(name = "position_id")

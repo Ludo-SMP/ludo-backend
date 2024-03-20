@@ -18,6 +18,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,6 +31,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Table(name = "study_user_lnk")
 public class Participant extends BaseEntity {
 
 	@EmbeddedId
@@ -38,18 +40,12 @@ public class Participant extends BaseEntity {
 
 	@ManyToOne(fetch = LAZY)
 	@MapsId("studyId")
-	@JoinColumn(
-			name = "study_id",
-			nullable = false
-	)
+	@JoinColumn(name = "study_id", nullable = false)
 	private Study study;
 
 	@ManyToOne(fetch = LAZY)
 	@MapsId("userId")
-	@JoinColumn(
-			name = "user_id",
-			nullable = false
-	)
+	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
 
 	@Enumerated(EnumType.STRING)
