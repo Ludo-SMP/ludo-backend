@@ -340,8 +340,8 @@ public class Recruitment extends BaseEntity {
 	public void rejectApplicant(final User applicantUser) {
 		final Applicant applicant = getApplicant(applicantUser);
 		applicant.changeStatus(ApplicantStatus.REFUSED);
-		// 지원자 거절시 소프트 딜리트 추가
-		applicant.softDelete();
+		// 지원자 거절시 소프트 딜리트 제거
+		// applicant.softDelete();
 	}
 
 	public Applicant getApplicant(final User applicantUser) {
