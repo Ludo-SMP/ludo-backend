@@ -1,5 +1,6 @@
 package com.ludo.study.studymatchingplatform.study.repository.study.category;
 
+
 import static com.ludo.study.studymatchingplatform.study.domain.study.category.QCategory.*;
 
 import java.util.Optional;
