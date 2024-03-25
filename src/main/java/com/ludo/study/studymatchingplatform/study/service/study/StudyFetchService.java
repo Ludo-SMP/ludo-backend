@@ -1,5 +1,7 @@
 package com.ludo.study.studymatchingplatform.study.service.study;
 
+import java.time.LocalDateTime;
+
 import org.springframework.stereotype.Service;
 
 import com.ludo.study.studymatchingplatform.study.domain.study.Study;
@@ -24,7 +26,8 @@ public class StudyFetchService {
 			throw new IllegalArgumentException("스터디원만 조회 가능합니다.");
 		}
 		// endDateTime 에 따른 진행 완료 상태 변경
-		study.modifyStatusToCompleted();
+		final LocalDateTime now = LocalDateTime.now();
+		study.modifyStatusToCompleted(now);
 		return StudyResponse.from(study);
 	}
 
