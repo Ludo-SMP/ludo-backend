@@ -150,11 +150,4 @@ public class RecruitmentService {
 		recruitmentRepository.save(study.getRecruitment());
 	}
 
-	public void deleteApplyHistory(final User user, final Long recruitmentId) {
-		final Applicant applicant = applicantRepository.find(recruitmentId, user.getId())
-				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 지원 기록 입니다."));
-		applicant.softDelete();
-		applicantRepository.save(applicant);
-	}
-
 }
