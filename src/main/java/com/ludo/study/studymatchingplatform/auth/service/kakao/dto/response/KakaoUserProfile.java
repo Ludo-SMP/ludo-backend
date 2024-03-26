@@ -22,7 +22,6 @@ public class KakaoUserProfile {
 	@ToString
 	public static class Response {
 		private String id;
-		private String nickname;
 		private String email;
 	}
 
@@ -33,7 +32,6 @@ public class KakaoUserProfile {
 	public User toUser() {
 		return User.builder()
 				.social(Social.NAVER)
-				.nickname(response.nickname)
 				.email(response.email)
 				.build();
 	}
