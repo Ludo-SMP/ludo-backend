@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ludo.study.studymatchingplatform.auth.service.google.vo.GoogleOAuthToken;
 import com.ludo.study.studymatchingplatform.auth.service.google.vo.GoogleUserProfile;
+import com.ludo.study.studymatchingplatform.study.service.exception.DuplicatedSignUpException;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 import com.ludo.study.studymatchingplatform.user.repository.user.UserRepositoryImpl;
 
@@ -32,7 +33,7 @@ public class GoogleSignUpService {
 	private void validateAlreadySignUp(final GoogleUserProfile userInfo) {
 		userRepository.findByEmail(userInfo.getEmail())
 				.ifPresent(user -> {
-					throw new IllegalArgumentException("이미 가입되어 있는 회원입니다.");
+					throw new DuplicatedSignUpException("이미 가입되어 있는 회원입니다.");
 				});
 	}
 

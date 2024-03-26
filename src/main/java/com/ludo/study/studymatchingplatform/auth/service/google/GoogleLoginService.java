@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 
 import com.ludo.study.studymatchingplatform.auth.service.google.vo.GoogleOAuthToken;
 import com.ludo.study.studymatchingplatform.auth.service.google.vo.GoogleUserProfile;
+import com.ludo.study.studymatchingplatform.study.service.exception.NotFoundException;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 import com.ludo.study.studymatchingplatform.user.repository.user.UserRepositoryImpl;
 
@@ -31,7 +32,7 @@ public class GoogleLoginService {
 
 	private User validateNotSignUp(final GoogleUserProfile userInfo) {
 		return userRepository.findByEmail(userInfo.getEmail())
-				.orElseThrow(() -> new IllegalArgumentException("가입되어 있지 않은 회원입니다."));
+				.orElseThrow(() -> new NotFoundException("가입되어 있지 않은 회원입니다."));
 	}
 
 }
