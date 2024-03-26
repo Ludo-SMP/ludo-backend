@@ -37,7 +37,7 @@ public class GoogleSignUpController {
 
 	@GetMapping("/google")
 	@ResponseStatus(HttpStatus.FOUND)
-	public void googleSignup(final RedirectAttributes redirectAttributes, final HttpServletResponse response) throws
+	public String googleSignup(final RedirectAttributes redirectAttributes, final HttpServletResponse response) throws
 			IOException {
 		redirectAttributes.addAttribute(
 				"response_type", "code");
@@ -49,7 +49,7 @@ public class GoogleSignUpController {
 		// 		"https://www.googleapis.com/auth/userinfo.email,https://www.googleapis.com/auth/userinfo.profile");
 		redirectAttributes.addAttribute("scope", "email profile");
 
-		response.sendRedirect(clientRegistrationAndProviderRepository.findAuthorizationUri(Social.GOOGLE));
+		return "redirect:" + clientRegistrationAndProviderRepository.findAuthorizationUri(Social.GOOGLE);
 	}
 
 	@GetMapping("/google/callback")
@@ -59,8 +59,9 @@ public class GoogleSignUpController {
 			IOException {
 		final User user = googleSignUpService.googleSignUp(authorizationCode);
 		final String accessToken = jwtTokenProvider.createAccessToken(AuthUserPayload.from(user));
+
 		cookieProvider.setAuthCookie(accessToken, response);
-		redirection.to("/", response);
+		response.sendRedirect("https://ludoapi.store");
 	}
 
 }
