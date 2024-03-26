@@ -41,9 +41,11 @@ import com.ludo.study.studymatchingplatform.user.domain.user.Social;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 import com.ludo.study.studymatchingplatform.user.repository.user.UserRepositoryImpl;
 
+import jakarta.persistence.EntityManager;
+
 @SpringBootTest
 @Transactional
-class RecruitmentServiceTestBakup {
+class RecruitmentServiceTest {
 
 	@Autowired
 	private UserRepositoryImpl userRepository;
@@ -68,6 +70,9 @@ class RecruitmentServiceTestBakup {
 
 	@Autowired
 	private RecruitmentService recruitmentService;
+
+	@Autowired
+	private EntityManager em;
 
 	Position createPosition() {
 		return PositionFixture.createPosition("position");
@@ -133,6 +138,10 @@ class RecruitmentServiceTestBakup {
 		assertThat(recruitment.getContent()).isEqualTo("I want to study");
 		assertThat(recruitment.getCallUrl()).isEqualTo("x.com");
 
+		em.flush();
+		em.clear();
+		Recruitment findRecruitment = recruitmentRepository.findById(recruitment.getId()).get();
+		assertModifiedDateNotChange(findRecruitment, recruitment);
 	}
 
 	@DisplayName("[Exception] 스터디장이 아니면 모집 공고를 작성할 수 없다")
@@ -345,6 +354,10 @@ class RecruitmentServiceTestBakup {
 
 		// then
 		assertThat(applicant.getUser()).isEqualTo(applier);
+		em.flush();
+		em.clear();
+		Recruitment findRecruitment = recruitmentRepository.findById(recruitment.getId()).get();
+		assertModifiedDateNotChange(findRecruitment, recruitment);
 	}
 
 	@DisplayName("[Exception] 이미 지원한 모집 공고에 지원할 수 없다")
@@ -518,7 +531,12 @@ class RecruitmentServiceTestBakup {
 
 		// when
 		// then
-		recruitmentService.apply(applier, recruitment.getId(), request);
+		assertThatCode(
+				() -> recruitmentService.apply(applier, recruitment.getId(), request)).doesNotThrowAnyException();
+		em.flush();
+		em.clear();
+		Recruitment findRecruitment = recruitmentRepository.findById(recruitment.getId()).get();
+		assertModifiedDateNotChange(findRecruitment, recruitment);
 	}
 
 	@DisplayName("[Exception] 지원 취소 상태가 아닌 경우, 모집 공고에 다시 지원할 수 없다")
@@ -586,7 +604,6 @@ class RecruitmentServiceTestBakup {
 	@DisplayName("[Success] 모집 공고 지원 후 UNCHECKED 상태인 경우 지원 취소 가능")
 	@Test
 	void cancelApplicant() {
-
 		// given
 		final User owner = userRepository.save(
 				User.builder()
@@ -638,6 +655,10 @@ class RecruitmentServiceTestBakup {
 
 		assertThat(cancelledApplier.getApplicantStatus()).isEqualTo(ApplicantStatus.CANCELLED);
 
+		em.flush();
+		em.clear();
+		Recruitment findRecruitment = recruitmentRepository.findById(recruitment.getId()).get();
+		assertModifiedDateNotChange(findRecruitment, recruitment);
 	}
 
 	@DisplayName("[Success] 모집 공고 지원 후 ACCEPTED 상태이며, 스터디가 모집 중인 경우 지원 취소 가능")
@@ -696,6 +717,10 @@ class RecruitmentServiceTestBakup {
 
 		assertThat(cancelledApplier.getApplicantStatus()).isEqualTo(ApplicantStatus.CANCELLED);
 
+		em.flush();
+		em.clear();
+		Recruitment findRecruitment = recruitmentRepository.findById(recruitment.getId()).get();
+		assertModifiedDateNotChange(findRecruitment, recruitment);
 	}
 
 	@DisplayName("[Exception] 모집 중이 아닌 스터디의 모집 공고는 취소할 수 없다.")
@@ -996,6 +1021,69 @@ class RecruitmentServiceTestBakup {
 				.isInstanceOf(IllegalArgumentException.class)
 				.hasMessage("존재하지 않는 모집 공고입니다.");
 
+	}
+
+	@DisplayName("[Success] 모집 공고를 수정하면 수정 날짜가 변경된다.")
+	@Test
+	void updateModifiedDateTimeWhenEdit() {
+		// given
+		final User owner = userRepository.save(
+				User.builder()
+						.nickname("owner")
+						.email("a@aa.aa")
+						.social(Social.KAKAO)
+						.build()
+		);
+
+		final Category category = categoryRepository.save(
+				CategoryFixture.createCategory("category1")
+		);
+
+		final Study study = studyRepository.save(
+				StudyFixture.createStudy(
+						"study",
+						category,
+						owner,
+						4,
+						Platform.GATHER
+				)
+		);
+
+		final Recruitment recruitment = recruitmentRepository.save(
+				RecruitmentFixture.createRecruitmentWithoutStacksAndPositions(
+						study,
+						"recruitment",
+						"content",
+						"callUrl",
+						LocalDateTime.now().plusDays(5)
+				)
+		);
+		final LocalDateTime editedRecruitmentEndDateTime = LocalDateTime.now().plusDays(5);
+		final EditRecruitmentRequest request = EditRecruitmentRequest.builder()
+				.title("edited text")
+				.contact(Contact.KAKAO)
+				.callUrl("edited callUrl")
+				.applicantCount(3)
+				.recruitmentEndDateTime(editedRecruitmentEndDateTime)
+				.content("edited content")
+				.build();
+
+		em.flush();
+		em.clear();
+
+		// when
+		Recruitment editRecruitment = recruitmentService.edit(owner, recruitment.getId(), request);
+
+		// then
+		assertModifiedDateChange(editRecruitment, recruitment);
+	}
+
+	private void assertModifiedDateChange(Recruitment findRecruitment, Recruitment recruitment) {
+		assertThat(findRecruitment.getModifiedDateTime()).isNotEqualTo(recruitment.getModifiedDateTime());
+	}
+
+	private void assertModifiedDateNotChange(Recruitment findRecruitment, Recruitment recruitment) {
+		assertThat(findRecruitment.getModifiedDateTime()).isEqualTo(recruitment.getModifiedDateTime());
 	}
 
 }
