@@ -3,7 +3,7 @@ package com.ludo.study.studymatchingplatform.auth.service.google;
 import org.springframework.stereotype.Service;
 
 import com.ludo.study.studymatchingplatform.auth.service.google.vo.GoogleOAuthToken;
-import com.ludo.study.studymatchingplatform.auth.service.google.vo.GoogleUserInfo;
+import com.ludo.study.studymatchingplatform.auth.service.google.vo.GoogleUserProfile;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 import com.ludo.study.studymatchingplatform.user.repository.user.UserRepositoryImpl;
 
@@ -21,7 +21,7 @@ public class GoogleLoginService {
 
 	public User login(final String authorizationCode) {
 		final GoogleOAuthToken oAuthToken = googleOAuthTokenRequestService.createOAuthToken(authorizationCode, false);
-		final GoogleUserInfo userInfo = googleProfileRequestService.createGoogleUserInfo(
+		final GoogleUserProfile userInfo = googleProfileRequestService.createGoogleUserInfo(
 				oAuthToken.getAccessToken());
 
 		final User user = validateNotSignUp(userInfo);
@@ -29,7 +29,7 @@ public class GoogleLoginService {
 		return user;
 	}
 
-	private User validateNotSignUp(final GoogleUserInfo userInfo) {
+	private User validateNotSignUp(final GoogleUserProfile userInfo) {
 		return userRepository.findByEmail(userInfo.getEmail())
 				.orElseThrow(() -> new IllegalArgumentException("가입되어 있지 않은 회원입니다."));
 	}

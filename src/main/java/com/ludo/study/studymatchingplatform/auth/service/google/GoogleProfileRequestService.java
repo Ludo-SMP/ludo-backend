@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.ludo.study.studymatchingplatform.auth.repository.InMemoryClientRegistrationAndProviderRepository;
-import com.ludo.study.studymatchingplatform.auth.service.google.vo.GoogleUserInfo;
+import com.ludo.study.studymatchingplatform.auth.service.google.vo.GoogleUserProfile;
 import com.ludo.study.studymatchingplatform.user.domain.user.Social;
 
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ public class GoogleProfileRequestService {
 	private final RestTemplate restTemplate;
 	private final InMemoryClientRegistrationAndProviderRepository clientRegistrationAndProviderRepository;
 
-	public GoogleUserInfo createGoogleUserInfo(final String accessToken) {
+	public GoogleUserProfile createGoogleUserInfo(final String accessToken) {
 		final String userInfoUri = clientRegistrationAndProviderRepository.findUserInfoUri(Social.GOOGLE);
 		final HttpHeaders headers = createHeaders(accessToken);
 
@@ -35,13 +35,13 @@ public class GoogleProfileRequestService {
 		return headers;
 	}
 
-	private GoogleUserInfo requestUserProfile(final String userInfoUri, final HttpHeaders headers) {
+	private GoogleUserProfile requestUserProfile(final String userInfoUri, final HttpHeaders headers) {
 
 		return restTemplate.exchange(
 						userInfoUri,
 						HttpMethod.GET,
 						new HttpEntity<>(headers),
-						GoogleUserInfo.class)
+						GoogleUserProfile.class)
 				.getBody();
 	}
 
