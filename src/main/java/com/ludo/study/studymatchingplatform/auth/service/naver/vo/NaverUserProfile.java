@@ -9,7 +9,7 @@ import lombok.ToString;
 
 @Getter
 @ToString
-public class UserProfile {
+public class NaverUserProfile {
 
 	@JsonProperty("resultcode")
 	private String resultCode;
@@ -22,7 +22,6 @@ public class UserProfile {
 	@ToString
 	public static class Response {
 		private String id;
-		private String nickname;
 		private String email;
 	}
 
@@ -33,7 +32,6 @@ public class UserProfile {
 	public User toUser() {
 		return User.builder()
 				.social(Social.NAVER)
-				.nickname(response.nickname)
 				.email(response.email)
 				.build();
 	}

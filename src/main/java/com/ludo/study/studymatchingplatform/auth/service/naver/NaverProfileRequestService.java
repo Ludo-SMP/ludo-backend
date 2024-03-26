@@ -8,7 +8,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.ludo.study.studymatchingplatform.auth.repository.InMemoryClientRegistrationAndProviderRepository;
 import com.ludo.study.studymatchingplatform.auth.service.naver.vo.NaverOAuthToken;
-import com.ludo.study.studymatchingplatform.auth.service.naver.vo.UserProfile;
+import com.ludo.study.studymatchingplatform.auth.service.naver.vo.NaverUserProfile;
 import com.ludo.study.studymatchingplatform.user.domain.user.Social;
 
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ public class NaverProfileRequestService {
 	private final RestTemplate restTemplate;
 	private final InMemoryClientRegistrationAndProviderRepository clientRegistrationAndProviderRepository;
 
-	public UserProfile createNaverProfile(final NaverOAuthToken naverOAuthToken) {
+	public NaverUserProfile createNaverProfile(final NaverOAuthToken naverOAuthToken) {
 		final String userInfoUri = clientRegistrationAndProviderRepository.findUserInfoUri(Social.NAVER);
 		final HttpHeaders headers = createHeaders(naverOAuthToken);
 
@@ -36,13 +36,13 @@ public class NaverProfileRequestService {
 		return headers;
 	}
 
-	private UserProfile requestUserProfile(final String userInfoUri, final HttpHeaders headers) {
+	private NaverUserProfile requestUserProfile(final String userInfoUri, final HttpHeaders headers) {
 
 		return restTemplate.exchange(
 						userInfoUri,
 						HttpMethod.GET,
 						new HttpEntity<>(headers),
-						UserProfile.class)
+						NaverUserProfile.class)
 				.getBody();
 	}
 

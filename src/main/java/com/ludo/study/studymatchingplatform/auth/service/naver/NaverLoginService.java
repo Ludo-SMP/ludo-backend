@@ -3,7 +3,7 @@ package com.ludo.study.studymatchingplatform.auth.service.naver;
 import org.springframework.stereotype.Service;
 
 import com.ludo.study.studymatchingplatform.auth.service.naver.vo.NaverOAuthToken;
-import com.ludo.study.studymatchingplatform.auth.service.naver.vo.UserProfile;
+import com.ludo.study.studymatchingplatform.auth.service.naver.vo.NaverUserProfile;
 import com.ludo.study.studymatchingplatform.study.service.exception.NotFoundException;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 import com.ludo.study.studymatchingplatform.user.repository.user.UserRepositoryImpl;
@@ -22,12 +22,12 @@ public class NaverLoginService {
 
 	public User login(final String authorizationCode) {
 		final NaverOAuthToken oAuthToken = naverOAuthTokenRequestService.createOAuthToken(authorizationCode);
-		final UserProfile profileResponse = naverProfileRequestService.createNaverProfile(oAuthToken);
+		final NaverUserProfile profileResponse = naverProfileRequestService.createNaverProfile(oAuthToken);
 
 		return validateNotSignUp(profileResponse);
 	}
 
-	private User validateNotSignUp(final UserProfile profileResponse) {
+	private User validateNotSignUp(final NaverUserProfile profileResponse) {
 		return userRepository.findByEmail(profileResponse.getEmail())
 				.orElseThrow(() -> new NotFoundException("가입되어 있지 않은 회원입니다."));
 	}
