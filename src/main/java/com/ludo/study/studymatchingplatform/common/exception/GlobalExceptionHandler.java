@@ -47,14 +47,14 @@ public final class GlobalExceptionHandler {
 	@ExceptionHandler(value = DuplicatedSignUpException.class)
 	public ResponseEntity<CommonResponse> duplicatedSignUp(DuplicatedSignUpException e,
 														   HttpServletResponse response) throws IOException {
-		response.sendRedirect("https://ludoapi.store");
+		response.sendRedirect("https://ludoapi.store/signup/fail");
 		return toResponseEntity(e, HttpStatus.CONFLICT);
 	}
 
 	@ExceptionHandler(value = NotFoundException.class)
 	public ResponseEntity<CommonResponse> noSignUpInformation(NotFoundException e,
 															  HttpServletResponse response) throws IOException {
-		response.sendRedirect("https://ludoapi.store");
+		response.sendRedirect("https://ludoapi.store/login/fail");
 		return toResponseEntity(e, HttpStatus.NOT_FOUND);
 	}
 
