@@ -41,7 +41,7 @@ public class User extends BaseEntity {
 	@Column(nullable = false, updatable = false, columnDefinition = "char(10)")
 	private Social social;
 
-	@Column(nullable = false)
+	@Column
 	@Size(min = 1, max = 20)
 	private String nickname;
 
