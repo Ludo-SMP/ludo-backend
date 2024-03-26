@@ -74,6 +74,9 @@ public class Recruitment extends BaseEntity {
 	@Builder.Default
 	private List<RecruitmentPosition> recruitmentPositions = new ArrayList<>();
 
+	@Builder.Default
+	private LocalDateTime modifiedDateTime = LocalDateTime.now();
+
 	// contact 추가 (연결 방법)
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false, columnDefinition = "char(20)")
@@ -194,6 +197,9 @@ public class Recruitment extends BaseEntity {
 		}
 		if (content != null) {
 			this.content = content;
+		}
+		if (modifiedDateTime != null) {
+			this.modifiedDateTime = LocalDateTime.now();
 		}
 	}
 

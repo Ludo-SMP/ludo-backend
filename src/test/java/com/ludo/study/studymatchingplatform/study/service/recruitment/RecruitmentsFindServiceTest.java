@@ -15,11 +15,11 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.stack.RecruitmentStack;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.stack.StackCategory;
-import com.ludo.study.studymatchingplatform.study.domain.study.category.Category;
 import com.ludo.study.studymatchingplatform.study.domain.study.Platform;
 import com.ludo.study.studymatchingplatform.study.domain.study.Study;
 import com.ludo.study.studymatchingplatform.study.domain.study.StudyStatus;
 import com.ludo.study.studymatchingplatform.study.domain.study.Way;
+import com.ludo.study.studymatchingplatform.study.domain.study.category.Category;
 import com.ludo.study.studymatchingplatform.study.fixture.recruitment.RecruitmentFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.recruitment.stack.RecruitmentStackFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.recruitment.stack.StackCategoryFixture;
@@ -39,6 +39,8 @@ import com.ludo.study.studymatchingplatform.user.domain.user.Social;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 import com.ludo.study.studymatchingplatform.user.fixture.user.UserFixture;
 import com.ludo.study.studymatchingplatform.user.repository.user.UserRepositoryImpl;
+
+import jakarta.persistence.EntityManager;
 
 @SpringBootTest
 class RecruitmentsFindServiceTest {
@@ -71,6 +73,9 @@ class RecruitmentsFindServiceTest {
 	@Autowired
 	StackRepositoryImpl stackRepository;
 
+	@Autowired
+	EntityManager em;
+
 	@Nested
 	@DisplayName("검색 필터 조건이 없는 경우 모집 공고 조회 테스트")
 	class RecruitmentFindNoFilterCond {
@@ -79,6 +84,8 @@ class RecruitmentsFindServiceTest {
 			User user = saveUser();
 			Category category = saveCategory();
 			saveRecruitments(category, user);
+			em.flush();
+			em.clear();
 		}
 
 		@Test

@@ -11,11 +11,11 @@ import com.ludo.study.studymatchingplatform.study.domain.recruitment.position.Re
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.stack.RecruitmentStack;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.stack.Stack;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.stack.StackCategory;
-import com.ludo.study.studymatchingplatform.study.domain.study.category.Category;
 import com.ludo.study.studymatchingplatform.study.domain.study.Platform;
 import com.ludo.study.studymatchingplatform.study.domain.study.Study;
 import com.ludo.study.studymatchingplatform.study.domain.study.StudyStatus;
 import com.ludo.study.studymatchingplatform.study.domain.study.Way;
+import com.ludo.study.studymatchingplatform.study.domain.study.category.Category;
 import com.ludo.study.studymatchingplatform.study.fixture.recruitment.RecruitmentFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.recruitment.position.PositionFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.recruitment.position.RecruitmentPositionFixture;
@@ -33,6 +33,7 @@ import com.ludo.study.studymatchingplatform.user.domain.user.User;
 import com.ludo.study.studymatchingplatform.user.fixture.user.UserFixture;
 import com.ludo.study.studymatchingplatform.user.repository.user.UserRepositoryImpl;
 
+import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 
 @SpringBootTest
@@ -55,6 +56,9 @@ class RecruitmentDetailFindServiceTest {
 
 	@Autowired
 	StackCategoryRepositoryImpl stackCategoryRepository;
+
+	@Autowired
+	EntityManager em;
 
 	private static final String CATEGORY = "프로젝트";
 	private static final String STUDY_TITLE = "스터디1";
@@ -85,6 +89,13 @@ class RecruitmentDetailFindServiceTest {
 		assertThat(recruitmentDetailsResponse.study().owner().nickname()).isEqualTo(NICKNAME);
 		assertThat(recruitmentDetailsResponse.study().way()).isEqualTo(Way.ONLINE.toString());
 		assertThat(recruitmentDetailsResponse.study().category().name()).isEqualTo(CATEGORY);
+
+		Recruitment findRecruitment = recruitmentRepository.findById(saveRecruitment.getId()).get();
+		assertModifiedDateNotChange(saveRecruitment, findRecruitment);
+	}
+
+	private void assertModifiedDateNotChange(Recruitment saveRecruitment, Recruitment findRecruitment) {
+		assertThat(saveRecruitment.getModifiedDateTime()).isEqualTo(findRecruitment.getModifiedDateTime());
 	}
 
 	@Test
@@ -96,8 +107,9 @@ class RecruitmentDetailFindServiceTest {
 		// when
 		recruitmentDetailsFindService.findRecruitmentDetails(saveRecruitment.getId());
 		// then
-		Recruitment find = recruitmentRepository.findById(saveRecruitment.getId()).get();
-		assertThat(find.getHits()).isEqualTo(expectedHits);
+		Recruitment findRecruitment = recruitmentRepository.findById(saveRecruitment.getId()).get();
+		assertThat(findRecruitment.getHits()).isEqualTo(expectedHits);
+		assertModifiedDateNotChange(saveRecruitment, findRecruitment);
 	}
 
 	private Recruitment saveRecruitment() {
@@ -132,7 +144,11 @@ class RecruitmentDetailFindServiceTest {
 		studyRepository.save(study);
 		stackCategoryRepository.save(backendStackCategory);
 		stackCategoryRepository.save(frontendStackCategory);
-		return recruitmentRepository.save(recruitment);
+		Recruitment saveRecruitment = recruitmentRepository.save(recruitment);
+
+		em.flush();
+		em.clear();
+		return saveRecruitment;
 	}
 
 }
