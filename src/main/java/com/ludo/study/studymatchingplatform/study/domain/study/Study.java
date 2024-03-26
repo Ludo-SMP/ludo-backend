@@ -280,8 +280,7 @@ public class Study extends BaseEntity {
 		}
 	}
 
-	public void modifyStatusToCompleted() {
-		final LocalDateTime now = LocalDateTime.now();
+	public void modifyStatusToCompleted(final LocalDateTime now) {
 		if (this.endDateTime.isBefore(now)) {
 			this.status = StudyStatus.COMPLETED;
 		}

@@ -1,5 +1,7 @@
 package com.ludo.study.studymatchingplatform.study.service.study;
 
+import java.time.LocalDateTime;
+
 import org.springframework.stereotype.Service;
 
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.position.Position;
@@ -35,7 +37,8 @@ public class StudyUpdateService {
 				request.startDateTime(), request.endDateTime());
 
 		// 수정된 endDateTime이 현재 시간 이전일 경우 진행 완료 상태로 변경
-		study.modifyStatusToCompleted();
+		final LocalDateTime now = LocalDateTime.now();
+		study.modifyStatusToCompleted(now);
 
 		final Position ownerPosition = findPositionById(request.positionId());
 		final Participant participant = findParticipantByIds(study.getId(), user.getId());

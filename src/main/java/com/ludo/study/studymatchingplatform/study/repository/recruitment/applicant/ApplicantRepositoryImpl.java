@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
 
+import com.ludo.study.studymatchingplatform.study.domain.id.ApplicantId;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant.Applicant;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
@@ -45,6 +46,14 @@ public class ApplicantRepositoryImpl {
 				.where(applicant.recruitment.id.eq(id))
 				.where(applicant.deletedDateTime.isNull())
 				.fetch();
+	}
+
+	public Optional<Applicant> findById(final ApplicantId applicantId) {
+		return Optional.ofNullable(
+				q.selectFrom(applicant)
+						.where(applicant.id.eq(applicantId))
+						.where(applicant.deletedDateTime.isNull())
+						.fetchOne());
 	}
 
 }

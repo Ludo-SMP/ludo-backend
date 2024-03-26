@@ -1,9 +1,11 @@
 package com.ludo.study.studymatchingplatform.user.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.ludo.study.studymatchingplatform.study.domain.id.ApplicantId;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant.Applicant;
 import com.ludo.study.studymatchingplatform.study.domain.study.Study;
 import com.ludo.study.studymatchingplatform.study.domain.study.participant.Participant;
@@ -23,19 +25,20 @@ public class MyPageService {
 	private final ApplicantRepositoryImpl applicantRepository;
 	private final StudyRepositoryImpl studyRepository;
 
-	public MyPageResponse retrieveMyPage(final User user) {
-		ensureStudyStatusCompleted(user);
+	public MyPageResponse retrieveMyPage(final User user, final LocalDateTime now) {
+		ensureStudyStatusCompleted(user, now);
 		final List<Participant> participants = retrieveParticipantStudies(user);
 		final List<Applicant> applicants = retrieveApplyRecruitment(user);
 		final List<Participant> completedStudies = retrieveCompletedStudy(user);
 		return MyPageResponse.from(user, participants, applicants, completedStudies);
 	}
 
-	private void ensureStudyStatusCompleted(final User user) {
+	// 테스트 케이스의 불변 유지하기 위해 now 를 컨트롤러에서 받아오도록 변경
+	private void ensureStudyStatusCompleted(final User user, final LocalDateTime now) {
 		final List<Participant> participants = participantRepository.findByUserId(user.getId());
 		for (Participant participant : participants) {
 			final Study study = participant.getStudy();
-			study.modifyStatusToCompleted();
+			study.modifyStatusToCompleted(now);
 			studyRepository.save(study);
 		}
 	}
@@ -50,6 +53,15 @@ public class MyPageService {
 
 	private List<Participant> retrieveCompletedStudy(final User user) {
 		return participantRepository.findCompletedStudyByUserId(user.getId());
+	}
+
+	public void deleteApplyHistory(final User user, final Long recruitmentId) {
+		final ApplicantId applicantId = new ApplicantId(recruitmentId, user.getId());
+		final Applicant applicant = applicantRepository.findById(applicantId)
+				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 지원 기록 입니다."));
+		// 모집 공고 지원 기록 삭제 시 softDelete 처리
+		applicant.softDelete();
+		applicantRepository.save(applicant);
 	}
 
 }

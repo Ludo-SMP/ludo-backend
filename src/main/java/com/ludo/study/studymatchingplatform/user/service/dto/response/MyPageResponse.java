@@ -41,6 +41,7 @@ public record MyPageResponse(
 
 	private static List<ApplicantRecruitmentResponse> makeApplicantRecruitments(final List<Applicant> applicants) {
 		return applicants.stream()
+				.filter(applicant -> applicant.getDeletedDateTime() == null)
 				.map(ApplicantRecruitmentResponse::from)
 				.toList();
 	}
