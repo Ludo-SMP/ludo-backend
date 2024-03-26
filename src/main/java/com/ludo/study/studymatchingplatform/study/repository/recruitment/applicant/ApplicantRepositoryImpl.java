@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import com.ludo.study.studymatchingplatform.study.domain.id.ApplicantId;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant.Applicant;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant.ApplicantStatus;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
@@ -44,6 +45,7 @@ public class ApplicantRepositoryImpl {
 	public List<Applicant> findStudyApplicantInfoByRecruitmentId(final Long id) {
 		return q.selectFrom(applicant)
 				.where(applicant.recruitment.id.eq(id))
+				.where(applicant.applicantStatus.ne(ApplicantStatus.REFUSED))
 				.where(applicant.deletedDateTime.isNull())
 				.fetch();
 	}
