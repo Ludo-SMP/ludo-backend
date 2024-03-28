@@ -9,6 +9,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
+import org.springframework.data.annotation.CreatedDate;
+
 import com.ludo.study.studymatchingplatform.common.entity.BaseEntity;
 import com.ludo.study.studymatchingplatform.study.domain.id.ApplicantId;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant.Applicant;
@@ -49,7 +51,7 @@ import lombok.extern.slf4j.Slf4j;
 @AllArgsConstructor
 // @SQLDelete(sql = "UPDATE recruitment SET deleted_date_time = NOW() WHERE recruitment_id = ?")
 // @SQLRestriction("deleted_date_time is null")
-@ToString(of = {"id", "title"}, callSuper = true)
+@ToString(of = {"id", "title", "modifiedDateTime"}, callSuper = true)
 @Slf4j
 public class Recruitment extends BaseEntity {
 
@@ -74,8 +76,9 @@ public class Recruitment extends BaseEntity {
 	@Builder.Default
 	private List<RecruitmentPosition> recruitmentPositions = new ArrayList<>();
 
-	@Builder.Default
-	private LocalDateTime modifiedDateTime = LocalDateTime.now();
+	@CreatedDate
+	@Column(nullable = false)
+	private LocalDateTime modifiedDateTime;
 
 	// contact 추가 (연결 방법)
 	@Enumerated(EnumType.STRING)
