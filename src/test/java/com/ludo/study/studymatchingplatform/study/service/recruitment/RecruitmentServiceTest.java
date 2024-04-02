@@ -99,15 +99,7 @@ class RecruitmentServiceTest {
 		final Category category = categoryRepository.save(
 				CategoryFixture.createCategory("category1"));
 
-		final Study study = studyRepository.save(
-				StudyFixture.createStudy(
-						"study",
-						category,
-						owner,
-						4,
-						Platform.GATHER
-				)
-		);
+		final Study study = saveStudy(category, owner);
 		final StackCategory stackCategory = stackCategoryRepository.save(
 				StackCategoryFixture.createStackCategory("stackCategory")
 		);
@@ -119,16 +111,7 @@ class RecruitmentServiceTest {
 				PositionFixture.createPosition("position")
 		);
 
-		final WriteRecruitmentRequest request = WriteRecruitmentRequest.builder()
-				.title("recruitment")
-				.content("I want to study")
-				.stackIds(Set.of(stack.getId()))
-				.positionIds(Set.of(position.getId()))
-				.applicantCount(4)
-				.contact(Contact.KAKAO)
-				.callUrl("x.com")
-				.recruitmentEndDateTime(LocalDateTime.now().plusMonths(3))
-				.build();
+		final WriteRecruitmentRequest request = getWriteRecruitmentRequest(stack, position);
 
 		// when
 		final Recruitment recruitment = recruitmentService.write(owner, request, study.getId());
@@ -141,6 +124,7 @@ class RecruitmentServiceTest {
 		em.flush();
 		em.clear();
 		Recruitment findRecruitment = recruitmentRepository.findById(recruitment.getId()).get();
+		assertThat(findRecruitment.getModifiedDateTime()).isNotNull();
 		assertModifiedDateNotChange(findRecruitment, recruitment);
 	}
 
@@ -185,16 +169,7 @@ class RecruitmentServiceTest {
 				PositionFixture.createPosition("position")
 		);
 
-		final WriteRecruitmentRequest request = WriteRecruitmentRequest.builder()
-				.title("recruitment")
-				.content("I want to study")
-				.stackIds(Set.of(stack.getId()))
-				.positionIds(Set.of(position.getId()))
-				.applicantCount(4)
-				.contact(Contact.KAKAO)
-				.callUrl("x.com")
-				.recruitmentEndDateTime(LocalDateTime.now().plusMonths(3))
-				.build();
+		final WriteRecruitmentRequest request = getWriteRecruitmentRequest(stack, position);
 
 		// when
 		// then
@@ -238,16 +213,7 @@ class RecruitmentServiceTest {
 				PositionFixture.createPosition("position")
 		);
 
-		final WriteRecruitmentRequest request = WriteRecruitmentRequest.builder()
-				.title("recruitment")
-				.content("I want to study")
-				.stackIds(Set.of(stack.getId()))
-				.positionIds(Set.of(position.getId()))
-				.applicantCount(4)
-				.contact(Contact.KAKAO)
-				.callUrl("x.com")
-				.recruitmentEndDateTime(LocalDateTime.now().plusMonths(3))
-				.build();
+		final WriteRecruitmentRequest request = getWriteRecruitmentRequest(stack, position);
 
 		final Recruitment recruitment = recruitmentService.write(owner, request, study.getId());
 		study.registerRecruitment(recruitment);
@@ -283,16 +249,7 @@ class RecruitmentServiceTest {
 				PositionFixture.createPosition("position")
 		);
 
-		final WriteRecruitmentRequest request = WriteRecruitmentRequest.builder()
-				.title("recruitment")
-				.content("I want to study")
-				.stackIds(Set.of(stack.getId()))
-				.positionIds(Set.of(position.getId()))
-				.applicantCount(4)
-				.contact(Contact.KAKAO)
-				.callUrl("x.com")
-				.recruitmentEndDateTime(LocalDateTime.now().plusMonths(3))
-				.build();
+		final WriteRecruitmentRequest request = getWriteRecruitmentRequest(stack, position);
 
 		// when
 		// then
@@ -1027,37 +984,11 @@ class RecruitmentServiceTest {
 	@Test
 	void updateModifiedDateTimeWhenEdit() {
 		// given
-		final User owner = userRepository.save(
-				User.builder()
-						.nickname("owner")
-						.email("a@aa.aa")
-						.social(Social.KAKAO)
-						.build()
-		);
+		final User owner = saveOwner();
+		final Category category = saveCategory();
+		final Study study = saveStudy(category, owner);
+		final Recruitment recruitment = saveRecruitment(study);
 
-		final Category category = categoryRepository.save(
-				CategoryFixture.createCategory("category1")
-		);
-
-		final Study study = studyRepository.save(
-				StudyFixture.createStudy(
-						"study",
-						category,
-						owner,
-						4,
-						Platform.GATHER
-				)
-		);
-
-		final Recruitment recruitment = recruitmentRepository.save(
-				RecruitmentFixture.createRecruitmentWithoutStacksAndPositions(
-						study,
-						"recruitment",
-						"content",
-						"callUrl",
-						LocalDateTime.now().plusDays(5)
-				)
-		);
 		final LocalDateTime editedRecruitmentEndDateTime = LocalDateTime.now().plusDays(5);
 		final EditRecruitmentRequest request = EditRecruitmentRequest.builder()
 				.title("edited text")
@@ -1078,12 +1009,94 @@ class RecruitmentServiceTest {
 		assertModifiedDateChange(editRecruitment, recruitment);
 	}
 
+	@DisplayName("[Success] modifiedDateTime은 생성날짜보다 같거나 이후 시간이다.")
+	@Test
+	void modifiedDateTimeAfterOrEqualsToCreatedDateTime() {
+		// given
+		final User owner = saveOwner();
+		final Category category = saveCategory();
+		final Study study = saveStudy(category, owner);
+		final StackCategory stackCategory = saveStackCategory();
+		final Stack stack = saveStack(stackCategory);
+		final Position position = savePosition();
+		final WriteRecruitmentRequest request = getWriteRecruitmentRequest(stack, position);
+
+		// when
+		final Recruitment recruitment = recruitmentService.write(owner, request, study.getId());
+
+		// then
+		assertThat(recruitment.getModifiedDateTime()).isAfterOrEqualTo(recruitment.getCreatedDateTime());
+	}
+
 	private void assertModifiedDateChange(Recruitment findRecruitment, Recruitment recruitment) {
 		assertThat(findRecruitment.getModifiedDateTime()).isNotEqualTo(recruitment.getModifiedDateTime());
 	}
 
 	private void assertModifiedDateNotChange(Recruitment findRecruitment, Recruitment recruitment) {
 		assertThat(findRecruitment.getModifiedDateTime()).isEqualTo(recruitment.getModifiedDateTime());
+	}
+
+	private Recruitment saveRecruitment(Study study) {
+		return recruitmentRepository.save(
+				RecruitmentFixture.createRecruitmentWithoutStacksAndPositions(
+						study,
+						"recruitment",
+						"content",
+						"callUrl",
+						LocalDateTime.now().plusDays(5)
+				)
+		);
+	}
+
+	private Study saveStudy(Category category, User owner) {
+		return studyRepository.save(
+				StudyFixture.createStudy(
+						"study",
+						category,
+						owner,
+						4,
+						Platform.GATHER
+				)
+		);
+	}
+
+	private User saveOwner() {
+		return userRepository.save(
+				User.builder()
+						.nickname("owner")
+						.email("a@aa.aa")
+						.social(Social.KAKAO)
+						.build()
+		);
+	}
+
+	private Category saveCategory() {
+		return categoryRepository.save(CategoryFixture.createCategory("category1"));
+	}
+
+	private StackCategory saveStackCategory() {
+		return stackCategoryRepository.save(StackCategoryFixture.createStackCategory("stackCategory"));
+	}
+
+	private Stack saveStack(StackCategory stackCategory) {
+		return stackRepository.save(StackFixture.createStack("stack", stackCategory));
+	}
+
+	private Position savePosition() {
+		return positionRepository.save(PositionFixture.createPosition("position"));
+	}
+
+	private static WriteRecruitmentRequest getWriteRecruitmentRequest(Stack stack, Position position) {
+		return WriteRecruitmentRequest.builder()
+				.title("recruitment")
+				.content("I want to study")
+				.stackIds(Set.of(stack.getId()))
+				.positionIds(Set.of(position.getId()))
+				.applicantCount(4)
+				.contact(Contact.KAKAO)
+				.callUrl("x.com")
+				.recruitmentEndDateTime(LocalDateTime.now().plusMonths(3))
+				.build();
 	}
 
 }
