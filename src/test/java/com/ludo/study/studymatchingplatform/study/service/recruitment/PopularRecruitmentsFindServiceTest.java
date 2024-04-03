@@ -11,18 +11,17 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
-import com.ludo.study.studymatchingplatform.study.domain.study.category.Category;
 import com.ludo.study.studymatchingplatform.study.domain.study.Platform;
 import com.ludo.study.studymatchingplatform.study.domain.study.Study;
 import com.ludo.study.studymatchingplatform.study.domain.study.StudyStatus;
 import com.ludo.study.studymatchingplatform.study.domain.study.Way;
+import com.ludo.study.studymatchingplatform.study.domain.study.category.Category;
 import com.ludo.study.studymatchingplatform.study.fixture.recruitment.RecruitmentFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.study.StudyFixture;
 import com.ludo.study.studymatchingplatform.study.repository.dto.request.PopularRecruitmentCond;
 import com.ludo.study.studymatchingplatform.study.repository.recruitment.RecruitmentRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.study.StudyRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.study.category.CategoryRepositoryImpl;
-import com.ludo.study.studymatchingplatform.study.service.dto.mapper.RecruitmentPreviewResponseMapper;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.PopularRecruitmentsResponse;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.RecruitmentPreviewResponse;
 import com.ludo.study.studymatchingplatform.user.domain.user.Social;
@@ -49,14 +48,11 @@ class PopularRecruitmentsFindServiceTest {
 	@Autowired
 	CategoryRepositoryImpl categoryRepository;
 
-	@Autowired
-	RecruitmentPreviewResponseMapper recruitmentPreviewResponseMapper;
-
 	@BeforeEach
 	void init() {
 		User user = UserFixture.createUser(Social.GOOGLE, "아카", "hihi@google.com");
 		Category project = categoryRepository.findByName("프로젝트").get();
-		Category algorithm = categoryRepository.findByName("코딩 테스트").get();
+		Category codingTest = categoryRepository.findByName("코딩 테스트").get();
 		Category interview = categoryRepository.findByName("모의 면접").get();
 
 		userRepository.save(user);
@@ -69,9 +65,9 @@ class PopularRecruitmentsFindServiceTest {
 				Platform.GATHER);
 		Study studyD = StudyFixture.createStudy(StudyStatus.RECRUITING, "스터디D", Way.ONLINE, project, user, 5, 5,
 				Platform.GATHER);
-		Study studyE = StudyFixture.createStudy(StudyStatus.RECRUITING, "스터디E", Way.ONLINE, algorithm, user, 5, 5,
+		Study studyE = StudyFixture.createStudy(StudyStatus.RECRUITING, "스터디E", Way.ONLINE, codingTest, user, 5, 5,
 				Platform.GATHER);
-		Study studyF = StudyFixture.createStudy(StudyStatus.RECRUITING, "스터디F", Way.ONLINE, algorithm, user, 5, 5,
+		Study studyF = StudyFixture.createStudy(StudyStatus.RECRUITING, "스터디F", Way.ONLINE, codingTest, user, 5, 5,
 				Platform.GATHER);
 		Study studyG = StudyFixture.createStudy(StudyStatus.RECRUITING, "스터디G", Way.ONLINE, interview, user, 5, 5,
 				Platform.GATHER);
@@ -123,6 +119,7 @@ class PopularRecruitmentsFindServiceTest {
 	}
 
 	@Test
+	@Transactional
 	void 인기있는_코딩테스트_모집공고_조회() {
 		PopularRecruitmentCond request = new PopularRecruitmentCond(6);
 		PopularRecruitmentsResponse result = popularRecruitmentsFindService.findPopularRecruitments(request);
