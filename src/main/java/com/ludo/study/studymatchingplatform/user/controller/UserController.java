@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ludo.study.studymatchingplatform.auth.common.AuthUser;
+import com.ludo.study.studymatchingplatform.auth.common.AuthUserPayload;
 import com.ludo.study.studymatchingplatform.auth.common.Redirection;
 import com.ludo.study.studymatchingplatform.auth.common.provider.CookieProvider;
+import com.ludo.study.studymatchingplatform.auth.common.provider.JwtTokenProvider;
 import com.ludo.study.studymatchingplatform.common.annotation.DataFieldName;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 import com.ludo.study.studymatchingplatform.user.service.ChangeNicknameService;
@@ -36,11 +38,9 @@ import lombok.extern.slf4j.Slf4j;
 public class UserController {
 
 	private final UserService userService;
-
 	private final ChangeNicknameService changeNicknameService;
-
+	private final JwtTokenProvider jwtTokenProvider;
 	private final CookieProvider cookieProvider;
-
 	private final Redirection redirection;
 
 	@DeleteMapping("/users/deactivate")
@@ -59,7 +59,10 @@ public class UserController {
 	@Operation(description = "로그인 된 사용자 정보 조회")
 	@ApiResponse(description = "조회 성공", responseCode = "200", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
 	@DataFieldName("user")
-	public UserResponse getMe(@Parameter(hidden = true) @AuthUser final User user) {
+	public UserResponse getMe(@Parameter(hidden = true) @AuthUser final User user,
+							  final HttpServletResponse response) {
+		final String accessToken = jwtTokenProvider.createAccessToken(AuthUserPayload.from(user));
+		cookieProvider.setAuthCookie(accessToken, response);
 		return UserResponse.from(user);
 	}
 
