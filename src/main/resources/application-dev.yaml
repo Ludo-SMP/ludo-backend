@@ -8,6 +8,11 @@ spring:
     password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+  data:
+    redis:
+      host: 34.127.61.11 # 로컬에서 테스트 할 때는 localhost 사용
+      port: 6379
+
   jpa:
     hibernate:
       ddl-auto: none
@@ -57,12 +62,12 @@ jwt:
   token:
     secret-key: ${JWT_SECRET_KEY}
     access-token-expiresin: ${JWT_ACCESS_TOKEN_EXPIRES_IN}
+    refresh-token-expiresin: ${JWT_REFRESH_TOKEN_EXPIRES_IN}
 
 client:
   scheme: https
-  domain: local.ludoapi.store
-  port: 3000
-  url: ${client.scheme}://${client.domain}:${client.port}
+  domain: ludoapi.store
+  url: ${client.scheme}://${client.domain}
 
 server:
   port: ${PORT}
