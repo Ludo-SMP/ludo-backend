@@ -10,8 +10,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ludo.study.studymatchingplatform.auth.common.AuthUserPayload;
 import com.ludo.study.studymatchingplatform.auth.common.provider.CookieProvider;
 import com.ludo.study.studymatchingplatform.auth.common.provider.JwtTokenProvider;
+import com.ludo.study.studymatchingplatform.auth.common.service.UserDetailsService;
 import com.ludo.study.studymatchingplatform.common.advice.CommonResponse;
 import com.ludo.study.studymatchingplatform.study.service.exception.AuthenticationException;
+import com.ludo.study.studymatchingplatform.study.service.exception.NotFoundException;
 
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
@@ -27,6 +29,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 	private final JwtTokenProvider jwtTokenProvider;
 	private final CookieProvider cookieProvider;
+	private final UserDetailsService userDetailsService;
 
 	public static final String AUTH_USER_PAYLOAD = "AUTH_USER_PAYLOAD";
 
@@ -40,12 +43,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 				jwtExceptionHandler(response, HttpStatus.UNAUTHORIZED, "Authorization 쿠키가 없습니다.");
 				return;
 			}
-
 			try {
 				Claims claims = jwtTokenProvider.verifyAuthTokenOrThrow(authToken.get());
 				final AuthUserPayload payload = AuthUserPayload.from(claims);
+				// 사용자 agent / ip 검증
+				userDetailsService.verifyUserDetails(payload.getId(), request);
 				request.setAttribute(AUTH_USER_PAYLOAD, payload);
-			} catch (final AuthenticationException e) {
+				// 만료된 사용자 정보 검증 추가
+			} catch (final AuthenticationException | NotFoundException e) {
 				// 만료되거나 잘못된 토큰일 경우 예외 response 를 반환한다.
 				cookieProvider.clearAuthCookie(response);
 				jwtExceptionHandler(response, HttpStatus.UNAUTHORIZED, e.getMessage());
