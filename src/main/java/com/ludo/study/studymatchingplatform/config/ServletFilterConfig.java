@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 
 import com.ludo.study.studymatchingplatform.auth.common.provider.CookieProvider;
 import com.ludo.study.studymatchingplatform.auth.common.provider.JwtTokenProvider;
+import com.ludo.study.studymatchingplatform.auth.common.service.UserDetailsService;
 import com.ludo.study.studymatchingplatform.filter.JwtAuthenticationFilter;
 
 import jakarta.servlet.Filter;
@@ -17,12 +18,14 @@ public class ServletFilterConfig {
 
 	private final JwtTokenProvider jwtTokenProvider;
 	private final CookieProvider cookieProvider;
+	private final UserDetailsService userDetailsService;
 
 	@Bean
 	public FilterRegistrationBean<Filter> jwtAuthenticationFilter() {
 		FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
 
-		filterRegistrationBean.setFilter(new JwtAuthenticationFilter(jwtTokenProvider, cookieProvider));
+		filterRegistrationBean.setFilter(
+				new JwtAuthenticationFilter(jwtTokenProvider, cookieProvider, userDetailsService));
 		filterRegistrationBean.setOrder(1);
 		addAuthenticationEndpoints(filterRegistrationBean);
 		return filterRegistrationBean;
