@@ -43,7 +43,7 @@ public class KakaoSignUpService {
 	}
 
 	private User sinup(KakaoUserProfileDto kakaoUserProfileDto) {
-		User user = userRepository.save(kakaoUserProfileDto.toUser());
+		final User user = userRepository.save(kakaoUserProfileDto.toUser());
 		user.setInitialDefaultNickname();
 		return user;
 	}
