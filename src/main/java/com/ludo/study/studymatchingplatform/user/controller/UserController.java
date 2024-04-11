@@ -11,10 +11,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ludo.study.studymatchingplatform.auth.common.AuthUser;
-import com.ludo.study.studymatchingplatform.auth.common.AuthUserPayload;
 import com.ludo.study.studymatchingplatform.auth.common.Redirection;
 import com.ludo.study.studymatchingplatform.auth.common.provider.CookieProvider;
-import com.ludo.study.studymatchingplatform.auth.common.provider.JwtTokenProvider;
 import com.ludo.study.studymatchingplatform.common.annotation.DataFieldName;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 import com.ludo.study.studymatchingplatform.user.service.ChangeNicknameService;
@@ -39,7 +37,6 @@ public class UserController {
 
 	private final UserService userService;
 	private final ChangeNicknameService changeNicknameService;
-	private final JwtTokenProvider jwtTokenProvider;
 	private final CookieProvider cookieProvider;
 	private final Redirection redirection;
 
@@ -61,8 +58,6 @@ public class UserController {
 	@DataFieldName("user")
 	public UserResponse getMe(@Parameter(hidden = true) @AuthUser final User user,
 							  final HttpServletResponse response) {
-		final String accessToken = jwtTokenProvider.createAccessToken(AuthUserPayload.from(user));
-		cookieProvider.setAuthCookie(accessToken, response);
 		return UserResponse.from(user);
 	}
 
