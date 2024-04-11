@@ -21,8 +21,6 @@ import lombok.Getter;
 @Component
 public class JwtTokenProvider {
 
-	private static final String TYPE_CLAIM_KEY = "type";
-
 	@Value("${jwt.token.secret-key}")
 	private String secretKey;
 
@@ -32,7 +30,6 @@ public class JwtTokenProvider {
 
 	public String createAccessToken(final AuthUserPayload payload) {
 		final Claims claims = createClaims(payload);
-		claims.put(TYPE_CLAIM_KEY, "Access");
 		return createToken(accessTokenExpiresIn, claims);
 	}
 
@@ -62,10 +59,6 @@ public class JwtTokenProvider {
 		byte[] secretKeyBytes = secretKey.getBytes(StandardCharsets.UTF_8);
 		return Keys.hmacShaKeyFor(secretKeyBytes);
 	}
-
-	// public void isValidTokenOrThrows(final String token) {
-	// 	verifyAuthTokenOrThrow(token);
-	// }
 
 	public Claims verifyAuthTokenOrThrow(final String token) {
 		try {
