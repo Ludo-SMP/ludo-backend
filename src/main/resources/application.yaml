@@ -15,8 +15,9 @@ spring:
 
   data:
     redis:
-      host: 34.127.61.11 # 로컬에서 테스트 할 때는 localhost 사용
-      port: 6379
+      host: ${REDIS_HOST} # 로컬에서 테스트 할 때는 localhost 사용
+      port: ${REDIS_PORT}
+      password: ${REDIS_PASSWORD}
 
   jpa:
     hibernate:
