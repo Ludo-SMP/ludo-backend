@@ -3,12 +3,13 @@ package com.ludo.study.studymatchingplatform.study.service.recruitment.stack;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.stack.Stack;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.stack.StackCategory;
-import com.ludo.study.studymatchingplatform.study.domain.study.category.Category;
 import com.ludo.study.studymatchingplatform.study.domain.study.Platform;
 import com.ludo.study.studymatchingplatform.study.domain.study.Study;
+import com.ludo.study.studymatchingplatform.study.domain.study.category.Category;
 import com.ludo.study.studymatchingplatform.study.fixture.recruitment.stack.StackCategoryFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.recruitment.stack.StackFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.study.StudyFixture;
@@ -24,6 +25,7 @@ import com.ludo.study.studymatchingplatform.user.fixture.user.UserFixture;
 import com.ludo.study.studymatchingplatform.user.repository.user.UserRepositoryImpl;
 
 @SpringBootTest
+@ActiveProfiles("test")
 class RecruitmentStackServiceTest {
 
 	@Autowired

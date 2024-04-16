@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
@@ -31,6 +32,7 @@ import com.ludo.study.studymatchingplatform.user.repository.user.UserRepositoryI
 
 @SpringBootTest
 @Transactional
+@ActiveProfiles("test")
 class PopularRecruitmentsFindServiceTest {
 
 	@Autowired
@@ -116,6 +118,7 @@ class PopularRecruitmentsFindServiceTest {
 		assertThat(popularProjectRecruitments)
 				.extracting("title")
 				.containsExactly("모집공고C", "모집공고B", "모집공고A", "모집공고D");
+
 	}
 
 	@Test
