@@ -72,5 +72,33 @@ logging.level:
   org.hibernate.SQL: debug
   org.hibernate.type: trace
 
+management:
+  info:
+    java:
+      enabled: true
+    os:
+      enabled: true
+    env:
+      enabled: true
+    build:
+      enabled: true
+    defaults:
+      enabled: true
+  endpoint:
+    health:
+      show-components: always
+    prometheus:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  server:
+    port:
+      ${METRIC_PORT:9999}
+
 server:
   port: ${PORT}
+  tomcat:
+    mbeanregistry:
+      enabled: true
