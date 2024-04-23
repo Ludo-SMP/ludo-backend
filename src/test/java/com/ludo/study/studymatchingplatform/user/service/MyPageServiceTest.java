@@ -94,10 +94,9 @@ class MyPageServiceTest {
 		study.addParticipant(participantOwner);
 		final List<Participant> participants = study.getParticipants();
 
+		// when
 		when(participantRepository.findByUserId(anyLong()))
 				.thenReturn(participants);
-
-		// when
 		final MyPageResponse myPageResponse = myPageService.retrieveMyPage(owner, createTestDateTime());
 
 		// then
@@ -163,7 +162,7 @@ class MyPageServiceTest {
 		final Participant participantOwner = createParticipant(study, owner, position, Role.OWNER);
 		study.addParticipant(participantOwner);
 
-		study.update("타이틀", category, 3, Way.ONLINE, Platform.GATHER,
+		study.update("타이틀", category, 3, Way.ONLINE, Platform.GATHER, "www.gather.com",
 				LocalDateTime.of(2024, 3, 13, 11, 11),
 				LocalDateTime.of(2024, 3, 14, 11, 11));
 
