@@ -4,51 +4,61 @@ import jakarta.servlet.http.HttpServletRequest;
 
 public class WebUtils {
 
-	public static String getUserAgent(HttpServletRequest request) {
-		return request.getHeader("User-Agent");
+	private static String getHeader(final Headers headers, final HttpServletRequest request) {
+		final String header = headers.getHeader();
+		return request.getHeader(header);
 	}
 
-	public static String getClientIp(HttpServletRequest request) {
+	private static String getUnknown(final Headers headers) {
+		return headers.getHeader();
+	}
 
-		String ip = request.getHeader("X-Forwarded-For");
+	public static String getUserAgent(final HttpServletRequest request) {
+		return getHeader(Headers.USER_AGENT, request);
+	}
 
-		if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {
-			ip = request.getHeader("x-real-ip");
+	public static String getClientIp(final HttpServletRequest request) {
+
+		String ip = getHeader(Headers.X_FORWARDED_FOR, request);
+		final String unknown = getUnknown(Headers.UNKNOWN);
+
+		if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase(unknown)) {
+			ip = getHeader(Headers.X_REAL_IP, request);
 		}
-		if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {
-			ip = request.getHeader("x-original-forwarded-for");
+		if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase(unknown)) {
+			ip = getHeader(Headers.X_ORIGINAL_FORWARDED_FOR, request);
 		}
-		if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {
-			ip = request.getHeader("Proxy-Client-IP");
+		if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase(unknown)) {
+			ip = getHeader(Headers.PROXY_CLIENT_IP, request);
 		}
-		if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {
-			ip = request.getHeader("WL-Proxy-Client-IP");
+		if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase(unknown)) {
+			ip = getHeader(Headers.WL_PROXY_CLIENT_IP, request);
 		}
-		if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {
-			ip = request.getHeader("HTTP_X_FORWARDED_FOR");
+		if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase(unknown)) {
+			ip = getHeader(Headers.HTTP_X_FORWARDED_FOR, request);
 		}
-		if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {
-			ip = request.getHeader("HTTP_X_FORWARDED");
+		if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase(unknown)) {
+			ip = getHeader(Headers.HTTP_X_FORWARDED, request);
 		}
-		if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {
-			ip = request.getHeader("HTTP_X_CLUSTER_CLIENT_IP");
+		if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase(unknown)) {
+			ip = getHeader(Headers.HTTP_X_CLUSTER_CLIENT_IP, request);
 		}
-		if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {
-			ip = request.getHeader("HTTP_CLIENT_IP");
+		if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase(unknown)) {
+			ip = getHeader(Headers.HTTP_CLIENT_IP, request);
 		}
-		if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {
-			ip = request.getHeader("HTTP_FORWARDED_FOR");
+		if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase(unknown)) {
+			ip = getHeader(Headers.HTTP_FORWARDED_FOR, request);
 		}
-		if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {
-			ip = request.getHeader("HTTP_FORWARDED");
+		if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase(unknown)) {
+			ip = getHeader(Headers.HTTP_FORWARDED, request);
 		}
-		if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {
-			ip = request.getHeader("HTTP_VIA");
+		if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase(unknown)) {
+			ip = getHeader(Headers.HTTP_VIA, request);
 		}
-		if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {
-			ip = request.getHeader("REMOTE_ADDR");
+		if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase(unknown)) {
+			ip = getHeader(Headers.REMOTE_ADDR, request);
 		}
-		if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {
+		if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase(unknown)) {
 			ip = request.getRemoteAddr();
 		}
 
