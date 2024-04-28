@@ -40,6 +40,7 @@ public class RecruitmentFixture {
 				.title(title)
 				.hits(0)
 				.recruitmentEndDateTime(endDateTime)
+				.modifiedDateTime(LocalDateTime.now())
 				.build();
 	}
 

@@ -33,13 +33,17 @@ public final class CommonResponseAdvice implements ResponseBodyAdvice<Object> {
 								  final MediaType selectedContentType,
 								  final Class<? extends HttpMessageConverter<?>> selectedConverterType,
 								  final ServerHttpRequest request, final ServerHttpResponse response) {
-		if (hasError(body) || isStatic(request) || isLocation(response)) {
+		if (hasError(body) || isStatic(request) || isLocation(response) || isApiDocs(request)) {
 			return body;
 		}
 		final DataFieldName annotation = returnType.getMethodAnnotation(DataFieldName.class);
 		body = (annotation != null) ? CommonResponse.success(annotation.value(), body) :
 				CommonResponse.success(body);
 		return body;
+	}
+
+	private boolean isApiDocs(final ServerHttpRequest request) {
+		return request.getURI().getPath().startsWith("/v3/api-docs");
 	}
 
 	private boolean isStatic(final ServerHttpRequest request) {
