@@ -1,0 +1,3 @@
+[submodule "src/main/resources/ludo-backend-configuration"]
+	path = src/main/resources/ludo-backend-configuration
+	url = https://github.com/Ludo-SMP/ludo-backend-configuration.git
