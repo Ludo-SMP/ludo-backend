@@ -10,6 +10,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -32,6 +33,7 @@ public abstract class BaseEntity {
 	private LocalDateTime updatedDateTime;
 
 	@Column(nullable = true)
+	@Builder.Default
 	private LocalDateTime deletedDateTime = null;
 
 	public boolean isDeleted() {
