@@ -58,7 +58,7 @@ public final class CookieProvider {
 		cookie.setPath("/");
 		cookie.setHttpOnly(true);
 		cookie.setSecure(clientProperties.isSecure());
-		cookie.setAttribute("SameSite", "None");
+		cookie.setAttribute("SameSite", "Strict");
 		cookie.setMaxAge(maxAge);
 
 		return cookie;

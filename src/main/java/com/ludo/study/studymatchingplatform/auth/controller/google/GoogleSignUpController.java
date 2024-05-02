@@ -11,14 +11,15 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.ludo.study.studymatchingplatform.auth.common.AuthUserPayload;
-import com.ludo.study.studymatchingplatform.auth.common.Redirection;
 import com.ludo.study.studymatchingplatform.auth.common.provider.CookieProvider;
 import com.ludo.study.studymatchingplatform.auth.common.provider.JwtTokenProvider;
+import com.ludo.study.studymatchingplatform.auth.common.service.UserDetailsService;
 import com.ludo.study.studymatchingplatform.auth.repository.InMemoryClientRegistrationAndProviderRepository;
 import com.ludo.study.studymatchingplatform.auth.service.google.GoogleSignUpService;
 import com.ludo.study.studymatchingplatform.user.domain.user.Social;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +34,7 @@ public class GoogleSignUpController {
 	private final GoogleSignUpService googleSignUpService;
 	private final JwtTokenProvider jwtTokenProvider;
 	private final CookieProvider cookieProvider;
-	private final Redirection redirection;
+	private final UserDetailsService userDetailsService;
 
 	@GetMapping("/google")
 	@ResponseStatus(HttpStatus.FOUND)
@@ -55,11 +56,12 @@ public class GoogleSignUpController {
 	@GetMapping("/google/callback")
 	@ResponseStatus(HttpStatus.FOUND)
 	public void googleSignupback(
-			@RequestParam(name = "code") final String authorizationCode, final HttpServletResponse response) throws
-			IOException {
+			@RequestParam(name = "code") final String authorizationCode,
+			final HttpServletRequest request,
+			final HttpServletResponse response) throws IOException {
 		final User user = googleSignUpService.googleSignUp(authorizationCode);
 		final String accessToken = jwtTokenProvider.createAccessToken(AuthUserPayload.from(user));
-
+		userDetailsService.createUserDetails(user, request);
 		cookieProvider.setAuthCookie(accessToken, response);
 		response.sendRedirect("https://ludoapi.store");
 	}

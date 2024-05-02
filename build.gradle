@@ -55,6 +55,12 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0'
 
     implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.5.7'
+
+    // redis
+    // Client 구현체는 크게 Lettuce, Jedis가 있는데, Lettuce로 구현 했습니다.
+    // 이유는 별도의 의존성 설정 없이 사용할 수 있기 때문이고,
+    // Jedis에 비해 더 높은 성능과 상세한 문서를 제공하기 때문입니다.
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 }
 
 

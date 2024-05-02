@@ -14,8 +14,6 @@ public class ClientProperties {
 
 	private final String domain;
 
-	private final int port;
-
 	private final String url;
 
 	public boolean isSecure() {

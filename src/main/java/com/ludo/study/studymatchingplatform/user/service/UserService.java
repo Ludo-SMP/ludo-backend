@@ -20,8 +20,7 @@ public class UserService {
 
 	public void withdraw(final User user) {
 
-		final User foundUser = userRepository.findById(user.getId())
-				.orElseThrow(() -> new NotFoundException("가입되지 않은 회원입니다."));
+		final User foundUser = findById(user.getId());
 
 		if (foundUser.isDeleted()) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, "비활성화 된 회원입니다. 복구하시려면 해당 계정으로 다시 회원 가입을 시도해주세요.");
@@ -29,4 +28,10 @@ public class UserService {
 
 		user.softDelete();
 	}
+
+	public User findById(final Long userId) {
+		return userRepository.findById(userId)
+				.orElseThrow(() -> new NotFoundException("가입되지 않은 회원입니다."));
+	}
+
 }
