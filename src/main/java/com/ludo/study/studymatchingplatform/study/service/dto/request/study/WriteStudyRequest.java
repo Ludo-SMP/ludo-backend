@@ -17,21 +17,23 @@ public record WriteStudyRequest(
 		String title,
 		Long categoryId,
 		Long positionId,
-		Way way,
-		Platform platform,
+		String way,
+		String platform,
+		String platformUrl,
 		Integer participantLimit,
 		LocalDateTime startDateTime,
 		LocalDateTime endDateTime
 
 ) {
 
-	public Study toStudy(final User owner, final Category category, final Platform platform) {
+	public Study toStudy(final User owner, final Category category, final Way way, final Platform platform) {
 		return Study.builder()
 				.status(StudyStatus.RECRUITING)
 				.title(title)
 				.category(category)
 				.owner(owner)
 				.platform(platform)
+				.platformUrl(platformUrl)
 				.way(way)
 				.participantLimit(participantLimit)
 				.startDateTime(startDateTime)
