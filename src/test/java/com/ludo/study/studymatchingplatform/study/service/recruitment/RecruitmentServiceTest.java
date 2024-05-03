@@ -38,6 +38,8 @@ import com.ludo.study.studymatchingplatform.study.repository.study.category.Cate
 import com.ludo.study.studymatchingplatform.study.service.dto.request.recruitment.EditRecruitmentRequest;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.recruitment.WriteRecruitmentRequest;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.recruitment.applicant.ApplyRecruitmentRequest;
+import com.ludo.study.studymatchingplatform.study.service.dto.request.recruitment.applicant.StudyApplicantDecisionRequest;
+import com.ludo.study.studymatchingplatform.study.service.recruitment.applicant.StudyApplicantDecisionService;
 import com.ludo.study.studymatchingplatform.user.domain.user.Social;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 import com.ludo.study.studymatchingplatform.user.repository.user.UserRepositoryImpl;
@@ -72,6 +74,9 @@ class RecruitmentServiceTest {
 
 	@Autowired
 	private RecruitmentService recruitmentService;
+
+	@Autowired
+	private StudyApplicantDecisionService studyApplicantDecisionService;
 
 	@Autowired
 	private EntityManager em;
@@ -1028,6 +1033,65 @@ class RecruitmentServiceTest {
 
 		// then
 		assertThat(recruitment.getModifiedDateTime()).isAfterOrEqualTo(recruitment.getCreatedDateTime());
+	}
+
+	@DisplayName("[Exception] 사용자는 거절된 모집 공고는 재지원 할 수 없다.")
+	@Test
+	void possibleToReapplyIfAlreadyRejected() {
+
+		// given
+		final User owner = userRepository.save(
+				User.builder()
+						.nickname("owner")
+						.email("a@aa.aa")
+						.social(Social.KAKAO)
+						.build()
+		);
+		final User applier = userRepository.save(
+				User.builder()
+						.nickname("applier")
+						.email("b@bb.bb")
+						.social(Social.KAKAO)
+						.build()
+		);
+		final Category category = categoryRepository.save(
+
+				CategoryFixture.createCategory("category1"));
+
+		final Study study = studyRepository.save(
+				StudyFixture.createStudy(
+						"study",
+						category,
+						owner,
+						4,
+						Platform.GATHER
+				)
+		);
+		final Recruitment recruitment = recruitmentRepository.save(
+				RecruitmentFixture.createRecruitmentWithoutStacksAndPositions(
+						study,
+						"recruitment",
+						"content",
+						"callUrl",
+						LocalDateTime.now().plusDays(5)
+				)
+		);
+		study.registerRecruitment(recruitment);
+
+		final ApplyRecruitmentRequest request = createRequest();
+
+		final Applicant applicant = recruitmentService.apply(applier, recruitment.getId(), request);
+
+		final StudyApplicantDecisionRequest applicantDecisionRequest =
+				new StudyApplicantDecisionRequest(study.getId(), applier.getId());
+
+		// when
+		studyApplicantDecisionService.applicantReject(owner, applicantDecisionRequest);
+
+		// then
+		assertThatThrownBy(applicant::ensureApplicable)
+				.isInstanceOf(IllegalArgumentException.class)
+				.hasMessage("이미 거절된 모집 공고입니다.");
 	}
 
 	private void assertModifiedDateChange(Recruitment findRecruitment, Recruitment recruitment) {

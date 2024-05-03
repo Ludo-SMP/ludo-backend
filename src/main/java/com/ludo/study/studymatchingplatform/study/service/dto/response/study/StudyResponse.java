@@ -21,6 +21,7 @@ public record StudyResponse(
 		Boolean hasRecruitment,
 		String title,
 		Platform platform,
+		String platformUrl,
 		Way way,
 		Integer participantLimit,
 		Integer participantCount,
@@ -51,6 +52,7 @@ public record StudyResponse(
 				.owner(owner)
 				.title(study.getTitle())
 				.platform(study.getPlatform())
+				.platformUrl(study.getPlatformUrl())
 				.participants(participants)
 				.way(study.getWay())
 				.participantLimit(study.getParticipantLimit())

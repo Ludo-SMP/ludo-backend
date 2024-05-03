@@ -28,6 +28,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -65,6 +66,10 @@ public class Study extends BaseEntity {
 	@Column(nullable = false, columnDefinition = "char(20)")
 	private Platform platform;
 
+	@Column(nullable = true, length = 2048)
+	@Size(max = 2048)
+	private String platformUrl;
+
 	@Column(nullable = false, length = 50)
 	private String title;
 
@@ -83,7 +88,7 @@ public class Study extends BaseEntity {
 	private Integer participantLimit;
 
 	// null 제거 필요
-	@Column(nullable = true)
+	@Column(nullable = false)
 	private Integer participantCount;
 
 	@Column(nullable = false)
@@ -301,8 +306,9 @@ public class Study extends BaseEntity {
 		return Boolean.FALSE;
 	}
 
-	public void update(final String title, final Category category, final Integer participantLimit, final Way way,
-					   final Platform platform, final LocalDateTime startDateTime, final LocalDateTime endDateTime) {
+	public void update(final String title, final Category category, final Integer participantLimit,
+					   final Way way, final Platform platform, final String platformUrl,
+					   final LocalDateTime startDateTime, final LocalDateTime endDateTime) {
 		if (title != null) {
 			this.title = title;
 		}
@@ -317,6 +323,9 @@ public class Study extends BaseEntity {
 		}
 		if (platform != null) {
 			this.platform = platform;
+		}
+		if (platformUrl != null) {
+			this.platformUrl = platformUrl;
 		}
 		if (startDateTime != null) {
 			this.startDateTime = startDateTime;

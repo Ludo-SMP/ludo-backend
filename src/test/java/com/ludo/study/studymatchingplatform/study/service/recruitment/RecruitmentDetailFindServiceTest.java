@@ -120,7 +120,7 @@ class RecruitmentDetailFindServiceTest {
 		Category category = CategoryFixture.createCategory(CATEGORY);
 
 		Study study = StudyFixture.createStudy(StudyStatus.RECRUITING, STUDY_TITLE, Way.ONLINE,
-				category, user, 5, 10, Platform.GATHER);
+				category, user, 5, 10, Platform.GATHER, "www.platformUrl.com");
 
 		Recruitment recruitment = RecruitmentFixture.createRecruitment(study, RECRUITMENT_TITLE, CONTENT, 5, CALL_URL,
 				null);

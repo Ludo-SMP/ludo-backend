@@ -176,7 +176,7 @@ class RecruitmentsFindServiceTest {
 		private Study saveStudy(Category category, User user, int count) {
 			String studyTitle = "스터디" + count;
 			Study study = StudyFixture.createStudy(StudyStatus.RECRUITING, studyTitle, Way.ONLINE, category, user, 0, 5,
-					Platform.GATHER);
+					Platform.GATHER, "www.platformUrl.com");
 			studyRepository.save(study);
 			return study;
 		}

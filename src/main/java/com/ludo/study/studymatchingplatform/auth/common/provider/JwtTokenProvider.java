@@ -16,6 +16,7 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import lombok.Getter;
 
 @Component
 public class JwtTokenProvider {
@@ -23,14 +24,19 @@ public class JwtTokenProvider {
 	@Value("${jwt.token.secret-key}")
 	private String secretKey;
 
+	@Getter
 	@Value("${jwt.token.access-token-expiresin}")
 	private String accessTokenExpiresIn;
 
 	public String createAccessToken(final AuthUserPayload payload) {
 		final Claims claims = createClaims(payload);
-		final Date expiresIn = createExpiresIn();
-		final Key signingKey = createSigningKey();
+		return createToken(accessTokenExpiresIn, claims);
+	}
 
+	private String createToken(final String tokenValidityInSeconds, final Claims claims) {
+		final Long tokenValidity = Long.parseLong(tokenValidityInSeconds);
+		final Date expiresIn = createExpiresIn(tokenValidity);
+		final Key signingKey = createSigningKey();
 		return Jwts.builder()
 				.setClaims(claims)
 				.setExpiration(expiresIn)
@@ -44,22 +50,14 @@ public class JwtTokenProvider {
 		return claims;
 	}
 
-	private Date createExpiresIn() {
-		long currentDateTime = new Date().getTime();
-		return new Date(currentDateTime + Long.parseLong(accessTokenExpiresIn));
+	private Date createExpiresIn(final Long tokenValidityInSeconds) {
+		final Long currentDateTime = new Date().getTime();
+		return new Date(currentDateTime + tokenValidityInSeconds);
 	}
 
 	private Key createSigningKey() {
 		byte[] secretKeyBytes = secretKey.getBytes(StandardCharsets.UTF_8);
 		return Keys.hmacShaKeyFor(secretKeyBytes);
-	}
-
-	public String getAccessTokenExpiresIn() {
-		return accessTokenExpiresIn;
-	}
-
-	public void isValidTokenOrThrows(final String token) {
-		verifyAuthTokenOrThrow(token);
 	}
 
 	public Claims verifyAuthTokenOrThrow(final String token) {

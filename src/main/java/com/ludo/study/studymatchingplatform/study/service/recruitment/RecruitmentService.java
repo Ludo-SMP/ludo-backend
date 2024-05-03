@@ -119,7 +119,7 @@ public class RecruitmentService {
 		} else {
 			final Applicant reapplicant = applicant.get();
 			reapplicant.ensureApplicable();
-			reapplicant.reapply();
+			// reapplicant.reapply();
 
 			return reapplicant;
 		}

@@ -36,11 +36,8 @@ import lombok.extern.slf4j.Slf4j;
 public class UserController {
 
 	private final UserService userService;
-
 	private final ChangeNicknameService changeNicknameService;
-
 	private final CookieProvider cookieProvider;
-
 	private final Redirection redirection;
 
 	@DeleteMapping("/users/deactivate")

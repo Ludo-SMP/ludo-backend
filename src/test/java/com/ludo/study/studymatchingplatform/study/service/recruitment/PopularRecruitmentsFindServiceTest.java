@@ -60,19 +60,19 @@ class PopularRecruitmentsFindServiceTest {
 		userRepository.save(user);
 
 		Study studyA = StudyFixture.createStudy(StudyStatus.RECRUITING, "스터디A", Way.ONLINE, project, user, 5, 5,
-				Platform.GATHER);
+				Platform.GATHER, "www.platformUrl.com");
 		Study studyB = StudyFixture.createStudy(StudyStatus.RECRUITING, "스터디B", Way.ONLINE, project, user, 5, 5,
-				Platform.GATHER);
+				Platform.GATHER, "www.platformUrl.com");
 		Study studyC = StudyFixture.createStudy(StudyStatus.RECRUITING, "스터디C", Way.ONLINE, project, user, 5, 5,
-				Platform.GATHER);
+				Platform.GATHER, "www.platformUrl.com");
 		Study studyD = StudyFixture.createStudy(StudyStatus.RECRUITING, "스터디D", Way.ONLINE, project, user, 5, 5,
-				Platform.GATHER);
+				Platform.GATHER, "www.platformUrl.com");
 		Study studyE = StudyFixture.createStudy(StudyStatus.RECRUITING, "스터디E", Way.ONLINE, codingTest, user, 5, 5,
-				Platform.GATHER);
+				Platform.GATHER, "www.platformUrl.com");
 		Study studyF = StudyFixture.createStudy(StudyStatus.RECRUITING, "스터디F", Way.ONLINE, codingTest, user, 5, 5,
-				Platform.GATHER);
+				Platform.GATHER, "www.platformUrl.com");
 		Study studyG = StudyFixture.createStudy(StudyStatus.RECRUITING, "스터디G", Way.ONLINE, interview, user, 5, 5,
-				Platform.GATHER);
+				Platform.GATHER, "www.platformUrl.com");
 
 		Recruitment recruitmentA = RecruitmentFixture.createRecruitment(studyA, "모집공고A", "내용입니다.", 499, "call_url",
 				null);

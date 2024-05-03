@@ -13,11 +13,12 @@ import com.ludo.study.studymatchingplatform.user.domain.user.User;
 public class StudyFixture {
 
 	public static Study createStudy(StudyStatus studyStatus, String title, Way way, Category category, User user,
-									int participantCount, int participantLimit, Platform platform
+									int participantCount, int participantLimit, Platform platform, String platformUrl
 	) {
 		return Study.builder()
 				.status(studyStatus)
 				.platform(platform)
+				.platformUrl(platformUrl)
 				.category(category)
 				.owner(user)
 				.title(title)
@@ -40,7 +41,8 @@ public class StudyFixture {
 				user,
 				0,
 				participantLimit,
-				platform
+				platform,
+				"www.platformUrl.com"
 		);
 	}
 
@@ -54,7 +56,8 @@ public class StudyFixture {
 				user,
 				0,
 				participantLimit,
-				Platform.GATHER);
+				Platform.GATHER,
+				"www.platformUrl.com");
 	}
 
 	public static Study createStudy(Long id, String title, Way way, Category category, User user,
