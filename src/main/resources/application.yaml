@@ -108,3 +108,7 @@ server:
   tomcat:
     mbeanregistry:
       enabled: true
+
+springdoc:
+  swagger-ui:
+    path: /api/swagger-ui.html
