@@ -1,6 +1,6 @@
 spring:
   config:
     activate:
-      on-profile: dev
+      on-profile: prod
     import:
       - ludo-backend-configuration/application-prod.yaml
