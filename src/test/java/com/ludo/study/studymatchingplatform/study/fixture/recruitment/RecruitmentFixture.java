@@ -1,6 +1,7 @@
 package com.ludo.study.studymatchingplatform.study.fixture.recruitment;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Contact;
@@ -15,7 +16,8 @@ public class RecruitmentFixture {
 												int hits, String callUrl,
 												LocalDateTime endDateTime
 	) {
-		endDateTime = endDateTime == null ? LocalDateTime.now().plusDays(5) : endDateTime;
+		endDateTime =
+				endDateTime == null ? LocalDateTime.now().plusDays(5).truncatedTo(ChronoUnit.MICROS) : endDateTime;
 		return Recruitment.builder()
 				.study(study)
 				.contact(Contact.KAKAO)
@@ -30,7 +32,8 @@ public class RecruitmentFixture {
 
 	public static Recruitment createRecruitmentWithoutStacksAndPositions(Study study, String title, String content,
 																		 String callUrl, LocalDateTime endDateTime) {
-		endDateTime = endDateTime == null ? LocalDateTime.now().plusDays(5) : endDateTime;
+		endDateTime =
+				endDateTime == null ? LocalDateTime.now().plusDays(5).truncatedTo(ChronoUnit.MICROS) : endDateTime;
 		return Recruitment.builder()
 				.study(study)
 				.contact(Contact.KAKAO)
@@ -68,7 +71,7 @@ public class RecruitmentFixture {
 				.callUrl(callUrl)
 				.content(content)
 				.applicantCount(3)
-				.recruitmentEndDateTime(endDateTime)
+				.recruitmentEndDateTime(endDateTime.truncatedTo(ChronoUnit.MICROS))
 				.title(title)
 				.hits(hits)
 				.build();

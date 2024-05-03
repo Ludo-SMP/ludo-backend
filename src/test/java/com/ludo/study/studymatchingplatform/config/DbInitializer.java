@@ -1,5 +1,6 @@
 package com.ludo.study.studymatchingplatform.config;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.position.Position;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
+@Profile("test")
 public class DbInitializer {
 
 	private final CategoryRepositoryImpl categoryRepository;

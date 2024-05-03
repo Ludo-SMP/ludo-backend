@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
@@ -43,6 +44,7 @@ import com.ludo.study.studymatchingplatform.user.repository.user.UserRepositoryI
 import jakarta.persistence.EntityManager;
 
 @SpringBootTest
+@ActiveProfiles("test")
 class RecruitmentsFindServiceTest {
 
 	private static final int TOTAL_RECRUITMENT = 45;

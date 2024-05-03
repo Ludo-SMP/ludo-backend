@@ -1,0 +1,6 @@
+spring:
+  config:
+    activate:
+      on-profile: test
+    import:
+      - ludo-backend-configuration/application-test.yaml
