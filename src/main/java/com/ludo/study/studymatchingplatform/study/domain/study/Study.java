@@ -66,7 +66,7 @@ public class Study extends BaseEntity {
 	@Column(nullable = false, columnDefinition = "char(20)")
 	private Platform platform;
 
-	@Column(nullable = false, length = 2048)
+	@Column(nullable = true, length = 2048)
 	@Size(max = 2048)
 	private String platformUrl;
 
