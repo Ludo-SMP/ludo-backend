@@ -4,7 +4,7 @@ import com.ludo.study.studymatchingplatform.auth.common.AuthUser;
 import com.ludo.study.studymatchingplatform.common.annotation.DataFieldName;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.study.WriteReviewRequest;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.study.ReviewResponse;
-import com.ludo.study.studymatchingplatform.study.service.study.ReviewService;
+import com.ludo.study.studymatchingplatform.study.service.study.ReviewFacade;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.*;
 @Validated
 public class ReviewController {
 
-    private final ReviewService reviewService;
+    private final ReviewFacade reviewFacade;
 
     @PostMapping("/studies/{studyId}/reviews")
     @ResponseStatus(HttpStatus.CREATED)
@@ -33,7 +33,7 @@ public class ReviewController {
     @Operation(description = "리뷰 작성")
     @ApiResponse(description = "리뷰 작성 성공", responseCode = "201", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
     public ReviewResponse write(@Parameter(hidden = true) @AuthUser final User user, @PathVariable("studyId") Long studyId, @Valid @RequestBody WriteReviewRequest request) {
-        return reviewService.write(request, studyId, user);
+        return reviewFacade.write(request, studyId, user);
     }
 
 }
