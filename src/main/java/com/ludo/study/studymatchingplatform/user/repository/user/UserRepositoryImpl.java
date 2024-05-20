@@ -3,6 +3,7 @@ package com.ludo.study.studymatchingplatform.user.repository.user;
 import static com.ludo.study.studymatchingplatform.notification.domain.keyword.QNotificationKeywordCategory.*;
 import static com.ludo.study.studymatchingplatform.notification.domain.keyword.QNotificationKeywordPosition.*;
 import static com.ludo.study.studymatchingplatform.notification.domain.keyword.QNotificationKeywordStack.*;
+import static com.ludo.study.studymatchingplatform.study.domain.study.participant.QParticipant.*;
 import static com.ludo.study.studymatchingplatform.user.domain.user.QUser.*;
 import static com.querydsl.jpa.JPAExpressions.*;
 
@@ -77,6 +78,7 @@ public class UserRepositoryImpl {
 
 	public List<User> findRecruitmentNotifiers(final RecruitmentNotifierCondition condition) {
 		// TODO: 모집공고 알림 설정을 on한 사용자 쿼리 조건 추가
+		// TODO: 내가 생성한 모집공고는 알림대상자에 제외하는 쿼리 조건 추가
 		return q.select(user)
 				.from(user)
 				.where(
@@ -114,6 +116,14 @@ public class UserRepositoryImpl {
 				.map(notificationKeywordStack.stack::eq)
 				.forEach(booleanBuilder::or);
 		return booleanBuilder;
+	}
+
+	public List<User> findParticipantUsersByStudyId(final Long id) {
+		// TODO: 모집공고 알림 설정을 on한 사용자 쿼리 조건 추가
+		return q.select(user)
+				.from(participant)
+				.where(participant.study.id.eq(id))
+				.fetch();
 	}
 
 }
