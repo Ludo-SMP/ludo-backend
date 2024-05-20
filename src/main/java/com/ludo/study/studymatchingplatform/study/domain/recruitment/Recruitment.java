@@ -20,6 +20,7 @@ import com.ludo.study.studymatchingplatform.study.domain.recruitment.position.Re
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.stack.RecruitmentStack;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.stack.Stack;
 import com.ludo.study.studymatchingplatform.study.domain.study.Study;
+import com.ludo.study.studymatchingplatform.study.domain.study.category.Category;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 
 import jakarta.persistence.CascadeType;
@@ -386,6 +387,10 @@ public class Recruitment extends BaseEntity {
 		return (int)applicants.stream()
 				.filter(Applicant::isActive)
 				.count();
+	}
+
+	public Category getCategory() {
+		return this.study.getCategory();
 	}
 
 }
