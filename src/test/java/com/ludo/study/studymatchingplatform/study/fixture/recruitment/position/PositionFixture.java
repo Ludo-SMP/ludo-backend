@@ -4,6 +4,11 @@ import com.ludo.study.studymatchingplatform.study.domain.recruitment.position.Po
 
 public class PositionFixture {
 
+	public static final Position BACKEND = Position.builder().name("백엔드").build();
+	public static final Position FRONTEND = Position.builder().name("프론트엔드").build();
+	public static final Position DESIGNER = Position.builder().name("디자이너").build();
+	public static final Position DEVOPS = Position.builder().name("데브옵스").build();
+
 	public static Position createPosition(String name) {
 		return Position.builder()
 				.name(name)
