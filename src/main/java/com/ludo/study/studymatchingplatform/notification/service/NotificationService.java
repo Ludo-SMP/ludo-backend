@@ -28,8 +28,16 @@ public class NotificationService {
 		List<User> recruitmentNotifiers = userRepository.findRecruitmentNotifiers(recruitmentNotifierCondition);
 		log.info("recruitmentNotifiers = {}", recruitmentNotifiers);
 
-		// TODO: 알림 대상자에게 SSE 실시간 알림 전송
+		// TODO: 알림 대상자에게 SSE 실시간 알림 전송로직 추가
+		// TODO: 실시간 알림 전송 후 알림 테이블에 저장하는 로직 추가
 		return recruitmentNotifiers;
+	}
+
+	public void studyApplicantNotice(final Recruitment recruitment) {
+		final List<User> studyParticipantUsers = userRepository.findParticipantUsersByStudyId(recruitment.getStudyId());
+
+		// TODO: 알림 대상자에게 SSE 실시간 알림 전송로직 추가
+		// TODO: 실시간 알림 전송 후 알림 테이블에 저장하는 로직 추가
 	}
 
 }
