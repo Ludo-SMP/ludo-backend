@@ -393,4 +393,8 @@ public class Recruitment extends BaseEntity {
 		return this.study.getCategory();
 	}
 
+	public Long getStudyId() {
+		return this.study.getId();
+	}
+
 }
