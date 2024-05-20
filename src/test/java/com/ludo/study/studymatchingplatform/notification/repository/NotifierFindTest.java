@@ -1,16 +1,20 @@
 package com.ludo.study.studymatchingplatform.notification.repository;
 
+import static org.assertj.core.api.Assertions.*;
+
 import java.util.List;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ludo.study.studymatchingplatform.notification.domain.keyword.NotificationKeywordCategory;
 import com.ludo.study.studymatchingplatform.notification.domain.keyword.NotificationKeywordPosition;
@@ -21,11 +25,15 @@ import com.ludo.study.studymatchingplatform.notification.repository.keyword.Noti
 import com.ludo.study.studymatchingplatform.notification.repository.keyword.NotificationKeywordStackRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.position.Position;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.stack.Stack;
+import com.ludo.study.studymatchingplatform.study.domain.study.Study;
 import com.ludo.study.studymatchingplatform.study.domain.study.category.Category;
+import com.ludo.study.studymatchingplatform.study.domain.study.participant.Participant;
 import com.ludo.study.studymatchingplatform.study.fixture.recruitment.position.PositionFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.recruitment.stack.StackCategoryFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.recruitment.stack.StackFixture;
+import com.ludo.study.studymatchingplatform.study.fixture.study.StudyFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.study.category.CategoryFixture;
+import com.ludo.study.studymatchingplatform.study.fixture.study.participant.ParticipantFixture;
 import com.ludo.study.studymatchingplatform.study.repository.recruitment.RecruitmentRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.recruitment.position.PositionRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.recruitment.position.RecruitmentPositionRepositoryImpl;
@@ -34,6 +42,7 @@ import com.ludo.study.studymatchingplatform.study.repository.recruitment.stack.S
 import com.ludo.study.studymatchingplatform.study.repository.recruitment.stack.StackRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.study.StudyRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.study.category.CategoryRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.repository.study.participant.ParticipantRepositoryImpl;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 import com.ludo.study.studymatchingplatform.user.fixture.user.UserFixture;
 import com.ludo.study.studymatchingplatform.user.repository.user.UserRepositoryImpl;
@@ -43,6 +52,7 @@ import lombok.extern.slf4j.Slf4j;
 @SpringBootTest
 @ActiveProfiles("test")
 @Slf4j
+@Transactional
 class NotifierFindTest {
 
 	@Autowired
@@ -81,7 +91,12 @@ class NotifierFindTest {
 	@Autowired
 	NotificationKeywordPositionRepositoryImpl notificationKeywordPositionRepository;
 
-	User user;
+	@Autowired
+	ParticipantRepositoryImpl participantRepository;
+
+	User user1;
+	User user2;
+	User user3;
 
 	@BeforeEach
 	void setUp() {
@@ -100,8 +115,12 @@ class NotifierFindTest {
 		stackRepository.save(StackFixture.JAVA_SCRIPT);
 
 		// given
-		user = UserFixture.user1;
-		userRepository.save(user);
+		user1 = UserFixture.user1;
+		user2 = UserFixture.user2;
+		user3 = UserFixture.user3;
+		userRepository.save(user1);
+		userRepository.save(user2);
+		userRepository.save(user3);
 	}
 
 	@ParameterizedTest
@@ -128,7 +147,7 @@ class NotifierFindTest {
 
 	private void givenNotificationKeywordPositionIsBackend() {
 		NotificationKeywordPosition notificationKeywordPosition1 = NotificationKeywordPosition.builder()
-				.user(user)
+				.user(user1)
 				.position(PositionFixture.BACKEND)
 				.build();
 		notificationKeywordPositionRepository.save(notificationKeywordPosition1);
@@ -136,7 +155,7 @@ class NotifierFindTest {
 
 	private void givenNotificationKeywordCategoryIsProject() {
 		NotificationKeywordCategory notificationKeywordCategory1 = NotificationKeywordCategory.builder()
-				.user(user)
+				.user(user1)
 				.category(CategoryFixture.CATEGORY_PROJECT)
 				.build();
 		notificationKeywordCategoryRepository.save(notificationKeywordCategory1);
@@ -144,11 +163,11 @@ class NotifierFindTest {
 
 	private void givenNotificationKeywordStackIsJavaAndPython() {
 		NotificationKeywordStack notificationKeywordStack1 = NotificationKeywordStack.builder()
-				.user(user)
+				.user(user1)
 				.stack(StackFixture.JAVA)
 				.build();
 		NotificationKeywordStack notificationKeywordStack2 = NotificationKeywordStack.builder()
-				.user(user)
+				.user(user1)
 				.stack(StackFixture.PYTHON)
 				.build();
 		notificationKeywordStackRepository.save(notificationKeywordStack1);
@@ -176,6 +195,25 @@ class NotifierFindTest {
 						List.of(StackFixture.JAVA)
 				)
 		);
+	}
+
+	@Test
+	void 스터디지원자현황_알림_대상자_찾기() {
+		// given
+		Study study1 = StudyFixture.study1;
+		studyRepository.save(study1);
+
+		Participant study1ParticipantUser1 = ParticipantFixture.study1ParticipantUser1;
+		Participant study1ParticipantUser2 = ParticipantFixture.study1ParticipantUser2;
+		Participant study1ParticipantUser3 = ParticipantFixture.study1ParticipantUser3;
+		participantRepository.save(study1ParticipantUser1);
+		participantRepository.save(study1ParticipantUser2);
+		participantRepository.save(study1ParticipantUser3);
+
+		List<User> studyApplicantNotifiers = userRepository.findParticipantUsersByStudyId(study1.getId());
+		assertThat(studyApplicantNotifiers).containsExactly(study1ParticipantUser1.getUser(),
+				study1ParticipantUser2.getUser(),
+				study1ParticipantUser3.getUser());
 	}
 
 }
