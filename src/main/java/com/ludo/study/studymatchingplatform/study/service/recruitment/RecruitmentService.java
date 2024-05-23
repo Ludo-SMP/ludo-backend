@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ludo.study.studymatchingplatform.notification.service.NotificationService;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant.Applicant;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant.ApplicantStatus;
@@ -15,9 +16,6 @@ import com.ludo.study.studymatchingplatform.study.domain.study.StudyStatus;
 import com.ludo.study.studymatchingplatform.study.repository.recruitment.RecruitmentRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.recruitment.applicant.ApplicantRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.recruitment.position.PositionRepositoryImpl;
-import com.ludo.study.studymatchingplatform.study.repository.recruitment.position.RecruitmentPositionRepositoryImpl;
-import com.ludo.study.studymatchingplatform.study.repository.recruitment.stack.RecruitmentStackRepositoryImpl;
-import com.ludo.study.studymatchingplatform.study.repository.recruitment.stack.StackRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.study.StudyRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.recruitment.EditRecruitmentRequest;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.recruitment.WriteRecruitmentRequest;
@@ -36,13 +34,12 @@ public class RecruitmentService {
 
 	private final RecruitmentRepositoryImpl recruitmentRepository;
 	private final StudyRepositoryImpl studyRepository;
-	private final RecruitmentStackRepositoryImpl recruitmentStackRepository;
 	private final RecruitmentStackService recruitmentStackService;
-	private final RecruitmentPositionRepositoryImpl recruitmentPositionRepository;
 	private final RecruitmentPositionService recruitmentPositionService;
-	private final StackRepositoryImpl stackRepository;
 	private final PositionRepositoryImpl positionRepository;
 	private final ApplicantRepositoryImpl applicantRepository;
+
+	private final NotificationService notificationService;
 
 	@Transactional
 	public Recruitment write(final User user, final WriteRecruitmentRequest request,
@@ -63,6 +60,8 @@ public class RecruitmentService {
 		// 모집 공고 생성시 스터디 상태를 모집중으로 변경
 		study.modifyStatusToRecruiting();
 
+		// 모집 공고 알림 트리거
+		notificationService.recruitmentNotice(recruitment);
 		return recruitment;
 	}
 
@@ -114,6 +113,9 @@ public class RecruitmentService {
 			applicantRepository.save(newApplicant);
 			final Applicant savedApplicant = applicantRepository.save(newApplicant);
 			recruitment.addApplicant(savedApplicant);
+
+			// 스터디 지원 현황 알림 트리거
+			notificationService.studyApplicantNotice(recruitment);
 
 			return savedApplicant;
 		} else {

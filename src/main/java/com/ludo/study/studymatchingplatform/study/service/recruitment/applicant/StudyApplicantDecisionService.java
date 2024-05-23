@@ -3,6 +3,7 @@ package com.ludo.study.studymatchingplatform.study.service.recruitment.applicant
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ludo.study.studymatchingplatform.notification.service.NotificationService;
 import com.ludo.study.studymatchingplatform.study.domain.study.Study;
 import com.ludo.study.studymatchingplatform.study.domain.study.participant.Participant;
 import com.ludo.study.studymatchingplatform.study.repository.study.StudyRepositoryImpl;
@@ -23,6 +24,7 @@ public class StudyApplicantDecisionService {
 	private final StudyRepositoryImpl studyRepository;
 	private final UserRepositoryImpl userRepository;
 	private final ParticipantRepositoryImpl participantRepository;
+	private final NotificationService notificationService;
 
 	@Transactional
 	public ParticipantUserResponse applicantAccept(final User owner, final StudyApplicantDecisionRequest request) {
@@ -32,6 +34,9 @@ public class StudyApplicantDecisionService {
 		study.acceptApplicant(owner, applicantUser);
 		Participant participant = findParticipant(study, applicantUser);
 
+		// 스터디 지원 수락 알림 트리거
+		notificationService.studyApplicantAcceptNotice(study, applicantUser);
+
 		return ParticipantUserResponse.from(participant);
 	}
 
@@ -39,6 +44,9 @@ public class StudyApplicantDecisionService {
 	public void applicantReject(final User owner, final StudyApplicantDecisionRequest request) {
 		final Study study = findStudy(request.studyId());
 		final User applicantUser = findUser(request.applicantUserId());
+
+		// 스터디 지원 거절 알림 트리거
+		notificationService.studyApplicantRejectNotice(study, applicantUser);
 
 		study.rejectApplicant(owner, applicantUser);
 	}

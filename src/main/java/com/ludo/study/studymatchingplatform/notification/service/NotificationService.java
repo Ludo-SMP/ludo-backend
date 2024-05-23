@@ -73,8 +73,9 @@ public class NotificationService {
 		return recruitmentNotifiers;
 	}
 
-	public void studyApplicantNotice(final Study study) {
+	public void studyApplicantNotice(final Recruitment recruitment) {
 		// 알림 대상자 조회
+		final Study study = recruitment.getStudy();
 		final List<User> studyParticipantUsers = userRepository.findParticipantUsersByStudyId(study.getId());
 
 		// 알림 저장
@@ -118,6 +119,7 @@ public class NotificationService {
 		sseEmitters.sendNotification(applicantUser, new NotificationResponse(studyNotification));
 	}
 
+	// TODO: 스터디 탈퇴 기능 구현 완료되면 해당 서비스에서 호출하는 로직
 	public void studyParticipantLeaveNotice(final Study study) {
 		// 알림 대상자 조회
 		final List<User> studyParticipantUsers = userRepository.findParticipantUsersByStudyId(study.getId());
@@ -136,6 +138,7 @@ public class NotificationService {
 		});
 	}
 
+	// TODO: 스터디 탈퇴 기능 구현 완료되면 해당 서비스에서 호출하는 로직
 	public void studyParticipantLeaveApplyNotice(final Study study) {
 		// 알림 대상자 조회
 		final User studyOwner = study.getOwner();
