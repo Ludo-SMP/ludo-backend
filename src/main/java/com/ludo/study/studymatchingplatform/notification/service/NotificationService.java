@@ -12,6 +12,7 @@ import com.ludo.study.studymatchingplatform.notification.domain.notification.Rec
 import com.ludo.study.studymatchingplatform.notification.domain.notification.ReviewNotification;
 import com.ludo.study.studymatchingplatform.notification.domain.notification.StudyNotification;
 import com.ludo.study.studymatchingplatform.notification.repository.dto.RecruitmentNotifierCondition;
+import com.ludo.study.studymatchingplatform.notification.repository.dto.StudyEndDateNotifyCondition;
 import com.ludo.study.studymatchingplatform.notification.repository.notification.RecruitmentNotificationRepositoryImpl;
 import com.ludo.study.studymatchingplatform.notification.repository.notification.ReviewNotificationRepositoryImpl;
 import com.ludo.study.studymatchingplatform.notification.repository.notification.StudyNotificationRepositoryImpl;
@@ -20,7 +21,8 @@ import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant.Applicant;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant.ApplicantStatus;
 import com.ludo.study.studymatchingplatform.study.domain.study.Study;
-import com.ludo.study.studymatchingplatform.study.repository.recruitment.applicant.ApplicantRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.domain.study.participant.Participant;
+import com.ludo.study.studymatchingplatform.study.repository.study.participant.ParticipantRepositoryImpl;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 import com.ludo.study.studymatchingplatform.user.repository.user.UserRepositoryImpl;
 
@@ -34,7 +36,7 @@ public class NotificationService {
 
 	// for notifier search
 	private final UserRepositoryImpl userRepository;
-	private final ApplicantRepositoryImpl applicantRepository;
+	private final ParticipantRepositoryImpl participantRepository;
 
 	// for notification save & find
 	private final StudyNotificationRepositoryImpl studyNotificationRepository;
@@ -148,14 +150,24 @@ public class NotificationService {
 
 	// TODO: @Scheduled 적용
 	public void studyEndDateNotice() {
-		// 알림 대상자 조회
-		// 종료 기간까지 N일 남은 스터디 조회
-		// 해당 스터디의 방장 조회
+		// 알림 대상자 조회 - 종료 기간까지 N일 남은 스터디 참가자 중 모든 방장
+		final List<Participant> ownersOfStudiesEndingIn = participantRepository.findOwnersOfStudiesEndingIn(
+				new StudyEndDateNotifyCondition(5L));
 
 		// 알림 저장
+		final List<StudyNotification> studyNotifications = studyNotificationRepository.saveAll(ownersOfStudiesEndingIn
+				.stream()
+				.map(notifier -> StudyNotification.of(
+						STUDY_END_DATE, LocalDateTime.now(), notifier.getStudy(), notifier.getUser()))
+				.toList()
+		);
 
 		// 실시간 알림 전송 요청
-
+		studyNotifications.forEach(studyNotification -> {
+			final User notifier = studyNotification.getNotifier();
+			final NotificationResponse notificationResponse = new NotificationResponse(studyNotification);
+			sseEmitters.sendNotification(notifier, notificationResponse);
+		});
 	}
 
 	public void reviewStartNotice(final Study study) {
