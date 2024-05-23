@@ -1,12 +1,13 @@
 package com.ludo.study.studymatchingplatform.notification.service;
 
+import static com.ludo.study.studymatchingplatform.notification.domain.notification.NotificationEventType.*;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.ludo.study.studymatchingplatform.notification.domain.notification.NotificationEventType;
 import com.ludo.study.studymatchingplatform.notification.domain.notification.RecruitmentNotification;
 import com.ludo.study.studymatchingplatform.notification.domain.notification.ReviewNotification;
 import com.ludo.study.studymatchingplatform.notification.domain.notification.StudyNotification;
@@ -44,38 +45,49 @@ public class NotificationService {
 	private final SseEmitters sseEmitters;
 
 	public List<User> recruitmentNotice(final Recruitment recruitment) {
+		// 알림 대상자 조회
 		final RecruitmentNotifierCondition recruitmentNotifierCondition = new RecruitmentNotifierCondition(
 				recruitment.getCategory(),
 				recruitment.getPositions(),
 				recruitment.getStacks());
+		final List<User> recruitmentNotifiers = userRepository.findRecruitmentNotifiers(recruitmentNotifierCondition);
 
-		List<User> recruitmentNotifiers = userRepository.findRecruitmentNotifiers(recruitmentNotifierCondition);
-		log.info("recruitmentNotifiers = {}", recruitmentNotifiers);
-
-		// TODO: 알림 테이블에 저장 테스트
+		// 알림 저장
 		final List<RecruitmentNotification> recruitmentNotifications = recruitmentNotificationRepository.saveAll(
 				recruitmentNotifiers
 						.stream()
 						.map(notifier -> RecruitmentNotification.of(
-								NotificationEventType.RECRUITMENT, LocalDateTime.now(), recruitment, notifier))
-						.toList());
-		// TODO: 알림 대상자에게 SSE 실시간 알림 전송로직 추가
+								RECRUITMENT, LocalDateTime.now(), recruitment, notifier))
+						.toList()
+		);
+
+		// 실시간 알림 전송 요청
+		recruitmentNotifications.forEach(recruitmentNotification -> {
+			final User notifier = recruitmentNotification.getNotifier();
+			final NotificationResponse notificationResponse = new NotificationResponse(recruitmentNotification);
+			sseEmitters.sendNotification(notifier, notificationResponse);
+		});
 
 		return recruitmentNotifiers;
 	}
 
 	public void studyApplicantNotice(final Study study) {
+		// 알림 대상자 조회
 		final List<User> studyParticipantUsers = userRepository.findParticipantUsersByStudyId(study.getId());
 
-		// TODO: 알림 테이블에 저장 테스트
-		final List<StudyNotification> studyNotifications = studyParticipantUsers
+		// 알림 저장
+		final List<StudyNotification> studyNotifications = studyNotificationRepository.saveAll(studyParticipantUsers
 				.stream()
-				.map(notifier -> StudyNotification.of(NotificationEventType.STUDY_APPLICANT,
-						LocalDateTime.now(), study, notifier))
-				.toList();
-		studyNotificationRepository.saveAll(studyNotifications);
+				.map(notifier -> StudyNotification.of(STUDY_APPLICANT, LocalDateTime.now(),
+						study, notifier))
+				.toList());
 
-		// TODO: 알림 대상자에게 SSE 실시간 알림 전송로직 추가
+		// 실시간 알림 전송 요청
+		studyNotifications.forEach(studyNotification -> {
+			final User notifier = studyNotification.getNotifier();
+			final NotificationResponse notificationResponse = new NotificationResponse(studyNotification);
+			sseEmitters.sendNotification(notifier, notificationResponse);
+		});
 	}
 
 	public void studyApplicantResultNotice(final Recruitment recruitment, final User user) {
@@ -95,29 +107,33 @@ public class NotificationService {
 	}
 
 	public void studyParticipantLeaveNotice(final Study study) {
+		// 알림 대상자 조회
 		final List<User> studyParticipantUsers = userRepository.findParticipantUsersByStudyId(study.getId());
 
-		// TODO: 알림 테이블에 저장 테스트
-		final List<StudyNotification> studyNotifications = studyParticipantUsers
+		// 알림 저장
+		final List<StudyNotification> studyNotifications = studyNotificationRepository.saveAll(studyParticipantUsers
 				.stream()
-				.map(notifier -> StudyNotification.of(NotificationEventType.STUDY_PARTICIPANT_LEAVE,
-						LocalDateTime.now(), study, notifier))
-				.toList();
-		studyNotificationRepository.saveAll(studyNotifications);
+				.map(notifier -> StudyNotification.of(STUDY_PARTICIPANT_LEAVE, LocalDateTime.now(), study, notifier))
+				.toList());
 
-		// TODO: 알림 대상자에게 SSE 실시간 알림 전송로직 추가
+		// 실시간 알림 전송 요청
+		studyNotifications.forEach(studyNotification -> {
+			final User notifier = studyNotification.getNotifier();
+			final NotificationResponse notificationResponse = new NotificationResponse(studyNotification);
+			sseEmitters.sendNotification(notifier, notificationResponse);
+		});
 	}
 
 	public void studyParticipantLeaveApplyNotice(final Study study) {
+		// 알림 대상자 조회
 		final User studyOwner = study.getOwner();
 
-		// TODO: 알림 테이블에 저장 테스트
-		final StudyNotification studyNotification = StudyNotification.of(
-				NotificationEventType.STUDY_PARTICIPANT_LEAVE_APPLY,
-				LocalDateTime.now(), study, studyOwner);
-		studyNotificationRepository.save(studyNotification);
+		// 알림 저장
+		final StudyNotification studyNotification = studyNotificationRepository.save(
+				StudyNotification.of(STUDY_PARTICIPANT_LEAVE_APPLY, LocalDateTime.now(), study, studyOwner));
 
-		// TODO: 알림 대상자에게 SSE 실시간 알림 전송로직 추가
+		// 실시간 알림 전송 요청
+		sseEmitters.sendNotification(studyNotification.getNotifier(), new NotificationResponse(studyNotification));
 	}
 
 	public void reviewStartNotice(final Study study) {
