@@ -70,8 +70,8 @@ public class NotificationService {
 		// TODO: 알림 테이블에 저장 테스트
 		final List<StudyNotification> studyNotifications = studyParticipantUsers
 				.stream()
-				.map(notifier -> new StudyNotification(
-						NotificationEventType.STUDY_APPLICANT, LocalDateTime.now(), study, notifier))
+				.map(notifier -> StudyNotification.of(NotificationEventType.STUDY_APPLICANT,
+						LocalDateTime.now(), study, notifier))
 				.toList();
 		studyNotificationRepository.saveAll(studyNotifications);
 
@@ -100,8 +100,8 @@ public class NotificationService {
 		// TODO: 알림 테이블에 저장 테스트
 		final List<StudyNotification> studyNotifications = studyParticipantUsers
 				.stream()
-				.map(notifier -> new StudyNotification(
-						NotificationEventType.STUDY_PARTICIPANT_LEAVE, LocalDateTime.now(), study, notifier))
+				.map(notifier -> StudyNotification.of(NotificationEventType.STUDY_PARTICIPANT_LEAVE,
+						LocalDateTime.now(), study, notifier))
 				.toList();
 		studyNotificationRepository.saveAll(studyNotifications);
 
@@ -112,8 +112,9 @@ public class NotificationService {
 		final User studyOwner = study.getOwner();
 
 		// TODO: 알림 테이블에 저장 테스트
-		StudyNotification studyNotification = new StudyNotification(
-				NotificationEventType.STUDY_PARTICIPANT_LEAVE_APPLY, LocalDateTime.now(), study, studyOwner);
+		final StudyNotification studyNotification = StudyNotification.of(
+				NotificationEventType.STUDY_PARTICIPANT_LEAVE_APPLY,
+				LocalDateTime.now(), study, studyOwner);
 		studyNotificationRepository.save(studyNotification);
 
 		// TODO: 알림 대상자에게 SSE 실시간 알림 전송로직 추가
