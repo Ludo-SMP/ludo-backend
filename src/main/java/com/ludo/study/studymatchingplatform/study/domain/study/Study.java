@@ -370,6 +370,13 @@ public class Study extends BaseEntity {
         return now.isAfter(reviewAvailEndTime);
     }
     
+    private boolean isAvailableReviewPeriod() {
+        final LocalDateTime reviewAvailStartTime = getReviewAvailStartTime();
+        final LocalDateTime reviewAvailEndTime = getReviewAvailEndTime();
+        
+        return now.isAfter(getReviewAvailStartTime) && now.isBefore(reviewAvailEndTime);
+    }
+    
     private LocalDateTime getReviewAvailStartTime() {
         return endDateTime;
     }
