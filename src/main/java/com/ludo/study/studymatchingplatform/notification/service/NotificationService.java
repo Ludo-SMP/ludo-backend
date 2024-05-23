@@ -90,20 +90,30 @@ public class NotificationService {
 		});
 	}
 
-	public void studyApplicantResultNotice(final Recruitment recruitment, final User user) {
-		final Applicant applicant = applicantRepository.find(recruitment.getId(), user.getId())
-				.orElseThrow(() -> new IllegalStateException("지원하지 않은 사용자입니다."));
+	public void studyApplicantAcceptNotice(final Study study, final User applicantUser) {
+		// 알림 대상자 조회
+		final Applicant applicant = study.getApplicant(applicantUser);
+		applicant.ensureApplicantStatus(ApplicantStatus.ACCEPTED);
 
-		// TODO: 실시간 알림 전송 후 알림 테이블에 저장하는 로직 추가
-		if (applicant.statusIsEqualTo(ApplicantStatus.ACCEPTED)) {
+		// 알림 저장
+		final StudyNotification studyNotification = studyNotificationRepository.save(
+				StudyNotification.of(STUDY_APPLICANT_ACCEPT, LocalDateTime.now(), study, applicantUser));
 
-		}
+		// 실시간 알림 전송 요청
+		sseEmitters.sendNotification(applicantUser, new NotificationResponse(studyNotification));
+	}
 
-		if (applicant.statusIsEqualTo(ApplicantStatus.REFUSED)) {
+	public void studyApplicantRejectNotice(final Study study, final User applicantUser) {
+		// 알림 대상자 조회
+		final Applicant applicant = study.getApplicant(applicantUser);
+		applicant.ensureApplicantStatus(ApplicantStatus.REFUSED);
 
-		}
-		// TODO: 알림 대상자에게 SSE 실시간 알림 전송로직 추가
+		// 알림 저장
+		final StudyNotification studyNotification = studyNotificationRepository.save(
+				StudyNotification.of(STUDY_APPLICANT_REJECT, LocalDateTime.now(), study, applicantUser));
 
+		// 실시간 알림 전송 요청
+		sseEmitters.sendNotification(applicantUser, new NotificationResponse(studyNotification));
 	}
 
 	public void studyParticipantLeaveNotice(final Study study) {
@@ -136,10 +146,26 @@ public class NotificationService {
 		sseEmitters.sendNotification(studyNotification.getNotifier(), new NotificationResponse(studyNotification));
 	}
 
+	// TODO: @Scheduled 적용
+	public void studyEndDateNotice() {
+		// 알림 대상자 조회
+		// 종료 기간까지 N일 남은 스터디 조회
+		// 해당 스터디의 방장 조회
+
+		// 알림 저장
+
+		// 실시간 알림 전송 요청
+
+	}
+
 	public void reviewStartNotice(final Study study) {
+		// 알림 대상자 조회
 		final List<User> studyParticipantUsers = userRepository.findParticipantUsersByStudyId(study.getId());
 
+		// 알림 저장
 		// TODO: 실시간 알림 전송 후 알림 테이블에 저장하는 로직 추가. 리뷰 기능 완성돼야 진행 가능
+
+		// 실시간 알림 전송 요청
 		// TODO: 알림 대상자에게 SSE 실시간 알림 전송로직 추가
 	}
 
@@ -149,6 +175,12 @@ public class NotificationService {
 	 * 리뷰 테이블 조회 로직이 필요한데, 중복 구현 가능성
 	 */
 	public void reviewReceiveNotice() {
+		// 알림 대상자 조회
+
+		// 알림 저장
+
+		// 실시간 알림 전송 요청
+
 	}
 
 	/**
@@ -157,13 +189,12 @@ public class NotificationService {
 	 * 리뷰 테이블 조회 로직이 필요한데, 중복 구현 가능성
 	 */
 	public void reviewPeerFinishNotice(final Study study) {
+		// 알림 대상자 조회
 
-	}
+		// 알림 저장
 
-	// TODO: @Scheduled 적용
-	public void studyEndDateNotice() {
-		// 종료 기간까지 N일 남은 스터디 조회
-		// 해당 스터디의 방장 조회
+		// 실시간 알림 전송 요청
+
 	}
 
 	public List<NotificationResponse> findNotifications(final User user) {

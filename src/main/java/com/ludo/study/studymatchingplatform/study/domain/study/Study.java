@@ -335,4 +335,8 @@ public class Study extends BaseEntity {
 		}
 	}
 
+	public Applicant getApplicant(final User applicantUser) {
+		return recruitment.getApplicant(applicantUser);
+	}
+
 }
