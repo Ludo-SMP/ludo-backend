@@ -1,17 +1,20 @@
 package com.ludo.study.studymatchingplatform.notification.service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
 import com.ludo.study.studymatchingplatform.notification.domain.notification.NotificationEventType;
 import com.ludo.study.studymatchingplatform.notification.domain.notification.RecruitmentNotification;
+import com.ludo.study.studymatchingplatform.notification.domain.notification.ReviewNotification;
 import com.ludo.study.studymatchingplatform.notification.domain.notification.StudyNotification;
 import com.ludo.study.studymatchingplatform.notification.repository.dto.RecruitmentNotifierCondition;
 import com.ludo.study.studymatchingplatform.notification.repository.notification.RecruitmentNotificationRepositoryImpl;
 import com.ludo.study.studymatchingplatform.notification.repository.notification.ReviewNotificationRepositoryImpl;
 import com.ludo.study.studymatchingplatform.notification.repository.notification.StudyNotificationRepositoryImpl;
+import com.ludo.study.studymatchingplatform.notification.service.dto.response.NotificationResponse;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant.Applicant;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant.ApplicantStatus;
@@ -144,6 +147,29 @@ public class NotificationService {
 	public void studyEndDateNotice() {
 		// 종료 기간까지 N일 남은 스터디 조회
 		// 해당 스터디의 방장 조회
+	}
+
+	public List<NotificationResponse> findNotifications(final User user) {
+		final Long userId = user.getId();
+		final List<RecruitmentNotification> recruitmentNotifications = recruitmentNotificationRepository
+				.findAllByUserId(userId);
+		final List<StudyNotification> studyNotifications = studyNotificationRepository.findAllByUserId(userId);
+		final List<ReviewNotification> reviewNotifications = reviewNotificationRepository.findAllByUserId(userId);
+
+		final List<NotificationResponse> notificationResponses = new ArrayList<>();
+		recruitmentNotifications.stream()
+				.map(NotificationResponse::new)
+				.forEach(notificationResponses::add);
+
+		studyNotifications.stream()
+				.map(NotificationResponse::new)
+				.forEach(notificationResponses::add);
+
+		reviewNotifications.stream()
+				.map(NotificationResponse::new)
+				.forEach(notificationResponses::add);
+
+		return notificationResponses;
 	}
 
 }
