@@ -1,7 +1,6 @@
 package com.ludo.study.studymatchingplatform.notification.service;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -35,10 +34,9 @@ public class SseEmitters {
 		return emitter;
 	}
 
-	public void sendNotification(final List<User> notifiers, final NotificationResponse response) {
-		notifiers.stream()
-				.map(notifier -> getSseEmitter(createSseEmitterId(notifier)))
-				.forEach(emitterId -> send(emitterId, "notification", response));
+	public void sendNotification(final User notifier, final NotificationResponse response) {
+		final SseEmitter sseEmitter = getSseEmitter(createSseEmitterId(notifier));
+		send(sseEmitter, "notification", response);
 	}
 
 	private void send(final SseEmitter sseEmitter, final String eventName, final Object eventData) {
