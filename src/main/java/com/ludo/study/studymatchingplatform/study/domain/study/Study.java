@@ -342,7 +342,10 @@ public class Study extends BaseEntity {
         final LocalDateTime reviewAvailEndTime = endDateTime.plusDays(14).plusSeconds(1);
 
         // Order Specific
-        if (isReviewPeriodElapsed(now)) {
+        if (isAvailableReviewPeriod()) {
+            return;
+        }
+        throw new InvalidReviewPeriodException("리뷰 작성 기간이 아닙니다.", reviewAvailStartTime, reviewAvailEndTime);
             throw new InvalidReviewPeriodException("리뷰 작성 기간이 지났습니다.", reviewAvailStartTime, reviewAvailEndTime);
         }
 
