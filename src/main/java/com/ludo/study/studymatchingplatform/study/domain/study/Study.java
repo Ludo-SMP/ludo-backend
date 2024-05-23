@@ -365,4 +365,12 @@ public class Study extends BaseEntity {
         final LocalDateTime reviewAvailEndTime = endDateTime.plusDays(14);
         return now.isAfter(reviewAvailEndTime);
     }
+    
+    private LocalDateTime getReviewAvailStartTime() {
+        return endDateTime;
+    }
+    
+    private LocalDateTime getReviewAvailEndTime() {
+        return endDateTime.plusDays(14);
+    }
 }
