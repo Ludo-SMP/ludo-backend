@@ -338,7 +338,8 @@ public class Study extends BaseEntity {
 
     public void ensureReviewPeriodAvailable(final LocalDateTimePicker localDateTimePicker) {
         final LocalDateTime now = localDateTimePicker.now();
-        final LocalDateTime reviewAvailStartTime = endDateTime.plusDays(3).minusSeconds(1);
+       final LocalDateTime reviewAvailStartTime = getReviewAvailStartTime();
+       final LocalDateTime reviewAvailEndTime = getReviewAvailEndTime();
         final LocalDateTime reviewAvailEndTime = endDateTime.plusDays(14).plusSeconds(1);
 
         // Order Specific
