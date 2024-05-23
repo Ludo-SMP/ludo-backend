@@ -111,4 +111,9 @@ public class Applicant extends BaseEntity {
 	public boolean isActive() {
 		return !isDeleted();
 	}
+
+	public boolean statusIsEqualTo(final ApplicantStatus applicantStatus) {
+		return this.applicantStatus == applicantStatus;
+	}
+
 }
