@@ -4,16 +4,14 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 
 @Profile("!test")
 @Component
-public class LocalDateTimePickerImpl implements LocalDateTimePicker {
+public class CurrentUtcDateTimePicker implements UtcDateTimePicker {
 
     public LocalDateTime now() {
-        return LocalDateTime.now().truncatedTo(ChronoUnit.MICROS);
-    }
-        return LocalDateTime.now().truncatedTo(ChronoUnit.MICROS);
-    }
-        return LocalDateTime.now();
+        return LocalDateTime.now(ZoneOffset.UTC).truncatedTo(ChronoUnit.MICROS);
     }
 }

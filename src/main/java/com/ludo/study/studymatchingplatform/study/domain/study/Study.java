@@ -1,14 +1,13 @@
 package com.ludo.study.studymatchingplatform.study.domain.study;
 
 import com.ludo.study.studymatchingplatform.common.entity.BaseEntity;
-import com.ludo.study.studymatchingplatform.common.utils.LocalDateTimePicker;
+import com.ludo.study.studymatchingplatform.common.utils.UtcDateTimePicker;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant.Applicant;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.position.Position;
 import com.ludo.study.studymatchingplatform.study.domain.study.category.Category;
 import com.ludo.study.studymatchingplatform.study.domain.study.participant.Participant;
 import com.ludo.study.studymatchingplatform.study.domain.study.participant.Role;
-import com.ludo.study.studymatchingplatform.study.service.exception.InvalidReviewPeriodException;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
@@ -18,7 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
 import java.time.Period;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import static jakarta.persistence.FetchType.LAZY;
@@ -342,52 +340,18 @@ public class Study extends BaseEntity {
         }
     }
 
-    public void ensureReviewPeriodAvailable(final LocalDateTimePicker localDateTimePicker) {
-        final LocalDateTime now = localDateTimePicker.now();
-       final LocalDateTime reviewAvailStartTime = getReviewAvailStartTime();
-       final LocalDateTime reviewAvailEndTime = getReviewAvailEndTime();
-        final LocalDateTime reviewAvailEndTime = endDateTime.plusDays(14).plusSeconds(1);
 
-        // Order Specific
-        if (isAvailableReviewPeriod()) {
-            return;
-        }
-        throw new InvalidReviewPeriodException("리뷰 작성 기간이 아닙니다.", reviewAvailStartTime, reviewAvailEndTime);
-            throw new InvalidReviewPeriodException("리뷰 작성 기간이 지났습니다.", reviewAvailStartTime, reviewAvailEndTime);
+    public void ensureReviewPeriodAvailable(final UtcDateTimePicker utcDateTimePicker) {
+        final LocalDateTime now = utcDateTimePicker.now();
+        final LocalDateTime reviewWriteDue = endDateTime.plusDays(14);
+
+        if (now.isBefore(endDateTime)) {
+            throw new IllegalStateException("아직 리뷰 작성 기간이 되지 않았습니다. 스터디 완료 후부터 리뷰 작성이 가능합니다.");
         }
 
-        if (isNotReviewPeriodYet(now)) {
-            throw new InvalidReviewPeriodException("아직 리뷰 작성 기간이 되지 않았습니다.", reviewAvailStartTime, reviewAvailEndTime);
+        if (now.isAfter(reviewWriteDue)) {
+            throw new IllegalStateException("리뷰 작성 기간이 지났습니다. 리뷰 작성은 스터디 완료 후 최대 14일까지 가능합니다.");
         }
 
-        System.out.println("min avail: " + reviewAvailStartTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
-        System.out.println("max avail: " + reviewAvailEndTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
-        System.out.println("now : " + now.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
-
-    }
-
-    public boolean isNotReviewPeriodYet(final LocalDateTime now) {
-        final LocalDateTime reviewAvailStartTime = endDateTime.plusDays(3);
-        return now.isBefore(reviewAvailStartTime);
-    }
-
-    public boolean isReviewPeriodElapsed(final LocalDateTime now) {
-        final LocalDateTime reviewAvailEndTime = endDateTime.plusDays(14);
-        return now.isAfter(reviewAvailEndTime);
-    }
-    
-    private boolean isAvailableReviewPeriod() {
-        final LocalDateTime reviewAvailStartTime = getReviewAvailStartTime();
-        final LocalDateTime reviewAvailEndTime = getReviewAvailEndTime();
-        
-        return now.isAfter(getReviewAvailStartTime) && now.isBefore(reviewAvailEndTime);
-    }
-    
-    private LocalDateTime getReviewAvailStartTime() {
-        return endDateTime;
-    }
-    
-    private LocalDateTime getReviewAvailEndTime() {
-        return endDateTime.plusDays(14);
     }
 }

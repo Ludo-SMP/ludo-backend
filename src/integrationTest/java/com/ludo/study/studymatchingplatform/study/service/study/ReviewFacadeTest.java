@@ -187,7 +187,7 @@ public class ReviewFacadeTest {
         final Category category = categoryRepository.save(
                 CategoryFixture.createCategory("category1"));
 
-        final LocalDateTime now = FixedLocalDateTimePicker.DEFAULT_FIXED_LOCAL_DATE_TIME;
+        final LocalDateTime now = FixedUtcDateTimePicker.DEFAULT_FIXED_LOCAL_DATE_TIME;
 
         final LocalDateTime startDateTime = now.minusDays(20);
 
@@ -242,7 +242,7 @@ public class ReviewFacadeTest {
     }
 
     private static Stream<LocalDateTime> validEndDateTimes() {
-        final LocalDateTime now = FixedLocalDateTimePicker.DEFAULT_FIXED_LOCAL_DATE_TIME;
+        final LocalDateTime now = FixedUtcDateTimePicker.DEFAULT_FIXED_LOCAL_DATE_TIME;
         return Stream.of(
                 now.minusDays(3),
                 now.minusDays(13),
@@ -268,7 +268,7 @@ public class ReviewFacadeTest {
         final Category category = categoryRepository.save(
                 CategoryFixture.createCategory("category1"));
 
-        final LocalDateTime now = FixedLocalDateTimePicker.DEFAULT_FIXED_LOCAL_DATE_TIME;
+        final LocalDateTime now = FixedUtcDateTimePicker.DEFAULT_FIXED_LOCAL_DATE_TIME;
         final LocalDateTime startDateTime = now.minusDays(20);
 
         final Study study = saveStudy(category, owner, startDateTime, endDateTime);
@@ -332,7 +332,7 @@ public class ReviewFacadeTest {
         final Category category = categoryRepository.save(
                 CategoryFixture.createCategory("category1"));
 
-        final LocalDateTime now = FixedLocalDateTimePicker.DEFAULT_FIXED_LOCAL_DATE_TIME;
+        final LocalDateTime now = FixedUtcDateTimePicker.DEFAULT_FIXED_LOCAL_DATE_TIME;
         final LocalDateTime startDateTime = now.minusDays(20);
         final LocalDateTime endDateTime = now.minusDays(3).plusSeconds(1);
 
@@ -399,7 +399,7 @@ public class ReviewFacadeTest {
         final Category category = categoryRepository.save(
                 CategoryFixture.createCategory("category1"));
 
-        final LocalDateTime now = FixedLocalDateTimePicker.DEFAULT_FIXED_LOCAL_DATE_TIME;
+        final LocalDateTime now = FixedUtcDateTimePicker.DEFAULT_FIXED_LOCAL_DATE_TIME;
         final LocalDateTime startDateTime = now.minusDays(20);
         final LocalDateTime endDateTime = now.minusDays(14).minusSeconds(1);
 
@@ -452,7 +452,7 @@ public class ReviewFacadeTest {
     }
 
     private static Stream<LocalDateTime> invalidEndDateTimes() {
-        final LocalDateTime now = FixedLocalDateTimePicker.DEFAULT_FIXED_LOCAL_DATE_TIME;
+        final LocalDateTime now = FixedUtcDateTimePicker.DEFAULT_FIXED_LOCAL_DATE_TIME;
         return Stream.of(
                 now.minusDays(3).plusSeconds(1),
                 now.minusDays(14).minusSeconds(1)
@@ -475,7 +475,7 @@ public class ReviewFacadeTest {
         final Category category = categoryRepository.save(
                 CategoryFixture.createCategory("category1"));
 
-        final LocalDateTime now = FixedLocalDateTimePicker.DEFAULT_FIXED_LOCAL_DATE_TIME;
+        final LocalDateTime now = FixedUtcDateTimePicker.DEFAULT_FIXED_LOCAL_DATE_TIME;
         final LocalDateTime startDateTime = now.minusDays(20);
         final LocalDateTime endDateTime = now.minusDays(3);
 
@@ -571,7 +571,7 @@ public class ReviewFacadeTest {
         final Category category = categoryRepository.save(
                 CategoryFixture.createCategory("category1"));
 
-        final LocalDateTime now = FixedLocalDateTimePicker.DEFAULT_FIXED_LOCAL_DATE_TIME;
+        final LocalDateTime now = FixedUtcDateTimePicker.DEFAULT_FIXED_LOCAL_DATE_TIME;
         final LocalDateTime startDateTime = now.minusDays(20);
         final LocalDateTime endDateTime = now.minusDays(3);
 
@@ -632,7 +632,7 @@ public class ReviewFacadeTest {
         final Category category = categoryRepository.save(
                 CategoryFixture.createCategory("category1"));
 
-        final LocalDateTime now = FixedLocalDateTimePicker.DEFAULT_FIXED_LOCAL_DATE_TIME;
+        final LocalDateTime now = FixedUtcDateTimePicker.DEFAULT_FIXED_LOCAL_DATE_TIME;
         final LocalDateTime startDateTime = now.minusDays(20);
         final LocalDateTime endDateTime = now.minusDays(3);
 
@@ -692,7 +692,7 @@ public class ReviewFacadeTest {
         final Category category = categoryRepository.save(
                 CategoryFixture.createCategory("category1"));
 
-        final LocalDateTime now = FixedLocalDateTimePicker.DEFAULT_FIXED_LOCAL_DATE_TIME;
+        final LocalDateTime now = FixedUtcDateTimePicker.DEFAULT_FIXED_LOCAL_DATE_TIME;
         final LocalDateTime startDateTime = now.minusDays(20);
         final LocalDateTime endDateTime = now.minusDays(3);
 
