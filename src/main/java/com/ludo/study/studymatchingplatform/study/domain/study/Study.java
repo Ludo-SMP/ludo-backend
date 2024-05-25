@@ -172,9 +172,9 @@ public class Study extends BaseEntity {
         }
     }
 
-    public void acceptApplicant(final User owner, final User applicantUser) {
+    public void acceptApplicant(final User owner, final User applicantUser, final LocalDateTime deletedDateTime) {
         ensureAcceptApplicant(owner, applicantUser);
-        accept(applicantUser);
+        accept(applicantUser, deletedDateTime);
         if (isMaxParticipantCount()) {
             changeStatus(StudyStatus.RECRUITED);
         }
@@ -220,8 +220,8 @@ public class Study extends BaseEntity {
         }
     }
 
-    private void accept(final User applicantUser) {
-        recruitment.acceptApplicant(applicantUser);
+    private void accept(final User applicantUser, final LocalDateTime deletedDateTime) {
+        recruitment.acceptApplicant(applicantUser, deletedDateTime);
         final Applicant applicant = recruitment.getApplicant(applicantUser);
         addParticipant(Participant.from(this, applicantUser, applicant.getPosition(), Role.MEMBER));
     }
@@ -296,8 +296,8 @@ public class Study extends BaseEntity {
         }
     }
 
-    public void deactivateForRecruitment() {
-        this.recruitment.softDelete();
+    public void deactivateForRecruitment(final LocalDateTime now) {
+        this.recruitment.softDelete(now);
     }
 
     public void activateForRecruitment() {

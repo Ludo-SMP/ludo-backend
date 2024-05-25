@@ -1,13 +1,13 @@
 package com.ludo.study.studymatchingplatform.common.entity;
 
-import com.ludo.study.studymatchingplatform.common.auditing.PrePersistUtcNow;
-import com.ludo.study.studymatchingplatform.common.auditing.PreUpdateUtcNow;
-import com.ludo.study.studymatchingplatform.common.auditing.UtcNowAuditor;
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
@@ -15,15 +15,15 @@ import java.time.LocalDateTime;
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @MappedSuperclass
-@EntityListeners(UtcNowAuditor.class)
 @ToString(of = "createdDateTime")
+@EntityListeners(AuditingEntityListener.class)
 public abstract class BaseEntity {
 
-    @PrePersistUtcNow
+    @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdDateTime;
 
-    @PreUpdateUtcNow
+    @LastModifiedDate
     @Column(nullable = false)
     private LocalDateTime updatedDateTime;
 
@@ -35,8 +35,11 @@ public abstract class BaseEntity {
         return deletedDateTime != null;
     }
 
-    public void softDelete() {
-        deletedDateTime = LocalDateTime.now();
+    public void softDelete(final LocalDateTime deletedDateTime) {
+        if (deletedDateTime == null) {
+            throw new IllegalArgumentException("deletedDateTime must not be `null`");
+        }
+        this.deletedDateTime = deletedDateTime;
     }
 
     public void activate() {

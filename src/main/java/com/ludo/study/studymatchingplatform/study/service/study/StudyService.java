@@ -1,9 +1,6 @@
 package com.ludo.study.studymatchingplatform.study.service.study;
 
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-
+import com.ludo.study.studymatchingplatform.common.utils.UtcDateTimePicker;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant.Applicant;
 import com.ludo.study.studymatchingplatform.study.domain.study.Study;
@@ -13,40 +10,43 @@ import com.ludo.study.studymatchingplatform.study.repository.study.StudyReposito
 import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.applicant.ApplicantResponse;
 import com.ludo.study.studymatchingplatform.study.service.exception.NotFoundException;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class StudyService {
 
-	private final StudyRepositoryImpl studyRepository;
-	private final ApplicantRepositoryImpl applicantRepository;
+    private final StudyRepositoryImpl studyRepository;
+    private final ApplicantRepositoryImpl applicantRepository;
+    private final UtcDateTimePicker utcDateTimePicker;
 
-	public void leave(final User user, final Long studyId) {
-		final Study study = studyRepository.findByIdWithRecruitment(studyId)
-				.orElseThrow(() -> new NotFoundException("존재하지 않는 스터디입니다."));
+    public void leave(final User user, final Long studyId) {
+        final Study study = studyRepository.findByIdWithRecruitment(studyId)
+                .orElseThrow(() -> new NotFoundException("존재하지 않는 스터디입니다."));
 
-		final Participant participant = study.getParticipant(user);
-		if (study.isOwner(participant)) {
-			throw new IllegalStateException("스터디장은 탈퇴가 불가능합니다.");
-		}
-		participant.leave(study);
-	}
+        final Participant participant = study.getParticipant(user);
+        if (study.isOwner(participant)) {
+            throw new IllegalStateException("스터디장은 탈퇴가 불가능합니다.");
+        }
+        participant.leave(study, utcDateTimePicker.now());
+    }
 
-	public ApplicantResponse findApplicantsInfo(final User user, final Long studyId) {
-		final Study study = findByIdWithRecruitment(studyId);
-		// 스터디 참여자 검증
-		study.getParticipant(user);
-		final Recruitment recruitment = study.getRecruitment();
-		final List<Applicant> applicants =
-				applicantRepository.findStudyApplicantInfoByRecruitmentId(recruitment.getId());
-		return ApplicantResponse.from(study, applicants);
-	}
+    public ApplicantResponse findApplicantsInfo(final User user, final Long studyId) {
+        final Study study = findByIdWithRecruitment(studyId);
+        // 스터디 참여자 검증
+        study.getParticipant(user);
+        final Recruitment recruitment = study.getRecruitment();
+        final List<Applicant> applicants =
+                applicantRepository.findStudyApplicantInfoByRecruitmentId(recruitment.getId());
+        return ApplicantResponse.from(study, applicants);
+    }
 
-	private Study findByIdWithRecruitment(final Long studyId) {
-		return studyRepository.findByIdWithRecruitment(studyId)
-				.orElseThrow(() -> new NotFoundException("존재하지 않는 스터디입니다."));
-	}
+    private Study findByIdWithRecruitment(final Long studyId) {
+        return studyRepository.findByIdWithRecruitment(studyId)
+                .orElseThrow(() -> new NotFoundException("존재하지 않는 스터디입니다."));
+    }
 
 }

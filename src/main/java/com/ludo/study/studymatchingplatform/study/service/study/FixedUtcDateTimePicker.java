@@ -1,7 +1,6 @@
 package com.ludo.study.studymatchingplatform.study.service.study;
 
 import com.ludo.study.studymatchingplatform.common.utils.UtcDateTimePicker;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
@@ -9,7 +8,6 @@ import java.time.LocalDateTime;
 
 @Profile("test")
 @Component
-@RequiredArgsConstructor
 public class FixedUtcDateTimePicker implements UtcDateTimePicker {
 
     public static final LocalDateTime DEFAULT_FIXED_UTC_DATE_TIME = defaultFixedUtcDateTime();
