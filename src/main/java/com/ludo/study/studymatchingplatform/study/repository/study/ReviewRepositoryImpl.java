@@ -28,10 +28,14 @@ public class ReviewRepositoryImpl {
         return reviewJpaRepository.save(review);
     }
 
-    public boolean existsBy(final Long studyId, final Long reviewerId, final Long revieweeId) {
-//        q.select(review)
-//                .fetchFirst();
-        return false;
+    public boolean exists(final Long studyId, final Long reviewerId, final Long revieweeId) {
+        return q.selectOne()
+                .from(review)
+                .where(review.study.id.eq(studyId)
+                        .and(review.reviewer.id.eq(reviewerId))
+                        .and(review.reviewee.id.eq(revieweeId))
+                )
+                .fetchFirst() != null;
     }
 
 }

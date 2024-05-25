@@ -4,6 +4,7 @@ import com.ludo.study.studymatchingplatform.common.entity.BaseEntity;
 import com.ludo.study.studymatchingplatform.common.utils.LocalDateTimePicker;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant.Applicant;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.position.Position;
 import com.ludo.study.studymatchingplatform.study.domain.study.category.Category;
 import com.ludo.study.studymatchingplatform.study.domain.study.participant.Participant;
 import com.ludo.study.studymatchingplatform.study.domain.study.participant.Role;
@@ -81,6 +82,11 @@ public class Study extends BaseEntity {
 
     @Column(nullable = false)
     private LocalDateTime endDateTime;
+
+    public void addParticipant(final User user, final Position position, final Role role) {
+        final Participant participant = Participant.from(this, user, position, role);
+        addParticipant(participant);
+    }
 
     public void addParticipant(final Participant participant) {
         this.participants.add(participant);
