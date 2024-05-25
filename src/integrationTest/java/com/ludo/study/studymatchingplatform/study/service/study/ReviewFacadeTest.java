@@ -23,7 +23,7 @@ import com.ludo.study.studymatchingplatform.study.repository.study.StudyReposito
 import com.ludo.study.studymatchingplatform.study.repository.study.category.CategoryRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.study.participant.ParticipantRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.study.WriteReviewRequest;
-import com.ludo.study.studymatchingplatform.study.service.dto.response.study.ReviewResponse;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.study.WriteReviewResponse;
 import com.ludo.study.studymatchingplatform.study.service.exception.InvalidReviewPeriodException;
 import com.ludo.study.studymatchingplatform.study.service.recruitment.RecruitmentService;
 import com.ludo.study.studymatchingplatform.study.service.recruitment.applicant.StudyApplicantDecisionService;
@@ -233,7 +233,7 @@ public class ReviewFacadeTest {
 
 
         // when
-        final ReviewResponse review = reviewFacade.write(request, study.getId(), userA);
+        final WriteReviewResponse review = reviewFacade.write(request, study.getId(), userA);
 
         // then
         assertThat(review.reviewer().email())
