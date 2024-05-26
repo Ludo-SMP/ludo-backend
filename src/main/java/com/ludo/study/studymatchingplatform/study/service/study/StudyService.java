@@ -8,7 +8,7 @@ import com.ludo.study.studymatchingplatform.study.domain.study.participant.Parti
 import com.ludo.study.studymatchingplatform.study.repository.recruitment.applicant.ApplicantRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.study.StudyRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.applicant.ApplicantResponse;
-import com.ludo.study.studymatchingplatform.study.service.exception.NotFoundException;
+import com.ludo.study.studymatchingplatform.study.service.exception.SocialAccountNotFoundException;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,7 +25,7 @@ public class StudyService {
 
     public void leave(final User user, final Long studyId) {
         final Study study = studyRepository.findByIdWithRecruitment(studyId)
-                .orElseThrow(() -> new NotFoundException("존재하지 않는 스터디입니다."));
+                .orElseThrow(() -> new SocialAccountNotFoundException("존재하지 않는 스터디입니다."));
 
         final Participant participant = study.getParticipant(user);
         if (study.isOwner(participant)) {
@@ -46,7 +46,7 @@ public class StudyService {
 
     private Study findByIdWithRecruitment(final Long studyId) {
         return studyRepository.findByIdWithRecruitment(studyId)
-                .orElseThrow(() -> new NotFoundException("존재하지 않는 스터디입니다."));
+                .orElseThrow(() -> new SocialAccountNotFoundException("존재하지 않는 스터디입니다."));
     }
 
 }

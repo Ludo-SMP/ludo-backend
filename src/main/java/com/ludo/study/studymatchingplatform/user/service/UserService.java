@@ -1,7 +1,7 @@
 package com.ludo.study.studymatchingplatform.user.service;
 
 import com.ludo.study.studymatchingplatform.common.utils.UtcDateTimePicker;
-import com.ludo.study.studymatchingplatform.study.service.exception.NotFoundException;
+import com.ludo.study.studymatchingplatform.study.service.exception.SocialAccountNotFoundException;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 import com.ludo.study.studymatchingplatform.user.repository.user.UserRepositoryImpl;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +31,7 @@ public class UserService {
 
     public User findById(final Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("가입되지 않은 회원입니다."));
+                .orElseThrow(() -> new SocialAccountNotFoundException("가입되지 않은 회원입니다."));
     }
 
 }
