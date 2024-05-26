@@ -106,7 +106,7 @@ describe("basic user authentication flows", () => {
     }
   });
 
-  it.only("should success to log in with signed up user", async () => {
+  it("should success to log in with signed up user", async () => {
     // given
     const client = ApiClient.newInstance();
     const { email, nickname, password } = fakeSignupBody();
