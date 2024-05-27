@@ -1,7 +1,6 @@
 package com.ludo.study.studymatchingplatform.common.exception;
 
 import com.ludo.study.studymatchingplatform.common.advice.CommonResponse;
-import com.ludo.study.studymatchingplatform.study.service.exception.AuthenticationException;
 import com.ludo.study.studymatchingplatform.study.service.exception.BusinessException;
 import com.ludo.study.studymatchingplatform.study.service.exception.DuplicatedSignUpException;
 import com.ludo.study.studymatchingplatform.study.service.exception.SocialAccountNotFoundException;
@@ -22,14 +21,14 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public final class GlobalExceptionHandler {
 
+    @ExceptionHandler(value = MustLoginException.class)
+    public ResponseEntity<CommonResponse> handleException(MustLoginException e) {
+        return toResponseEntity(e, HttpStatus.UNAUTHORIZED);
+    }
+
     @ExceptionHandler(value = Exception.class)
     public ResponseEntity<CommonResponse> handleException(Exception e) {
         return toResponseEntity(e, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
-    @ExceptionHandler(value = AuthenticationException.class)
-    public ResponseEntity<CommonResponse> handleException(AuthenticationException e) {
-        return toResponseEntity(e, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(value = BusinessException.class)
@@ -56,6 +55,7 @@ public final class GlobalExceptionHandler {
     public ResponseEntity<CommonResponse> handleException(DataForbiddenException e) {
         return toResponseEntity(e, HttpStatus.FORBIDDEN);
     }
+
 
     @ExceptionHandler(value = UnauthorizedUserException.class)
     public ResponseEntity<CommonResponse> handleException(UnauthorizedUserException e) {

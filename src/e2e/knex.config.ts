@@ -19,6 +19,7 @@ export const config: { [key: string]: Knex.Config } = {
     compileSqlOnError: true,
     debug: true,
     log: {
+      enableColors: true,
       debug: (message: string) => {
         console.log(message);
       },

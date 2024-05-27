@@ -165,6 +165,8 @@ src/main/generated/
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode
 node_modules/
 
+redis-data/
+
 # React App for Client Test
 front-test-app/
 

@@ -6,8 +6,7 @@ import com.ludo.study.studymatchingplatform.auth.common.provider.CookieProvider;
 import com.ludo.study.studymatchingplatform.auth.common.provider.JwtTokenProvider;
 import com.ludo.study.studymatchingplatform.auth.common.service.UserDetailsService;
 import com.ludo.study.studymatchingplatform.common.advice.CommonResponse;
-import com.ludo.study.studymatchingplatform.study.service.exception.AuthenticationException;
-import com.ludo.study.studymatchingplatform.study.service.exception.SocialAccountNotFoundException;
+import com.ludo.study.studymatchingplatform.common.exception.MustLoginException;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 import com.ludo.study.studymatchingplatform.user.service.UserService;
 import io.jsonwebtoken.Claims;
@@ -39,12 +38,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     final FilterChain filterChain) throws ServletException, IOException {
         if (!request.getMethod().equals("OPTIONS")) {
             final Optional<String> authToken = cookieProvider.getAuthToken(request);
-            // 토큰이 null 이면 예외 response 를 반환한다.
-            if (authToken.isEmpty()) {
-                jwtExceptionHandler(response, HttpStatus.UNAUTHORIZED, "Authorization 쿠키가 없습니다.");
-                return;
-            }
             try {
+                // 토큰이 null 이면 예외 response 를 반환한다.
+                if (authToken.isEmpty()) {
+                    throw new MustLoginException();
+                }
                 Claims claims = jwtTokenProvider.verifyAuthTokenOrThrow(authToken.get());
                 final AuthUserPayload payload = AuthUserPayload.from(claims);
                 // 사용자 agent / ip 검증
@@ -53,9 +51,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 // 토큰 갱신
                 accessTokenRefresh(payload.getId(), response);
                 // NotFoundException - 만료된 사용자 정보 검증 추가
-            } catch (final AuthenticationException | SocialAccountNotFoundException e) {
-                // 만료되거나 잘못된 토큰일 경우 예외 response 를 반환한다.
+            } catch (final Exception e) {
                 cookieProvider.clearAuthCookie(response);
+//                response.sendError( HttpStatus.UNAUTHORIZED.value(), CommonResponse.error(e.getMessage()));
                 jwtExceptionHandler(response, HttpStatus.UNAUTHORIZED, e.getMessage());
                 return;
             }
