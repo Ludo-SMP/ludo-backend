@@ -54,6 +54,10 @@ public class RecruitmentService {
         study.ensureRecruitmentWritableBy(user);
 
         final Recruitment recruitment = request.toRecruitment(study);
+        System.out.println("==========================");
+        System.out.println("recruitment applicants Count: "+request.getApplicantCount());
+        System.out.println("recruitment applicants Count: "+recruitment.getApplicantsCount());
+        System.out.println("==========================");
         recruitmentRepository.save(recruitment);
 
         recruitmentStackService.addMany(recruitment, request.getStackIds());

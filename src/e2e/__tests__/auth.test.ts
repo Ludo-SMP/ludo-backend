@@ -1,9 +1,7 @@
 import { AxiosError, HttpStatusCode } from "axios";
-import { Knex } from "knex";
 import dns from "node:dns";
 import { describe } from "node:test";
 import { ApiClient } from "../config/api-client";
-import { db } from "../config/db-client";
 import { fakeLoginBody, fakeSignupBody } from "../fixtures/auth-fixture";
 import { randEmail, randNickname } from "../fixtures/rand-fixture";
 import { login, signup } from "../helpers/auth-api-helper";
@@ -12,107 +10,11 @@ import { BaseResponse } from "../types/base-types";
 
 dns.setDefaultResultOrder("ipv4first");
 
-let tx: Knex.Transaction<any, any[]>;
-
 describe("basic user authentication flows", () => {
-  beforeAll(async () => {
-    await db("user").del();
-  });
-
-  beforeEach(async () => {
-    tx = await db.transaction();
-  });
-
-  afterEach(async () => {
-    await tx.commit();
-  });
-
-  it("should create a new user with given info", async () => {
+  test("[200 OK] username/password 기반 가입 시 로그인 가능", async () => {
     // given
-    const client = ApiClient.newInstance();
+    const client = ApiClient.default();
     const { email, nickname, password } = fakeSignupBody();
-    console.log(
-      `email: ${email}, nickname: ${nickname}, password: ${password}`
-    );
-
-    // when
-    const resp = await signup(client, {
-      email,
-      nickname,
-      password,
-    });
-
-    // then
-    const { user, accessToken } = resp.data!.data;
-
-    expect(resp.status).toBe(HttpStatusCode.Created);
-    expect(accessToken).not.toBeUndefined();
-    expect(typeof user.id).toBe("number");
-    expect(user.nickname).toBe(nickname);
-    expect(user.email).toBe(email);
-  });
-
-  it("should fail to create new user with the duplicate email", async () => {
-    // given
-    const client = ApiClient.newInstance();
-    const { email, nickname, password } = fakeSignupBody();
-    console.log(
-      `email: ${email}, nickname: ${nickname}, password: ${password}`
-    );
-    // when
-    // then
-    await signup(client, {
-      email,
-      nickname,
-      password,
-    });
-
-    try {
-      await signup(client, {
-        email,
-        nickname: randNickname(),
-        password,
-      });
-    } catch (err) {
-      const e = err as AxiosError<BaseResponse<SignupResponse>>;
-      expect(e.response!.status).toBe(HttpStatusCode.Conflict);
-      expect(e.response!.data.message).toBe("이미 가입된 이메일입니다.");
-    }
-  });
-
-  it("should fail to create new user with the duplicate nickname", async () => {
-    // given
-    const client = ApiClient.newInstance();
-    const { email, nickname, password } = fakeSignupBody();
-
-    // when
-    // then
-    await signup(client, {
-      email,
-      nickname,
-      password,
-    });
-
-    try {
-      await signup(client, {
-        email: randEmail(),
-        nickname,
-        password,
-      });
-    } catch (err) {
-      const e = err as AxiosError<BaseResponse<SignupResponse>>;
-      expect(e.response!.status).toBe(HttpStatusCode.Conflict);
-      expect(e.response!.data.message).toBe("이미 존재하는 닉네임입니다.");
-    }
-  });
-
-  it("should success to log in with signed up user", async () => {
-    // given
-    const client = ApiClient.newInstance();
-    const { email, nickname, password } = fakeSignupBody();
-    console.log(
-      `email: ${email}, nickname: ${nickname}, password: ${password}`
-    );
 
     await signup(client, {
       email,
@@ -134,27 +36,30 @@ describe("basic user authentication flows", () => {
     expect(user.nickname).toBe(nickname);
     expect(user.email).toBe(email);
   });
-  it("should fail to log in with not registered email", async () => {
+  test("[201 CREATED] username/password 기반 회원 가입 가능", async () => {
     // given
-    const client = ApiClient.newInstance();
-    const { email, password } = fakeLoginBody();
+    const client = ApiClient.default();
+    const { email, nickname, password } = fakeSignupBody();
 
     // when
-    try {
-      await login(client, {
-        email,
-        password,
-      });
-    } catch (err) {
-      const e = err as AxiosError<BaseResponse<LoginResponse>>;
-      expect(e.response!.status).toBe(HttpStatusCode.NotFound);
-      expect(e.response!.data.message).toBe("가입되지 않은 이메일입니다.");
-    }
-  });
+    const resp = await signup(client, {
+      email,
+      nickname,
+      password,
+    });
 
-  it("should fail to log in with invalid password", async () => {
+    // then
+    const { accessToken, user } = resp.data.data;
+    expect(resp.status).toBe(HttpStatusCode.Created);
+    expect(accessToken).not.toBeUndefined();
+    expect(typeof user.id).toBe("number");
+    expect(user.nickname).toBe(nickname);
+    expect(user.email).toBe(email);
+  });
+  
+  it("[401 UNAUTHORIZED] 유효하지 않은 비밀번호로 로그인 불가", async () => {
     // given
-    const client = ApiClient.newInstance();
+    const client = ApiClient.default();
     const { email, nickname, password } = fakeSignupBody();
 
     await signup(client, {
@@ -173,6 +78,76 @@ describe("basic user authentication flows", () => {
       const e = err as AxiosError<BaseResponse<LoginResponse>>;
       expect(e.response!.status).toBe(HttpStatusCode.Unauthorized);
       expect(e.response!.data.message).toBe("비밀번호가 일치하지 않습니다.");
+    }
+  });
+
+  it("[404 NOT_FOUND] 가입되지 않은 이메일로 로그인 불가", async () => {
+    // given
+    const client = ApiClient.default();
+    const { email, password } = fakeLoginBody();
+
+    // when
+    try {
+      await login(client, {
+        email,
+        password,
+      });
+    } catch (err) {
+      const e = err as AxiosError<BaseResponse<LoginResponse>>;
+      expect(e.response!.status).toBe(HttpStatusCode.NotFound);
+      expect(e.response!.data.message).toBe("가입되지 않은 이메일입니다.");
+    }
+  });
+
+  test("[409 CONFLICT] 중복된 메일로 가입 불가", async () => {
+    // given
+    const client = ApiClient.default();
+    const { email, nickname, password } = fakeSignupBody();
+
+    // when
+    // then
+    await signup(client, {
+      email,
+      nickname,
+      password,
+    });
+
+    try {
+      await signup(client, {
+        email,
+        nickname: randNickname(),
+        password,
+      });
+    } catch (err) {
+      const e = err as AxiosError<BaseResponse<SignupResponse>>;
+      expect(e.response!.status).toBe(HttpStatusCode.Conflict);
+      expect(e.response!.data.message).toBe("이미 가입된 이메일입니다.");
+    }
+  });
+
+  test("[409 CONFLICT] 중복 닉네임 가입 불가", async () => {
+    // given
+    const client = ApiClient.default();
+    const { email, nickname, password } = fakeSignupBody();
+
+    // when
+    // then
+    await signup(client, {
+      email,
+      nickname,
+      password,
+    });
+
+    try {
+      await signup(client, {
+        email: randEmail(),
+        nickname,
+        password,
+      });
+    } catch (err) {
+      const e = err as AxiosError<BaseResponse<SignupResponse>>;
+      expect(e.response!.status).toBe(HttpStatusCode.Conflict);
+      expect(e.response!.data.message).toBe("이미 존재하는 닉네임입니다.");
     }
   });
 });

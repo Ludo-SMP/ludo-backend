@@ -170,3 +170,5 @@ front-test-app/
 
 .env*
 
+# do not ignore env for e2e test
+!src/e2e/.env

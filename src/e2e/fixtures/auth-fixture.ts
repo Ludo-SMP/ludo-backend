@@ -7,10 +7,7 @@ export type FakeSignupBodyArgs = {
   nicknameLen?: number;
 };
 
-export type FakeLoginBodyArgs = {
-  emailLen?: number;
-  passwordLen?: number;
-};
+export type FakeLoginBodyArgs = Omit<FakeSignupBodyArgs, "nicknameLen">;
 
 export function fakeSignupBody({
   emailLen,

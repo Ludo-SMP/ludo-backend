@@ -5,33 +5,24 @@ import {
   SignupBody,
   SignupResponse,
 } from "../types/auth-types";
-import { BaseResponse } from "../types/base-types";
 
 export async function signup(
   apiClient: ApiClient,
   { nickname, email, password }: SignupBody
 ) {
-  const resp = await apiClient.post<BaseResponse<SignupResponse>>(
-    "/auth/signup",
-    {
-      nickname,
-      email,
-      password,
-    }
-  );
-  return resp;
+  return apiClient.post<SignupResponse>("/auth/signup", {
+    nickname,
+    email,
+    password,
+  });
 }
 
 export async function login(
   apiClient: ApiClient,
   { email, password }: LoginBody
 ) {
-  const resp = await apiClient.post<BaseResponse<LoginResponse>>(
-    "/auth/login",
-    {
-      email,
-      password,
-    }
-  );
-  return resp;
+  return apiClient.post<LoginResponse>("/auth/login", {
+    email,
+    password,
+  });
 }

@@ -1,5 +1,7 @@
 package com.ludo.study.studymatchingplatform.study.service.study;
 
+import com.ludo.study.studymatchingplatform.common.exception.DataConflictException;
+import com.ludo.study.studymatchingplatform.common.exception.DataNotFoundException;
 import com.ludo.study.studymatchingplatform.study.domain.study.Review;
 import com.ludo.study.studymatchingplatform.study.domain.study.Study;
 import com.ludo.study.studymatchingplatform.study.repository.study.ReviewRepositoryImpl;
@@ -39,14 +41,15 @@ public class ReviewFacade {
 
     public WriteReviewResponse write(WriteReviewRequest request, Long studyId, User reviewer) {
         final Study study = studyRepository.findByIdWithParticipants(studyId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 스터디입니다. 리뷰를 작성할 수 없습니다."));
+                .orElseThrow(() -> new DataNotFoundException("존재하지 않는 스터디입니다. 리뷰를 작성할 수 없습니다."));
 
         boolean existsReview = reviewRepository.exists(studyId, reviewer.getId(), request.revieweeId());
         if (existsReview) {
-            throw new IllegalArgumentException("이미 리뷰를 작성 하셨습니다.");
+            throw new DataConflictException("이미 리뷰를 작성 하셨습니다.");
         }
 
         final Review review = reviewService.write(request, study, reviewer);
+
         return WriteReviewResponse.from(reviewRepository.save(review));
 
     }
