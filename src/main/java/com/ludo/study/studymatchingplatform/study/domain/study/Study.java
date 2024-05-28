@@ -5,15 +5,20 @@ import static jakarta.persistence.FetchType.*;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import com.ludo.study.studymatchingplatform.common.entity.BaseEntity;
+import com.ludo.study.studymatchingplatform.common.utils.LocalDateTimePicker;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant.Applicant;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.position.Position;
 import com.ludo.study.studymatchingplatform.study.domain.study.category.Category;
 import com.ludo.study.studymatchingplatform.study.domain.study.participant.Participant;
 import com.ludo.study.studymatchingplatform.study.domain.study.participant.Role;
+import com.ludo.study.studymatchingplatform.study.service.exception.InvalidReviewPeriodException;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 
 import jakarta.persistence.CascadeType;
@@ -96,6 +101,11 @@ public class Study extends BaseEntity {
 
 	@Column(nullable = false)
 	private LocalDateTime endDateTime;
+
+	public void addParticipant(final User user, final Position position, final Role role) {
+		final Participant participant = Participant.from(this, user, position, role);
+		addParticipant(participant);
+	}
 
 	public void addParticipant(final Participant participant) {
 		this.participants.add(participant);
@@ -241,9 +251,17 @@ public class Study extends BaseEntity {
 		return Objects.equals(participantCount, participantLimit);
 	}
 
+	public Boolean allParticipating(final Long... userIds) {
+		return Arrays.stream(userIds).allMatch(this::isParticipating);
+	}
+
 	public Boolean isParticipating(final User user) {
+		return isParticipating(user.getId());
+	}
+
+	public Boolean isParticipating(final Long userId) {
 		return participants.stream()
-				.anyMatch(p -> p.matchesUser(user));
+				.anyMatch(p -> p.matchesUser(userId));
 	}
 
 	public Integer getDday() {
@@ -251,9 +269,17 @@ public class Study extends BaseEntity {
 	}
 
 	public Participant getParticipant(final User user) {
+		return getParticipant(user.getId());
+	}
+
+	public Optional<Participant> findParticipant(final Long userId) {
 		return participants.stream()
-				.filter(p -> p.matchesUser(user))
-				.findFirst()
+				.filter(p -> p.matchesUser(userId))
+				.findFirst();
+	}
+
+	public Participant getParticipant(final Long userId) {
+		return findParticipant(userId)
 				.orElseThrow(() -> new IllegalStateException("현재 참여 중인 스터디원이 아닙니다."));
 	}
 
@@ -335,6 +361,31 @@ public class Study extends BaseEntity {
 		}
 	}
 
+	public void ensureReviewPeriodAvailable(final LocalDateTimePicker localDateTimePicker) {
+		final LocalDateTime now = localDateTimePicker.now();
+		final LocalDateTime reviewAvailStartTime = getReviewAvailStartTime();
+		final LocalDateTime reviewAvailEndTime = getReviewAvailEndTime();
+
+		if (isAvailableReviewPeriod(now)) {
+			return;
+		}
+		throw new InvalidReviewPeriodException("리뷰 작성 기간이 아닙니다.", reviewAvailStartTime, reviewAvailEndTime);
+	}
+
+	private boolean isAvailableReviewPeriod(LocalDateTime now) {
+		final LocalDateTime reviewAvailStartTime = getReviewAvailStartTime();
+		final LocalDateTime reviewAvailEndTime = getReviewAvailEndTime();
+
+		return now.isAfter(reviewAvailStartTime) && now.isBefore(reviewAvailEndTime);
+	}
+
+	private LocalDateTime getReviewAvailStartTime() {
+		return endDateTime;
+	}
+
+	private LocalDateTime getReviewAvailEndTime() {
+		return endDateTime.plusDays(14);
+	}
 	public Applicant getApplicant(final User applicantUser) {
 		return recruitment.getApplicant(applicantUser);
 	}
