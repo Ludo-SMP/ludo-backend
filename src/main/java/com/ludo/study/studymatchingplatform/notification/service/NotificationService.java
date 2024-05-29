@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.ludo.study.studymatchingplatform.notification.domain.notification.RecruitmentNotification;
@@ -20,8 +21,10 @@ import com.ludo.study.studymatchingplatform.notification.service.dto.response.No
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant.Applicant;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant.ApplicantStatus;
+import com.ludo.study.studymatchingplatform.study.domain.study.Review;
 import com.ludo.study.studymatchingplatform.study.domain.study.Study;
 import com.ludo.study.studymatchingplatform.study.domain.study.participant.Participant;
+import com.ludo.study.studymatchingplatform.study.repository.study.ReviewRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.study.participant.ParticipantRepositoryImpl;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 import com.ludo.study.studymatchingplatform.user.repository.user.UserRepositoryImpl;
@@ -37,6 +40,7 @@ public class NotificationService {
 	// for notifier search
 	private final UserRepositoryImpl userRepository;
 	private final ParticipantRepositoryImpl participantRepository;
+	private final ReviewRepositoryImpl reviewRepository;
 
 	// for notification save & find
 	private final StudyNotificationRepositoryImpl studyNotificationRepository;
@@ -151,7 +155,7 @@ public class NotificationService {
 		sseEmitters.sendNotification(studyNotification.getNotifier(), new NotificationResponse(studyNotification));
 	}
 
-	// TODO: @Scheduled 적용
+	@Scheduled(cron = "0 0 8 * *")
 	public void studyEndDateNotice() {
 		// 알림 대상자 조회 - 종료 기간까지 N일 남은 스터디 참가자 중 모든 방장
 		final List<Participant> ownersOfStudiesEndingIn = participantRepository.findOwnersOfStudiesEndingIn(
@@ -173,43 +177,60 @@ public class NotificationService {
 		});
 	}
 
+	@Scheduled(cron = "0 0 0 * *")
 	public void reviewStartNotice(final Study study) {
 		// 알림 대상자 조회
 		final List<User> studyParticipantUsers = userRepository.findParticipantUsersByStudyId(study.getId());
 
 		// 알림 저장
-		// TODO: 실시간 알림 전송 후 알림 테이블에 저장하는 로직 추가. 리뷰 기능 완성돼야 진행 가능
+		final List<StudyNotification> studyNotifications = studyNotificationRepository.saveAll(
+				studyParticipantUsers
+						.stream()
+						.map(notifier -> StudyNotification.of(REVIEW_START, LocalDateTime.now(), study, notifier))
+						.toList()
+		);
 
 		// 실시간 알림 전송 요청
-		// TODO: 알림 대상자에게 SSE 실시간 알림 전송로직 추가
+		studyNotifications.forEach(studyNotification -> {
+			final User notifier = studyNotification.getNotifier();
+			final NotificationResponse notificationResponse = new NotificationResponse(studyNotification);
+			sseEmitters.sendNotification(notifier, notificationResponse);
+		});
 	}
 
-	/**
-	 * TODO: 리뷰 기능 구현 완료 후 진행
-	 * @param: maybe Review Domain Entity
-	 * 리뷰 테이블 조회 로직이 필요한데, 중복 구현 가능성
-	 */
-	public void reviewReceiveNotice() {
+	public void reviewReceiveNotice(final Review review) {
 		// 알림 대상자 조회
+		final User reviewee = review.getReviewee();
 
 		// 알림 저장
+		final ReviewNotification reviewNotification = reviewNotificationRepository.save(
+				ReviewNotification.of(REVIEW_RECEIVE, LocalDateTime.now(), review, reviewee));
 
 		// 실시간 알림 전송 요청
-
+		sseEmitters.sendNotification(reviewee, new NotificationResponse(reviewNotification));
 	}
 
-	/**
-	 * TODO: 리뷰 기능 구현 완료 후 진행
-	 * @param: maybe Review Domain Entity
-	 * 리뷰 테이블 조회 로직이 필요한데, 중복 구현 가능성
-	 */
-	public void reviewPeerFinishNotice(final Study study) {
+	public void reviewPeerFinishNotice(final Study study, final Review review) {
 		// 알림 대상자 조회
+		final User reviewer = review.getReviewer();
+		final User reviewee = review.getReviewee();
+		if (!isPeerReviewFinish(study, reviewee, reviewer)) {
+			return;
+		}
 
 		// 알림 저장
+		final ReviewNotification reviewNotificationOfReviewer = reviewNotificationRepository.save(
+				ReviewNotification.of(REVIEW_PEER_FINISH, LocalDateTime.now(), review, reviewer));
+		final ReviewNotification reviewNotificationOfReviewee = reviewNotificationRepository.save(
+				ReviewNotification.of(REVIEW_PEER_FINISH, LocalDateTime.now(), review, reviewee));
 
 		// 실시간 알림 전송 요청
+		sseEmitters.sendNotification(reviewer, new NotificationResponse(reviewNotificationOfReviewer));
+		sseEmitters.sendNotification(reviewee, new NotificationResponse(reviewNotificationOfReviewee));
+	}
 
+	private boolean isPeerReviewFinish(final Study study, final User reviewee, final User reviewer) {
+		return reviewRepository.exists(study.getId(), reviewee.getId(), reviewer.getId());
 	}
 
 	public List<NotificationResponse> findNotifications(final User user) {

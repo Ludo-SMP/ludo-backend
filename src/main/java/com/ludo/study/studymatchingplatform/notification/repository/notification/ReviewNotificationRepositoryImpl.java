@@ -18,6 +18,10 @@ public class ReviewNotificationRepositoryImpl {
 	private JPAQueryFactory q;
 	private final ReviewNotificationJpaRepository reviewNotificationJpaRepository;
 
+	public ReviewNotification save(final ReviewNotification reviewNotifications) {
+		return reviewNotificationJpaRepository.save(reviewNotifications);
+	}
+
 	public List<ReviewNotification> findAllByUserId(final Long userId) {
 		return q.selectFrom(reviewNotification)
 				.where(reviewNotification.notifier.id.eq(userId))
