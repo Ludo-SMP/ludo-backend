@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ludo.study.studymatchingplatform.notification.domain.notification.RecruitmentNotification;
 import com.ludo.study.studymatchingplatform.notification.domain.notification.ReviewNotification;
@@ -50,6 +51,7 @@ public class NotificationService {
 	// for notification server sent events
 	private final SseEmitters sseEmitters;
 
+	@Transactional
 	public List<User> recruitmentNotice(final Recruitment recruitment) {
 		// 알림 대상자 조회
 		final RecruitmentNotifierCondition recruitmentNotifierCondition = new RecruitmentNotifierCondition(
@@ -77,6 +79,7 @@ public class NotificationService {
 		return recruitmentNotifiers;
 	}
 
+	@Transactional
 	public void studyApplicantNotice(final Recruitment recruitment) {
 		// 알림 대상자 조회
 		final Study study = recruitment.getStudy();
@@ -97,6 +100,7 @@ public class NotificationService {
 		});
 	}
 
+	@Transactional
 	public void studyApplicantAcceptNotice(final Study study, final User applicantUser) {
 		// 알림 대상자 조회
 		final Applicant applicant = study.getApplicant(applicantUser);
@@ -156,6 +160,7 @@ public class NotificationService {
 	}
 
 	@Scheduled(cron = "0 0 8 * *")
+	@Transactional
 	public void studyEndDateNotice() {
 		// 알림 대상자 조회 - 종료 기간까지 N일 남은 스터디 참가자 중 모든 방장
 		final List<Participant> ownersOfStudiesEndingIn = participantRepository.findOwnersOfStudiesEndingIn(
@@ -178,6 +183,7 @@ public class NotificationService {
 	}
 
 	@Scheduled(cron = "0 0 0 * *")
+	@Transactional
 	public void reviewStartNotice(final Study study) {
 		// 알림 대상자 조회
 		final List<User> studyParticipantUsers = userRepository.findParticipantUsersByStudyId(study.getId());
@@ -198,6 +204,7 @@ public class NotificationService {
 		});
 	}
 
+	@Transactional
 	public void reviewReceiveNotice(final Review review) {
 		// 알림 대상자 조회
 		final User reviewee = review.getReviewee();
@@ -210,6 +217,7 @@ public class NotificationService {
 		sseEmitters.sendNotification(reviewee, new NotificationResponse(reviewNotification));
 	}
 
+	@Transactional
 	public void reviewPeerFinishNotice(final Study study, final Review review) {
 		// 알림 대상자 조회
 		final User reviewer = review.getReviewer();
@@ -233,6 +241,7 @@ public class NotificationService {
 		return reviewRepository.exists(study.getId(), reviewee.getId(), reviewer.getId());
 	}
 
+	@Transactional
 	public List<NotificationResponse> findNotifications(final User user) {
 		final Long userId = user.getId();
 		final List<RecruitmentNotification> recruitmentNotifications = recruitmentNotificationRepository
