@@ -26,7 +26,7 @@ public class NotificationKeywordStack {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "notification_keword_stack_id")
+	@Column(name = "notification_keyword_stack_id")
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
