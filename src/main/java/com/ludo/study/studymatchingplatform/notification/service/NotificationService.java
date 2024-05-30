@@ -114,6 +114,7 @@ public class NotificationService {
 		sseEmitters.sendNotification(applicantUser, new NotificationResponse(studyNotification));
 	}
 
+	@Transactional
 	public void studyApplicantRejectNotice(final Study study, final User applicantUser) {
 		// 알림 대상자 조회
 		final Applicant applicant = study.getApplicant(applicantUser);
