@@ -26,12 +26,7 @@ public class NotificationController {
 
 	private final NotificationService notificationService;
 	private final SseEmitters sseEmitters;
-
-	/**
-	 * SSE 구독 로직을 컨트롤러에 둔 이유
-	 * 1. 패키지 의존 관계: SseEmitter는 web mvc 라이브러리
-	 * 2. 클라이언트 응답 방식이 바뀌어도, 서비스는 영향을 받지 않게 하기 위함
-	 */
+	
 	@GetMapping(value = "/subscribe")
 	public SseEmitter sseConnect(@AuthUser final User user, final HttpServletResponse response) {
 		setSseResponseHeaders(response);
