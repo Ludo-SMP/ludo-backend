@@ -47,16 +47,16 @@ public enum NotificationEventType {
 			"스터디 탈퇴 요청 알림 내용 - 임시"
 	),
 
+	STUDY_REVIEW_START(
+			"스터디 리뷰 시작 알림",
+			"리뷰 시작 알림 제목 - 임시",
+			"리뷰 시작 알림 내용 - 임시"
+	),
+
 	RECRUITMENT(
 			"관심 모집 공고 알림",
 			"[루도가 알려요] 관심 항목으로 선택한 %s 모집 공고가 나왔습니다.",
 			"해당 항목으로 검색된 스터디원 모집 공고를 확인하시려면 클릭헤주세요."
-	),
-
-	REVIEW_START(
-			"리뷰 시작 알림",
-			"리뷰 시작 알림 제목 - 임시",
-			"리뷰 시작 알림 내용 - 임시"
 	),
 
 	REVIEW_RECEIVE(
@@ -80,5 +80,5 @@ public enum NotificationEventType {
 		this.title = title;
 		this.content = content;
 	}
-	
+
 }

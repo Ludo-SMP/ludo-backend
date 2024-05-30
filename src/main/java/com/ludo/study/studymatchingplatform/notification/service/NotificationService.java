@@ -185,7 +185,7 @@ public class NotificationService {
 
 	@Scheduled(cron = "0 0 0 * *")
 	@Transactional
-	public void reviewStartNotice(final Study study) {
+	public void studyReviewStartNotice(final Study study) {
 		// 알림 대상자 조회
 		final List<User> studyParticipantUsers = userRepository.findParticipantUsersByStudyId(study.getId());
 
@@ -193,7 +193,7 @@ public class NotificationService {
 		final List<StudyNotification> studyNotifications = studyNotificationRepository.saveAll(
 				studyParticipantUsers
 						.stream()
-						.map(notifier -> StudyNotification.of(REVIEW_START, LocalDateTime.now(), study, notifier))
+						.map(notifier -> StudyNotification.of(STUDY_REVIEW_START, LocalDateTime.now(), study, notifier))
 						.toList()
 		);
 
