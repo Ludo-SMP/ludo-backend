@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.ludo.study.studymatchingplatform.notification.exception.NotExistSseEmitterException;
-import com.ludo.study.studymatchingplatform.notification.exception.ServerSentEventSendException;
 import com.ludo.study.studymatchingplatform.notification.service.dto.response.NotificationResponse;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 
@@ -45,7 +44,7 @@ public class SseEmitters {
 					.name(eventName)
 					.data(eventData));
 		} catch (IOException e) {
-			throw new ServerSentEventSendException(e.getMessage(), e);
+			sseEmitter.completeWithError(e);
 		}
 	}
 
@@ -54,7 +53,7 @@ public class SseEmitters {
 		return sseEmitterId;
 	}
 
-	private SseEmitter createSseEmitter() {
+	public SseEmitter createSseEmitter() {
 		return new SseEmitter(DEFAULT_TIME_OUT);
 	}
 
@@ -98,6 +97,10 @@ public class SseEmitters {
 		}
 		throw new NotExistSseEmitterException(
 				String.format("id = %d 에 해당하는 SseEmitter가 존재하지 않습니다.", sseEmitterId));
+	}
+
+	public SseEmitter findSseEmitter(final User user) {
+		return sseEmitters.get(user.getId());
 	}
 
 }

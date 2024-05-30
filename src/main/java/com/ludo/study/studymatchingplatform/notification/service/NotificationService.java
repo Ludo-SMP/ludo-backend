@@ -38,12 +38,12 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class NotificationService {
 
-	// for notifier search
+	// for notifier find
 	private final UserRepositoryImpl userRepository;
 	private final ParticipantRepositoryImpl participantRepository;
 	private final ReviewRepositoryImpl reviewRepository;
 
-	// for notification save & find
+	// for notification save
 	private final StudyNotificationRepositoryImpl studyNotificationRepository;
 	private final RecruitmentNotificationRepositoryImpl recruitmentNotificationRepository;
 	private final ReviewNotificationRepositoryImpl reviewNotificationRepository;
