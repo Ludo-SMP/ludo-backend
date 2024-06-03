@@ -4,38 +4,46 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.position.Position;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.stack.Stack;
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.stack.StackCategory;
 import com.ludo.study.studymatchingplatform.study.domain.study.category.Category;
+import com.ludo.study.studymatchingplatform.study.fixture.recruitment.position.PositionFixture;
+import com.ludo.study.studymatchingplatform.study.fixture.recruitment.stack.StackCategoryFixture;
+import com.ludo.study.studymatchingplatform.study.fixture.recruitment.stack.StackFixture;
+import com.ludo.study.studymatchingplatform.study.fixture.study.category.CategoryFixture;
 import com.ludo.study.studymatchingplatform.study.repository.recruitment.position.PositionRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.repository.recruitment.stack.StackCategoryRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.repository.recruitment.stack.StackRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.study.category.CategoryRepositoryImpl;
 
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Component
 @RequiredArgsConstructor
 @Profile("test")
+@Slf4j
 public class DbInitializer {
 
 	private final CategoryRepositoryImpl categoryRepository;
 	private final PositionRepositoryImpl positionsRepository;
+	private final StackCategoryRepositoryImpl stackCategoryRepository;
+	private final StackRepositoryImpl stackRepository;
 
 	@PostConstruct
 	public void init() {
 		initCategories();
 		initPositions();
+		initStackCategories();
+		initStacks();
 	}
 
 	private void initCategories() {
 		saveCategories(
-				Category.builder()
-						.name("프로젝트")
-						.build(),
-				Category.builder()
-						.name("코딩 테스트")
-						.build(),
-				Category.builder()
-						.name("모의 면접")
-						.build()
+				CategoryFixture.CATEGORY_PROJECT,
+				CategoryFixture.CATEGORY_CODING_TEST,
+				CategoryFixture.CATEGORY_INTERVIEW
 		);
 	}
 
@@ -47,24 +55,44 @@ public class DbInitializer {
 
 	private void initPositions() {
 		savePositions(
-				Position.builder()
-						.name("백엔드")
-						.build(),
-				Position.builder()
-						.name("프론트엔드")
-						.build(),
-				Position.builder()
-						.name("디자이너")
-						.build(),
-				Position.builder()
-						.name("데브옵스")
-						.build()
+				PositionFixture.BACKEND,
+				PositionFixture.FRONTEND,
+				PositionFixture.DESIGNER,
+				PositionFixture.DEVOPS
 		);
 	}
 
 	private void savePositions(Position... positions) {
 		for (Position position : positions) {
 			positionsRepository.save(position);
+		}
+	}
+
+	private void initStackCategories() {
+		saveStackCategories(
+				StackCategoryFixture.BACKEND,
+				StackCategoryFixture.FRONTEND
+		);
+	}
+
+	private void saveStackCategories(StackCategory... stackCategories) {
+		for (StackCategory stackCategory : stackCategories) {
+			stackCategoryRepository.save(stackCategory);
+		}
+	}
+
+	private void initStacks() {
+		saveStacks(
+				StackFixture.JAVA,
+				StackFixture.PYTHON,
+				StackFixture.REACT,
+				StackFixture.JAVA_SCRIPT
+		);
+	}
+
+	private void saveStacks(Stack... stacks) {
+		for (Stack stack : stacks) {
+			stackRepository.save(stack);
 		}
 	}
 
