@@ -23,6 +23,12 @@ public class UserFixture {
 			.email("user3@google.com")
 			.build();
 
+	public static final User user4 = User.builder()
+			.social(Social.NAVER)
+			.nickname("user4")
+			.email("user4@naver.com")
+			.build();
+
 	public static User createUser(Social social, String nickname, String email) {
 		return User.builder()
 				.social(social)
