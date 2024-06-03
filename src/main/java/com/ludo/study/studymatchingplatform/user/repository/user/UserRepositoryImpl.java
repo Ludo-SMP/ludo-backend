@@ -12,7 +12,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
 
-import com.ludo.study.studymatchingplatform.notification.repository.dto.RecruitmentNotifierCondition;
+import com.ludo.study.studymatchingplatform.notification.repository.dto.RecruitmentNotifierCond;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.position.Position;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.stack.Stack;
 import com.ludo.study.studymatchingplatform.study.service.exception.AuthenticationException;
@@ -76,9 +76,8 @@ public class UserRepositoryImpl {
 		return userId != null;
 	}
 
-	public List<User> findRecruitmentNotifiers(final RecruitmentNotifierCondition condition) {
+	public List<User> findRecruitmentNotifiers(final RecruitmentNotifierCond condition) {
 		// TODO: 모집공고 알림 설정을 on한 사용자 쿼리 조건 추가
-		// TODO: 내가 생성한 모집공고는 알림대상자에 제외하는 쿼리 조건 추가
 		return q.select(user)
 				.from(user)
 				.where(
@@ -96,6 +95,7 @@ public class UserRepositoryImpl {
 								select(notificationKeywordStack.user.id)
 										.from(notificationKeywordStack)
 										.where(stacksOrCondition(condition.stacks()))))
+				.where(user.id.ne(condition.owner().getId()))
 				.fetch();
 
 	}
