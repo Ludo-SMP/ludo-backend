@@ -71,7 +71,7 @@ public class NotificationQueryService {
 		final LocalDateTime startOfDay = endDate.atStartOfDay();
 		final LocalDateTime endOfDay = endDate.atTime(LocalTime.MAX);
 
-		return participantRepository.findOwnersOfStudiesEndingIn(
+		return participantRepository.findOwnerParticipantsBetweenDateRange(
 				new StudyEndDateNotifierCond(Role.OWNER, startOfDay, endOfDay));
 	}
 
