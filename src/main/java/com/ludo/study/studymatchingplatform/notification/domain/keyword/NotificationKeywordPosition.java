@@ -37,4 +37,13 @@ public class NotificationKeywordPosition {
 	@JoinColumn(name = "position_id")
 	private Position position;
 
+	private NotificationKeywordPosition(final User user, final Position position) {
+		this.user = user;
+		this.position = position;
+	}
+
+	public static NotificationKeywordPosition of(final User user, final Position position) {
+		return new NotificationKeywordPosition(user, position);
+	}
+
 }

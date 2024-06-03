@@ -37,4 +37,13 @@ public class NotificationKeywordStack {
 	@JoinColumn(name = "stack_id")
 	private Stack stack;
 
+	private NotificationKeywordStack(final User user, final Stack stack) {
+		this.user = user;
+		this.stack = stack;
+	}
+
+	public static NotificationKeywordStack of(final User user, final Stack stack) {
+		return new NotificationKeywordStack(user, stack);
+	}
+
 }
