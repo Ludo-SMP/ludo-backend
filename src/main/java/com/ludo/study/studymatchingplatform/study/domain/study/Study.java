@@ -386,6 +386,7 @@ public class Study extends BaseEntity {
 	private LocalDateTime getReviewAvailEndTime() {
 		return endDateTime.plusDays(14);
 	}
+
 	public Applicant getApplicant(final User applicantUser) {
 		return recruitment.getApplicant(applicantUser);
 	}

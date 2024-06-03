@@ -397,4 +397,8 @@ public class Recruitment extends BaseEntity {
 		return this.study.getId();
 	}
 
+	public User getOwner() {
+		return this.study.getOwner();
+	}
+
 }
