@@ -45,10 +45,10 @@ public class StudyApplicantDecisionService {
 		final Study study = findStudy(request.studyId());
 		final User applicantUser = findUser(request.applicantUserId());
 
+		study.rejectApplicant(owner, applicantUser);
+
 		// 스터디 지원 거절 알림 트리거
 		notificationService.studyApplicantRejectNotice(study, applicantUser);
-
-		study.rejectApplicant(owner, applicantUser);
 	}
 
 	private User findUser(final Long applicantUserId) {
