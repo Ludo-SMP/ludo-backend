@@ -3,7 +3,10 @@ package com.ludo.study.studymatchingplatform.notification.controller;
 import java.util.List;
 
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -26,7 +29,7 @@ public class NotificationController {
 
 	private final NotificationService notificationService;
 	private final SseEmitters sseEmitters;
-	
+
 	@GetMapping(value = "/subscribe")
 	public SseEmitter sseConnect(@AuthUser final User user, final HttpServletResponse response) {
 		setSseResponseHeaders(response);
@@ -45,4 +48,11 @@ public class NotificationController {
 		return notificationService.findNotifications(user);
 	}
 
+	@PutMapping("/settings/keyword")
+	public ResponseEntity<Void> updateNotificationKeywordConfig(@AuthUser final User user,
+																@RequestBody NotificationKeywordConfigRequest notificationKeywordConfigRequest
+	) {
+		notificationService.configNotificationKeywords(user, notificationKeywordConfigRequest);
+		return ResponseEntity.ok().build();
+	}
 }

@@ -15,10 +15,12 @@ import com.ludo.study.studymatchingplatform.common.annotation.DataFieldName;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 
 @Component
 @RestControllerAdvice
 @RequiredArgsConstructor
+@Slf4j
 public final class CommonResponseAdvice implements ResponseBodyAdvice<Object> {
 
 	@Override
@@ -51,7 +53,7 @@ public final class CommonResponseAdvice implements ResponseBodyAdvice<Object> {
 	}
 
 	private boolean hasError(final Object body) {
-		return CommonResponse.class.isAssignableFrom(body.getClass());
+		return body != null && CommonResponse.class.isAssignableFrom(body.getClass());
 	}
 
 	private boolean isLocation(final ServerHttpResponse response) {
