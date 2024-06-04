@@ -6,7 +6,6 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @SpringBootApplication
-//@EnableJpaAuditing(dateTimeProviderRef = "localDateTimeProvider")
 @EnableJpaAuditing(dateTimeProviderRef = "utcNowProvider")
 @ConfigurationPropertiesScan
 public class StudyMatchingPlatformApplication {
