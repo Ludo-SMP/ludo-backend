@@ -94,7 +94,7 @@ public class Recruitment extends BaseEntity {
             final Contact contact,
             final String callUrl,
             final Integer hits,
-            final Integer applicantCount,
+            final Integer applicantLimit,
             final LocalDateTime recruitmentEndDateTime,
             final Study study
     ) {
@@ -104,7 +104,7 @@ public class Recruitment extends BaseEntity {
                 .contact(contact)
                 .callUrl(callUrl)
                 .hits(hits)
-                .applicantCount(applicantCount)
+                .applicantCount(applicantLimit)
                 .recruitmentEndDateTime(recruitmentEndDateTime)
                 .study(study)
                 .build();

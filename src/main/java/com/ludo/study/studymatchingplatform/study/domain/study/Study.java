@@ -255,15 +255,16 @@ public class Study extends BaseEntity {
         return getParticipant(user.getId());
     }
 
-    public Optional<Participant> findParticipant(final Long userId) {
-        return participants.stream()
-                .filter(p -> p.matchesUser(userId))
-                .findFirst();
-    }
 
     public Participant getParticipant(final Long userId) {
         return findParticipant(userId)
                 .orElseThrow(() -> new IllegalStateException("현재 참여 중인 스터디원이 아닙니다."));
+    }
+
+    public Optional<Participant> findParticipant(final Long userId) {
+        return participants.stream()
+                .filter(p -> p.matchesUser(userId))
+                .findFirst();
     }
 
     public void removeParticipant(final Participant participant) {
@@ -271,12 +272,30 @@ public class Study extends BaseEntity {
     }
 
     public void modifyStatus(final StudyStatus status, final LocalDateTime now) {
+        // 스터디는 강제로 완료 처리 불가, end 사용
+        if (status == StudyStatus.COMPLETED) {
+            throw new IllegalArgumentException("스터디를 강제로 완료 처리할 수 없습니다.");
+        }
         // 모집 마감 상태는 시간에 따라 다른 결과 반영
         if (status == StudyStatus.RECRUITED) {
             modifyStatusToRecruited(now);
             modifyStatusToProgress(now);
         }
     }
+
+    // 스터디 완료 처리 시에 [사용자 스터디 참여 정보]에 반영
+    public void end(final LocalDateTime now, final List<StudyStatistics> studyStatistics) {
+        // 추후 완료 조건이 추가될 수 있을듯
+
+        for (final StudyStatistics statistics : studyStatistics) {
+            final Participant participant = getParticipant(statistics.getUser());
+            statistics.reflectStatistics(this, participant);
+        }
+
+        status = StudyStatus.COMPLETED;
+        this.endDateTime = now;
+    }
+
 
     public void modifyStatusToRecruiting() {
         this.status = StudyStatus.RECRUITING;

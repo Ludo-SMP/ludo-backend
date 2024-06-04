@@ -1,5 +1,6 @@
 package com.ludo.study.studymatchingplatform.study.service.study;
 
+import com.ludo.study.studymatchingplatform.common.exception.DataForbiddenException;
 import com.ludo.study.studymatchingplatform.common.utils.UtcDateTimePicker;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.position.Position;
 import com.ludo.study.studymatchingplatform.study.domain.study.Review;
@@ -36,7 +37,6 @@ public final class ReviewServiceTest {
         study.addParticipant(reviewee, position, Role.MEMBER);
 
         final WriteReviewRequest request = WriteReviewRequest.builder().revieweeId(reviewee.getId()).activenessScore(5L).professionalismScore(5L).communicationScore(5L).togetherScore(5L).recommendScore(5L).build();
-
 
         // when
         final Review review = reviewService.write(request, study, reviewer);
@@ -266,7 +266,7 @@ public final class ReviewServiceTest {
         // when
         // then
         assertThatThrownBy(() -> reviewService.write(request, study, notParticipatingReviewer))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(DataForbiddenException.class)
                 .hasMessage("참여 중인 스터디가 아닙니다. 리뷰를 작성할 수 없습니다.");
     }
 

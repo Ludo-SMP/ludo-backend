@@ -1,5 +1,6 @@
 package com.ludo.study.studymatchingplatform.study.service.study;
 
+import com.ludo.study.studymatchingplatform.common.exception.DataForbiddenException;
 import com.ludo.study.studymatchingplatform.common.utils.UtcDateTimePicker;
 import com.ludo.study.studymatchingplatform.study.domain.study.Review;
 import com.ludo.study.studymatchingplatform.study.domain.study.Study;
@@ -17,9 +18,9 @@ public class ReviewService {
 
     private final UtcDateTimePicker utcDateTimePicker;
 
-    public Review write(WriteReviewRequest request, Study study, User reviewer) {
+    public Review write(final WriteReviewRequest request, final Study study, final User reviewer) {
         final Participant participantingReviewer = study.findParticipant(reviewer.getId())
-                .orElseThrow(() -> new IllegalArgumentException("참여 중인 스터디가 아닙니다. 리뷰를 작성할 수 없습니다."));
+                .orElseThrow(() -> new DataForbiddenException("참여 중인 스터디가 아닙니다. 리뷰를 작성할 수 없습니다."));
         final Participant participantingReviewee = study.findParticipant(request.revieweeId())
                 .orElseThrow(() -> new IllegalArgumentException("스터디에 참여 중인 사용자에게만 리뷰를 작성할 수 있습니다."));
         if (participantingReviewer == participantingReviewee) {

@@ -5,11 +5,13 @@
   "scripts": {
     "test": "jest -b",
     "pretest:watch": "pnpm i",
-    "test:only": "jest --watchAll --testPathPattern=$P",
     "test:watch": "jest --watchAll",
+    "test:only": "jest --watchAll --testPathPattern=$P",
     "test:auth": "jest --watchAll --testPathPattern=auth.test.ts",
     "test:study": "jest --watchAll --testPathPattern=study.test.ts",
-    "test:recruitment": "jest --watchAll --testPathPattern=recruitment.test.ts"
+    "test:recruitment": "jest --watchAll --testPathPattern=recruitment.test.ts",
+    "test:statistics": "jest --watchAll --testPathPattern=statistics.test.ts",
+    "db:introspect": "drizzle-kit introspect --config=drizzle.config.ts"
   },
   "keywords": [],
   "author": "",
@@ -17,10 +19,13 @@
   "description": "",
   "dependencies": {
     "@faker-js/faker": "^8.4.1",
+    "@formkit/tempo": "^0.1.1",
     "axios": "^1.7.2",
     "date-fns": "^3.6.0",
-    "date-fns-tz": "^3.1.3",
     "dotenv": "^16.4.5",
+    "drizzle-kit": "^0.21.4",
+    "drizzle-orm": "^0.30.10",
+    "jest-extended": "^4.0.2",
     "jsonwebtoken": "^9.0.2",
     "knex": "^3.1.0",
     "mysql2": "^3.9.7",

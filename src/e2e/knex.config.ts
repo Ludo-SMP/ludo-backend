@@ -13,11 +13,12 @@ export const config: { [key: string]: Knex.Config } = {
     },
     pool: {
       min: 1,
-      max: 30,
+      max: 50,
+      destroyTimeoutMillis: 30_000,
     },
-    acquireConnectionTimeout: 5000,
+    acquireConnectionTimeout: 15000,
     compileSqlOnError: true,
-    debug: true,
+    // debug: true,
     log: {
       enableColors: true,
       debug: (message: string) => {

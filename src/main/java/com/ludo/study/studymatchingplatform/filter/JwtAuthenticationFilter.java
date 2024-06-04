@@ -52,8 +52,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 accessTokenRefresh(payload.getId(), response);
                 // NotFoundException - 만료된 사용자 정보 검증 추가
             } catch (final Exception e) {
+                // 만료되거나 잘못된 토큰일 경우 예외 response 를 반환한다.
                 cookieProvider.clearAuthCookie(response);
-//                response.sendError( HttpStatus.UNAUTHORIZED.value(), CommonResponse.error(e.getMessage()));
                 jwtExceptionHandler(response, HttpStatus.UNAUTHORIZED, e.getMessage());
                 return;
             }

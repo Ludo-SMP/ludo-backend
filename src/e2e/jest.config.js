@@ -12,4 +12,8 @@ module.exports = {
       },
     ],
   },
+  cache: true,
+  detectOpenHandles: true,
+  verbose: true,
+  setupFilesAfterEnv: ["./jest.setup.ts"],
 };

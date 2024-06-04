@@ -41,6 +41,8 @@ public class AuthUserIdResolver implements HandlerMethodArgumentResolver {
         final AuthUserPayload payload = (AuthUserPayload) request.getAttribute(
                 JwtAuthenticationFilter.AUTH_USER_PAYLOAD);
 
-        return userRepository.getById(payload.getId()).getId();
+        Long id = userRepository.getById(payload.getId()).getId();
+        System.out.println("userid: "+id);
+        return id;
     }
 }
