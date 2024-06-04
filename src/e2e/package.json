@@ -5,8 +5,8 @@
   "scripts": {
     "test": "jest -b",
     "pretest:watch": "pnpm i",
-    "test:only": "jest --watchAll --testPathPattern=$P",
     "test:watch": "jest --watchAll",
+    "test:only": "jest --watchAll --testPathPattern=$P",
     "test:auth": "jest --watchAll --testPathPattern=auth.test.ts",
     "test:study": "jest --watchAll --testPathPattern=study.test.ts",
     "test:recruitment": "jest --watchAll --testPathPattern=recruitment.test.ts",
