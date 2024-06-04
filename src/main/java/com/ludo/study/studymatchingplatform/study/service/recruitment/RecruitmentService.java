@@ -6,8 +6,8 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ludo.study.studymatchingplatform.notification.service.NotificationService;
 import com.ludo.study.studymatchingplatform.common.utils.UtcDateTimePicker;
+import com.ludo.study.studymatchingplatform.notification.service.NotificationService;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant.Applicant;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant.ApplicantStatus;
@@ -25,6 +25,7 @@ import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitme
 import com.ludo.study.studymatchingplatform.study.service.recruitment.position.RecruitmentPositionService;
 import com.ludo.study.studymatchingplatform.study.service.recruitment.stack.RecruitmentStackService;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
+
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -32,13 +33,13 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class RecruitmentService {
 
-    private final RecruitmentRepositoryImpl recruitmentRepository;
-    private final StudyRepositoryImpl studyRepository;
-    private final RecruitmentStackService recruitmentStackService;
-    private final RecruitmentPositionService recruitmentPositionService;
-    private final PositionRepositoryImpl positionRepository;
-    private final ApplicantRepositoryImpl applicantRepository;
-    private final UtcDateTimePicker utcDateTimePicker;
+	private final RecruitmentRepositoryImpl recruitmentRepository;
+	private final StudyRepositoryImpl studyRepository;
+	private final RecruitmentStackService recruitmentStackService;
+	private final RecruitmentPositionService recruitmentPositionService;
+	private final PositionRepositoryImpl positionRepository;
+	private final ApplicantRepositoryImpl applicantRepository;
+	private final UtcDateTimePicker utcDateTimePicker;
 
 	private final NotificationService notificationService;
 
@@ -54,12 +55,12 @@ public class RecruitmentService {
 		final Recruitment recruitment = request.toRecruitment(study);
 		recruitmentRepository.save(recruitment);
 
-        recruitmentStackService.addMany(recruitment, request.getStackIds());
-        recruitmentPositionService.addMany(recruitment, request.getPositionIds());
-        study.registerRecruitment(recruitment);
+		recruitmentStackService.addMany(recruitment, request.getStackIds());
+		recruitmentPositionService.addMany(recruitment, request.getPositionIds());
+		study.registerRecruitment(recruitment);
 
-        // 모집 공고 생성시 스터디 상태를 모집중으로 변경
-        study.modifyStatusToRecruiting();
+		// 모집 공고 생성시 스터디 상태를 모집중으로 변경
+		study.modifyStatusToRecruiting();
 
 		// 모집 공고 알림 트리거
 		notificationService.recruitmentNotice(recruitment);
@@ -140,7 +141,7 @@ public class RecruitmentService {
 		final StudyStatus studyStatus = recruitment.getStudy().getStatus();
 		applicant.ensureCancellable(studyStatus);
 		applicant.changeStatus(ApplicantStatus.CANCELLED);
-		applicant.softDelete();
+		applicant.softDelete(utcDateTimePicker.now());
 
 		return applicant;
 	}

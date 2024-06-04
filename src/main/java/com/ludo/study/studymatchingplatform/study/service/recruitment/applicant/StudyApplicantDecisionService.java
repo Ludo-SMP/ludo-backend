@@ -1,9 +1,9 @@
 package com.ludo.study.studymatchingplatform.study.service.recruitment.applicant;
 
-import com.ludo.study.studymatchingplatform.common.utils.UtcDateTimePicker;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ludo.study.studymatchingplatform.common.utils.UtcDateTimePicker;
 import com.ludo.study.studymatchingplatform.notification.service.NotificationService;
 import com.ludo.study.studymatchingplatform.study.domain.study.Study;
 import com.ludo.study.studymatchingplatform.study.domain.study.participant.Participant;
@@ -13,6 +13,7 @@ import com.ludo.study.studymatchingplatform.study.service.dto.request.recruitmen
 import com.ludo.study.studymatchingplatform.study.service.dto.response.study.participant.ParticipantUserResponse;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 import com.ludo.study.studymatchingplatform.user.repository.user.UserRepositoryImpl;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -21,10 +22,10 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class StudyApplicantDecisionService {
 
-    private final StudyRepositoryImpl studyRepository;
-    private final UserRepositoryImpl userRepository;
-    private final ParticipantRepositoryImpl participantRepository;
-    private final UtcDateTimePicker utcDateTimePicker;
+	private final StudyRepositoryImpl studyRepository;
+	private final UserRepositoryImpl userRepository;
+	private final ParticipantRepositoryImpl participantRepository;
+	private final UtcDateTimePicker utcDateTimePicker;
 
 	private final NotificationService notificationService;
 
@@ -33,8 +34,8 @@ public class StudyApplicantDecisionService {
 		final Study study = findStudy(request.studyId());
 		final User applicantUser = findUser(request.applicantUserId());
 
-        study.acceptApplicant(owner, applicantUser, utcDateTimePicker.now());
-        Participant participant = findParticipant(study, applicantUser);
+		study.acceptApplicant(owner, applicantUser, utcDateTimePicker.now());
+		Participant participant = findParticipant(study, applicantUser);
 
 		// 스터디 지원 수락 알림 트리거
 		notificationService.studyApplicantAcceptNotice(study, applicantUser);
@@ -47,10 +48,10 @@ public class StudyApplicantDecisionService {
 		final Study study = findStudy(request.studyId());
 		final User applicantUser = findUser(request.applicantUserId());
 
+		study.rejectApplicant(owner, applicantUser);
+
 		// 스터디 지원 거절 알림 트리거
 		notificationService.studyApplicantRejectNotice(study, applicantUser);
-
-		study.rejectApplicant(owner, applicantUser);
 	}
 
 	private User findUser(final Long applicantUserId) {
