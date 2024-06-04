@@ -10,9 +10,13 @@ import com.ludo.study.studymatchingplatform.notification.domain.notification.Not
 import com.ludo.study.studymatchingplatform.notification.domain.notification.RecruitmentNotification;
 import com.ludo.study.studymatchingplatform.notification.domain.notification.ReviewNotification;
 import com.ludo.study.studymatchingplatform.notification.domain.notification.StudyNotification;
+import com.ludo.study.studymatchingplatform.notification.repository.keyword.NotificationKeywordCategoryRepositoryImpl;
+import com.ludo.study.studymatchingplatform.notification.repository.keyword.NotificationKeywordPositionRepositoryImpl;
+import com.ludo.study.studymatchingplatform.notification.repository.keyword.NotificationKeywordStackRepositoryImpl;
 import com.ludo.study.studymatchingplatform.notification.repository.notification.RecruitmentNotificationRepositoryImpl;
 import com.ludo.study.studymatchingplatform.notification.repository.notification.ReviewNotificationRepositoryImpl;
 import com.ludo.study.studymatchingplatform.notification.repository.notification.StudyNotificationRepositoryImpl;
+import com.ludo.study.studymatchingplatform.notification.service.dto.response.NotificationKeywordDto;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
 import com.ludo.study.studymatchingplatform.study.domain.study.Review;
 import com.ludo.study.studymatchingplatform.study.domain.study.Study;
@@ -28,6 +32,10 @@ public class NotificationCommandService {
 	private final StudyNotificationRepositoryImpl studyNotificationRepository;
 	private final RecruitmentNotificationRepositoryImpl recruitmentNotificationRepository;
 	private final ReviewNotificationRepositoryImpl reviewNotificationRepository;
+
+	private final NotificationKeywordCategoryRepositoryImpl notificationKeywordCategoryRepository;
+	private final NotificationKeywordStackRepositoryImpl notificationKeywordStackRepository;
+	private final NotificationKeywordPositionRepositoryImpl notificationKeywordPositionRepository;
 
 	@Transactional
 	public List<RecruitmentNotification> saveRecruitmentNotifications(final Recruitment actor,
@@ -77,6 +85,13 @@ public class NotificationCommandService {
 				.toList();
 
 		return reviewNotificationRepository.saveAll(reviewNotifications);
+	}
+
+	@Transactional
+	public void updateNotificationKeywords(final NotificationKeywordDto notificationKeywordDto) {
+		notificationKeywordCategoryRepository.saveAll(notificationKeywordDto.keywordCategories());
+		notificationKeywordStackRepository.saveAll(notificationKeywordDto.keywordStacks());
+		notificationKeywordPositionRepository.saveAll(notificationKeywordDto.keywordPositions());
 	}
 
 }
