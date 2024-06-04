@@ -5,6 +5,7 @@ import static com.ludo.study.studymatchingplatform.study.domain.recruitment.stac
 import static com.ludo.study.studymatchingplatform.study.domain.recruitment.stack.QStackCategory.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.stereotype.Repository;
@@ -40,6 +41,10 @@ public class StackRepositoryImpl {
 				.leftJoin(stack.stackCategory, stackCategory).fetchJoin()
 				.leftJoin(stack.recruitmentStacks, recruitmentStack).fetchJoin()
 				.fetch();
+	}
+
+	public Optional<Stack> findById(final Long stackId) {
+		return stackJpaRepository.findById(stackId);
 	}
 
 	public Stack save(final Stack stack) {
