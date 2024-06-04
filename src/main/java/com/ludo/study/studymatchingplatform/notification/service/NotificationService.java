@@ -7,9 +7,11 @@ import java.util.List;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import com.ludo.study.studymatchingplatform.notification.controller.NotificationKeywordConfigRequest;
 import com.ludo.study.studymatchingplatform.notification.domain.notification.RecruitmentNotification;
 import com.ludo.study.studymatchingplatform.notification.domain.notification.ReviewNotification;
 import com.ludo.study.studymatchingplatform.notification.domain.notification.StudyNotification;
+import com.ludo.study.studymatchingplatform.notification.service.dto.response.NotificationKeywordDto;
 import com.ludo.study.studymatchingplatform.notification.service.dto.response.NotificationResponse;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant.Applicant;
@@ -183,6 +185,15 @@ public class NotificationService {
 
 	public List<NotificationResponse> findNotifications(final User user) {
 		return notificationQueryService.findNotifications(user);
+	}
+
+	public void configNotificationKeywords(final User user,
+										   final NotificationKeywordConfigRequest notificationKeywordConfigRequest
+	) {
+		final NotificationKeywordDto notificationKeywordDto = notificationQueryService
+				.findNotificationKeywords(user, notificationKeywordConfigRequest);
+
+		notificationCommandService.updateNotificationKeywords(notificationKeywordDto);
 	}
 
 }
