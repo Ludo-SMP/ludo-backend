@@ -1,16 +1,12 @@
 package com.ludo.study.studymatchingplatform.study.service.study;
 
-import com.ludo.study.studymatchingplatform.common.utils.LocalDateTimePicker;
+import com.ludo.study.studymatchingplatform.common.utils.UtcDateTimePicker;
 import com.ludo.study.studymatchingplatform.study.domain.study.Review;
 import com.ludo.study.studymatchingplatform.study.domain.study.Study;
 import com.ludo.study.studymatchingplatform.study.domain.study.participant.Participant;
-import com.ludo.study.studymatchingplatform.study.repository.study.ReviewRepositoryImpl;
-import com.ludo.study.studymatchingplatform.study.repository.study.StudyRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.study.WriteReviewRequest;
-import com.ludo.study.studymatchingplatform.study.service.dto.response.study.ReviewResponse;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ReviewService {
 
-    private final LocalDateTimePicker localDateTimePicker;
+    private final UtcDateTimePicker utcDateTimePicker;
 
     public Review write(WriteReviewRequest request, Study study, User reviewer) {
         final Participant participantingReviewer = study.findParticipant(reviewer.getId())
@@ -31,7 +27,7 @@ public class ReviewService {
         }
 
         // 명세 - [스터디가 진행 완료 상태로 바뀐 후 3일 후 부터, 14일 간 리뷰 작성 가능]
-        study.ensureReviewPeriodAvailable(localDateTimePicker);
+        study.ensureReviewPeriodAvailable(utcDateTimePicker);
         return request.toReviewWithStudy(study, participantingReviewer.getUser(), participantingReviewee.getUser());
 
     }

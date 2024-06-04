@@ -83,10 +83,10 @@ public class Participant extends BaseEntity {
         return isMatchesUser && !isDeleted();
     }
 
-    public void leave(final Study study) {
+    public void leave(final Study study, final LocalDateTime deletedDateTime) {
         study.removeParticipant(this);
         this.study = null;
-        this.softDelete();
+        this.softDelete(deletedDateTime);
     }
 
     public void updatePosition(final Position position) {
