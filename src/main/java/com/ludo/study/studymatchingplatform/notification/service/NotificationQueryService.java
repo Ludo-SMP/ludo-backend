@@ -10,6 +10,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ludo.study.studymatchingplatform.notification.controller.NotificationKeywordConfigRequest;
 import com.ludo.study.studymatchingplatform.notification.domain.notification.RecruitmentNotification;
 import com.ludo.study.studymatchingplatform.notification.domain.notification.ReviewNotification;
 import com.ludo.study.studymatchingplatform.notification.domain.notification.StudyNotification;
@@ -19,6 +20,7 @@ import com.ludo.study.studymatchingplatform.notification.repository.dto.StudyRev
 import com.ludo.study.studymatchingplatform.notification.repository.notification.RecruitmentNotificationRepositoryImpl;
 import com.ludo.study.studymatchingplatform.notification.repository.notification.ReviewNotificationRepositoryImpl;
 import com.ludo.study.studymatchingplatform.notification.repository.notification.StudyNotificationRepositoryImpl;
+import com.ludo.study.studymatchingplatform.notification.service.dto.response.NotificationKeywordDto;
 import com.ludo.study.studymatchingplatform.notification.service.dto.response.NotificationResponse;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
 import com.ludo.study.studymatchingplatform.study.domain.study.Review;
@@ -46,6 +48,8 @@ public class NotificationQueryService {
 	private final StudyNotificationRepositoryImpl studyNotificationRepository;
 	private final RecruitmentNotificationRepositoryImpl recruitmentNotificationRepository;
 	private final ReviewNotificationRepositoryImpl reviewNotificationRepository;
+
+	private final NotificationKeywordMapper notificationKeywordMapper;
 
 	public List<User> findRecruitmentNotifier(final Recruitment recruitment) {
 		final RecruitmentNotifierCond recruitmentNotifierCondition = new RecruitmentNotifierCond(
@@ -123,6 +127,17 @@ public class NotificationQueryService {
 				.forEach(notificationResponses::add);
 
 		return notificationResponses;
+	}
+
+	public NotificationKeywordDto findNotificationKeywords(final User user,
+														   final NotificationKeywordConfigRequest keywordConfigRequest
+	) {
+
+		return new NotificationKeywordDto(
+				notificationKeywordMapper.toKeywordCategories(user, keywordConfigRequest.categoryIds()),
+				notificationKeywordMapper.toKeywordStacks(user, keywordConfigRequest.stackIds()),
+				notificationKeywordMapper.toKeywordPositions(user, keywordConfigRequest.positionIds())
+		);
 	}
 
 }
