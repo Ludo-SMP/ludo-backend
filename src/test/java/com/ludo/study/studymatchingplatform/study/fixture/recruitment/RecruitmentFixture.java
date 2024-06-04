@@ -12,6 +12,23 @@ import com.ludo.study.studymatchingplatform.study.domain.study.Study;
 
 public class RecruitmentFixture {
 
+	/**
+	 * 해당 Fixture을 사용하기 위해 연관 관계 설정이 필요합니다.
+	 * 1. study - recruitment
+	 * 2. recruitment - List<recruitmentStack>
+	 * 3. recruitment - List<recruitmentPosition>
+	 * 4(Optional). recruitment - List<applicant>
+	 */
+	public static final Recruitment recruitment1 = Recruitment.builder()
+			.contact(Contact.KAKAO)
+			.callUrl("callUrl")
+			.title("모집공고1 제목")
+			.content("모집공고1 내용")
+			.applicantCount(5)
+			.recruitmentEndDateTime(LocalDateTime.now().plusDays(10).truncatedTo(ChronoUnit.MICROS))
+			.hits(1)
+			.build();
+
 	public static Recruitment createRecruitment(Study study, String title, String content,
 												int hits, String callUrl,
 												LocalDateTime endDateTime

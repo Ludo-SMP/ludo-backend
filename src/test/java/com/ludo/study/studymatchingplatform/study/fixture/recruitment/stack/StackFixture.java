@@ -5,6 +5,27 @@ import com.ludo.study.studymatchingplatform.study.domain.recruitment.stack.Stack
 
 public class StackFixture {
 
+	public static final Stack JAVA = Stack.builder()
+			.name("java")
+			.stackCategory(StackCategoryFixture.BACKEND)
+			.companyCount(0)
+			.build();
+	public static final Stack PYTHON = Stack.builder().
+			name("python").
+			stackCategory(StackCategoryFixture.BACKEND).
+			companyCount(0).
+			build();
+	public static final Stack JAVA_SCRIPT = Stack.builder()
+			.name("javascript")
+			.stackCategory(StackCategoryFixture.FRONTEND)
+			.companyCount(0)
+			.build();
+	public static final Stack REACT = Stack.builder()
+			.name("react")
+			.stackCategory(StackCategoryFixture.FRONTEND)
+			.companyCount(0)
+			.build();
+
 	private static Stack createStack(String name, StackCategory stackCategory, int companyCount) {
 		return Stack.builder()
 				.name(name)

@@ -111,4 +111,12 @@ public class Applicant extends BaseEntity {
 	public boolean isActive() {
 		return !isDeleted();
 	}
+
+	public void ensureApplicantStatus(final ApplicantStatus applicantStatus) {
+		if (this.applicantStatus != applicantStatus) {
+			throw new IllegalArgumentException(
+					String.format("현재 지원자의 상태는 %s 입니다. param:%s", this.applicantStatus, applicantStatus));
+		}
+	}
+
 }

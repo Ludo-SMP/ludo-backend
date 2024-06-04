@@ -1,5 +1,9 @@
 package com.ludo.study.studymatchingplatform.study.service.study;
 
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.ludo.study.studymatchingplatform.notification.service.NotificationService;
 import com.ludo.study.studymatchingplatform.common.exception.DataConflictException;
 import com.ludo.study.studymatchingplatform.common.exception.DataNotFoundException;
 import com.ludo.study.studymatchingplatform.study.domain.study.Review;
@@ -7,13 +11,12 @@ import com.ludo.study.studymatchingplatform.study.domain.study.Study;
 import com.ludo.study.studymatchingplatform.study.repository.study.ReviewRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.study.StudyRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.study.WriteReviewRequest;
-import com.ludo.study.studymatchingplatform.study.service.dto.response.study.PeerReviewsResponse;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.study.WriteReviewResponse;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.study.PeerReviewsResponse;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 import com.ludo.study.studymatchingplatform.user.repository.user.UserRepositoryImpl;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -26,6 +29,8 @@ public class ReviewFacade {
     private final StudyRepositoryImpl studyRepository;
     private final ReviewService reviewService;
     private final UserRepositoryImpl userRepository;
+
+	private final NotificationService notificationService;
 
     public List<PeerReviewsResponse> getPeerReviews(final Long studyId, final Long selfId, final Long peerId) {
         userRepository.findById(selfId)
@@ -50,8 +55,11 @@ public class ReviewFacade {
 
         final Review review = reviewService.write(request, study, reviewer);
 
-        return WriteReviewResponse.from(reviewRepository.save(review));
+		// 리뷰 알림
+		notificationService.reviewReceiveNotice(review);
+		notificationService.reviewPeerFinishNotice(study, review);
 
+		return WriteReviewResponse.from(reviewRepository.save(review));
     }
 
 }

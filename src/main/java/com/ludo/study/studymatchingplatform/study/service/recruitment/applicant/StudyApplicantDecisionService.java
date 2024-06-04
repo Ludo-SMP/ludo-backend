@@ -1,6 +1,10 @@
 package com.ludo.study.studymatchingplatform.study.service.recruitment.applicant;
 
 import com.ludo.study.studymatchingplatform.common.utils.UtcDateTimePicker;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.ludo.study.studymatchingplatform.notification.service.NotificationService;
 import com.ludo.study.studymatchingplatform.study.domain.study.Study;
 import com.ludo.study.studymatchingplatform.study.domain.study.participant.Participant;
 import com.ludo.study.studymatchingplatform.study.repository.study.StudyRepositoryImpl;
@@ -11,8 +15,6 @@ import com.ludo.study.studymatchingplatform.user.domain.user.User;
 import com.ludo.study.studymatchingplatform.user.repository.user.UserRepositoryImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
@@ -24,37 +26,45 @@ public class StudyApplicantDecisionService {
     private final ParticipantRepositoryImpl participantRepository;
     private final UtcDateTimePicker utcDateTimePicker;
 
-    @Transactional
-    public ParticipantUserResponse applicantAccept(final User owner, final StudyApplicantDecisionRequest request) {
-        final Study study = findStudy(request.studyId());
-        final User applicantUser = findUser(request.applicantUserId());
+	private final NotificationService notificationService;
+
+	@Transactional
+	public ParticipantUserResponse applicantAccept(final User owner, final StudyApplicantDecisionRequest request) {
+		final Study study = findStudy(request.studyId());
+		final User applicantUser = findUser(request.applicantUserId());
 
         study.acceptApplicant(owner, applicantUser, utcDateTimePicker.now());
         Participant participant = findParticipant(study, applicantUser);
 
-        return ParticipantUserResponse.from(participant);
-    }
+		// 스터디 지원 수락 알림 트리거
+		notificationService.studyApplicantAcceptNotice(study, applicantUser);
 
-    @Transactional
-    public void applicantReject(final User owner, final StudyApplicantDecisionRequest request) {
-        final Study study = findStudy(request.studyId());
-        final User applicantUser = findUser(request.applicantUserId());
+		return ParticipantUserResponse.from(participant);
+	}
 
-        study.rejectApplicant(owner, applicantUser);
-    }
+	@Transactional
+	public void applicantReject(final User owner, final StudyApplicantDecisionRequest request) {
+		final Study study = findStudy(request.studyId());
+		final User applicantUser = findUser(request.applicantUserId());
 
-    private User findUser(final Long applicantUserId) {
-        return userRepository.findById(applicantUserId)
-                .orElseThrow(() -> new IllegalStateException("존재하지 않는 사용자입니다."));
-    }
+		// 스터디 지원 거절 알림 트리거
+		notificationService.studyApplicantRejectNotice(study, applicantUser);
 
-    private Study findStudy(final Long studyId) {
-        return studyRepository.findById(studyId)
-                .orElseThrow(() -> new IllegalStateException("존재하지 않는 스터디입니다."));
-    }
+		study.rejectApplicant(owner, applicantUser);
+	}
 
-    private Participant findParticipant(Study study, User applicantUser) {
-        return participantRepository.find(study.getId(), applicantUser.getId())
-                .orElseThrow(() -> new IllegalStateException("존재하지 않은 스터디 참가자입니다."));
-    }
+	private User findUser(final Long applicantUserId) {
+		return userRepository.findById(applicantUserId)
+				.orElseThrow(() -> new IllegalStateException("존재하지 않는 사용자입니다."));
+	}
+
+	private Study findStudy(final Long studyId) {
+		return studyRepository.findById(studyId)
+				.orElseThrow(() -> new IllegalStateException("존재하지 않는 스터디입니다."));
+	}
+
+	private Participant findParticipant(Study study, User applicantUser) {
+		return participantRepository.find(study.getId(), applicantUser.getId())
+				.orElseThrow(() -> new IllegalStateException("존재하지 않은 스터디 참가자입니다."));
+	}
 }

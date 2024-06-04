@@ -1,6 +1,7 @@
 package com.ludo.study.studymatchingplatform.study.fixture.study;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 import com.ludo.study.studymatchingplatform.study.domain.study.Platform;
 import com.ludo.study.studymatchingplatform.study.domain.study.Study;
@@ -9,8 +10,37 @@ import com.ludo.study.studymatchingplatform.study.domain.study.Way;
 import com.ludo.study.studymatchingplatform.study.domain.study.category.Category;
 import com.ludo.study.studymatchingplatform.study.fixture.study.category.CategoryFixture;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
+import com.ludo.study.studymatchingplatform.user.fixture.user.UserFixture;
 
 public class StudyFixture {
+
+	public static final Study PROJECT_ONLINE_STUDY = Study.builder()
+			.title("프로젝트 온라인 스터디 제목")
+			.owner(UserFixture.user1)
+			.category(CategoryFixture.CATEGORY_PROJECT)
+			.status(StudyStatus.RECRUITING)
+			.way(Way.ONLINE)
+			.platform(Platform.GATHER)
+			.platformUrl("platform url")
+			.participantCount(1)
+			.participantLimit(5)
+			.startDateTime(LocalDateTime.now().truncatedTo(ChronoUnit.MICROS))
+			.endDateTime(LocalDateTime.now().plusMonths(1).truncatedTo(ChronoUnit.MICROS))
+			.build();
+
+	public static final Study study1 = Study.builder()
+			.title("스터디1 제목")
+			.owner(UserFixture.user1)
+			.category(CategoryFixture.CATEGORY_PROJECT)
+			.status(StudyStatus.RECRUITING)
+			.way(Way.ONLINE)
+			.platform(Platform.GATHER)
+			.platformUrl("platform url")
+			.participantCount(1)
+			.participantLimit(5)
+			.startDateTime(LocalDateTime.now().truncatedTo(ChronoUnit.MICROS))
+			.endDateTime(LocalDateTime.now().plusMonths(1).truncatedTo(ChronoUnit.MICROS))
+			.build();
 
 	public static Study createStudy(StudyStatus studyStatus, String title, Way way, Category category, User user,
 									int participantCount, int participantLimit, Platform platform, String platformUrl
