@@ -83,14 +83,27 @@ public class Participant extends BaseEntity {
         return isMatchesUser && !isDeleted();
     }
 
-    public void leave(final Study study) {
+    public void leave(final Study study, final LocalDateTime deletedDateTime) {
         study.removeParticipant(this);
         this.study = null;
-        this.softDelete();
+        this.softDelete(deletedDateTime);
     }
 
     public void updatePosition(final Position position) {
         this.position = position;
+    }
+
+    public boolean perfectAttendance() {
+        // TODO: total 스터디 일수를 가져오는 API 필요. 우선 임시 변수로 저장
+        int totalStudyDays = 100;
+        return attendance == totalStudyDays;
+    }
+
+    // 출석 80% 이상
+    public boolean requiredAttendance() {
+        // TODO: total 스터디 일수를 가져오는 API 필요. 우선 임시 변수로 저장
+        int totalStudyDays = 100;
+        return (attendance / totalStudyDays * 100) > 80;
     }
 
 }

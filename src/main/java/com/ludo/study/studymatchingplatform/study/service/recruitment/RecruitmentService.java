@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ludo.study.studymatchingplatform.common.utils.UtcDateTimePicker;
 import com.ludo.study.studymatchingplatform.notification.service.NotificationService;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant.Applicant;
@@ -38,6 +39,7 @@ public class RecruitmentService {
 	private final RecruitmentPositionService recruitmentPositionService;
 	private final PositionRepositoryImpl positionRepository;
 	private final ApplicantRepositoryImpl applicantRepository;
+	private final UtcDateTimePicker utcDateTimePicker;
 
 	private final NotificationService notificationService;
 
@@ -139,7 +141,7 @@ public class RecruitmentService {
 		final StudyStatus studyStatus = recruitment.getStudy().getStatus();
 		applicant.ensureCancellable(studyStatus);
 		applicant.changeStatus(ApplicantStatus.CANCELLED);
-		applicant.softDelete();
+		applicant.softDelete(utcDateTimePicker.now());
 
 		return applicant;
 	}
@@ -148,7 +150,7 @@ public class RecruitmentService {
 		final Study study = studyRepository.findByIdWithRecruitment(studyId)
 				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 스터디 입니다."));
 		study.ensureRecruitmentEditable(user);
-		study.deactivateForRecruitment();
+		study.deactivateForRecruitment(utcDateTimePicker.now());
 		recruitmentRepository.save(study.getRecruitment());
 	}
 

@@ -2,15 +2,7 @@ package com.ludo.study.studymatchingplatform.user.domain.user;
 
 import com.ludo.study.studymatchingplatform.common.entity.BaseEntity;
 import com.ludo.study.studymatchingplatform.user.domain.exception.UserExceptionMessage;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
@@ -31,49 +23,58 @@ import lombok.extern.slf4j.Slf4j;
 @ToString(of = {"id", "nickname"})
 public class User extends BaseEntity {
 
-	public static final String DEFAULT_NICKNAME_PREFIX = "스따-디 %d";
-	public static final Long DEFAULT_NICKNAME_ID = 716L;
+    public static final String DEFAULT_NICKNAME_PREFIX = "스따-디 %d";
+    public static final Long DEFAULT_NICKNAME_ID = 716L;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "user_id")
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
+    private Long id;
 
-	@Enumerated(EnumType.STRING)
-	@Column(nullable = false, updatable = false, columnDefinition = "char(10)")
-	private Social social;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, updatable = false, columnDefinition = "char(10)")
+    private Social social;
 
-	@Column
-	@Size(min = 1, max = 20)
-	private String nickname;
+    @Column
+    @Size(min = 1, max = 20)
+    private String nickname;
 
-	@Column(nullable = false, length = 320)
-	@Email
-	private String email;
+    @Column(nullable = false, length = 320)
+    @Email
+    private String email;
 
-	public User(final Social social, final String nickname, final String email) {
-		this.social = social;
-		this.nickname = nickname;
-		this.email = email;
-	}
+    @Column(nullable = true, length = 100)
+    private String password;
 
-	public void setInitialDefaultNickname() {
-		validateInitDefaultNickname();
-		this.nickname = String.format(DEFAULT_NICKNAME_PREFIX, DEFAULT_NICKNAME_ID + id);
-	}
+    public User(final Social social, final String nickname, final String email) {
+        this.social = social;
+        this.nickname = nickname;
+        this.email = email;
+    }
 
-	private void validateInitDefaultNickname() {
-		if (this.id == null) {
-			throw new IllegalArgumentException(UserExceptionMessage.INIT_DEFAULT_NICKNAME.getMessage());
-		}
-	}
+    public static User basic(final String nickname, final String email, final String password) {
+        final User user = new User(Social.NONE, nickname, email);
+        user.password = password;
+        return user;
+    }
 
-	public void changeNickname(final String nickname) {
-		this.nickname = nickname;
-	}
+    public void setInitialDefaultNickname() {
+        validateInitDefaultNickname();
+        this.nickname = String.format(DEFAULT_NICKNAME_PREFIX, DEFAULT_NICKNAME_ID + id);
+    }
 
-	public boolean equalsNickname(final String nickname) {
-		return this.nickname.equals(nickname);
-	}
+    private void validateInitDefaultNickname() {
+        if (this.id == null) {
+            throw new IllegalArgumentException(UserExceptionMessage.INIT_DEFAULT_NICKNAME.getMessage());
+        }
+    }
+
+    public void changeNickname(final String nickname) {
+        this.nickname = nickname;
+    }
+
+    public boolean equalsNickname(final String nickname) {
+        return this.nickname.equals(nickname);
+    }
 
 }

@@ -1,51 +1,49 @@
 package com.ludo.study.studymatchingplatform.common.entity;
 
-import java.time.LocalDateTime;
-
+import jakarta.persistence.Column;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.MappedSuperclass;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.MappedSuperclass;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
-import lombok.experimental.SuperBuilder;
+import java.time.LocalDateTime;
 
 @Getter
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @MappedSuperclass
-@EntityListeners(AuditingEntityListener.class)
 @ToString(of = "createdDateTime")
+@EntityListeners(AuditingEntityListener.class)
 public abstract class BaseEntity {
 
-	@CreatedDate
-	@Column(nullable = false, updatable = false)
-	private LocalDateTime createdDateTime;
+    @CreatedDate
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdDateTime;
 
-	@LastModifiedDate
-	@Column(nullable = false)
-	private LocalDateTime updatedDateTime;
+    @LastModifiedDate
+    @Column(nullable = false)
+    private LocalDateTime updatedDateTime;
 
-	@Column(nullable = true)
-	@Builder.Default
-	private LocalDateTime deletedDateTime = null;
+    @Column(nullable = true)
+    @Builder.Default
+    private LocalDateTime deletedDateTime = null;
 
-	public boolean isDeleted() {
-		return deletedDateTime != null;
-	}
+    public boolean isDeleted() {
+        return deletedDateTime != null;
+    }
 
-	public void softDelete() {
-		deletedDateTime = LocalDateTime.now();
-	}
+    public void softDelete(final LocalDateTime deletedDateTime) {
+        if (deletedDateTime == null) {
+            throw new IllegalArgumentException("deletedDateTime must not be `null`");
+        }
+        this.deletedDateTime = deletedDateTime;
+    }
 
-	public void activate() {
-		deletedDateTime = null;
-	}
+    public void activate() {
+        deletedDateTime = null;
+    }
 
 }

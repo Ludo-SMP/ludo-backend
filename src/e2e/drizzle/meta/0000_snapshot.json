@@ -1,0 +1,1397 @@
+{
+  "id": "00000000-0000-0000-0000-000000000000",
+  "prevId": "",
+  "version": "5",
+  "dialect": "mysql",
+  "tables": {
+    "category": {
+      "name": "category",
+      "columns": {
+        "category_id": {
+          "autoincrement": true,
+          "name": "category_id",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_date_time": {
+          "autoincrement": false,
+          "name": "created_date_time",
+          "type": "datetime(6)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "deleted_date_time": {
+          "autoincrement": false,
+          "name": "deleted_date_time",
+          "type": "datetime(6)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "updated_date_time": {
+          "autoincrement": false,
+          "name": "updated_date_time",
+          "type": "datetime(6)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "autoincrement": false,
+          "name": "name",
+          "type": "char(50)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "compositePrimaryKeys": {
+        "category_category_id": {
+          "name": "category_category_id",
+          "columns": [
+            "category_id"
+          ]
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "uniqueConstraints": {}
+    },
+    "position": {
+      "name": "position",
+      "columns": {
+        "created_date_time": {
+          "autoincrement": false,
+          "name": "created_date_time",
+          "type": "datetime(6)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "deleted_date_time": {
+          "autoincrement": false,
+          "name": "deleted_date_time",
+          "type": "datetime(6)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "position_id": {
+          "autoincrement": true,
+          "name": "position_id",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "updated_date_time": {
+          "autoincrement": false,
+          "name": "updated_date_time",
+          "type": "datetime(6)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "autoincrement": false,
+          "name": "name",
+          "type": "char(50)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "compositePrimaryKeys": {
+        "position_position_id": {
+          "name": "position_position_id",
+          "columns": [
+            "position_id"
+          ]
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "uniqueConstraints": {}
+    },
+    "recruitment": {
+      "name": "recruitment",
+      "columns": {
+        "applicant_count": {
+          "autoincrement": false,
+          "name": "applicant_count",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "hits": {
+          "autoincrement": false,
+          "name": "hits",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_date_time": {
+          "autoincrement": false,
+          "name": "created_date_time",
+          "type": "datetime(6)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "deleted_date_time": {
+          "autoincrement": false,
+          "name": "deleted_date_time",
+          "type": "datetime(6)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "modified_date_time": {
+          "autoincrement": false,
+          "name": "modified_date_time",
+          "type": "datetime(6)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "recruitment_end_date_time": {
+          "autoincrement": false,
+          "name": "recruitment_end_date_time",
+          "type": "datetime(6)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "recruitment_id": {
+          "autoincrement": true,
+          "name": "recruitment_id",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "study_id": {
+          "autoincrement": false,
+          "name": "study_id",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "updated_date_time": {
+          "autoincrement": false,
+          "name": "updated_date_time",
+          "type": "datetime(6)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "title": {
+          "autoincrement": false,
+          "name": "title",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "content": {
+          "autoincrement": false,
+          "name": "content",
+          "type": "varchar(2000)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "call_url": {
+          "autoincrement": false,
+          "name": "call_url",
+          "type": "varchar(2048)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "contact": {
+          "autoincrement": false,
+          "name": "contact",
+          "type": "char(20)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "compositePrimaryKeys": {
+        "recruitment_recruitment_id": {
+          "name": "recruitment_recruitment_id",
+          "columns": [
+            "recruitment_id"
+          ]
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "FKcxmff8tt9nlmc2uhv8hxoc0md": {
+          "name": "FKcxmff8tt9nlmc2uhv8hxoc0md",
+          "tableFrom": "recruitment",
+          "tableTo": "study",
+          "columnsFrom": [
+            "study_id"
+          ],
+          "columnsTo": [
+            "study_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "uniqueConstraints": {
+        "UK_hslrcom0qs791euq0tvgphd44": {
+          "name": "UK_hslrcom0qs791euq0tvgphd44",
+          "columns": [
+            "study_id"
+          ]
+        }
+      }
+    },
+    "recruitment_position_lnk": {
+      "name": "recruitment_position_lnk",
+      "columns": {
+        "created_date_time": {
+          "autoincrement": false,
+          "name": "created_date_time",
+          "type": "datetime(6)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "deleted_date_time": {
+          "autoincrement": false,
+          "name": "deleted_date_time",
+          "type": "datetime(6)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "position_id": {
+          "autoincrement": false,
+          "name": "position_id",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "recruitment_id": {
+          "autoincrement": false,
+          "name": "recruitment_id",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "updated_date_time": {
+          "autoincrement": false,
+          "name": "updated_date_time",
+          "type": "datetime(6)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "compositePrimaryKeys": {
+        "recruitment_position_lnk_position_id_recruitment_id": {
+          "name": "recruitment_position_lnk_position_id_recruitment_id",
+          "columns": [
+            "position_id",
+            "recruitment_id"
+          ]
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "FK32x6ojftvcfgonw36508ly4dd": {
+          "name": "FK32x6ojftvcfgonw36508ly4dd",
+          "tableFrom": "recruitment_position_lnk",
+          "tableTo": "position",
+          "columnsFrom": [
+            "position_id"
+          ],
+          "columnsTo": [
+            "position_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "FKmglyui6ms0jcn1cdacnhyguq4": {
+          "name": "FKmglyui6ms0jcn1cdacnhyguq4",
+          "tableFrom": "recruitment_position_lnk",
+          "tableTo": "recruitment",
+          "columnsFrom": [
+            "recruitment_id"
+          ],
+          "columnsTo": [
+            "recruitment_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "recruitment_stack_lnk": {
+      "name": "recruitment_stack_lnk",
+      "columns": {
+        "created_date_time": {
+          "autoincrement": false,
+          "name": "created_date_time",
+          "type": "datetime(6)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "deleted_date_time": {
+          "autoincrement": false,
+          "name": "deleted_date_time",
+          "type": "datetime(6)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "recruitment_id": {
+          "autoincrement": false,
+          "name": "recruitment_id",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "stack_id": {
+          "autoincrement": false,
+          "name": "stack_id",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "updated_date_time": {
+          "autoincrement": false,
+          "name": "updated_date_time",
+          "type": "datetime(6)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "compositePrimaryKeys": {
+        "recruitment_stack_lnk_recruitment_id_stack_id": {
+          "name": "recruitment_stack_lnk_recruitment_id_stack_id",
+          "columns": [
+            "recruitment_id",
+            "stack_id"
+          ]
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "FK9o9clc5grpqlj5jya4fegn52k": {
+          "name": "FK9o9clc5grpqlj5jya4fegn52k",
+          "tableFrom": "recruitment_stack_lnk",
+          "tableTo": "recruitment",
+          "columnsFrom": [
+            "recruitment_id"
+          ],
+          "columnsTo": [
+            "recruitment_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "FKma8sj20332hutcndt3fk62qgi": {
+          "name": "FKma8sj20332hutcndt3fk62qgi",
+          "tableFrom": "recruitment_stack_lnk",
+          "tableTo": "stack",
+          "columnsFrom": [
+            "stack_id"
+          ],
+          "columnsTo": [
+            "stack_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "recruitment_user_lnk": {
+      "name": "recruitment_user_lnk",
+      "columns": {
+        "created_date_time": {
+          "autoincrement": false,
+          "name": "created_date_time",
+          "type": "datetime(6)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "deleted_date_time": {
+          "autoincrement": false,
+          "name": "deleted_date_time",
+          "type": "datetime(6)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "position_id": {
+          "autoincrement": false,
+          "name": "position_id",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "recruitment_id": {
+          "autoincrement": false,
+          "name": "recruitment_id",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "updated_date_time": {
+          "autoincrement": false,
+          "name": "updated_date_time",
+          "type": "datetime(6)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "autoincrement": false,
+          "name": "user_id",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "autoincrement": false,
+          "name": "status",
+          "type": "char(10)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "compositePrimaryKeys": {
+        "recruitment_user_lnk_recruitment_id_user_id": {
+          "name": "recruitment_user_lnk_recruitment_id_user_id",
+          "columns": [
+            "recruitment_id",
+            "user_id"
+          ]
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "FK3flukj91gql7o32ufwhpqxew6": {
+          "name": "FK3flukj91gql7o32ufwhpqxew6",
+          "tableFrom": "recruitment_user_lnk",
+          "tableTo": "recruitment",
+          "columnsFrom": [
+            "recruitment_id"
+          ],
+          "columnsTo": [
+            "recruitment_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "FKax0jnfjn7etxjq2vw0d7fryat": {
+          "name": "FKax0jnfjn7etxjq2vw0d7fryat",
+          "tableFrom": "recruitment_user_lnk",
+          "tableTo": "user",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "user_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "FKieljwlb47aeyyglg370k7rbcn": {
+          "name": "FKieljwlb47aeyyglg370k7rbcn",
+          "tableFrom": "recruitment_user_lnk",
+          "tableTo": "position",
+          "columnsFrom": [
+            "position_id"
+          ],
+          "columnsTo": [
+            "position_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "review": {
+      "name": "review",
+      "columns": {
+        "activeness_score": {
+          "autoincrement": false,
+          "name": "activeness_score",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "communication_score": {
+          "autoincrement": false,
+          "name": "communication_score",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_date_time": {
+          "autoincrement": false,
+          "name": "created_date_time",
+          "type": "datetime(6)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "deleted_date_time": {
+          "autoincrement": false,
+          "name": "deleted_date_time",
+          "type": "datetime(6)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "id": {
+          "autoincrement": true,
+          "name": "id",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "professionalism_score": {
+          "autoincrement": false,
+          "name": "professionalism_score",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "recommend_score": {
+          "autoincrement": false,
+          "name": "recommend_score",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "reviewee_id": {
+          "autoincrement": false,
+          "name": "reviewee_id",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "reviewer_id": {
+          "autoincrement": false,
+          "name": "reviewer_id",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "study_id": {
+          "autoincrement": false,
+          "name": "study_id",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "together_score": {
+          "autoincrement": false,
+          "name": "together_score",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "updated_date_time": {
+          "autoincrement": false,
+          "name": "updated_date_time",
+          "type": "datetime(6)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "compositePrimaryKeys": {
+        "review_id": {
+          "name": "review_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "FK1ekqsiyb8aq8h2fw93qb75n8r": {
+          "name": "FK1ekqsiyb8aq8h2fw93qb75n8r",
+          "tableFrom": "review",
+          "tableTo": "study",
+          "columnsFrom": [
+            "study_id"
+          ],
+          "columnsTo": [
+            "study_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "FK8kasut96v7v88hihmgsk14usl": {
+          "name": "FK8kasut96v7v88hihmgsk14usl",
+          "tableFrom": "review",
+          "tableTo": "user",
+          "columnsFrom": [
+            "reviewee_id"
+          ],
+          "columnsTo": [
+            "user_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "FK8l40hgqc1woa2m6xjap0r30jp": {
+          "name": "FK8l40hgqc1woa2m6xjap0r30jp",
+          "tableFrom": "review",
+          "tableTo": "user",
+          "columnsFrom": [
+            "reviewer_id"
+          ],
+          "columnsTo": [
+            "user_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "stack": {
+      "name": "stack",
+      "columns": {
+        "company_count": {
+          "autoincrement": false,
+          "name": "company_count",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_date_time": {
+          "autoincrement": false,
+          "name": "created_date_time",
+          "type": "datetime(6)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "deleted_date_time": {
+          "autoincrement": false,
+          "name": "deleted_date_time",
+          "type": "datetime(6)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "stack_category_id": {
+          "autoincrement": false,
+          "name": "stack_category_id",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "stack_id": {
+          "autoincrement": true,
+          "name": "stack_id",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "updated_date_time": {
+          "autoincrement": false,
+          "name": "updated_date_time",
+          "type": "datetime(6)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "autoincrement": false,
+          "name": "name",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "image_url": {
+          "autoincrement": false,
+          "name": "image_url",
+          "type": "varchar(2048)",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "compositePrimaryKeys": {
+        "stack_stack_id": {
+          "name": "stack_stack_id",
+          "columns": [
+            "stack_id"
+          ]
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "FKihgnjltw5c0ig5m4nof751u01": {
+          "name": "FKihgnjltw5c0ig5m4nof751u01",
+          "tableFrom": "stack",
+          "tableTo": "stack_category",
+          "columnsFrom": [
+            "stack_category_id"
+          ],
+          "columnsTo": [
+            "stack_category_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "stack_category": {
+      "name": "stack_category",
+      "columns": {
+        "created_date_time": {
+          "autoincrement": false,
+          "name": "created_date_time",
+          "type": "datetime(6)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "deleted_date_time": {
+          "autoincrement": false,
+          "name": "deleted_date_time",
+          "type": "datetime(6)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "stack_category_id": {
+          "autoincrement": true,
+          "name": "stack_category_id",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "updated_date_time": {
+          "autoincrement": false,
+          "name": "updated_date_time",
+          "type": "datetime(6)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "autoincrement": false,
+          "name": "name",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "compositePrimaryKeys": {
+        "stack_category_stack_category_id": {
+          "name": "stack_category_stack_category_id",
+          "columns": [
+            "stack_category_id"
+          ]
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "uniqueConstraints": {}
+    },
+    "study": {
+      "name": "study",
+      "columns": {
+        "participant_count": {
+          "autoincrement": false,
+          "name": "participant_count",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "participant_limit": {
+          "autoincrement": false,
+          "name": "participant_limit",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "category_id": {
+          "autoincrement": false,
+          "name": "category_id",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_date_time": {
+          "autoincrement": false,
+          "name": "created_date_time",
+          "type": "datetime(6)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "deleted_date_time": {
+          "autoincrement": false,
+          "name": "deleted_date_time",
+          "type": "datetime(6)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "end_date_time": {
+          "autoincrement": false,
+          "name": "end_date_time",
+          "type": "datetime(6)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "owner_id": {
+          "autoincrement": false,
+          "name": "owner_id",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "start_date_time": {
+          "autoincrement": false,
+          "name": "start_date_time",
+          "type": "datetime(6)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "study_id": {
+          "autoincrement": true,
+          "name": "study_id",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "updated_date_time": {
+          "autoincrement": false,
+          "name": "updated_date_time",
+          "type": "datetime(6)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "title": {
+          "autoincrement": false,
+          "name": "title",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "platform_url": {
+          "autoincrement": false,
+          "name": "platform_url",
+          "type": "varchar(2048)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "platform": {
+          "autoincrement": false,
+          "name": "platform",
+          "type": "char(20)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "autoincrement": false,
+          "name": "status",
+          "type": "char(10)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "way": {
+          "autoincrement": false,
+          "name": "way",
+          "type": "char(10)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "compositePrimaryKeys": {
+        "study_study_id": {
+          "name": "study_study_id",
+          "columns": [
+            "study_id"
+          ]
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "FK61rof6gu4refc35aae1g62eus": {
+          "name": "FK61rof6gu4refc35aae1g62eus",
+          "tableFrom": "study",
+          "tableTo": "category",
+          "columnsFrom": [
+            "category_id"
+          ],
+          "columnsTo": [
+            "category_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "FK87ukam6d27hunus4f8wvwrhq": {
+          "name": "FK87ukam6d27hunus4f8wvwrhq",
+          "tableFrom": "study",
+          "tableTo": "user",
+          "columnsFrom": [
+            "owner_id"
+          ],
+          "columnsTo": [
+            "user_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "study_user_lnk": {
+      "name": "study_user_lnk",
+      "columns": {
+        "attendance": {
+          "autoincrement": false,
+          "name": "attendance",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "valid_attendance": {
+          "autoincrement": false,
+          "name": "valid_attendance",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_date_time": {
+          "autoincrement": false,
+          "name": "created_date_time",
+          "type": "datetime(6)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "deleted_date_time": {
+          "autoincrement": false,
+          "name": "deleted_date_time",
+          "type": "datetime(6)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "enrollment_date_time": {
+          "autoincrement": false,
+          "name": "enrollment_date_time",
+          "type": "datetime(6)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "position_id": {
+          "autoincrement": false,
+          "name": "position_id",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "study_id": {
+          "autoincrement": false,
+          "name": "study_id",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "updated_date_time": {
+          "autoincrement": false,
+          "name": "updated_date_time",
+          "type": "datetime(6)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "autoincrement": false,
+          "name": "user_id",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "role": {
+          "autoincrement": false,
+          "name": "role",
+          "type": "char(10)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "compositePrimaryKeys": {
+        "study_user_lnk_study_id_user_id": {
+          "name": "study_user_lnk_study_id_user_id",
+          "columns": [
+            "study_id",
+            "user_id"
+          ]
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "FKab43vjkkv34ykhlxmvhte49gt": {
+          "name": "FKab43vjkkv34ykhlxmvhte49gt",
+          "tableFrom": "study_user_lnk",
+          "tableTo": "study",
+          "columnsFrom": [
+            "study_id"
+          ],
+          "columnsTo": [
+            "study_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "FKdw4ojlrx2a9fjqc1cycmmn15d": {
+          "name": "FKdw4ojlrx2a9fjqc1cycmmn15d",
+          "tableFrom": "study_user_lnk",
+          "tableTo": "position",
+          "columnsFrom": [
+            "position_id"
+          ],
+          "columnsTo": [
+            "position_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "FKpk0qnup8m9yonk1hu81gkfkfi": {
+          "name": "FKpk0qnup8m9yonk1hu81gkfkfi",
+          "tableFrom": "study_user_lnk",
+          "tableTo": "user",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "user_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "user": {
+      "name": "user",
+      "columns": {
+        "created_date_time": {
+          "autoincrement": false,
+          "name": "created_date_time",
+          "type": "datetime(6)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "deleted_date_time": {
+          "autoincrement": false,
+          "name": "deleted_date_time",
+          "type": "datetime(6)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "updated_date_time": {
+          "autoincrement": false,
+          "name": "updated_date_time",
+          "type": "datetime(6)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "autoincrement": true,
+          "name": "user_id",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "nickname": {
+          "autoincrement": false,
+          "name": "nickname",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "password": {
+          "autoincrement": false,
+          "name": "password",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "email": {
+          "autoincrement": false,
+          "name": "email",
+          "type": "varchar(320)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "social": {
+          "autoincrement": false,
+          "name": "social",
+          "type": "char(10)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "compositePrimaryKeys": {
+        "user_user_id": {
+          "name": "user_user_id",
+          "columns": [
+            "user_id"
+          ]
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "uniqueConstraints": {}
+    },
+    "user_review_statistics": {
+      "name": "user_review_statistics",
+      "columns": {
+        "created_date_time": {
+          "autoincrement": false,
+          "name": "created_date_time",
+          "type": "datetime(6)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "deleted_date_time": {
+          "autoincrement": false,
+          "name": "deleted_date_time",
+          "type": "datetime(6)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "id": {
+          "autoincrement": true,
+          "name": "id",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "total_activeness_review_count": {
+          "autoincrement": false,
+          "name": "total_activeness_review_count",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "total_activeness_score": {
+          "autoincrement": false,
+          "name": "total_activeness_score",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "total_communication_review_count": {
+          "autoincrement": false,
+          "name": "total_communication_review_count",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "total_communication_score": {
+          "autoincrement": false,
+          "name": "total_communication_score",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "total_professionalism_review_count": {
+          "autoincrement": false,
+          "name": "total_professionalism_review_count",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "total_professionalism_score": {
+          "autoincrement": false,
+          "name": "total_professionalism_score",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "total_recommend_review_score": {
+          "autoincrement": false,
+          "name": "total_recommend_review_score",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "total_recommend_score": {
+          "autoincrement": false,
+          "name": "total_recommend_score",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "total_together_review_score": {
+          "autoincrement": false,
+          "name": "total_together_review_score",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "total_together_score": {
+          "autoincrement": false,
+          "name": "total_together_score",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "updated_date_time": {
+          "autoincrement": false,
+          "name": "updated_date_time",
+          "type": "datetime(6)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "autoincrement": false,
+          "name": "user_id",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "compositePrimaryKeys": {
+        "user_review_statistics_id": {
+          "name": "user_review_statistics_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "FK1han0i2cxvs8x4bn609emjkdy": {
+          "name": "FK1han0i2cxvs8x4bn609emjkdy",
+          "tableFrom": "user_review_statistics",
+          "tableTo": "user",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "user_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "uniqueConstraints": {
+        "UK_d538aj7oswyp4kkgtnbju66g5": {
+          "name": "UK_d538aj7oswyp4kkgtnbju66g5",
+          "columns": [
+            "user_id"
+          ]
+        }
+      }
+    },
+    "user_study_statistics": {
+      "name": "user_study_statistics",
+      "columns": {
+        "total_attendance": {
+          "autoincrement": false,
+          "name": "total_attendance",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "total_completed_study_count": {
+          "autoincrement": false,
+          "name": "total_completed_study_count",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "total_finished_study_count": {
+          "autoincrement": false,
+          "name": "total_finished_study_count",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "total_left_study_count": {
+          "autoincrement": false,
+          "name": "total_left_study_count",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "total_study_days": {
+          "autoincrement": false,
+          "name": "total_study_days",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "total_teammate_count": {
+          "autoincrement": false,
+          "name": "total_teammate_count",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "total_valid_attendance": {
+          "autoincrement": false,
+          "name": "total_valid_attendance",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_date_time": {
+          "autoincrement": false,
+          "name": "created_date_time",
+          "type": "datetime(6)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "deleted_date_time": {
+          "autoincrement": false,
+          "name": "deleted_date_time",
+          "type": "datetime(6)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "id": {
+          "autoincrement": true,
+          "name": "id",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "updated_date_time": {
+          "autoincrement": false,
+          "name": "updated_date_time",
+          "type": "datetime(6)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "autoincrement": false,
+          "name": "user_id",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "compositePrimaryKeys": {
+        "user_study_statistics_id": {
+          "name": "user_study_statistics_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "FKeh8lqx1mf84molihxxew6mavs": {
+          "name": "FKeh8lqx1mf84molihxxew6mavs",
+          "tableFrom": "user_study_statistics",
+          "tableTo": "user",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "user_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "uniqueConstraints": {
+        "UK_3bndtg2a96bq2axf1iameidip": {
+          "name": "UK_3bndtg2a96bq2axf1iameidip",
+          "columns": [
+            "user_id"
+          ]
+        }
+      }
+    }
+  },
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  },
+  "internal": {
+    "tables": {}
+  }
+}
