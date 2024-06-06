@@ -9,6 +9,7 @@
     "test:only": "jest --watchAll --testPathPattern=$P",
     "test:auth": "jest --watchAll --testPathPattern=auth.test.ts",
     "test:study": "jest --watchAll --testPathPattern=study.test.ts",
+    "test:review": "jest --watchAll --testPathPattern=review.test.ts",
     "test:recruitment": "jest --watchAll --testPathPattern=recruitment.test.ts",
     "test:statistics": "jest --watchAll --testPathPattern=statistics.test.ts",
     "db:introspect": "drizzle-kit introspect --config=drizzle.config.ts"

@@ -5,6 +5,7 @@ import com.ludo.study.studymatchingplatform.common.utils.UtcDateTimePicker;
 import com.ludo.study.studymatchingplatform.study.domain.study.Review;
 import com.ludo.study.studymatchingplatform.study.domain.study.Study;
 import com.ludo.study.studymatchingplatform.study.domain.study.participant.Participant;
+import com.ludo.study.studymatchingplatform.study.repository.study.ReviewRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.study.WriteReviewRequest;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +28,6 @@ public class ReviewService {
             throw new IllegalArgumentException("자기 자신에게는 리뷰를 작성할 수 없습니다.");
         }
 
-        // 명세 - [스터디가 진행 완료 상태로 바뀐 후 3일 후 부터, 14일 간 리뷰 작성 가능]
         study.ensureReviewPeriodAvailable(utcDateTimePicker);
         return request.toReviewWithStudy(study, participantingReviewer.getUser(), participantingReviewee.getUser());
 

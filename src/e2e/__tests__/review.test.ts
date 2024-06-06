@@ -13,7 +13,7 @@ import {
   applyRecruitment,
   writeRecruitment,
 } from "../helpers/recruitment-api-helper";
-import { writeReview } from "../helpers/review-api-helper";
+import { getPeerReviews, writeReview } from "../helpers/review-api-helper";
 import { acceptApplicant, createStudy } from "../helpers/study-api-helper";
 import { updateStudyEndDateTime } from "../helpers/study-db-helper";
 import { BaseResponse } from "../types/base-types";
@@ -65,10 +65,165 @@ describe("리뷰 작성", () => {
       },
     } = await writeReview(client, studyId, request);
 
-    // then
+    // // then
     expect(status).toBe(HttpStatusCode.Created);
     expect(review.reviewer.email).toBe(owner.email);
     expect(review.reviewee.email).toBe(applicantUser.email);
+  });
+
+  test("[200 OK] 자신이 작성한 review 스터디 전체 review 확인 시 조회 가능", async () => {
+    // given
+    const client = ApiClient.default();
+    const owner = fakeSignupBody();
+    const {
+      data: {
+        data: {
+          user: { id: ownerId },
+        },
+      },
+    } = await signup(client, owner);
+    const {
+      data: {
+        data: {
+          study: { id: studyId },
+        },
+      },
+    } = await createStudy(client, fakeCreateStudyRequest({}));
+    const {
+      data: {
+        data: { recruitment },
+      },
+    } = await writeRecruitment(client, studyId, fakeWriteRecruitmentRequest());
+
+    const applicantUser = fakeSignupBody();
+    const {
+      data: {
+        data: {
+          user: { id: applicantUserId },
+        },
+      },
+    } = await signup(client, applicantUser);
+    await applyRecruitment(client, studyId, recruitment.id, {
+      positionId: randPositionId(),
+    });
+
+    // login to owner
+    await login(client, owner);
+    await acceptApplicant(client, studyId, applicantUserId);
+    await updateStudyEndDateTime(subDays(utcNow(), 10));
+
+    // when
+    const request = fakeWriteReviewRequest({
+      revieweeId: applicantUserId,
+    });
+    await writeReview(client, studyId, request);
+
+    const {
+      status,
+      data: {
+        data: { reviews },
+      },
+    } = await getPeerReviews(client, studyId);
+
+    // then
+    expect(status).toBe(HttpStatusCode.Ok);
+    expect(reviews.length).toBeGreaterThan(0);
+    expect(reviews[0].selfReview.activenessScore).toEqual(
+      request.activenessScore
+    );
+    expect(reviews[0].selfReview.communicationScore).toEqual(
+      request.communicationScore
+    );
+    expect(reviews[0].selfReview.professionalismScore).toEqual(
+      request.professionalismScore
+    );
+    expect(reviews[0].selfReview.recommendScore).toEqual(
+      request.recommendScore
+    );
+    expect(reviews[0].selfReview.togetherScore).toEqual(request.togetherScore);
+    expect(reviews[0].selfReview.reviewerId).toEqual(ownerId);
+    expect(reviews[0].selfReview.revieweeId).toEqual(request.revieweeId);
+    expect(reviews[0].peerReview).toBeNull();
+  });
+
+  test("[200 OK] 상대방이 작성한 review 스터디 전체 review 확인 시 조회 가능 조회 가능", async () => {
+    // given
+    const client = ApiClient.default();
+    const owner = fakeSignupBody();
+    const {
+      data: {
+        data: {
+          user: { id: ownerId },
+        },
+      },
+    } = await signup(client, owner);
+    const {
+      data: {
+        data: {
+          study: { id: studyId },
+        },
+      },
+    } = await createStudy(client, fakeCreateStudyRequest({}));
+    const {
+      data: {
+        data: { recruitment },
+      },
+    } = await writeRecruitment(client, studyId, fakeWriteRecruitmentRequest());
+
+    const applicantUser = fakeSignupBody();
+    const {
+      data: {
+        data: {
+          user: { id: applicantUserId },
+        },
+      },
+    } = await signup(client, applicantUser);
+    await applyRecruitment(client, studyId, recruitment.id, {
+      positionId: randPositionId(),
+    });
+
+    // login to owner
+    await login(client, owner);
+    await acceptApplicant(client, studyId, applicantUserId);
+    await updateStudyEndDateTime(subDays(utcNow(), 10));
+
+    await login(client, applicantUser);
+
+    // when
+    const request = fakeWriteReviewRequest({
+      revieweeId: ownerId,
+    });
+    await writeReview(client, studyId, request);
+
+    // login to owner
+    await login(client, owner);
+
+    const {
+      status,
+      data: {
+        data: { reviews },
+      },
+    } = await getPeerReviews(client, studyId);
+
+    // then
+    expect(status).toBe(HttpStatusCode.Ok);
+    expect(reviews.length).toBeGreaterThan(0);
+    expect(reviews[0].peerReview.activenessScore).toEqual(
+      request.activenessScore
+    );
+    expect(reviews[0].peerReview.communicationScore).toEqual(
+      request.communicationScore
+    );
+    expect(reviews[0].peerReview.professionalismScore).toEqual(
+      request.professionalismScore
+    );
+    expect(reviews[0].peerReview.recommendScore).toEqual(
+      request.recommendScore
+    );
+    expect(reviews[0].peerReview.togetherScore).toEqual(request.togetherScore);
+    expect(reviews[0].peerReview.reviewerId).toEqual(applicantUserId);
+    expect(reviews[0].peerReview.revieweeId).toEqual(request.revieweeId);
+    expect(reviews[0].selfReview).toBeNull();
   });
 
   test("[400 BAD_REQUEST] 스터디가 종료 전에는 리뷰 작성 불가", async () => {

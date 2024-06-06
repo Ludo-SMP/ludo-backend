@@ -6,6 +6,7 @@ import com.ludo.study.studymatchingplatform.auth.service.google.dto.request.Basi
 import com.ludo.study.studymatchingplatform.common.exception.DataConflictException;
 import com.ludo.study.studymatchingplatform.common.exception.DataNotFoundException;
 import com.ludo.study.studymatchingplatform.common.exception.UnauthorizedUserException;
+import com.ludo.study.studymatchingplatform.notification.repository.notification.StudyNotificationJpaRepository;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 import com.ludo.study.studymatchingplatform.user.repository.user.UserRepositoryImpl;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ public class BasicAuthService {
 
     private final UserRepositoryImpl userRepository;
     private final BcryptService bcryptService;
+    // TODO: GlobalNotificationSettings 추가
 
     public User signup(final BasicSignupRequest request) {
         if (userRepository.findByEmail(request.email()).isPresent()) {

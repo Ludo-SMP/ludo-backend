@@ -22,5 +22,5 @@ export type ReviewStatistics = {
   // 다시함께
   togetherScore: number;
   // 추천
-  recommendationScore: number;
+  recommendScore: number;
 };

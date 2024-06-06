@@ -7,6 +7,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+import static com.ludo.study.studymatchingplatform.study.domain.study.QReviewStatistics.reviewStatistics;
+
 @Repository
 @RequiredArgsConstructor
 public class ReviewStatisticsRepository {
@@ -15,7 +17,10 @@ public class ReviewStatisticsRepository {
     private final ReviewStatisticsJpaRepository reviewStatisticsJpaRepository;
 
     public Optional<ReviewStatistics> findByUserId(final Long userId) {
-        return reviewStatisticsJpaRepository.findById(userId);
+        return Optional.ofNullable(
+                q.selectFrom(reviewStatistics)
+                        .where(reviewStatistics.user.id.eq(userId))
+                        .fetchFirst());
     }
 
     public ReviewStatistics save(final ReviewStatistics statistics) {

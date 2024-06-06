@@ -35,7 +35,11 @@ public class SseEmitters {
 
 	public void sendNotification(final User notifier, final NotificationResponse response) {
 		final SseEmitter sseEmitter = getSseEmitter(createSseEmitterId(notifier));
-		send(sseEmitter, "notification", response);
+		// TODO:
+		// sseEmitter가 존재하는 경우에만 알림 발송
+		if (sseEmitter != null) {
+			send(sseEmitter, "notification", response);
+		}
 	}
 
 	private void send(final SseEmitter sseEmitter, final String eventName, final Object eventData) {
@@ -92,11 +96,14 @@ public class SseEmitters {
 	}
 
 	private SseEmitter getSseEmitter(final Long sseEmitterId) {
+		// TODO:
+		// 존재하지 않는 경우 null 반환
 		if (this.sseEmitters.containsKey(sseEmitterId)) {
 			return sseEmitters.get(sseEmitterId);
 		}
-		throw new NotExistSseEmitterException(
-				String.format("id = %d 에 해당하는 SseEmitter가 존재하지 않습니다.", sseEmitterId));
+		return null;
+//		throw new NotExistSseEmitterException(
+//				String.format("id = %d 에 해당하는 SseEmitter가 존재하지 않습니다.", sseEmitterId));
 	}
 
 	public SseEmitter findSseEmitter(final User user) {

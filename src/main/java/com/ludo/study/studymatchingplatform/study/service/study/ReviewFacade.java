@@ -29,37 +29,42 @@ public class ReviewFacade {
     private final StudyRepositoryImpl studyRepository;
     private final ReviewService reviewService;
     private final UserRepositoryImpl userRepository;
+    private final ReviewStatisticsService reviewStatisticsService;
 
-	private final NotificationService notificationService;
+    private final NotificationService notificationService;
 
-    public List<PeerReviewsResponse> getPeerReviews(final Long studyId, final Long selfId, final Long peerId) {
+    public List<PeerReviewsResponse> getPeerReviews(final Long studyId, final Long selfId) {
         userRepository.findById(selfId)
                 .orElseThrow(() -> new IllegalArgumentException("로그인 정보 오류입니다. 리뷰를 작성할 수 없습니다."));
-        studyRepository.findByIdWithParticipants(studyId)
+        final Study study = studyRepository.findByIdWithParticipants(studyId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 스터디입니다. 리뷰를 조회할 수 없습니다."));
+        final List<Long> peerIds = study.getParticipants().stream()
+                .map(p -> p.getUser().getId())
+                .toList();
 
-        final List<Review> selfReviews = reviewRepository.findSelfReviews(studyId, selfId, peerId);
-        final List<Review> peerReviews = reviewRepository.findPeerReviews(studyId, selfId, peerId);
+        final List<Review> selfReviews = reviewRepository.findSelfReviews(studyId, selfId, peerIds);
+        final List<Review> peerReviews = reviewRepository.findPeerReviews(studyId, selfId, peerIds);
 
         return PeerReviewsResponse.listFrom(selfReviews, peerReviews);
     }
 
-    public WriteReviewResponse write(WriteReviewRequest request, Long studyId, User reviewer) {
+    public WriteReviewResponse write(final WriteReviewRequest request, final Long studyId, final User reviewer) {
         final Study study = studyRepository.findByIdWithParticipants(studyId)
                 .orElseThrow(() -> new DataNotFoundException("존재하지 않는 스터디입니다. 리뷰를 작성할 수 없습니다."));
 
-        boolean existsReview = reviewRepository.exists(studyId, reviewer.getId(), request.revieweeId());
+        final boolean existsReview = reviewRepository.exists(studyId, reviewer.getId(), request.revieweeId());
         if (existsReview) {
             throw new DataConflictException("이미 리뷰를 작성 하셨습니다.");
         }
 
-        final Review review = reviewService.write(request, study, reviewer);
+        final Review review = reviewRepository.save(reviewService.write(request, study, reviewer));
+        reviewStatisticsService.updateRevieweeStatistics(review);
 
-		// 리뷰 알림
-		notificationService.reviewReceiveNotice(review);
-		notificationService.reviewPeerFinishNotice(study, review);
+        // 리뷰 알림
+        notificationService.reviewReceiveNotice(review);
+        notificationService.reviewPeerFinishNotice(study, review);
 
-		return WriteReviewResponse.from(reviewRepository.save(review));
+        return WriteReviewResponse.from(review);
     }
 
 }
