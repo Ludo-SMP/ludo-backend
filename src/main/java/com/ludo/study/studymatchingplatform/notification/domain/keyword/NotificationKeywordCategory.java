@@ -46,4 +46,8 @@ public class NotificationKeywordCategory {
 		return new NotificationKeywordCategory(user, category);
 	}
 
+	public Long getCategoryId() {
+		return category.getId();
+	}
+
 }

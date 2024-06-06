@@ -46,4 +46,8 @@ public class NotificationKeywordPosition {
 		return new NotificationKeywordPosition(user, position);
 	}
 
+	public Long getPositionId() {
+		return position.getId();
+	}
+
 }

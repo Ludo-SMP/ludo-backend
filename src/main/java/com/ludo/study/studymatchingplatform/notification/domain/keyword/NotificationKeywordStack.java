@@ -46,4 +46,7 @@ public class NotificationKeywordStack {
 		return new NotificationKeywordStack(user, stack);
 	}
 
+	public Long getStackId() {
+		return stack.getId();
+	}
 }
