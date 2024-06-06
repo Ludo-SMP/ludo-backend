@@ -6,22 +6,31 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ludo.study.studymatchingplatform.notification.controller.NotificationKeywordConfigRequest;
+import com.ludo.study.studymatchingplatform.notification.domain.config.GlobalNotificationUserConfig;
+import com.ludo.study.studymatchingplatform.notification.domain.keyword.NotificationKeywordCategory;
+import com.ludo.study.studymatchingplatform.notification.domain.keyword.NotificationKeywordPosition;
+import com.ludo.study.studymatchingplatform.notification.domain.keyword.NotificationKeywordStack;
 import com.ludo.study.studymatchingplatform.notification.domain.notification.RecruitmentNotification;
 import com.ludo.study.studymatchingplatform.notification.domain.notification.ReviewNotification;
 import com.ludo.study.studymatchingplatform.notification.domain.notification.StudyNotification;
+import com.ludo.study.studymatchingplatform.notification.repository.config.GlobalNotificationUserConfigRepositoryImpl;
 import com.ludo.study.studymatchingplatform.notification.repository.dto.RecruitmentNotifierCond;
 import com.ludo.study.studymatchingplatform.notification.repository.dto.StudyEndDateNotifierCond;
 import com.ludo.study.studymatchingplatform.notification.repository.dto.StudyReviewStartNotifierCond;
+import com.ludo.study.studymatchingplatform.notification.repository.keyword.NotificationKeywordCategoryRepositoryImpl;
+import com.ludo.study.studymatchingplatform.notification.repository.keyword.NotificationKeywordPositionRepositoryImpl;
+import com.ludo.study.studymatchingplatform.notification.repository.keyword.NotificationKeywordStackRepositoryImpl;
 import com.ludo.study.studymatchingplatform.notification.repository.notification.RecruitmentNotificationRepositoryImpl;
 import com.ludo.study.studymatchingplatform.notification.repository.notification.ReviewNotificationRepositoryImpl;
 import com.ludo.study.studymatchingplatform.notification.repository.notification.StudyNotificationRepositoryImpl;
-import com.ludo.study.studymatchingplatform.notification.service.dto.response.NotificationKeywordDto;
 import com.ludo.study.studymatchingplatform.notification.service.dto.response.NotificationResponse;
+import com.ludo.study.studymatchingplatform.notification.service.dto.response.config.NotificationConfigResponse;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
 import com.ludo.study.studymatchingplatform.study.domain.study.Review;
 import com.ludo.study.studymatchingplatform.study.domain.study.Study;
@@ -49,7 +58,10 @@ public class NotificationQueryService {
 	private final RecruitmentNotificationRepositoryImpl recruitmentNotificationRepository;
 	private final ReviewNotificationRepositoryImpl reviewNotificationRepository;
 
-	private final NotificationKeywordMapper notificationKeywordMapper;
+	private final GlobalNotificationUserConfigRepositoryImpl globalNotificationUserConfigRepository;
+	private final NotificationKeywordCategoryRepositoryImpl notificationKeywordCategoryRepository;
+	private final NotificationKeywordPositionRepositoryImpl notificationKeywordPositionRepository;
+	private final NotificationKeywordStackRepositoryImpl notificationKeywordStackRepository;
 
 	public List<User> findRecruitmentNotifier(final Recruitment recruitment) {
 		final RecruitmentNotifierCond recruitmentNotifierCondition = new RecruitmentNotifierCond(
@@ -129,15 +141,60 @@ public class NotificationQueryService {
 		return notificationResponses;
 	}
 
-	public NotificationKeywordDto findNotificationKeywords(final User user,
-														   final NotificationKeywordConfigRequest keywordConfigRequest
-	) {
+	public NotificationConfigResponse readNotificationConfigAndKeywords(final User user) {
+		final GlobalNotificationUserConfig userConfig = findNotificationConfig(
+				user);
 
-		return new NotificationKeywordDto(
-				notificationKeywordMapper.toKeywordCategories(user, keywordConfigRequest.categoryIds()),
-				notificationKeywordMapper.toKeywordStacks(user, keywordConfigRequest.stackIds()),
-				notificationKeywordMapper.toKeywordPositions(user, keywordConfigRequest.positionIds())
-		);
+		final List<NotificationKeywordCategory> notificationKeywordCategories = notificationKeywordCategoryRepository
+				.findByUserId(user.getId());
+		final List<NotificationKeywordPosition> notificationKeywordPositions = notificationKeywordPositionRepository
+				.findByUserId(user.getId());
+		final List<NotificationKeywordStack> notificationKeywordStacks = notificationKeywordStackRepository
+				.findByUserId(user.getId());
+
+		return NotificationConfigResponse.fromUserConfig(userConfig,
+				notificationKeywordCategories, notificationKeywordPositions, notificationKeywordStacks);
+	}
+
+	public GlobalNotificationUserConfig readNotificationConfig(final User user) {
+		return findNotificationConfig(user);
+	}
+
+	private GlobalNotificationUserConfig findNotificationConfig(User user) {
+		return globalNotificationUserConfigRepository
+				.findByUserId(user.getId())
+				.orElseThrow(() -> new IllegalArgumentException(
+						String.format("id={%d} 사용자의 알림 설정이 등록되지 않았습니다.", user.getId())));
+	}
+
+	public Set<Long> readExistCategoryKeywordCategoryIds(final User user) {
+		final List<NotificationKeywordCategory> notificationKeywordCategories = notificationKeywordCategoryRepository
+				.findByUserId(user.getId());
+
+		return notificationKeywordCategories
+				.stream()
+				.map(NotificationKeywordCategory::getCategoryId)
+				.collect(Collectors.toSet());
+	}
+
+	public Set<Long> readExistPositionKeywordPositionIds(final User user) {
+		final List<NotificationKeywordPosition> notificationKeywordPositions = notificationKeywordPositionRepository
+				.findByUserId(user.getId());
+
+		return notificationKeywordPositions
+				.stream()
+				.map(NotificationKeywordPosition::getPositionId)
+				.collect(Collectors.toSet());
+	}
+
+	public Set<Long> readExistStackKeywordStackIds(final User user) {
+		final List<NotificationKeywordStack> notificationKeywordStacks = notificationKeywordStackRepository
+				.findByUserId(user.getId());
+
+		return notificationKeywordStacks
+				.stream()
+				.map(NotificationKeywordStack::getStackId)
+				.collect(Collectors.toSet());
 	}
 
 }
