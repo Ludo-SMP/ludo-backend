@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -21,6 +22,62 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public final class GlobalExceptionHandler {
 
+	@ExceptionHandler(value = Exception.class)
+	public ResponseEntity<CommonResponse> handleException(Exception e) {
+		return toResponseEntity(e, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
+	@ExceptionHandler(value = AuthenticationException.class)
+	public ResponseEntity<CommonResponse> handleException(AuthenticationException e) {
+		return toResponseEntity(e, HttpStatus.UNAUTHORIZED);
+	}
+
+	@ExceptionHandler(value = BusinessException.class)
+	public ResponseEntity<CommonResponse> handleException(BusinessException e) {
+		return toResponseEntity(e, HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(value = IllegalStateException.class)
+	public ResponseEntity<CommonResponse> handleException(IllegalStateException e) {
+		return toResponseEntity(e, HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(value = DuplicatedSignUpException.class)
+	public ResponseEntity<CommonResponse> duplicatedSignUp(DuplicatedSignUpException e,
+														   HttpServletResponse response) throws IOException {
+		response.sendRedirect("https://ludoapi.store/signup/fail");
+		return toResponseEntity(e, HttpStatus.CONFLICT);
+	}
+
+	@ExceptionHandler(value = NotFoundException.class)
+	public ResponseEntity<CommonResponse> noSignUpInformation(NotFoundException e,
+															  HttpServletResponse response) throws IOException {
+		response.sendRedirect("https://ludoapi.store/login/fail");
+		return toResponseEntity(e, HttpStatus.NOT_FOUND);
+	}
+
+	@ExceptionHandler(value = HttpMessageNotReadableException.class)
+  public ResponseEntity<CommonResponse> handleException(HttpMessageNotReadableException e) {
+		log(e);
+		final String invalidJsonRequestMessage = "JSON 형식이 잘못되었습니다.";
+		return toResponseEntity(invalidJsonRequestMessage, HttpStatus.BAD_REQUEST);
+	}
+
+	private ResponseEntity<CommonResponse> toResponseEntity(String errorMessage, HttpStatus status) {
+		final CommonResponse resp = CommonResponse.error(errorMessage);
+		return new ResponseEntity<>(resp, status);
+	}
+
+	private ResponseEntity<CommonResponse> toResponseEntity(Exception e, HttpStatus status) {
+		final CommonResponse resp = CommonResponse.error(e.getMessage());
+		log(e);
+		return new ResponseEntity<>(resp, status);
+	}
+
+	private void log(final Exception e) {
+		log.info("[] [Exception]: Kind: {}, Message: {}", e.getClass().getSimpleName(), e.getMessage());
+	}
+=======
     @ExceptionHandler(value = MustLoginException.class)
     public ResponseEntity<CommonResponse> handleException(MustLoginException e) {
         return toResponseEntity(e, HttpStatus.UNAUTHORIZED);

@@ -6,10 +6,18 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ludo.study.studymatchingplatform.notification.domain.config.GlobalNotificationUserConfig;
+import com.ludo.study.studymatchingplatform.notification.domain.config.NotificationConfigGroup;
+import com.ludo.study.studymatchingplatform.notification.domain.keyword.NotificationKeywordCategory;
+import com.ludo.study.studymatchingplatform.notification.domain.keyword.NotificationKeywordPosition;
+import com.ludo.study.studymatchingplatform.notification.domain.keyword.NotificationKeywordStack;
 import com.ludo.study.studymatchingplatform.notification.domain.notification.NotificationEventType;
 import com.ludo.study.studymatchingplatform.notification.domain.notification.RecruitmentNotification;
 import com.ludo.study.studymatchingplatform.notification.domain.notification.ReviewNotification;
 import com.ludo.study.studymatchingplatform.notification.domain.notification.StudyNotification;
+import com.ludo.study.studymatchingplatform.notification.repository.keyword.NotificationKeywordCategoryRepositoryImpl;
+import com.ludo.study.studymatchingplatform.notification.repository.keyword.NotificationKeywordPositionRepositoryImpl;
+import com.ludo.study.studymatchingplatform.notification.repository.keyword.NotificationKeywordStackRepositoryImpl;
 import com.ludo.study.studymatchingplatform.notification.repository.notification.RecruitmentNotificationRepositoryImpl;
 import com.ludo.study.studymatchingplatform.notification.repository.notification.ReviewNotificationRepositoryImpl;
 import com.ludo.study.studymatchingplatform.notification.repository.notification.StudyNotificationRepositoryImpl;
@@ -28,6 +36,10 @@ public class NotificationCommandService {
 	private final StudyNotificationRepositoryImpl studyNotificationRepository;
 	private final RecruitmentNotificationRepositoryImpl recruitmentNotificationRepository;
 	private final ReviewNotificationRepositoryImpl reviewNotificationRepository;
+
+	private final NotificationKeywordCategoryRepositoryImpl notificationKeywordCategoryRepository;
+	private final NotificationKeywordStackRepositoryImpl notificationKeywordStackRepository;
+	private final NotificationKeywordPositionRepositoryImpl notificationKeywordPositionRepository;
 
 	@Transactional
 	public List<RecruitmentNotification> saveRecruitmentNotifications(final Recruitment actor,
@@ -79,4 +91,50 @@ public class NotificationCommandService {
 		return reviewNotificationRepository.saveAll(reviewNotifications);
 	}
 
+	@Transactional
+	public void saveNotificationKeywordCategory(final NotificationKeywordCategory notificationKeywordCategory) {
+		notificationKeywordCategoryRepository.save(notificationKeywordCategory);
+	}
+
+	@Transactional
+	public void saveNotificationKeywordPosition(final NotificationKeywordPosition notificationKeywordPosition) {
+		notificationKeywordPositionRepository.save(notificationKeywordPosition);
+	}
+
+	@Transactional
+	public void saveNotificationKeywordStack(final NotificationKeywordStack notificationKeywordStack) {
+		notificationKeywordStackRepository.save(notificationKeywordStack);
+	}
+
+	@Transactional
+	public void updateNotificationConfig(final User user,
+										 final GlobalNotificationUserConfig userConfig,
+										 final NotificationConfigRequest notificationConfigRequest
+	) {
+
+		final NotificationConfigGroup notificationConfigGroup = notificationConfigRequest.notificationConfigGroup();
+		final boolean enabled = notificationConfigRequest.on();
+		userConfig.updateConfig(notificationConfigGroup, enabled);
+
+		if (isNotificationKeywordDeleteCondition(notificationConfigGroup, enabled)) {
+			notificationKeywordPositionRepository.deleteByUserId(user.getId());
+			notificationKeywordCategoryRepository.deleteByUserId(user.getId());
+			notificationKeywordStackRepository.deleteByUserId(user.getId());
+		}
+	}
+
+	private boolean isNotificationKeywordDeleteCondition(final NotificationConfigGroup configGroup,
+														 final boolean enabled
+	) {
+		return isAllConfigOff(configGroup, enabled)
+				|| isNotificationConfigOff(configGroup, enabled);
+	}
+
+	private boolean isAllConfigOff(final NotificationConfigGroup configGroup, final boolean enabled) {
+		return configGroup == NotificationConfigGroup.ALL_CONFIG && !enabled;
+	}
+
+	private boolean isNotificationConfigOff(final NotificationConfigGroup configGroup, final boolean enabled) {
+		return configGroup == NotificationConfigGroup.RECRUITMENT_CONFIG && !enabled;
+	}
 }

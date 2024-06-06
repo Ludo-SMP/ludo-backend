@@ -15,11 +15,11 @@ public final class CommonResponse {
 
 	public static CommonResponse success(final String nestedFieldName, final Object data) {
 		final Map<String, Object> nestedData = Map.of(nestedFieldName, data);
-		return new CommonResponse(true, null, nestedData);
+		return new CommonResponse(true, "success", nestedData);
 	}
 
 	public static CommonResponse success(final Object data) {
-		return new CommonResponse(true, null, data);
+		return new CommonResponse(true, "success", data);
 	}
 
 	public static CommonResponse error(final String message) {

@@ -6,6 +6,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ludo.study.studymatchingplatform.auth.repository.InMemoryClientRegistrationAndProviderRepository;
 import com.ludo.study.studymatchingplatform.auth.service.kakao.dto.KakaoOAuthToken;
 import com.ludo.study.studymatchingplatform.auth.service.kakao.dto.KakaoUserProfileDto;
+import com.ludo.study.studymatchingplatform.notification.domain.config.GlobalNotificationUserConfig;
+import com.ludo.study.studymatchingplatform.notification.repository.config.GlobalNotificationUserConfigRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.service.exception.DuplicatedSignUpException;
 import com.ludo.study.studymatchingplatform.user.domain.user.Social;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
@@ -21,6 +23,8 @@ public class KakaoSignUpService {
 	private final KakaoOAuthTokenRequestService kakaoOAuthTokenRequestService;
 	private final KakaoProfileRequestService kakaoProfileRequestService;
 	private final UserRepositoryImpl userRepository;
+
+	private final GlobalNotificationUserConfigRepositoryImpl notificationUserConfigRepository;
 
 	@Transactional
 	public User kakaoSignUp(final String authorizationCode) {
@@ -45,6 +49,7 @@ public class KakaoSignUpService {
 	private User sinup(KakaoUserProfileDto kakaoUserProfileDto) {
 		final User user = userRepository.save(kakaoUserProfileDto.toUser());
 		user.setInitialDefaultNickname();
+		notificationUserConfigRepository.save(GlobalNotificationUserConfig.ofNewSignUpUser(user));
 		return user;
 	}
 
