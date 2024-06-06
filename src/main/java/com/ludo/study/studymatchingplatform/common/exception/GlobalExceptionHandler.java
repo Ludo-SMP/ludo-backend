@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -56,6 +57,18 @@ public final class GlobalExceptionHandler {
 															  HttpServletResponse response) throws IOException {
 		response.sendRedirect("https://ludoapi.store/login/fail");
 		return toResponseEntity(e, HttpStatus.NOT_FOUND);
+	}
+
+	@ExceptionHandler(value = HttpMessageNotReadableException.class)
+	public ResponseEntity<CommonResponse> handleException(HttpMessageNotReadableException e) {
+		log(e);
+		final String invalidJsonRequestMessage = "JSON 형식이 잘못되었습니다.";
+		return toResponseEntity(invalidJsonRequestMessage, HttpStatus.BAD_REQUEST);
+	}
+
+	private ResponseEntity<CommonResponse> toResponseEntity(String errorMessage, HttpStatus status) {
+		final CommonResponse resp = CommonResponse.error(errorMessage);
+		return new ResponseEntity<>(resp, status);
 	}
 
 	private ResponseEntity<CommonResponse> toResponseEntity(Exception e, HttpStatus status) {
