@@ -22,6 +22,10 @@ public class ReviewNotificationRepositoryImpl {
 		return reviewNotificationJpaRepository.save(reviewNotifications);
 	}
 
+	public List<ReviewNotification> saveAll(final List<ReviewNotification> reviewNotifications) {
+		return reviewNotificationJpaRepository.saveAll(reviewNotifications);
+	}
+
 	public List<ReviewNotification> findAllByUserId(final Long userId) {
 		return q.selectFrom(reviewNotification)
 				.where(reviewNotification.notifier.id.eq(userId))

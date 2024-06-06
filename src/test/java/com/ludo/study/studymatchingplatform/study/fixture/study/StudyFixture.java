@@ -14,7 +14,7 @@ import com.ludo.study.studymatchingplatform.user.fixture.user.UserFixture;
 
 public class StudyFixture {
 
-	public static final Study PROJECT_ONLINE_STUDY = Study.builder()
+	public static final Study USER1_PROJECT_ONLINE_STUDY = Study.builder()
 			.title("프로젝트 온라인 스터디 제목")
 			.owner(UserFixture.user1)
 			.category(CategoryFixture.CATEGORY_PROJECT)
@@ -82,7 +82,7 @@ public class StudyFixture {
 				studyStatus,
 				title,
 				Way.ONLINE,
-				CategoryFixture.createCategory(CategoryFixture.PROJECT),
+				CategoryFixture.createCategory(CategoryFixture.PROJECT_NAME),
 				user,
 				0,
 				participantLimit,

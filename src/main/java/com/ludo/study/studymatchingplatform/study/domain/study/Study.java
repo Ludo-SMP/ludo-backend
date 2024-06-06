@@ -362,7 +362,7 @@ public class Study extends BaseEntity {
 		}
 	}
 
-    public void ensureReviewPeriodAvailable(final UtcDateTimePicker utcDateTimePicker) {
+  public void ensureReviewPeriodAvailable(final UtcDateTimePicker utcDateTimePicker) {
         final LocalDateTime now = utcDateTimePicker.now();
         final LocalDateTime reviewWriteDue = endDateTime.plusDays(14);
 
@@ -374,7 +374,11 @@ public class Study extends BaseEntity {
             throw new IllegalStateException("리뷰 작성 기간이 지났습니다. 리뷰 작성은 스터디 완료 후 최대 14일까지 가능합니다.");
         }
 
-    }
+  }
+  
+	private LocalDateTime getReviewAvailEndTime() {
+		return endDateTime.plusDays(14);
+	}
 
 	public Applicant getApplicant(final User applicantUser) {
 		return recruitment.getApplicant(applicantUser);

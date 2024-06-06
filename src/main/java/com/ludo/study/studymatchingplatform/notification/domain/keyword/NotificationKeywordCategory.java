@@ -37,4 +37,13 @@ public class NotificationKeywordCategory {
 	@JoinColumn(name = "category_id")
 	private Category category;
 
+	private NotificationKeywordCategory(final User user, final Category category) {
+		this.user = user;
+		this.category = category;
+	}
+
+	public static NotificationKeywordCategory of(final User user, final Category category) {
+		return new NotificationKeywordCategory(user, category);
+	}
+
 }
