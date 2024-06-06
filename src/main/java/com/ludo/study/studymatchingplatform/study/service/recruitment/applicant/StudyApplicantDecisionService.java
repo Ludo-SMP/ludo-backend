@@ -3,6 +3,7 @@ package com.ludo.study.studymatchingplatform.study.service.recruitment.applicant
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ludo.study.studymatchingplatform.common.utils.UtcDateTimePicker;
 import com.ludo.study.studymatchingplatform.notification.service.NotificationService;
 import com.ludo.study.studymatchingplatform.study.domain.study.Study;
 import com.ludo.study.studymatchingplatform.study.domain.study.participant.Participant;
@@ -24,6 +25,8 @@ public class StudyApplicantDecisionService {
 	private final StudyRepositoryImpl studyRepository;
 	private final UserRepositoryImpl userRepository;
 	private final ParticipantRepositoryImpl participantRepository;
+	private final UtcDateTimePicker utcDateTimePicker;
+
 	private final NotificationService notificationService;
 
 	@Transactional
@@ -31,7 +34,7 @@ public class StudyApplicantDecisionService {
 		final Study study = findStudy(request.studyId());
 		final User applicantUser = findUser(request.applicantUserId());
 
-		study.acceptApplicant(owner, applicantUser);
+		study.acceptApplicant(owner, applicantUser, utcDateTimePicker.now());
 		Participant participant = findParticipant(study, applicantUser);
 
 		// 스터디 지원 수락 알림 트리거

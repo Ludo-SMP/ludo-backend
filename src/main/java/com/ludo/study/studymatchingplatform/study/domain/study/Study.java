@@ -1,7 +1,5 @@
 package com.ludo.study.studymatchingplatform.study.domain.study;
 
-import static jakarta.persistence.FetchType.*;
-
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.ArrayList;
@@ -11,36 +9,21 @@ import java.util.Objects;
 import java.util.Optional;
 
 import com.ludo.study.studymatchingplatform.common.entity.BaseEntity;
-import com.ludo.study.studymatchingplatform.common.utils.LocalDateTimePicker;
+import com.ludo.study.studymatchingplatform.common.utils.UtcDateTimePicker;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant.Applicant;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.position.Position;
 import com.ludo.study.studymatchingplatform.study.domain.study.category.Category;
 import com.ludo.study.studymatchingplatform.study.domain.study.participant.Participant;
 import com.ludo.study.studymatchingplatform.study.domain.study.participant.Role;
-import com.ludo.study.studymatchingplatform.study.service.exception.InvalidReviewPeriodException;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
-
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
+
+import static jakarta.persistence.FetchType.LAZY;
 
 @Entity
 @Getter
@@ -193,9 +176,9 @@ public class Study extends BaseEntity {
 		}
 	}
 
-	public void acceptApplicant(final User owner, final User applicantUser) {
+	public void acceptApplicant(final User owner, final User applicantUser, final LocalDateTime deletedDateTime) {
 		ensureAcceptApplicant(owner, applicantUser);
-		accept(applicantUser);
+		accept(applicantUser, deletedDateTime);
 		if (isMaxParticipantCount()) {
 			changeStatus(StudyStatus.RECRUITED);
 		}
@@ -241,8 +224,8 @@ public class Study extends BaseEntity {
 		}
 	}
 
-	private void accept(final User applicantUser) {
-		recruitment.acceptApplicant(applicantUser);
+	private void accept(final User applicantUser, final LocalDateTime deletedDateTime) {
+		recruitment.acceptApplicant(applicantUser, deletedDateTime);
 		final Applicant applicant = recruitment.getApplicant(applicantUser);
 		addParticipant(Participant.from(this, applicantUser, applicant.getPosition(), Role.MEMBER));
 	}
@@ -272,32 +255,50 @@ public class Study extends BaseEntity {
 		return getParticipant(user.getId());
 	}
 
-	public Optional<Participant> findParticipant(final Long userId) {
-		return participants.stream()
-				.filter(p -> p.matchesUser(userId))
-				.findFirst();
-	}
 
-	public Participant getParticipant(final Long userId) {
-		return findParticipant(userId)
-				.orElseThrow(() -> new IllegalStateException("현재 참여 중인 스터디원이 아닙니다."));
-	}
+    public Participant getParticipant(final Long userId) {
+        return findParticipant(userId)
+                .orElseThrow(() -> new IllegalStateException("현재 참여 중인 스터디원이 아닙니다."));
+    }
 
-	public void removeParticipant(final Participant participant) {
-		participants.removeIf(p -> Objects.equals(p, participant));
-	}
+    public Optional<Participant> findParticipant(final Long userId) {
+        return participants.stream()
+                .filter(p -> p.matchesUser(userId))
+                .findFirst();
+    }
 
-	public void modifyStatus(final StudyStatus status, final LocalDateTime now) {
-		// 모집 마감 상태는 시간에 따라 다른 결과 반영
-		if (status == StudyStatus.RECRUITED) {
-			modifyStatusToRecruited(now);
-			modifyStatusToProgress(now);
-		}
-	}
+    public void removeParticipant(final Participant participant) {
+        participants.removeIf(p -> Objects.equals(p, participant));
+    }
 
-	public void modifyStatusToRecruiting() {
-		this.status = StudyStatus.RECRUITING;
-	}
+    public void modifyStatus(final StudyStatus status, final LocalDateTime now) {
+        // 스터디는 강제로 완료 처리 불가, end 사용
+        if (status == StudyStatus.COMPLETED) {
+            throw new IllegalArgumentException("스터디를 강제로 완료 처리할 수 없습니다.");
+        }
+        // 모집 마감 상태는 시간에 따라 다른 결과 반영
+        if (status == StudyStatus.RECRUITED) {
+            modifyStatusToRecruited(now);
+            modifyStatusToProgress(now);
+        }
+    }
+
+    // 스터디 완료 처리 시에 [사용자 스터디 참여 정보]에 반영
+    public void end(final LocalDateTime now, final List<StudyStatistics> studyStatistics) {
+        // 추후 완료 조건이 추가될 수 있을듯
+
+        for (final StudyStatistics statistics : studyStatistics) {
+            final Participant participant = getParticipant(statistics.getUser());
+            statistics.reflectStatistics(this, participant);
+        }
+
+        status = StudyStatus.COMPLETED;
+        this.endDateTime = now;
+    }
+
+    public void modifyStatusToRecruiting() {
+        this.status = StudyStatus.RECRUITING;
+    }
 
 	private void modifyStatusToRecruited(final LocalDateTime now) {
 		if (this.startDateTime.isAfter(now)) {
@@ -317,8 +318,8 @@ public class Study extends BaseEntity {
 		}
 	}
 
-	public void deactivateForRecruitment() {
-		this.recruitment.softDelete();
+	public void deactivateForRecruitment(final LocalDateTime now) {
+		this.recruitment.softDelete(now);
 	}
 
 	public void activateForRecruitment() {
@@ -361,28 +362,20 @@ public class Study extends BaseEntity {
 		}
 	}
 
-	public void ensureReviewPeriodAvailable(final LocalDateTimePicker localDateTimePicker) {
-		final LocalDateTime now = localDateTimePicker.now();
-		final LocalDateTime reviewAvailStartTime = getReviewAvailStartTime();
-		final LocalDateTime reviewAvailEndTime = getReviewAvailEndTime();
+  public void ensureReviewPeriodAvailable(final UtcDateTimePicker utcDateTimePicker) {
+        final LocalDateTime now = utcDateTimePicker.now();
+        final LocalDateTime reviewWriteDue = endDateTime.plusDays(14);
 
-		if (isAvailableReviewPeriod(now)) {
-			return;
-		}
-		throw new InvalidReviewPeriodException("리뷰 작성 기간이 아닙니다.", reviewAvailStartTime, reviewAvailEndTime);
-	}
+        if (now.isBefore(endDateTime)) {
+            throw new IllegalStateException("아직 리뷰 작성 기간이 되지 않았습니다. 스터디 완료 후부터 리뷰 작성이 가능합니다.");
+        }
 
-	private boolean isAvailableReviewPeriod(LocalDateTime now) {
-		final LocalDateTime reviewAvailStartTime = getReviewAvailStartTime();
-		final LocalDateTime reviewAvailEndTime = getReviewAvailEndTime();
+        if (now.isAfter(reviewWriteDue)) {
+            throw new IllegalStateException("리뷰 작성 기간이 지났습니다. 리뷰 작성은 스터디 완료 후 최대 14일까지 가능합니다.");
+        }
 
-		return now.isAfter(reviewAvailStartTime) && now.isBefore(reviewAvailEndTime);
-	}
-
-	private LocalDateTime getReviewAvailStartTime() {
-		return endDateTime;
-	}
-
+  }
+  
 	private LocalDateTime getReviewAvailEndTime() {
 		return endDateTime.plusDays(14);
 	}

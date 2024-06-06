@@ -4,7 +4,6 @@ import static com.ludo.study.studymatchingplatform.notification.domain.keyword.Q
 import static com.ludo.study.studymatchingplatform.notification.domain.keyword.QNotificationKeywordPosition.*;
 import static com.ludo.study.studymatchingplatform.notification.domain.keyword.QNotificationKeywordStack.*;
 import static com.ludo.study.studymatchingplatform.study.domain.study.participant.QParticipant.*;
-import static com.ludo.study.studymatchingplatform.user.domain.user.QUser.*;
 import static com.querydsl.jpa.JPAExpressions.*;
 
 import java.util.List;
@@ -19,9 +18,11 @@ import com.ludo.study.studymatchingplatform.study.service.exception.Authenticati
 import com.ludo.study.studymatchingplatform.user.domain.user.Social;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-
 import lombok.RequiredArgsConstructor;
+
+import static com.ludo.study.studymatchingplatform.user.domain.user.QUser.user;
 
 @Repository
 @RequiredArgsConstructor
@@ -49,17 +50,26 @@ public class UserRepositoryImpl {
 		return id != null;
 	}
 
-	public Optional<User> findByEmail(final String email) {
-		return Optional.ofNullable(
-				q.select(user)
-						.from(user)
-						.where(user.email.eq(email))
-						.fetchOne());
-	}
+    public Optional<User> findByEmail(final String email) {
+        return findByEmail(email, false);
+    }
 
-	public Optional<User> findById(final Long id) {
-		return userJpaRepository.findById(id);
-	}
+    public Optional<User> findByEmail(final String email, final boolean includeDeleted) {
+        return Optional.ofNullable(
+                q.select(user)
+                        .from(user)
+                        .where(user.email.eq(email)
+                                .and(deletedDateTimeCondition(includeDeleted)))
+                        .fetchOne());
+    }
+
+    public BooleanExpression deletedDateTimeCondition(final boolean includeDeleted) {
+        return includeDeleted ? null : user.deletedDateTime.isNull();
+    }
+
+    public Optional<User> findById(final Long id) {
+        return userJpaRepository.findById(id);
+    }
 
 	public User getById(final Long id) {
 		return userJpaRepository.findById(id)

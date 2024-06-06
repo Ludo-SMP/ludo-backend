@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 services:
   # MySQL
@@ -9,12 +9,14 @@ services:
       --default-authentication-plugin=mysql_native_password
       --character-set-server=utf8mb4
       --collation-server=utf8mb4_unicode_ci
+      --wait_timeout=30 --interactive_timeout=600
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: ludo
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_MAX_CONNECTIONS: 200
     ports:
-      - '3306:3306'
+      - "3306:3306"
 
   redis:
     image: redis
