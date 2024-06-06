@@ -36,10 +36,10 @@ public class ReviewStatistics extends BaseEntity {
     private Long totalCommunicationReviewCount = 0L;
 
     @Builder.Default
-    private Long totalTogetherReviewScore = 0L;
+    private Long totalTogetherReviewCount = 0L;
 
     @Builder.Default
-    private Long totalRecommendReviewScore = 0L;
+    private Long totalRecommendReviewCount = 0L;
 
     // scores
     @Builder.Default
@@ -55,7 +55,7 @@ public class ReviewStatistics extends BaseEntity {
     private Long totalTogetherScore = 0L;
 
     @Builder.Default
-    private Long totalRecommendationScore = 0L;
+    private Long totalRecommendScore = 0L;
 
     public static ReviewStatistics of(final User user) {
         return ReviewStatistics.builder()
@@ -78,22 +78,32 @@ public class ReviewStatistics extends BaseEntity {
         return calculatePercentage(totalCommunicationScore, totalCommunicationReviewCount);
     }
 
-    ////////////////////////////////////////////
-    // TODO: 다시 함께, 추천 여부 공식에 따라 추후 작성
     public Double getTogetherPercentage() {
-        return .0;
+        return calculatePercentage(totalTogetherScore, totalTogetherReviewCount);
     }
 
-    public Double getRecommendationPercentage() {
-        return .0;
+    public Double getRecommendPercentage() {
+        return calculatePercentage(totalRecommendScore, totalRecommendReviewCount);
     }
-    ////////////////////////////////////////////
-
 
     private Double calculatePercentage(final Long totalScore, final Long reviewCount) {
         if (reviewCount == 0) {
             return 0.0;
         }
         return (totalScore / (reviewCount * 5.0)) * 100;
+    }
+
+    public void update(final Review review) {
+        totalActivenessScore += review.getActivenessScore();
+        totalRecommendScore += review.getRecommendScore();
+        totalCommunicationScore += review.getCommunicationScore();
+        totalProfessionalismScore += review.getProfessionalismScore();
+        totalTogetherScore += review.getTogetherScore();
+
+        totalActivenessReviewCount++;
+        totalRecommendReviewCount++;
+        totalCommunicationReviewCount++;
+        totalProfessionalismReviewCount++;
+        totalTogetherReviewCount++;
     }
 }

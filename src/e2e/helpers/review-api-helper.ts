@@ -24,3 +24,23 @@ export async function writeReview(
     togetherScore,
   });
 }
+
+export type ReviewResponse = {
+  reviewerId: number;
+  revieweeId: number;
+  activenessScore: number;
+  professionalismScore: number;
+  communicationScore: number;
+  togetherScore: number;
+  recommendScore: number;
+};
+
+export type PeerReview = {
+  selfReview: ReviewResponse;
+  peerReview: ReviewResponse;
+};
+type PeerReviewsResponse = { reviews: PeerReview[] };
+
+export async function getPeerReviews(apiClient: ApiClient, studyId: number) {
+  return apiClient.get<PeerReviewsResponse>(`/studies/${studyId}/reviews`);
+}

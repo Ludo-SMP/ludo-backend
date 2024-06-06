@@ -34,8 +34,8 @@ public class ReviewController {
     @DataFieldName("reviews")
     @Operation(description = "특정 스터디에 대한 리뷰 목록 조회")
     @GetMapping("/studies/{studyId}/reviews")
-    public List<PeerReviewsResponse> getPeerReviews(@Parameter(hidden = true) @AuthUser final Long userId, @PathVariable("studyId") Long studyId, @RequestParam("reviewerId") Long reviewerId) {
-        return reviewFacade.getPeerReviews(studyId, userId, reviewerId);
+    public List<PeerReviewsResponse> getPeerReviews(@Parameter(hidden = true) @AuthUser final Long userId, @PathVariable("studyId") Long studyId) {
+        return reviewFacade.getPeerReviews(studyId, userId);
     }
 
     @PostMapping("/studies/{studyId}/reviews")

@@ -10,9 +10,9 @@ public record ReviewStatisticsResponse(
         // 의사소통
         double communicationScore,
         // 다시함께
-        double TogetherScore,
+        double togetherScore,
         // 추천
-        double recommendationScore
+        double recommendScore
 ) {
     public static ReviewStatisticsResponse from(final ReviewStatistics statistics) {
         return new ReviewStatisticsResponse(
@@ -20,7 +20,7 @@ public record ReviewStatisticsResponse(
                 statistics.getProfessionalismPercentage(),
                 statistics.getCommunicationPercentage(),
                 statistics.getTogetherPercentage(),
-                statistics.getRecommendationPercentage()
+                statistics.getRecommendPercentage()
         );
     }
 }
