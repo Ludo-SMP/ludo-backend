@@ -12,9 +12,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.ludo.study.studymatchingplatform.auth.common.AuthUser;
+import com.ludo.study.studymatchingplatform.notification.service.NotificationConfigRequest;
 import com.ludo.study.studymatchingplatform.notification.service.NotificationService;
 import com.ludo.study.studymatchingplatform.notification.service.SseEmitters;
 import com.ludo.study.studymatchingplatform.notification.service.dto.response.NotificationResponse;
+import com.ludo.study.studymatchingplatform.notification.service.dto.response.config.NotificationConfigResponse;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -48,11 +50,29 @@ public class NotificationController {
 		return notificationService.findNotifications(user);
 	}
 
-	@PutMapping("/settings/keyword")
-	public ResponseEntity<Void> updateNotificationKeywordConfig(@AuthUser final User user,
-																@RequestBody NotificationKeywordConfigRequest notificationKeywordConfigRequest
+	@GetMapping("/settings")
+	public NotificationConfigResponse readNotificationConfig(@AuthUser final User user) {
+		return notificationService.findNotificationConfig(user);
+	}
+
+	@PutMapping("/settings")
+	public ResponseEntity<Void> updateNotificationConfig(@AuthUser final User user,
+														 @RequestBody final NotificationConfigRequest notificationConfigRequest
 	) {
-		notificationService.configNotificationKeywords(user, notificationKeywordConfigRequest);
+		notificationService.configGlobalNotificationUserConfig(user, notificationConfigRequest);
+
 		return ResponseEntity.ok().build();
 	}
+
+	@PutMapping("/settings/keyword")
+	public ResponseEntity<Void> updateNotificationKeywordConfig(@AuthUser final User user,
+																@RequestBody final NotificationKeywordConfigRequest notificationKeywordConfigRequest
+	) {
+		notificationService.configNotificationCategoryKeywords(user, notificationKeywordConfigRequest.categoryIds());
+		notificationService.configNotificationPositionKeywords(user, notificationKeywordConfigRequest.positionIds());
+		notificationService.configNotificationStackKeywords(user, notificationKeywordConfigRequest.stackIds());
+
+		return ResponseEntity.ok().build();
+	}
+
 }
