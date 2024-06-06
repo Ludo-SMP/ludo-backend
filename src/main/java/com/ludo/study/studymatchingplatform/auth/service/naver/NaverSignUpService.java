@@ -5,6 +5,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ludo.study.studymatchingplatform.auth.service.naver.vo.NaverOAuthToken;
 import com.ludo.study.studymatchingplatform.auth.service.naver.vo.NaverUserProfile;
+import com.ludo.study.studymatchingplatform.notification.domain.config.GlobalNotificationUserConfig;
+import com.ludo.study.studymatchingplatform.notification.repository.config.GlobalNotificationUserConfigRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.service.exception.DuplicatedSignUpException;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 import com.ludo.study.studymatchingplatform.user.repository.user.UserRepositoryImpl;
@@ -18,6 +20,8 @@ public class NaverSignUpService {
 	private final NaverOAuthTokenRequestService naverOAuthTokenRequestService;
 	private final NaverProfileRequestService naverProfileRequestService;
 	private final UserRepositoryImpl userRepository;
+
+	private final GlobalNotificationUserConfigRepositoryImpl notificationUserConfigRepository;
 
 	@Transactional
 	public User naverSignUp(final String authorizationCode) {
@@ -38,6 +42,7 @@ public class NaverSignUpService {
 	private User signup(final NaverUserProfile userProfile) {
 		User user = userRepository.save(userProfile.toUser());
 		user.setInitialDefaultNickname();
+		notificationUserConfigRepository.save(GlobalNotificationUserConfig.ofNewSignUpUser(user));
 		return user;
 	}
 

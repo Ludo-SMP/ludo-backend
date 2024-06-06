@@ -46,8 +46,6 @@ public class GoogleSignUpController {
 				"client_id", clientRegistrationAndProviderRepository.findClientId(Social.GOOGLE));
 		redirectAttributes.addAttribute(
 				"redirect_uri", clientRegistrationAndProviderRepository.findSignupRedirectUri(Social.GOOGLE));
-		// redirectAttributes.addAttribute("scope",
-		// 		"https://www.googleapis.com/auth/userinfo.email,https://www.googleapis.com/auth/userinfo.profile");
 		redirectAttributes.addAttribute("scope", "email profile");
 
 		return "redirect:" + clientRegistrationAndProviderRepository.findAuthorizationUri(Social.GOOGLE);

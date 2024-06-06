@@ -5,6 +5,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ludo.study.studymatchingplatform.auth.service.google.vo.GoogleOAuthToken;
 import com.ludo.study.studymatchingplatform.auth.service.google.vo.GoogleUserProfile;
+import com.ludo.study.studymatchingplatform.notification.domain.config.GlobalNotificationUserConfig;
+import com.ludo.study.studymatchingplatform.notification.repository.config.GlobalNotificationUserConfigRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.service.exception.DuplicatedSignUpException;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 import com.ludo.study.studymatchingplatform.user.repository.user.UserRepositoryImpl;
@@ -18,6 +20,8 @@ public class GoogleSignUpService {
 	private final GoogleOAuthTokenRequestService googleOAuthTokenRequestService;
 	private final GoogleProfileRequestService googleProfileRequestService;
 	private final UserRepositoryImpl userRepository;
+
+	private final GlobalNotificationUserConfigRepositoryImpl notificationUserConfigRepository;
 
 	@Transactional
 	public User googleSignUp(final String authorizationCode) {
@@ -40,6 +44,7 @@ public class GoogleSignUpService {
 	private User signup(final GoogleUserProfile userInfo) {
 		final User user = userRepository.save(userInfo.toUser());
 		user.setInitialDefaultNickname();
+		notificationUserConfigRepository.save(GlobalNotificationUserConfig.ofNewSignUpUser(user));
 		return user;
 	}
 
