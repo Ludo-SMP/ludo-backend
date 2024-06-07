@@ -39,8 +39,13 @@ export type PeerReview = {
   selfReview: ReviewResponse;
   peerReview: ReviewResponse;
 };
-type PeerReviewsResponse = { reviews: PeerReview[] };
+export type StudyPeerReviews = {
+  id: number;
+  title: string;
+  reviews: PeerReview[];
+};
+type StudyPeerReviewsResponse = { studies: StudyPeerReviews[] };
 
-export async function getPeerReviews(apiClient: ApiClient, studyId: number) {
-  return apiClient.get<PeerReviewsResponse>(`/studies/${studyId}/reviews`);
+export async function getPeerReviews(apiClient: ApiClient) {
+  return apiClient.get<StudyPeerReviewsResponse>(`/reviews`);
 }

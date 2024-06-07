@@ -38,13 +38,24 @@ public class ReviewRepositoryImpl {
                 .fetchFirst() != null;
     }
 
+    public List<Review> findAllSelfReviews(final Long reviewerId) {
+        return q.selectFrom(review)
+                .where(review.reviewer.id.eq(reviewerId))
+                .fetch();
+    }
+
+    public List<Review> findAllPeerReviews(final Long revieweeId) {
+        return q.selectFrom(review)
+                .where(review.reviewee.id.eq(revieweeId))
+                .fetch();
+    }
+
     public List<Review> findSelfReviews(final Long studyId, final Long selfId, final List<Long> peerIds) {
         return q.selectFrom(review)
                 .where(review.study.id.eq(studyId)
                         .and(review.reviewer.id.eq(selfId))
                         .and(review.reviewee.id.in(peerIds)))
                 .fetch();
-
     }
 
     public List<Review> findPeerReviews(final Long studyId, final Long selfId, final List<Long> peerIds) {

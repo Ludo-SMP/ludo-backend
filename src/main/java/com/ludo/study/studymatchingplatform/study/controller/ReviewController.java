@@ -3,7 +3,7 @@ package com.ludo.study.studymatchingplatform.study.controller;
 import com.ludo.study.studymatchingplatform.auth.common.AuthUser;
 import com.ludo.study.studymatchingplatform.common.annotation.DataFieldName;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.study.WriteReviewRequest;
-import com.ludo.study.studymatchingplatform.study.service.dto.response.study.PeerReviewsResponse;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.study.StudyPeerReviewResponse;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.study.WriteReviewResponse;
 import com.ludo.study.studymatchingplatform.study.service.study.ReviewFacade;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
@@ -31,11 +31,11 @@ public class ReviewController {
     private final ReviewFacade reviewFacade;
 
     @ResponseStatus(HttpStatus.OK)
-    @DataFieldName("reviews")
-    @Operation(description = "특정 스터디에 대한 리뷰 목록 조회")
-    @GetMapping("/studies/{studyId}/reviews")
-    public List<PeerReviewsResponse> getPeerReviews(@Parameter(hidden = true) @AuthUser final Long userId, @PathVariable("studyId") Long studyId) {
-        return reviewFacade.getPeerReviews(studyId, userId);
+    @DataFieldName("studies")
+    @Operation(description = "가입한 모든 스터디에 대한 리뷰 목록 조회")
+    @GetMapping("/reviews")
+    public List<StudyPeerReviewResponse> getStudyPeerReviews(@Parameter(hidden = true) @AuthUser final User user) {
+        return reviewFacade.getStudyPeerReviews(user.getId());
     }
 
     @PostMapping("/studies/{studyId}/reviews")

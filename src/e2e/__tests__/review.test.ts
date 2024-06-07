@@ -121,10 +121,11 @@ describe("리뷰 작성", () => {
     const {
       status,
       data: {
-        data: { reviews },
+        data: { studies },
       },
-    } = await getPeerReviews(client, studyId);
+    } = await getPeerReviews(client);
 
+    const reviews = studies[0].reviews;
     // then
     expect(status).toBe(HttpStatusCode.Ok);
     expect(reviews.length).toBeGreaterThan(0);
@@ -201,9 +202,11 @@ describe("리뷰 작성", () => {
     const {
       status,
       data: {
-        data: { reviews },
+        data: { studies },
       },
-    } = await getPeerReviews(client, studyId);
+    } = await getPeerReviews(client);
+
+    const reviews = studies[0].reviews;
 
     // then
     expect(status).toBe(HttpStatusCode.Ok);
@@ -224,6 +227,471 @@ describe("리뷰 작성", () => {
     expect(reviews[0].peerReview.reviewerId).toEqual(applicantUserId);
     expect(reviews[0].peerReview.revieweeId).toEqual(request.revieweeId);
     expect(reviews[0].selfReview).toBeNull();
+  });
+
+  test("[200 OK] 여러 스터디의 팀원들에게 남긴 리뷰를 한 번에 조회 가능", async () => {
+    // given
+    const client = ApiClient.default();
+    const owner = fakeSignupBody();
+    const {
+      data: {
+        data: {
+          user: { id: ownerId },
+        },
+      },
+    } = await signup(client, owner);
+    const {
+      data: {
+        data: {
+          study: { id: studyId },
+        },
+      },
+    } = await createStudy(client, fakeCreateStudyRequest({}));
+    const {
+      data: {
+        data: { recruitment },
+      },
+    } = await writeRecruitment(client, studyId, fakeWriteRecruitmentRequest());
+
+    const owner2 = fakeSignupBody();
+    const {
+      data: {
+        data: {
+          user: { id: owner2Id },
+        },
+      },
+    } = await signup(client, owner2);
+    const {
+      data: {
+        data: {
+          study: { id: study2Id },
+        },
+      },
+    } = await createStudy(client, fakeCreateStudyRequest({}));
+    const {
+      data: {
+        data: { recruitment: recruitment2 },
+      },
+    } = await writeRecruitment(client, study2Id, fakeWriteRecruitmentRequest());
+
+    const applicantUser = fakeSignupBody();
+    const {
+      data: {
+        data: {
+          user: { id: applicantUserId },
+        },
+      },
+    } = await signup(client, applicantUser);
+    await applyRecruitment(client, studyId, recruitment.id, {
+      positionId: randPositionId(),
+    });
+
+    await applyRecruitment(client, study2Id, recruitment2.id, {
+      positionId: randPositionId(),
+    });
+
+    // login to owner
+    await login(client, owner);
+    await acceptApplicant(client, studyId, applicantUserId);
+    await updateStudyEndDateTime(subDays(utcNow(), 10));
+    await login(client, owner2);
+    await acceptApplicant(client, study2Id, applicantUserId);
+    await updateStudyEndDateTime(subDays(utcNow(), 10));
+
+    await login(client, applicantUser);
+
+    // // when
+    const prevRequest = fakeWriteReviewRequest({
+      revieweeId: ownerId,
+    });
+    const lastestRequest = fakeWriteReviewRequest({
+      revieweeId: owner2Id,
+    });
+    await writeReview(client, studyId, prevRequest);
+    await writeReview(client, study2Id, lastestRequest);
+
+    const {
+      status,
+      data: {
+        data: { studies },
+      },
+    } = await getPeerReviews(client);
+
+    const latestReviews = studies[0].reviews;
+    const prevReviews = studies[1].reviews;
+
+    // // then
+    expect(status).toBe(HttpStatusCode.Ok);
+    expect(latestReviews.length).toBe(1);
+    expect(latestReviews[0].selfReview.activenessScore).toEqual(
+      lastestRequest.activenessScore
+    );
+    expect(latestReviews[0].selfReview.communicationScore).toEqual(
+      lastestRequest.communicationScore
+    );
+    expect(latestReviews[0].selfReview.professionalismScore).toEqual(
+      lastestRequest.professionalismScore
+    );
+    expect(latestReviews[0].selfReview.recommendScore).toEqual(
+      lastestRequest.recommendScore
+    );
+    expect(latestReviews[0].selfReview.togetherScore).toEqual(
+      lastestRequest.togetherScore
+    );
+    expect(latestReviews[0].selfReview.reviewerId).toEqual(applicantUserId);
+    expect(latestReviews[0].selfReview.revieweeId).toEqual(
+      lastestRequest.revieweeId
+    );
+    expect(latestReviews[0].peerReview).toBeNull();
+
+    expect(prevReviews[0].selfReview.activenessScore).toEqual(
+      prevRequest.activenessScore
+    );
+    expect(prevReviews[0].selfReview.communicationScore).toEqual(
+      prevRequest.communicationScore
+    );
+    expect(prevReviews[0].selfReview.professionalismScore).toEqual(
+      prevRequest.professionalismScore
+    );
+    expect(prevReviews[0].selfReview.recommendScore).toEqual(
+      prevRequest.recommendScore
+    );
+    expect(prevReviews[0].selfReview.togetherScore).toEqual(
+      prevRequest.togetherScore
+    );
+    expect(prevReviews[0].selfReview.reviewerId).toEqual(applicantUserId);
+    expect(prevReviews[0].selfReview.revieweeId).toEqual(
+      prevRequest.revieweeId
+    );
+    expect(prevReviews[0].peerReview).toBeNull();
+  });
+
+  test("[200 OK] 여러 스터디의 팀원들이 내게 남긴 리뷰를 한 번에 조회 가능", async () => {
+    // given
+    const client = ApiClient.default();
+    const owner = fakeSignupBody();
+    const {
+      data: {
+        data: {
+          user: { id: ownerId },
+        },
+      },
+    } = await signup(client, owner);
+    const {
+      data: {
+        data: {
+          study: { id: studyId },
+        },
+      },
+    } = await createStudy(client, fakeCreateStudyRequest({}));
+    const {
+      data: {
+        data: { recruitment },
+      },
+    } = await writeRecruitment(client, studyId, fakeWriteRecruitmentRequest());
+
+    const owner2 = fakeSignupBody();
+    const {
+      data: {
+        data: {
+          user: { id: owner2Id },
+        },
+      },
+    } = await signup(client, owner2);
+    const {
+      data: {
+        data: {
+          study: { id: study2Id },
+        },
+      },
+    } = await createStudy(client, fakeCreateStudyRequest({}));
+    const {
+      data: {
+        data: { recruitment: recruitment2 },
+      },
+    } = await writeRecruitment(client, study2Id, fakeWriteRecruitmentRequest());
+
+    const applicantUser = fakeSignupBody();
+    const {
+      data: {
+        data: {
+          user: { id: applicantUserId },
+        },
+      },
+    } = await signup(client, applicantUser);
+    await applyRecruitment(client, studyId, recruitment.id, {
+      positionId: randPositionId(),
+    });
+
+    await applyRecruitment(client, study2Id, recruitment2.id, {
+      positionId: randPositionId(),
+    });
+
+    // login to owner
+    await login(client, owner);
+    await acceptApplicant(client, studyId, applicantUserId);
+    await updateStudyEndDateTime(subDays(utcNow(), 10));
+    await login(client, owner2);
+    await acceptApplicant(client, study2Id, applicantUserId);
+    await updateStudyEndDateTime(subDays(utcNow(), 10));
+
+    await login(client, applicantUser);
+
+    // // when
+    const prevRequest = fakeWriteReviewRequest({
+      revieweeId: applicantUserId,
+    });
+    const lastestRequest = fakeWriteReviewRequest({
+      revieweeId: applicantUserId,
+    });
+
+    await login(client, owner);
+    await writeReview(client, studyId, prevRequest);
+    await login(client, owner2);
+    await writeReview(client, study2Id, lastestRequest);
+
+    // me
+    await login(client, applicantUser);
+
+    const {
+      status,
+      data: {
+        data: { studies },
+      },
+    } = await getPeerReviews(client);
+
+    // // Review:
+
+    const latestReview = studies[0].reviews;
+    const prevReview = studies[1].reviews;
+
+    console.log(latestReview[0].selfReview);
+    // // then
+    expect(status).toBe(HttpStatusCode.Ok);
+    expect(latestReview.length).toBe(1);
+    expect(latestReview[0].peerReview.activenessScore).toEqual(
+      lastestRequest.activenessScore
+    );
+    expect(latestReview[0].peerReview.communicationScore).toEqual(
+      lastestRequest.communicationScore
+    );
+    expect(latestReview[0].peerReview.professionalismScore).toEqual(
+      lastestRequest.professionalismScore
+    );
+    expect(latestReview[0].peerReview.recommendScore).toEqual(
+      lastestRequest.recommendScore
+    );
+    expect(latestReview[0].peerReview.togetherScore).toEqual(
+      lastestRequest.togetherScore
+    );
+    expect(latestReview[0].peerReview.reviewerId).toEqual(owner2Id);
+    expect(latestReview[0].peerReview.revieweeId).toEqual(
+      lastestRequest.revieweeId
+    );
+    expect(latestReview[0].selfReview).toBeNull();
+
+    expect(prevReview[0].peerReview.activenessScore).toEqual(
+      prevRequest.activenessScore
+    );
+    expect(prevReview[0].peerReview.communicationScore).toEqual(
+      prevRequest.communicationScore
+    );
+    expect(prevReview[0].peerReview.professionalismScore).toEqual(
+      prevRequest.professionalismScore
+    );
+    expect(prevReview[0].peerReview.recommendScore).toEqual(
+      prevRequest.recommendScore
+    );
+    expect(prevReview[0].peerReview.togetherScore).toEqual(
+      prevRequest.togetherScore
+    );
+    expect(prevReview[0].peerReview.reviewerId).toEqual(ownerId);
+    expect(prevReview[0].peerReview.revieweeId).toEqual(prevRequest.revieweeId);
+    expect(prevReview[0].selfReview).toBeNull();
+  });
+
+  test("[200 OK] 여러 스터디의 팀원들이 내게 남긴 리뷰와 내가 남긴 리뷰를 한 번에 조회 가능", async () => {
+    // given
+    const client = ApiClient.default();
+    const owner = fakeSignupBody();
+    const {
+      data: {
+        data: {
+          user: { id: ownerId },
+        },
+      },
+    } = await signup(client, owner);
+    const {
+      data: {
+        data: {
+          study: { id: studyId },
+        },
+      },
+    } = await createStudy(client, fakeCreateStudyRequest({}));
+    const {
+      data: {
+        data: { recruitment },
+      },
+    } = await writeRecruitment(client, studyId, fakeWriteRecruitmentRequest());
+
+    const owner2 = fakeSignupBody();
+    const {
+      data: {
+        data: {
+          user: { id: owner2Id },
+        },
+      },
+    } = await signup(client, owner2);
+    const {
+      data: {
+        data: {
+          study: { id: study2Id },
+        },
+      },
+    } = await createStudy(client, fakeCreateStudyRequest({}));
+    const {
+      data: {
+        data: { recruitment: recruitment2 },
+      },
+    } = await writeRecruitment(client, study2Id, fakeWriteRecruitmentRequest());
+
+    const applicantUser = fakeSignupBody();
+    const {
+      data: {
+        data: {
+          user: { id: applicantUserId },
+        },
+      },
+    } = await signup(client, applicantUser);
+    await applyRecruitment(client, studyId, recruitment.id, {
+      positionId: randPositionId(),
+    });
+
+    await applyRecruitment(client, study2Id, recruitment2.id, {
+      positionId: randPositionId(),
+    });
+
+    // login to owner
+    await login(client, owner);
+    await acceptApplicant(client, studyId, applicantUserId);
+    await updateStudyEndDateTime(subDays(utcNow(), 10));
+    await login(client, owner2);
+    await acceptApplicant(client, study2Id, applicantUserId);
+    await updateStudyEndDateTime(subDays(utcNow(), 10));
+
+    await login(client, applicantUser);
+
+    // // when
+    const prevPeerRequest = fakeWriteReviewRequest({
+      revieweeId: applicantUserId,
+    });
+    const lastestPeerRequest = fakeWriteReviewRequest({
+      revieweeId: applicantUserId,
+    });
+    const prevMyRequest = fakeWriteReviewRequest({
+      revieweeId: ownerId,
+    });
+    const lastestMyRequest = fakeWriteReviewRequest({
+      revieweeId: owner2Id,
+    });
+
+    await login(client, owner);
+    await writeReview(client, studyId, prevPeerRequest);
+    await login(client, owner2);
+    await writeReview(client, study2Id, lastestPeerRequest);
+
+    await login(client, applicantUser);
+    await writeReview(client, studyId, prevMyRequest);
+    await writeReview(client, study2Id, lastestMyRequest);
+
+    // me
+    const {
+      status,
+      data: {
+        data: { studies },
+      },
+    } = await getPeerReviews(client);
+
+    const latestReviews = studies[0].reviews;
+    const prevReview = studies[1].reviews;
+    const latestPeerReview = latestReviews[0].peerReview;
+    const latestMyReview = latestReviews[0].selfReview;
+    const prevPeerReview = prevReview[0].peerReview;
+    const prevMyReview = prevReview[0].selfReview;
+
+    // // then
+    expect(status).toBe(HttpStatusCode.Ok);
+
+    // latest Study
+    expect(latestReviews.length).toBe(1);
+
+    // latesty Study peer review
+    expect(latestPeerReview.activenessScore).toEqual(
+      lastestPeerRequest.activenessScore
+    );
+    expect(latestPeerReview.communicationScore).toEqual(
+      lastestPeerRequest.communicationScore
+    );
+    expect(latestPeerReview.professionalismScore).toEqual(
+      lastestPeerRequest.professionalismScore
+    );
+    expect(latestPeerReview.recommendScore).toEqual(
+      lastestPeerRequest.recommendScore
+    );
+    expect(latestPeerReview.togetherScore).toEqual(
+      lastestPeerRequest.togetherScore
+    );
+    expect(latestPeerReview.reviewerId).toEqual(owner2Id);
+    expect(latestPeerReview.revieweeId).toEqual(applicantUserId);
+
+    // latest study my review
+    expect(latestMyReview.activenessScore).toEqual(
+      lastestMyRequest.activenessScore
+    );
+    expect(latestMyReview.communicationScore).toEqual(
+      lastestMyRequest.communicationScore
+    );
+    expect(latestMyReview.professionalismScore).toEqual(
+      lastestMyRequest.professionalismScore
+    );
+    expect(latestMyReview.recommendScore).toEqual(
+      lastestMyRequest.recommendScore
+    );
+    expect(latestMyReview.togetherScore).toEqual(
+      lastestMyRequest.togetherScore
+    );
+    expect(latestMyReview.reviewerId).toEqual(applicantUserId);
+    expect(latestMyReview.revieweeId).toEqual(owner2Id);
+
+    // prev study peer review
+    expect(prevPeerReview.activenessScore).toEqual(
+      prevPeerRequest.activenessScore
+    );
+    expect(prevPeerReview.communicationScore).toEqual(
+      prevPeerRequest.communicationScore
+    );
+    expect(prevPeerReview.professionalismScore).toEqual(
+      prevPeerRequest.professionalismScore
+    );
+    expect(prevPeerReview.recommendScore).toEqual(
+      prevPeerRequest.recommendScore
+    );
+    expect(prevPeerReview.togetherScore).toEqual(prevPeerRequest.togetherScore);
+    expect(prevPeerReview.reviewerId).toEqual(ownerId);
+    expect(prevPeerReview.revieweeId).toEqual(applicantUserId);
+
+    // prev study my review
+    expect(prevMyReview.activenessScore).toEqual(prevMyRequest.activenessScore);
+    expect(prevMyReview.communicationScore).toEqual(
+      prevMyRequest.communicationScore
+    );
+    expect(prevMyReview.professionalismScore).toEqual(
+      prevMyRequest.professionalismScore
+    );
+    expect(prevMyReview.recommendScore).toEqual(prevMyRequest.recommendScore);
+    expect(prevMyReview.togetherScore).toEqual(prevMyRequest.togetherScore);
+    expect(prevMyReview.reviewerId).toEqual(applicantUserId);
+    expect(prevMyReview.revieweeId).toEqual(ownerId);
   });
 
   test("[400 BAD_REQUEST] 스터디가 종료 전에는 리뷰 작성 불가", async () => {

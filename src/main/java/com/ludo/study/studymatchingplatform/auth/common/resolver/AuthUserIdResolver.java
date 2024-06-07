@@ -3,6 +3,7 @@ package com.ludo.study.studymatchingplatform.auth.common.resolver;
 import com.ludo.study.studymatchingplatform.auth.common.AuthUser;
 import com.ludo.study.studymatchingplatform.auth.common.AuthUserPayload;
 import com.ludo.study.studymatchingplatform.filter.JwtAuthenticationFilter;
+import com.ludo.study.studymatchingplatform.user.domain.user.User;
 import com.ludo.study.studymatchingplatform.user.repository.user.UserRepositoryImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +29,7 @@ public class AuthUserIdResolver implements HandlerMethodArgumentResolver {
 
     @Override
     public boolean supportsParameter(final MethodParameter parameter) {
-        final boolean hasAuthUserAnnotation = parameter.getParameterAnnotation(AuthUser.class) != null;
+        final boolean hasAuthUserAnnotation = parameter.hasParameterAnnotation(AuthUser.class);
         final boolean isLong = Long.class.isAssignableFrom(parameter.getParameterType());
         return hasAuthUserAnnotation && isLong;
     }
@@ -41,8 +42,7 @@ public class AuthUserIdResolver implements HandlerMethodArgumentResolver {
         final AuthUserPayload payload = (AuthUserPayload) request.getAttribute(
                 JwtAuthenticationFilter.AUTH_USER_PAYLOAD);
 
-        Long id = userRepository.getById(payload.getId()).getId();
-        System.out.println("userid: "+id);
-        return id;
+        final User user = userRepository.getById(payload.getId());
+        return user.getId();
     }
 }

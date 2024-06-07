@@ -13,4 +13,5 @@ public class StudyMatchingPlatformApplication {
         SpringApplication.run(StudyMatchingPlatformApplication.class, args);
     }
 
+
 }

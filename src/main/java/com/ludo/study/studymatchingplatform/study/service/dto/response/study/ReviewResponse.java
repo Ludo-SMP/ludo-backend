@@ -2,6 +2,8 @@ package com.ludo.study.studymatchingplatform.study.service.dto.response.study;
 
 import com.ludo.study.studymatchingplatform.study.domain.study.Review;
 
+import java.time.LocalDateTime;
+
 public record ReviewResponse(
         Long reviewerId,
         Long revieweeId,
@@ -9,7 +11,8 @@ public record ReviewResponse(
         Long professionalismScore,
         Long communicationScore,
         Long togetherScore,
-        Long recommendScore
+        Long recommendScore,
+        LocalDateTime createdDateTime
 ) {
     public static ReviewResponse from(final Review review) {
         return new ReviewResponse(
@@ -19,7 +22,8 @@ public record ReviewResponse(
                 review.getProfessionalismScore(),
                 review.getCommunicationScore(),
                 review.getTogetherScore(),
-                review.getRecommendScore()
+                review.getRecommendScore(),
+                review.getCreatedDateTime()
         );
     }
 }
