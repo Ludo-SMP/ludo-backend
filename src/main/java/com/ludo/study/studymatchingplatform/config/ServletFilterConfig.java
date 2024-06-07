@@ -35,6 +35,7 @@ public class ServletFilterConfig {
         filterRegistrationBean.addUrlPatterns("/api/users/*");
         filterRegistrationBean.addUrlPatterns("/api/studies/*");
         filterRegistrationBean.addUrlPatterns("/api/statistics/*");
+        filterRegistrationBean.addUrlPatterns("/api/reviews/*");
     }
 
 }

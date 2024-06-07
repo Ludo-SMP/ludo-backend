@@ -118,7 +118,7 @@ describe("statistics Api", () => {
     expect(study.status).toEqual("RECRUITING");
   });
 
-  test("[200 OK] review 작성 시, review 통계 확인 시 반영", async () => {
+  test.only("[200 OK] review 작성 시, review 통계 확인 시 반영", async () => {
     // given
     const client = ApiClient.default();
     const owner = fakeSignupBody();
@@ -167,7 +167,7 @@ describe("statistics Api", () => {
 
     await login(client, applicantUser);
 
-    await getPeerReviews(client, studyId);
+    await getPeerReviews(client);
     const {
       status,
       data: {
