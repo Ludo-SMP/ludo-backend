@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -72,6 +73,15 @@ public class NotificationController {
 		notificationService.configNotificationCategoryKeywords(user, notificationKeywordConfigRequest.categoryIds());
 		notificationService.configNotificationPositionKeywords(user, notificationKeywordConfigRequest.positionIds());
 		notificationService.configNotificationStackKeywords(user, notificationKeywordConfigRequest.stackIds());
+
+		return ResponseEntity.ok().build();
+	}
+
+	@PostMapping("/check")
+	public ResponseEntity<Void> checkNotifications(@AuthUser final User user,
+												   @RequestBody final NotificationCheckRequest notificationCheckRequest
+	) {
+		notificationService.checkNotificationsAsRead(user, notificationCheckRequest.notificationIds());
 
 		return ResponseEntity.ok().build();
 	}
