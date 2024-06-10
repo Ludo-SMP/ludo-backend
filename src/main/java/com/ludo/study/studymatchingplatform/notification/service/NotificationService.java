@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ludo.study.studymatchingplatform.notification.domain.config.GlobalNotificationUserConfig;
+import com.ludo.study.studymatchingplatform.notification.domain.config.NotificationConfigGroup;
 import com.ludo.study.studymatchingplatform.notification.domain.keyword.NotificationKeywordCategory;
 import com.ludo.study.studymatchingplatform.notification.domain.keyword.NotificationKeywordPosition;
 import com.ludo.study.studymatchingplatform.notification.domain.keyword.NotificationKeywordStack;
@@ -19,8 +20,6 @@ import com.ludo.study.studymatchingplatform.notification.domain.notification.Stu
 import com.ludo.study.studymatchingplatform.notification.service.dto.response.NotificationResponse;
 import com.ludo.study.studymatchingplatform.notification.service.dto.response.config.NotificationConfigResponse;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
-import com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant.Applicant;
-import com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant.ApplicantStatus;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.position.Position;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.stack.Stack;
 import com.ludo.study.studymatchingplatform.study.domain.study.Review;
@@ -80,8 +79,8 @@ public class NotificationService {
 
 	public void studyApplicantAcceptNotice(final Study study, final User applicantUser) {
 
-		final Applicant applicant = study.getApplicant(applicantUser);
-		applicant.ensureApplicantStatus(ApplicantStatus.ACCEPTED);
+		if (checkNotificationConfigFalse(applicantUser, NotificationConfigGroup.STUDY_APPLICANT_RESULT_CONFIG))
+			return;
 
 		final List<StudyNotification> studyNotifications = notificationCommandService.saveStudyNotifications(study,
 				STUDY_APPLICANT_ACCEPT, List.of(applicantUser));
@@ -95,8 +94,9 @@ public class NotificationService {
 
 	public void studyApplicantRejectNotice(final Study study, final User applicantUser) {
 
-		final Applicant applicant = study.getApplicant(applicantUser);
-		applicant.ensureApplicantStatus(ApplicantStatus.REFUSED);
+		if (checkNotificationConfigFalse(applicantUser, NotificationConfigGroup.STUDY_APPLICANT_RESULT_CONFIG)) {
+			return;
+		}
 
 		final List<StudyNotification> studyNotifications = notificationCommandService.saveStudyNotifications(study,
 				STUDY_APPLICANT_REJECT, List.of(applicantUser));
@@ -154,7 +154,7 @@ public class NotificationService {
 	}
 
 	@Scheduled(cron = "0 0 0 * *")
-	public void studyReviewStartNotice(final Study study) {
+	public void studyReviewStartNotice() {
 
 		final List<Participant> studyParticipantUsers = notificationQueryService.findStudyReviewStartNotifier();
 
@@ -171,6 +171,9 @@ public class NotificationService {
 	public void reviewReceiveNotice(final Review review) {
 
 		final User reviewee = review.getReviewee();
+		if (checkNotificationConfigFalse(reviewee, NotificationConfigGroup.REVIEW_CONFIG)) {
+			return;
+		}
 
 		final List<ReviewNotification> reviewNotifications = notificationCommandService.saveReviewNotifications(review,
 				REVIEW_RECEIVE, List.of(reviewee));
@@ -180,6 +183,11 @@ public class NotificationService {
 			final NotificationResponse notificationResponse = new NotificationResponse(reviewNotification);
 			sseEmitters.sendNotification(notifier, notificationResponse);
 		});
+	}
+
+	private boolean checkNotificationConfigFalse(final User notifier, final NotificationConfigGroup reviewConfig) {
+		boolean notificationConfig = notificationQueryService.isNotificationConfigTrue(notifier, reviewConfig);
+		return Boolean.FALSE.equals(notificationConfig);
 	}
 
 	public void reviewPeerFinishNotice(final Study study, final Review review) {
