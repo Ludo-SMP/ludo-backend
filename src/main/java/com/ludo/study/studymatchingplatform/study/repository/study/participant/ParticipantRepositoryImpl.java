@@ -1,5 +1,6 @@
 package com.ludo.study.studymatchingplatform.study.repository.study.participant;
 
+import static com.ludo.study.studymatchingplatform.notification.domain.config.QGlobalNotificationUserConfig.*;
 import static com.ludo.study.studymatchingplatform.study.domain.study.QStudy.*;
 import static com.ludo.study.studymatchingplatform.study.domain.study.participant.QParticipant.*;
 
@@ -28,6 +29,10 @@ public class ParticipantRepositoryImpl {
 		return participantJpaRepository.save(participant);
 	}
 
+	public List<Participant> saveAll(final List<Participant> participants) {
+		return participantJpaRepository.saveAll(participants);
+	}
+
 	public Optional<Participant> find(final Long studyId, final Long userId) {
 		return Optional.ofNullable(q.selectFrom(participant)
 				.where(participant.study.id.eq(studyId))
@@ -52,21 +57,21 @@ public class ParticipantRepositoryImpl {
 	}
 
 	public List<Participant> findOwnerParticipantsBetweenDateRange(final StudyEndDateNotifierCond condition) {
-		// TODO: 모집공고 알림 설정을 on한 사용자 쿼리 조건 추가
 		return q.selectFrom(participant)
+				.join(globalNotificationUserConfig).on(participant.user.eq(globalNotificationUserConfig.user))
 				.join(participant.study, study)
-				.where(participant.role.eq(condition.role()))
-				.where(study.endDateTime.between(condition.startOfDay(), condition.endOfDay()))
+				.where(participant.role.eq(condition.role()),
+						study.endDateTime.between(condition.endDateStartOfDay(), condition.endDateEndOfDay()))
 				.fetch();
 	}
 
-	public List<Participant> findParticipantsBetweenDateRangeAndCompleted(
-			final StudyReviewStartNotifierCond condition) {
-		// TODO: 모집공고 알림 설정을 on한 사용자 쿼리 조건 추가
+	public List<Participant> findParticipantsBetweenDateRange(final StudyReviewStartNotifierCond condition) {
+		// FIXME 스터디 종료 상태 조건절 추가해야 함. 현재는 스터디 GET API를 호출해야 스터디 시간에 맞게 종료상태로 바뀌는 구조여서, 일단 조건절에서 제외함
 		return q.selectFrom(participant)
+				.join(globalNotificationUserConfig).on(participant.user.eq(globalNotificationUserConfig.user))
 				.join(participant.study, study)
-				.where(participant.study.status.eq(condition.studyStatus()))
-				.where(study.endDateTime.between(condition.startOfDay(), condition.endOfDay()))
+				.where(globalNotificationUserConfig.reviewConfig.isTrue(),
+						study.endDateTime.between(condition.yesterdayStartOfDay(), condition.yesterdayEndOfDay()))
 				.fetch();
 	}
 }
