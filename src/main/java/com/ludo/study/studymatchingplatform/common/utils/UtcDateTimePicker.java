@@ -1,6 +1,7 @@
 package com.ludo.study.studymatchingplatform.common.utils;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 /**
  * <h5>테스트 시, Profile을 "test"로 설정하면 항상 2000-01-01으로 고정된 DateTime 획득 </h5>
@@ -29,5 +30,9 @@ import java.time.LocalDateTime;
  * @see CurrentUtcDateTimePicker
  */
 public interface UtcDateTimePicker {
-    LocalDateTime now();
+	LocalDateTime now();
+
+	default LocalDateTime toMicroSeconds(LocalDateTime dateTime) {
+		return dateTime.truncatedTo(ChronoUnit.MICROS);
+	}
 }
