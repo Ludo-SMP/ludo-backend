@@ -57,4 +57,8 @@ public class Notification {
 		this.notifier = notifier;
 	}
 
+	public boolean isRead() {
+		return read;
+	}
+
 }
