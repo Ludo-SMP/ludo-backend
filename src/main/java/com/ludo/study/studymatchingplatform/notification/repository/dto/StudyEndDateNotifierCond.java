@@ -4,6 +4,6 @@ import java.time.LocalDateTime;
 
 import com.ludo.study.studymatchingplatform.study.domain.study.participant.Role;
 
-public record StudyEndDateNotifierCond(Role role, LocalDateTime startOfDay, LocalDateTime endOfDay) {
+public record StudyEndDateNotifierCond(Role role, LocalDateTime endDateStartOfDay, LocalDateTime endDateEndOfDay) {
 
 }
