@@ -19,7 +19,7 @@ public enum NotificationConfigGroup {
 	STUDY_PARTICIPANT_LEAVE_CONFIG(List.of(STUDY_PARTICIPANT_LEAVE, STUDY_PARTICIPANT_LEAVE_APPLY)),
 	REVIEW_CONFIG(List.of(STUDY_REVIEW_START, REVIEW_RECEIVE, REVIEW_PEER_FINISH));
 
-	private List<NotificationEventType> notificationEventTypes;
+	private final List<NotificationEventType> notificationEventTypes;
 
 	NotificationConfigGroup(List<NotificationEventType> notificationEventTypes) {
 		this.notificationEventTypes = notificationEventTypes;
