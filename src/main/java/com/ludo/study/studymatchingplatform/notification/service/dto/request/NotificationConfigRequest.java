@@ -1,4 +1,4 @@
-package com.ludo.study.studymatchingplatform.notification.service;
+package com.ludo.study.studymatchingplatform.notification.service.dto.request;
 
 import com.ludo.study.studymatchingplatform.notification.domain.config.NotificationConfigGroup;
 

@@ -1,4 +1,4 @@
-package com.ludo.study.studymatchingplatform.notification.controller;
+package com.ludo.study.studymatchingplatform.notification.controller.dto.request;
 
 import java.util.List;
 

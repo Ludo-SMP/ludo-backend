@@ -12,9 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.ludo.study.studymatchingplatform.auth.common.AuthUser;
-import com.ludo.study.studymatchingplatform.notification.service.NotificationConfigRequest;
+import com.ludo.study.studymatchingplatform.notification.controller.dto.request.NotificationKeywordConfigRequest;
 import com.ludo.study.studymatchingplatform.notification.service.NotificationService;
 import com.ludo.study.studymatchingplatform.notification.service.SseEmitters;
+import com.ludo.study.studymatchingplatform.notification.service.dto.request.NotificationConfigRequest;
 import com.ludo.study.studymatchingplatform.notification.service.dto.response.NotificationResponse;
 import com.ludo.study.studymatchingplatform.notification.service.dto.response.config.NotificationConfigResponse;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;

@@ -21,6 +21,7 @@ import com.ludo.study.studymatchingplatform.notification.repository.keyword.Noti
 import com.ludo.study.studymatchingplatform.notification.repository.notification.RecruitmentNotificationRepositoryImpl;
 import com.ludo.study.studymatchingplatform.notification.repository.notification.ReviewNotificationRepositoryImpl;
 import com.ludo.study.studymatchingplatform.notification.repository.notification.StudyNotificationRepositoryImpl;
+import com.ludo.study.studymatchingplatform.notification.service.dto.request.NotificationConfigRequest;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
 import com.ludo.study.studymatchingplatform.study.domain.study.Review;
 import com.ludo.study.studymatchingplatform.study.domain.study.Study;
