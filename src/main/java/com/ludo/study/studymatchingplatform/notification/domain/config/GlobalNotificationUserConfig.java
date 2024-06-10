@@ -115,7 +115,7 @@ public class GlobalNotificationUserConfig {
 	}
 
 	private void updateReviewConfig(boolean enabled) {
-		this.studyParticipantLeaveConfig = enabled;
+		this.reviewConfig = enabled;
 	}
 
 }
