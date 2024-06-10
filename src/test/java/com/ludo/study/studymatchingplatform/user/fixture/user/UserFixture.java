@@ -5,29 +5,37 @@ import com.ludo.study.studymatchingplatform.user.domain.user.User;
 
 public class UserFixture {
 
-	public static final User user1 = User.builder()
-			.social(Social.NAVER)
-			.nickname("user1")
-			.email("user1@naver.com")
-			.build();
+	public static User USER1() {
+		return User.builder()
+				.social(Social.NAVER)
+				.nickname("user1")
+				.email("user1@naver.com")
+				.build();
+	}
 
-	public static final User user2 = User.builder()
-			.social(Social.KAKAO)
-			.nickname("user2")
-			.email("user2@kakao.com")
-			.build();
+	public static User USER2() {
+		return User.builder()
+				.social(Social.KAKAO)
+				.nickname("user2")
+				.email("user2@kakao.com")
+				.build();
+	}
 
-	public static final User user3 = User.builder()
-			.social(Social.GOOGLE)
-			.nickname("user3")
-			.email("user3@google.com")
-			.build();
+	public static User USER3() {
+		return User.builder()
+				.social(Social.GOOGLE)
+				.nickname("user3")
+				.email("user3@google.com")
+				.build();
+	}
 
-	public static final User user4 = User.builder()
-			.social(Social.NAVER)
-			.nickname("user4")
-			.email("user4@naver.com")
-			.build();
+	public static User USER4() {
+		return User.builder()
+				.social(Social.NAVER)
+				.nickname("user4")
+				.email("user4@naver.com")
+				.build();
+	}
 
 	public static User createUser(Social social, String nickname, String email) {
 		return User.builder()
