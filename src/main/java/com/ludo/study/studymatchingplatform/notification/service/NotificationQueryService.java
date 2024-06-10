@@ -6,13 +6,17 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ludo.study.studymatchingplatform.common.utils.UtcDateTimePicker;
 import com.ludo.study.studymatchingplatform.notification.domain.config.GlobalNotificationUserConfig;
+import com.ludo.study.studymatchingplatform.notification.domain.config.NotificationConfigGroup;
 import com.ludo.study.studymatchingplatform.notification.domain.keyword.NotificationKeywordCategory;
 import com.ludo.study.studymatchingplatform.notification.domain.keyword.NotificationKeywordPosition;
 import com.ludo.study.studymatchingplatform.notification.domain.keyword.NotificationKeywordStack;
@@ -34,7 +38,6 @@ import com.ludo.study.studymatchingplatform.notification.service.dto.response.co
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
 import com.ludo.study.studymatchingplatform.study.domain.study.Review;
 import com.ludo.study.studymatchingplatform.study.domain.study.Study;
-import com.ludo.study.studymatchingplatform.study.domain.study.StudyStatus;
 import com.ludo.study.studymatchingplatform.study.domain.study.participant.Participant;
 import com.ludo.study.studymatchingplatform.study.domain.study.participant.Role;
 import com.ludo.study.studymatchingplatform.study.repository.study.ReviewRepositoryImpl;
@@ -63,6 +66,8 @@ public class NotificationQueryService {
 	private final NotificationKeywordPositionRepositoryImpl notificationKeywordPositionRepository;
 	private final NotificationKeywordStackRepositoryImpl notificationKeywordStackRepository;
 
+	private final UtcDateTimePicker utcDateTimePicker;
+
 	public List<User> findRecruitmentNotifier(final Recruitment recruitment) {
 		final RecruitmentNotifierCond recruitmentNotifierCondition = new RecruitmentNotifierCond(
 				recruitment.getOwner(),
@@ -73,34 +78,42 @@ public class NotificationQueryService {
 	}
 
 	public List<User> findStudyApplicantNotifier(final Study study) {
-		return userRepository.findParticipantUsersByStudyId(study.getId());
+		return userRepository.findStudyApplicantNotifiers(study.getId());
+	}
+
+	public boolean isNotificationConfigTrue(final User applicantUser, final NotificationConfigGroup configGroup) {
+		return globalNotificationUserConfigRepository.isUserNotificationConfigIsTrue(
+				applicantUser.getId(), configGroup);
 	}
 
 	public List<User> findStudyParticipantLeaveNotifier(final Study study) {
-		return userRepository.findParticipantUsersByStudyId(study.getId());
+		return userRepository.findParticipantLeaveNotifiers(study.getId());
 	}
 
 	public List<Participant> findStudyEndDateNotifier() {
-		final Long remainingPeriod = 5L;
-		final LocalDate endDate = LocalDate.now()
-				.plusDays(remainingPeriod);    // TODO: UtcTimePicker PR merge 후 수정 (for Testable Code)
-		final LocalDateTime startOfDay = endDate.atStartOfDay();
-		final LocalDateTime endOfDay = endDate.atTime(LocalTime.MAX);
+		final long remainingPeriod = 5L;
+		final LocalDate endDate = utcDateTimePicker.now().toLocalDate().plusDays(remainingPeriod);
+		final LocalDateTime endDateStartOfDay = utcDateTimePicker.toMicroSeconds(endDate.atStartOfDay());
+		final LocalDateTime endDateEndOfDay = utcDateTimePicker.toMicroSeconds(endDate.atTime(LocalTime.MAX));
 
-		return participantRepository.findOwnerParticipantsBetweenDateRange(
-				new StudyEndDateNotifierCond(Role.OWNER, startOfDay, endOfDay));
+		final List<Participant> ownerParticipantsBetweenDateRange = participantRepository.findOwnerParticipantsBetweenDateRange(
+				new StudyEndDateNotifierCond(Role.OWNER, endDateStartOfDay, endDateEndOfDay));
+		log.info("ownerParticipantsBetweenDateRange = {}", ownerParticipantsBetweenDateRange);
+		return ownerParticipantsBetweenDateRange;
 	}
 
 	public List<Participant> findStudyReviewStartNotifier() {
-		final LocalDate now = LocalDate.now();
-		final LocalDateTime startOfDay = now.atStartOfDay(); // TODO: UtcTimePicker PR merge 후 수정 (for Testable Code)
-		final LocalDateTime endOfDay = now.atTime(LocalTime.MAX);
+		final LocalDate yesterday = utcDateTimePicker.now().minusDays(1).toLocalDate();
+		final LocalDateTime yesterdayStartOfDay = utcDateTimePicker.toMicroSeconds(yesterday.atStartOfDay());
+		final LocalDateTime yesterdayEndOfDay = utcDateTimePicker.toMicroSeconds(yesterday.atTime(LocalTime.MAX));
 		final StudyReviewStartNotifierCond studyReviewStartNotifyCond = new StudyReviewStartNotifierCond(
-				startOfDay,
-				endOfDay,
-				StudyStatus.COMPLETED);
+				yesterdayStartOfDay,
+				yesterdayEndOfDay);
 
-		return participantRepository.findParticipantsBetweenDateRangeAndCompleted(studyReviewStartNotifyCond);
+		final List<Participant> participantsBetweenDateRange = participantRepository
+				.findParticipantsBetweenDateRange(studyReviewStartNotifyCond);
+		log.info("participantsBetweenDateRange = {}", participantsBetweenDateRange);
+		return participantsBetweenDateRange;
 	}
 
 	public List<User> findReviewPeerFinishNotifier(final Study study, final Review review) {
@@ -109,8 +122,19 @@ public class NotificationQueryService {
 		if (!isPeerReviewFinish(study, reviewee, reviewer)) {
 			return Collections.emptyList();
 		}
+		final GlobalNotificationUserConfig reviewerNotificationConfig = readGlobalNotificationUserConfig(reviewer);
+		final GlobalNotificationUserConfig revieweeNotificationConfig = readGlobalNotificationUserConfig(reviewee);
 
-		return List.of(reviewer, reviewee);
+		return Stream.of(
+						Boolean.TRUE.equals(reviewerNotificationConfig.getReviewConfig()) ? reviewer : null,
+						Boolean.TRUE.equals(revieweeNotificationConfig.getReviewConfig()) ? reviewee : null)
+				.filter(Objects::nonNull)
+				.toList();
+	}
+
+	private GlobalNotificationUserConfig readGlobalNotificationUserConfig(final User user) {
+		return globalNotificationUserConfigRepository.findByUserId(user.getId())
+				.orElseThrow(() -> new IllegalArgumentException("알림 설정이 등록되어 있지 않습니다."));
 	}
 
 	private boolean isPeerReviewFinish(final Study study, final User reviewee, final User reviewer) {
