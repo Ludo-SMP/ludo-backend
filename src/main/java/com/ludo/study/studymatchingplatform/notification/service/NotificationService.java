@@ -278,4 +278,8 @@ public class NotificationService {
 		return notificationQueryService.readNotificationConfigAndKeywords(user);
 	}
 
+	public void checkNotificationsAsRead(final User user, final List<Long> notificationIds) {
+		notificationCommandService.updateNotificationsAsRead(user, notificationIds);
+	}
+
 }

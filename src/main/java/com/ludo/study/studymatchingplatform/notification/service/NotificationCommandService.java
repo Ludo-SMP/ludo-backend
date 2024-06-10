@@ -18,6 +18,7 @@ import com.ludo.study.studymatchingplatform.notification.domain.notification.Stu
 import com.ludo.study.studymatchingplatform.notification.repository.keyword.NotificationKeywordCategoryRepositoryImpl;
 import com.ludo.study.studymatchingplatform.notification.repository.keyword.NotificationKeywordPositionRepositoryImpl;
 import com.ludo.study.studymatchingplatform.notification.repository.keyword.NotificationKeywordStackRepositoryImpl;
+import com.ludo.study.studymatchingplatform.notification.repository.notification.NotificationRepositoryImpl;
 import com.ludo.study.studymatchingplatform.notification.repository.notification.RecruitmentNotificationRepositoryImpl;
 import com.ludo.study.studymatchingplatform.notification.repository.notification.ReviewNotificationRepositoryImpl;
 import com.ludo.study.studymatchingplatform.notification.repository.notification.StudyNotificationRepositoryImpl;
@@ -29,9 +30,11 @@ import com.ludo.study.studymatchingplatform.study.domain.study.participant.Parti
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class NotificationCommandService {
 
 	private final StudyNotificationRepositoryImpl studyNotificationRepository;
@@ -41,6 +44,8 @@ public class NotificationCommandService {
 	private final NotificationKeywordCategoryRepositoryImpl notificationKeywordCategoryRepository;
 	private final NotificationKeywordStackRepositoryImpl notificationKeywordStackRepository;
 	private final NotificationKeywordPositionRepositoryImpl notificationKeywordPositionRepository;
+
+	private final NotificationRepositoryImpl notificationRepository;
 
 	@Transactional
 	public List<RecruitmentNotification> saveRecruitmentNotifications(final Recruitment actor,
@@ -138,4 +143,9 @@ public class NotificationCommandService {
 	private boolean isNotificationConfigOff(final NotificationConfigGroup configGroup, final boolean enabled) {
 		return configGroup == NotificationConfigGroup.RECRUITMENT_CONFIG && !enabled;
 	}
+
+	public void updateNotificationsAsRead(final User user, final List<Long> notificationIds) {
+		notificationRepository.updateNotificationsAsRead(user.getId(), notificationIds);
+	}
+
 }
