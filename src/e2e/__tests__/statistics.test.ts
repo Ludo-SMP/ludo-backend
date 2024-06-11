@@ -1,6 +1,5 @@
 import { HttpStatusCode } from "axios";
 import { subDays } from "date-fns";
-import { Knex } from "knex";
 import dns from "node:dns";
 import { describe } from "node:test";
 import { ApiClient } from "../config/api-client";
@@ -11,20 +10,13 @@ import { fakeWriteReviewRequest } from "../fixtures/review-fixture";
 import { fakeCreateStudyRequest } from "../fixtures/study-fixture";
 import { login, signup } from "../helpers/auth-api-helper";
 import { utcNow } from "../helpers/datetime-helper";
-import {
-    applyRecruitment,
-    writeRecruitment,
-} from "../helpers/recruitment-api-helper";
+import { applyRecruitment, writeRecruitment } from "../helpers/recruitment-api-helper";
 import { getPeerReviews, writeReview } from "../helpers/review-api-helper";
-import {
-    getMyReviewStatistics,
-    getMyStudyStatistics,
-} from "../helpers/statistics-api-helper";
+import { getMyReviewStatistics, getMyStudyStatistics } from "../helpers/statistics-api-helper";
 import { acceptApplicant, createStudy } from "../helpers/study-api-helper";
 import { updateStudyEndDateTime } from "../helpers/study-db-helper";
 dns.setDefaultResultOrder("ipv4first");
 
-let tx: Knex.Transaction<any, any[]>;
 
 describe("statistics Api", () => {
   it("[200 OK] 사용자 스터디 통계 조회 가능", async () => {
@@ -118,7 +110,7 @@ describe("statistics Api", () => {
     expect(study.status).toEqual("RECRUITING");
   });
 
-  test.only("[200 OK] review 작성 시, review 통계 확인 시 반영", async () => {
+  test("[200 OK] review 작성 시, review 통계 확인 시 반영", async () => {
     // given
     const client = ApiClient.default();
     const owner = fakeSignupBody();
@@ -175,15 +167,15 @@ describe("statistics Api", () => {
       },
     } = await getMyReviewStatistics(client);
 
-    console.log(reviewStatistics);
+    console.log(reviewStatistics)
     // then
     expect(status).toBe(HttpStatusCode.Ok);
     expect(reviewStatistics.activeness / 20).toBe(request.activenessScore);
     expect(reviewStatistics.communication / 20).toBe(
-      request.communicationScore
+      request.communicationScore,
     );
     expect(reviewStatistics.professionalism / 20).toBe(
-      request.professionalismScore
+      request.professionalismScore,
     );
     expect(reviewStatistics.recommend / 20).toBe(request.recommendScore);
     expect(reviewStatistics.together / 20).toBe(request.togetherScore);
