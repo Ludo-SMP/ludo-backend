@@ -58,7 +58,7 @@ public class NotificationService {
 
 		recruitmentNotifications.forEach(recruitmentNotification -> {
 			final User notifier = recruitmentNotification.getNotifier();
-			final NotificationResponse notificationResponse = new NotificationResponse(recruitmentNotification);
+			final NotificationResponse notificationResponse = NotificationResponse.from(recruitmentNotification);
 			sseEmitters.sendNotification(notifier, notificationResponse);
 		});
 	}
@@ -73,7 +73,7 @@ public class NotificationService {
 
 		studyNotifications.forEach(studyNotification -> {
 			final User notifier = studyNotification.getNotifier();
-			final NotificationResponse notificationResponse = new NotificationResponse(studyNotification);
+			final NotificationResponse notificationResponse = NotificationResponse.from(studyNotification);
 			sseEmitters.sendNotification(notifier, notificationResponse);
 		});
 	}
@@ -88,7 +88,7 @@ public class NotificationService {
 
 		studyNotifications.forEach(studyNotification -> {
 			final User notifier = studyNotification.getNotifier();
-			final NotificationResponse notificationResponse = new NotificationResponse(studyNotification);
+			final NotificationResponse notificationResponse = NotificationResponse.from(studyNotification);
 			sseEmitters.sendNotification(notifier, notificationResponse);
 		});
 	}
@@ -104,7 +104,7 @@ public class NotificationService {
 
 		studyNotifications.forEach(studyNotification -> {
 			final User notifier = studyNotification.getNotifier();
-			final NotificationResponse notificationResponse = new NotificationResponse(studyNotification);
+			final NotificationResponse notificationResponse = NotificationResponse.from(studyNotification);
 			sseEmitters.sendNotification(notifier, notificationResponse);
 		});
 	}
@@ -119,7 +119,7 @@ public class NotificationService {
 
 		studyNotifications.forEach(studyNotification -> {
 			final User notifier = studyNotification.getNotifier();
-			final NotificationResponse notificationResponse = new NotificationResponse(studyNotification);
+			final NotificationResponse notificationResponse = NotificationResponse.from(studyNotification);
 			sseEmitters.sendNotification(notifier, notificationResponse);
 		});
 	}
@@ -134,7 +134,7 @@ public class NotificationService {
 
 		studyNotifications.forEach(studyNotification -> {
 			final User notifier = studyNotification.getNotifier();
-			final NotificationResponse notificationResponse = new NotificationResponse(studyNotification);
+			final NotificationResponse notificationResponse = NotificationResponse.from(studyNotification);
 			sseEmitters.sendNotification(notifier, notificationResponse);
 		});
 	}
@@ -149,7 +149,7 @@ public class NotificationService {
 
 		studyNotifications.forEach(studyNotification -> {
 			final User notifier = studyNotification.getNotifier();
-			final NotificationResponse notificationResponse = new NotificationResponse(studyNotification);
+			final NotificationResponse notificationResponse = NotificationResponse.from(studyNotification);
 			sseEmitters.sendNotification(notifier, notificationResponse);
 		});
 	}
@@ -164,7 +164,7 @@ public class NotificationService {
 
 		studyNotifications.forEach(studyNotification -> {
 			final User notifier = studyNotification.getNotifier();
-			final NotificationResponse notificationResponse = new NotificationResponse(studyNotification);
+			final NotificationResponse notificationResponse = NotificationResponse.from(studyNotification);
 			sseEmitters.sendNotification(notifier, notificationResponse);
 		});
 	}
@@ -181,7 +181,7 @@ public class NotificationService {
 
 		reviewNotifications.forEach(reviewNotification -> {
 			final User notifier = reviewNotification.getNotifier();
-			final NotificationResponse notificationResponse = new NotificationResponse(reviewNotification);
+			final NotificationResponse notificationResponse = NotificationResponse.from(reviewNotification);
 			sseEmitters.sendNotification(notifier, notificationResponse);
 		});
 	}
@@ -201,7 +201,7 @@ public class NotificationService {
 
 		reviewNotifications.forEach(reviewNotification -> {
 			final User notifier = reviewNotification.getNotifier();
-			final NotificationResponse notificationResponse = new NotificationResponse(reviewNotification);
+			final NotificationResponse notificationResponse = NotificationResponse.from(reviewNotification);
 			sseEmitters.sendNotification(notifier, notificationResponse);
 		});
 	}
