@@ -1,10 +1,11 @@
 package com.ludo.study.studymatchingplatform.user.repository.user;
 
+import static com.ludo.study.studymatchingplatform.notification.domain.config.QGlobalNotificationUserConfig.*;
 import static com.ludo.study.studymatchingplatform.notification.domain.keyword.QNotificationKeywordCategory.*;
 import static com.ludo.study.studymatchingplatform.notification.domain.keyword.QNotificationKeywordPosition.*;
 import static com.ludo.study.studymatchingplatform.notification.domain.keyword.QNotificationKeywordStack.*;
 import static com.ludo.study.studymatchingplatform.study.domain.study.participant.QParticipant.*;
-import static com.querydsl.jpa.JPAExpressions.*;
+import static com.ludo.study.studymatchingplatform.user.domain.user.QUser.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,9 +21,8 @@ import com.ludo.study.studymatchingplatform.user.domain.user.User;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import lombok.RequiredArgsConstructor;
 
-import static com.ludo.study.studymatchingplatform.user.domain.user.QUser.user;
+import lombok.RequiredArgsConstructor;
 
 @Repository
 @RequiredArgsConstructor
@@ -50,26 +50,26 @@ public class UserRepositoryImpl {
 		return id != null;
 	}
 
-    public Optional<User> findByEmail(final String email) {
-        return findByEmail(email, false);
-    }
+	public Optional<User> findByEmail(final String email) {
+		return findByEmail(email, false);
+	}
 
-    public Optional<User> findByEmail(final String email, final boolean includeDeleted) {
-        return Optional.ofNullable(
-                q.select(user)
-                        .from(user)
-                        .where(user.email.eq(email)
-                                .and(deletedDateTimeCondition(includeDeleted)))
-                        .fetchOne());
-    }
+	public Optional<User> findByEmail(final String email, final boolean includeDeleted) {
+		return Optional.ofNullable(
+				q.select(user)
+						.from(user)
+						.where(user.email.eq(email)
+								.and(deletedDateTimeCondition(includeDeleted)))
+						.fetchOne());
+	}
 
-    public BooleanExpression deletedDateTimeCondition(final boolean includeDeleted) {
-        return includeDeleted ? null : user.deletedDateTime.isNull();
-    }
+	public BooleanExpression deletedDateTimeCondition(final boolean includeDeleted) {
+		return includeDeleted ? null : user.deletedDateTime.isNull();
+	}
 
-    public Optional<User> findById(final Long id) {
-        return userJpaRepository.findById(id);
-    }
+	public Optional<User> findById(final Long id) {
+		return userJpaRepository.findById(id);
+	}
 
 	public User getById(final Long id) {
 		return userJpaRepository.findById(id)
@@ -87,25 +87,18 @@ public class UserRepositoryImpl {
 	}
 
 	public List<User> findRecruitmentNotifiers(final RecruitmentNotifierCond condition) {
-		// TODO: 모집공고 알림 설정을 on한 사용자 쿼리 조건 추가
-		return q.select(user)
-				.from(user)
+		return q.selectFrom(user)
+				.join(globalNotificationUserConfig).on(globalNotificationUserConfig.user.eq(user))
+				.join(notificationKeywordCategory).on(notificationKeywordCategory.user.eq(user))
+				.join(notificationKeywordPosition).on(notificationKeywordPosition.user.eq(user))
+				.join(notificationKeywordStack).on(notificationKeywordStack.user.eq(user))
 				.where(
-						user.id.in(
-								select(notificationKeywordCategory.user.id)
-										.from(notificationKeywordCategory)
-										.where(notificationKeywordCategory.category.eq(condition.category()))))
-				.where(
-						user.id.in(
-								select(notificationKeywordPosition.user.id)
-										.from(notificationKeywordPosition)
-										.where(positionsOrCondition(condition.positions()))))
-				.where(
-						user.id.in(
-								select(notificationKeywordStack.user.id)
-										.from(notificationKeywordStack)
-										.where(stacksOrCondition(condition.stacks()))))
-				.where(user.id.ne(condition.owner().getId()))
+						globalNotificationUserConfig.recruitmentConfig.isTrue(),
+						notificationKeywordCategory.category.eq(condition.category()),
+						positionsOrCondition(condition.positions()),
+						stacksOrCondition(condition.stacks()),
+						user.id.ne(condition.owner().getId())
+				)
 				.fetch();
 
 	}
@@ -128,11 +121,25 @@ public class UserRepositoryImpl {
 		return booleanBuilder;
 	}
 
-	public List<User> findParticipantUsersByStudyId(final Long id) {
-		// TODO: 모집공고 알림 설정을 on한 사용자 쿼리 조건 추가
-		return q.select(user)
+	public List<User> findStudyApplicantNotifiers(final Long id) {
+		return q.selectFrom(user)
+				.join(globalNotificationUserConfig).on(globalNotificationUserConfig.user.eq(user))
+				.join(participant).on(participant.user.eq(user))
 				.from(participant)
-				.where(participant.study.id.eq(id))
+				.where(
+						globalNotificationUserConfig.studyApplicantConfig.isTrue(),
+						participant.study.id.eq(id))
+				.fetch();
+	}
+
+	public List<User> findParticipantLeaveNotifiers(final Long id) {
+		return q.selectFrom(user)
+				.join(globalNotificationUserConfig).on(globalNotificationUserConfig.user.eq(user))
+				.join(participant.user)
+				.from(participant.study)
+				.where(
+						globalNotificationUserConfig.studyParticipantLeaveConfig.isTrue(),
+						participant.study.id.eq(id))
 				.fetch();
 	}
 

@@ -7,6 +7,8 @@ import java.util.Optional;
 import org.springframework.stereotype.Repository;
 
 import com.ludo.study.studymatchingplatform.notification.domain.config.GlobalNotificationUserConfig;
+import com.ludo.study.studymatchingplatform.notification.domain.config.NotificationConfigGroup;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
@@ -30,4 +32,26 @@ public class GlobalNotificationUserConfigRepositoryImpl {
 						.fetchOne()
 		);
 	}
+
+	public boolean isUserNotificationConfigIsTrue(final Long userId,
+												  final NotificationConfigGroup notificationConfigGroup) {
+		return q.selectOne()
+				.from(globalNotificationUserConfig)
+				.where(globalNotificationUserConfig.user.id.eq(userId),
+						isConfigTrue(notificationConfigGroup))
+				.fetchOne() != null;
+	}
+
+	private BooleanExpression isConfigTrue(final NotificationConfigGroup notificationConfigGroup) {
+		return switch (notificationConfigGroup) {
+			case ALL_CONFIG -> globalNotificationUserConfig.allConfig.isTrue();
+			case RECRUITMENT_CONFIG -> globalNotificationUserConfig.recruitmentConfig.isTrue();
+			case STUDY_APPLICANT_CONFIG -> globalNotificationUserConfig.studyApplicantConfig.isTrue();
+			case STUDY_APPLICANT_RESULT_CONFIG -> globalNotificationUserConfig.studyApplicantResultConfig.isTrue();
+			case STUDY_END_DATE_CONFIG -> globalNotificationUserConfig.studyEndDateConfig.isTrue();
+			case STUDY_PARTICIPANT_LEAVE_CONFIG -> globalNotificationUserConfig.studyParticipantLeaveConfig.isTrue();
+			case REVIEW_CONFIG -> globalNotificationUserConfig.reviewConfig.isTrue();
+		};
+	}
+
 }

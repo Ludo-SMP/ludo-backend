@@ -84,8 +84,8 @@ class RecruitmentsFindServiceTest {
 		@BeforeEach
 		void init() {
 			User user = saveUser();
-			Category category = saveCategory();
-			saveRecruitments(category, user);
+			Category project = CategoryFixture.CATEGORY_PROJECT;
+			saveRecruitments(project, user);
 			em.flush();
 			em.clear();
 		}
