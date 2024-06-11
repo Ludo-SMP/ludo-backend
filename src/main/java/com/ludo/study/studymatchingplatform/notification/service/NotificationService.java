@@ -17,6 +17,7 @@ import com.ludo.study.studymatchingplatform.notification.domain.keyword.Notifica
 import com.ludo.study.studymatchingplatform.notification.domain.notification.RecruitmentNotification;
 import com.ludo.study.studymatchingplatform.notification.domain.notification.ReviewNotification;
 import com.ludo.study.studymatchingplatform.notification.domain.notification.StudyNotification;
+import com.ludo.study.studymatchingplatform.notification.service.dto.request.NotificationConfigRequest;
 import com.ludo.study.studymatchingplatform.notification.service.dto.response.NotificationResponse;
 import com.ludo.study.studymatchingplatform.notification.service.dto.response.config.NotificationConfigResponse;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
@@ -275,6 +276,10 @@ public class NotificationService {
 
 	public NotificationConfigResponse findNotificationConfig(final User user) {
 		return notificationQueryService.readNotificationConfigAndKeywords(user);
+	}
+
+	public void checkNotificationsAsRead(final User user, final List<Long> notificationIds) {
+		notificationCommandService.updateNotificationsAsRead(user, notificationIds);
 	}
 
 }
