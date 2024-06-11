@@ -39,4 +39,8 @@ public class StudyNotification extends Notification {
 		return new StudyNotification(notificationEventType, createdOn, actor, notifier);
 	}
 
+	public Long getActorId() {
+		return actor.getId();
+	}
+
 }
