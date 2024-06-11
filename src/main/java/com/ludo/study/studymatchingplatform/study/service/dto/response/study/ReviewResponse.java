@@ -7,11 +7,11 @@ import java.time.LocalDateTime;
 public record ReviewResponse(
         Long reviewerId,
         Long revieweeId,
-        Long activenessScore,
-        Long professionalismScore,
-        Long communicationScore,
-        Long togetherScore,
-        Long recommendScore,
+        Long activeness,
+        Long professionalism,
+        Long communication,
+        Long together,
+        Long recommend,
         LocalDateTime createdDateTime
 ) {
     public static ReviewResponse from(final Review review) {

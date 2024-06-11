@@ -28,11 +28,11 @@ export async function writeReview(
 export type ReviewResponse = {
   reviewerId: number;
   revieweeId: number;
-  activenessScore: number;
-  professionalismScore: number;
-  communicationScore: number;
-  togetherScore: number;
-  recommendScore: number;
+  activeness: number;
+  professionalism: number;
+  communication: number;
+  together: number;
+  recommend: number;
 };
 
 export type PeerReview = {

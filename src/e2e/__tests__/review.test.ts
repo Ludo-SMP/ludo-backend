@@ -126,19 +126,19 @@ describe("리뷰 작성", () => {
     // then
     expect(status).toBe(HttpStatusCode.Ok);
     expect(reviews.length).toBeGreaterThan(0);
-    expect(reviews[0].selfReview.activenessScore).toEqual(
+    expect(reviews[0].selfReview.activeness).toEqual(
       request.activenessScore,
     );
-    expect(reviews[0].selfReview.communicationScore).toEqual(
+    expect(reviews[0].selfReview.communication).toEqual(
       request.communicationScore,
     );
-    expect(reviews[0].selfReview.professionalismScore).toEqual(
+    expect(reviews[0].selfReview.professionalism).toEqual(
       request.professionalismScore,
     );
-    expect(reviews[0].selfReview.recommendScore).toEqual(
+    expect(reviews[0].selfReview.recommend).toEqual(
       request.recommendScore,
     );
-    expect(reviews[0].selfReview.togetherScore).toEqual(request.togetherScore);
+    expect(reviews[0].selfReview.together).toEqual(request.togetherScore);
     expect(reviews[0].selfReview.reviewerId).toEqual(ownerId);
     expect(reviews[0].selfReview.revieweeId).toEqual(request.revieweeId);
     expect(reviews[0].peerReview).toBeNull();
@@ -208,19 +208,19 @@ describe("리뷰 작성", () => {
     // then
     expect(status).toBe(HttpStatusCode.Ok);
     expect(reviews.length).toBeGreaterThan(0);
-    expect(reviews[0].peerReview.activenessScore).toEqual(
+    expect(reviews[0].peerReview.activeness).toEqual(
       request.activenessScore,
     );
-    expect(reviews[0].peerReview.communicationScore).toEqual(
+    expect(reviews[0].peerReview.communication).toEqual(
       request.communicationScore,
     );
-    expect(reviews[0].peerReview.professionalismScore).toEqual(
+    expect(reviews[0].peerReview.professionalism).toEqual(
       request.professionalismScore,
     );
-    expect(reviews[0].peerReview.recommendScore).toEqual(
+    expect(reviews[0].peerReview.recommend).toEqual(
       request.recommendScore,
     );
-    expect(reviews[0].peerReview.togetherScore).toEqual(request.togetherScore);
+    expect(reviews[0].peerReview.together).toEqual(request.togetherScore);
     expect(reviews[0].peerReview.reviewerId).toEqual(applicantUserId);
     expect(reviews[0].peerReview.revieweeId).toEqual(request.revieweeId);
     expect(reviews[0].selfReview).toBeNull();
@@ -320,19 +320,19 @@ describe("리뷰 작성", () => {
     // // then
     expect(status).toBe(HttpStatusCode.Ok);
     expect(latestReviews.length).toBe(1);
-    expect(latestReviews[0].selfReview.activenessScore).toEqual(
+    expect(latestReviews[0].selfReview.activeness).toEqual(
       lastestRequest.activenessScore,
     );
-    expect(latestReviews[0].selfReview.communicationScore).toEqual(
+    expect(latestReviews[0].selfReview.communication).toEqual(
       lastestRequest.communicationScore,
     );
-    expect(latestReviews[0].selfReview.professionalismScore).toEqual(
+    expect(latestReviews[0].selfReview.professionalism).toEqual(
       lastestRequest.professionalismScore,
     );
-    expect(latestReviews[0].selfReview.recommendScore).toEqual(
+    expect(latestReviews[0].selfReview.recommend).toEqual(
       lastestRequest.recommendScore,
     );
-    expect(latestReviews[0].selfReview.togetherScore).toEqual(
+    expect(latestReviews[0].selfReview.together).toEqual(
       lastestRequest.togetherScore,
     );
     expect(latestReviews[0].selfReview.reviewerId).toEqual(applicantUserId);
@@ -341,19 +341,19 @@ describe("리뷰 작성", () => {
     );
     expect(latestReviews[0].peerReview).toBeNull();
 
-    expect(prevReviews[0].selfReview.activenessScore).toEqual(
+    expect(prevReviews[0].selfReview.activeness).toEqual(
       prevRequest.activenessScore,
     );
-    expect(prevReviews[0].selfReview.communicationScore).toEqual(
+    expect(prevReviews[0].selfReview.communication).toEqual(
       prevRequest.communicationScore,
     );
-    expect(prevReviews[0].selfReview.professionalismScore).toEqual(
+    expect(prevReviews[0].selfReview.professionalism).toEqual(
       prevRequest.professionalismScore,
     );
-    expect(prevReviews[0].selfReview.recommendScore).toEqual(
+    expect(prevReviews[0].selfReview.recommend).toEqual(
       prevRequest.recommendScore,
     );
-    expect(prevReviews[0].selfReview.togetherScore).toEqual(
+    expect(prevReviews[0].selfReview.together).toEqual(
       prevRequest.togetherScore,
     );
     expect(prevReviews[0].selfReview.reviewerId).toEqual(applicantUserId);
@@ -462,23 +462,23 @@ describe("리뷰 작성", () => {
     const latestReview = studies[0].reviews;
     const prevReview = studies[1].reviews;
 
-    console.log(latestReview[0].selfReview);
     // // then
+
     expect(status).toBe(HttpStatusCode.Ok);
     expect(latestReview.length).toBe(1);
-    expect(latestReview[0].peerReview.activenessScore).toEqual(
+    expect(latestReview[0].peerReview.activeness).toEqual(
       lastestRequest.activenessScore,
     );
-    expect(latestReview[0].peerReview.communicationScore).toEqual(
+    expect(latestReview[0].peerReview.communication).toEqual(
       lastestRequest.communicationScore,
     );
-    expect(latestReview[0].peerReview.professionalismScore).toEqual(
+    expect(latestReview[0].peerReview.professionalism).toEqual(
       lastestRequest.professionalismScore,
     );
-    expect(latestReview[0].peerReview.recommendScore).toEqual(
+    expect(latestReview[0].peerReview.recommend).toEqual(
       lastestRequest.recommendScore,
     );
-    expect(latestReview[0].peerReview.togetherScore).toEqual(
+    expect(latestReview[0].peerReview.together).toEqual(
       lastestRequest.togetherScore,
     );
     expect(latestReview[0].peerReview.reviewerId).toEqual(owner2Id);
@@ -487,19 +487,19 @@ describe("리뷰 작성", () => {
     );
     expect(latestReview[0].selfReview).toBeNull();
 
-    expect(prevReview[0].peerReview.activenessScore).toEqual(
+    expect(prevReview[0].peerReview.activeness).toEqual(
       prevRequest.activenessScore,
     );
-    expect(prevReview[0].peerReview.communicationScore).toEqual(
+    expect(prevReview[0].peerReview.communication).toEqual(
       prevRequest.communicationScore,
     );
-    expect(prevReview[0].peerReview.professionalismScore).toEqual(
+    expect(prevReview[0].peerReview.professionalism).toEqual(
       prevRequest.professionalismScore,
     );
-    expect(prevReview[0].peerReview.recommendScore).toEqual(
+    expect(prevReview[0].peerReview.recommend).toEqual(
       prevRequest.recommendScore,
     );
-    expect(prevReview[0].peerReview.togetherScore).toEqual(
+    expect(prevReview[0].peerReview.together).toEqual(
       prevRequest.togetherScore,
     );
     expect(prevReview[0].peerReview.reviewerId).toEqual(ownerId);
@@ -616,7 +616,6 @@ describe("리뷰 작성", () => {
     const prevPeerReview = prevReview[0].peerReview;
     const prevMyReview = prevReview[0].selfReview;
 
-    console.log(studies);
     // // then
     expect(status).toBe(HttpStatusCode.Ok);
 
@@ -624,70 +623,70 @@ describe("리뷰 작성", () => {
     expect(latestReviews.length).toBe(1);
 
     // latesty Study peer review
-    expect(latestPeerReview.activenessScore).toEqual(
+    expect(latestPeerReview.activeness).toEqual(
       lastestPeerRequest.activenessScore,
     );
-    expect(latestPeerReview.communicationScore).toEqual(
+    expect(latestPeerReview.communication).toEqual(
       lastestPeerRequest.communicationScore,
     );
-    expect(latestPeerReview.professionalismScore).toEqual(
+    expect(latestPeerReview.professionalism).toEqual(
       lastestPeerRequest.professionalismScore,
     );
-    expect(latestPeerReview.recommendScore).toEqual(
+    expect(latestPeerReview.recommend).toEqual(
       lastestPeerRequest.recommendScore,
     );
-    expect(latestPeerReview.togetherScore).toEqual(
+    expect(latestPeerReview.together).toEqual(
       lastestPeerRequest.togetherScore,
     );
     expect(latestPeerReview.reviewerId).toEqual(owner2Id);
     expect(latestPeerReview.revieweeId).toEqual(applicantUserId);
 
     // latest study my review
-    expect(latestMyReview.activenessScore).toEqual(
+    expect(latestMyReview.activeness).toEqual(
       lastestMyRequest.activenessScore,
     );
-    expect(latestMyReview.communicationScore).toEqual(
+    expect(latestMyReview.communication).toEqual(
       lastestMyRequest.communicationScore,
     );
-    expect(latestMyReview.professionalismScore).toEqual(
+    expect(latestMyReview.professionalism).toEqual(
       lastestMyRequest.professionalismScore,
     );
-    expect(latestMyReview.recommendScore).toEqual(
+    expect(latestMyReview.recommend).toEqual(
       lastestMyRequest.recommendScore,
     );
-    expect(latestMyReview.togetherScore).toEqual(
+    expect(latestMyReview.together).toEqual(
       lastestMyRequest.togetherScore,
     );
     expect(latestMyReview.reviewerId).toEqual(applicantUserId);
     expect(latestMyReview.revieweeId).toEqual(owner2Id);
 
     // prev study peer review
-    expect(prevPeerReview.activenessScore).toEqual(
+    expect(prevPeerReview.activeness).toEqual(
       prevPeerRequest.activenessScore,
     );
-    expect(prevPeerReview.communicationScore).toEqual(
+    expect(prevPeerReview.communication).toEqual(
       prevPeerRequest.communicationScore,
     );
-    expect(prevPeerReview.professionalismScore).toEqual(
+    expect(prevPeerReview.professionalism).toEqual(
       prevPeerRequest.professionalismScore,
     );
-    expect(prevPeerReview.recommendScore).toEqual(
+    expect(prevPeerReview.recommend).toEqual(
       prevPeerRequest.recommendScore,
     );
-    expect(prevPeerReview.togetherScore).toEqual(prevPeerRequest.togetherScore);
+    expect(prevPeerReview.together).toEqual(prevPeerRequest.togetherScore);
     expect(prevPeerReview.reviewerId).toEqual(ownerId);
     expect(prevPeerReview.revieweeId).toEqual(applicantUserId);
 
     // prev study my review
-    expect(prevMyReview.activenessScore).toEqual(prevMyRequest.activenessScore);
-    expect(prevMyReview.communicationScore).toEqual(
+    expect(prevMyReview.activeness).toEqual(prevMyRequest.activenessScore);
+    expect(prevMyReview.communication).toEqual(
       prevMyRequest.communicationScore,
     );
-    expect(prevMyReview.professionalismScore).toEqual(
+    expect(prevMyReview.professionalism).toEqual(
       prevMyRequest.professionalismScore,
     );
-    expect(prevMyReview.recommendScore).toEqual(prevMyRequest.recommendScore);
-    expect(prevMyReview.togetherScore).toEqual(prevMyRequest.togetherScore);
+    expect(prevMyReview.recommend).toEqual(prevMyRequest.recommendScore);
+    expect(prevMyReview.together).toEqual(prevMyRequest.togetherScore);
     expect(prevMyReview.reviewerId).toEqual(applicantUserId);
     expect(prevMyReview.revieweeId).toEqual(ownerId);
   });
