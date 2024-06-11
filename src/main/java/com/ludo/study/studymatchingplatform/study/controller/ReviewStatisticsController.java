@@ -2,7 +2,7 @@ package com.ludo.study.studymatchingplatform.study.controller;
 
 import com.ludo.study.studymatchingplatform.auth.common.AuthUser;
 import com.ludo.study.studymatchingplatform.common.annotation.DataFieldName;
-import com.ludo.study.studymatchingplatform.study.service.dto.response.ReviewStatisticsResponse;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.study.ReviewStatisticsResponse;
 import com.ludo.study.studymatchingplatform.study.service.study.ReviewStatisticsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

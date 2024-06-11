@@ -1,0 +1,17 @@
+{
+  "typescript": {
+  },
+  "json": {
+  },
+  "biome": {
+  },
+  "excludes": [
+    "**/node_modules",
+    "**/*-lock.json"
+  ],
+  "plugins": [
+    "https://plugins.dprint.dev/typescript-0.91.1.wasm",
+    "https://plugins.dprint.dev/json-0.19.3.wasm",
+    "https://plugins.dprint.dev/biome-0.5.3.wasm"
+  ]
+}

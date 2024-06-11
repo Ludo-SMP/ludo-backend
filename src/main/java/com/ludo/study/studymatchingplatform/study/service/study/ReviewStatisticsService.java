@@ -4,12 +4,14 @@ import com.ludo.study.studymatchingplatform.common.exception.DataNotFoundExcepti
 import com.ludo.study.studymatchingplatform.study.domain.study.Review;
 import com.ludo.study.studymatchingplatform.study.domain.study.ReviewStatistics;
 import com.ludo.study.studymatchingplatform.study.repository.study.ReviewStatisticsRepository;
-import com.ludo.study.studymatchingplatform.study.service.dto.response.ReviewStatisticsResponse;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.study.ReviewStatisticsResponse;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 import com.ludo.study.studymatchingplatform.user.repository.user.UserRepositoryImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -38,5 +40,13 @@ public class ReviewStatisticsService {
     public void updateRevieweeStatistics(final Review review) {
         final ReviewStatistics revieweeStatistics = _findOrCreateByUserId(review.getReviewee().getId());
         revieweeStatistics.update(review);
+    }
+
+    public List<ReviewStatistics> findByUserIdsIn(final List<Long> userIds) {
+        final List<ReviewStatistics> reviewStatistics = new ArrayList<>();
+        for (final Long userId : userIds) {
+            reviewStatistics.add(_findOrCreateByUserId(userId));
+        }
+        return reviewStatistics;
     }
 }

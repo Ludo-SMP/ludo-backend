@@ -20,3 +20,5 @@ export interface Review {
   togetherScore: number;
   recommendScore: number;
 }
+
+export type ReviewWithUserIds = Omit<Review, "reviewer" | "reviewee"> & { reviewerId: number; revieweeId: number };

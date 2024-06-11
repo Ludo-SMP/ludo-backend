@@ -12,13 +12,13 @@ import { fakeCreateStudyRequest } from "../fixtures/study-fixture";
 import { login, signup } from "../helpers/auth-api-helper";
 import { utcNow } from "../helpers/datetime-helper";
 import {
-  applyRecruitment,
-  writeRecruitment,
+    applyRecruitment,
+    writeRecruitment,
 } from "../helpers/recruitment-api-helper";
 import { getPeerReviews, writeReview } from "../helpers/review-api-helper";
 import {
-  getMyReviewStatistics,
-  getMyStudyStatistics,
+    getMyReviewStatistics,
+    getMyStudyStatistics,
 } from "../helpers/statistics-api-helper";
 import { acceptApplicant, createStudy } from "../helpers/study-api-helper";
 import { updateStudyEndDateTime } from "../helpers/study-db-helper";
@@ -59,11 +59,11 @@ describe("statistics Api", () => {
     // // when
 
     expect(status).toEqual(HttpStatusCode.Ok);
-    expect(reviewStatistics.activenessScore).toEqual(0);
-    expect(reviewStatistics.communicationScore).toEqual(0);
-    expect(reviewStatistics.professionalismScore).toEqual(0);
-    expect(reviewStatistics.recommendScore).toEqual(0);
-    expect(reviewStatistics.togetherScore).toEqual(0);
+    expect(reviewStatistics.activeness).toEqual(0);
+    expect(reviewStatistics.communication).toEqual(0);
+    expect(reviewStatistics.professionalism).toEqual(0);
+    expect(reviewStatistics.recommend).toEqual(0);
+    expect(reviewStatistics.together).toEqual(0);
   });
 
   it("[200 OK] 사용자 리뷰 통계 조회 가능", async () => {
@@ -81,11 +81,11 @@ describe("statistics Api", () => {
     // // when
 
     expect(status).toEqual(HttpStatusCode.Ok);
-    expect(reviewStatistics.activenessScore).toEqual(0);
-    expect(reviewStatistics.communicationScore).toEqual(0);
-    expect(reviewStatistics.professionalismScore).toEqual(0);
-    expect(reviewStatistics.recommendScore).toEqual(0);
-    expect(reviewStatistics.togetherScore).toEqual(0);
+    expect(reviewStatistics.activeness).toEqual(0);
+    expect(reviewStatistics.communication).toEqual(0);
+    expect(reviewStatistics.professionalism).toEqual(0);
+    expect(reviewStatistics.recommend).toEqual(0);
+    expect(reviewStatistics.together).toEqual(0);
   });
 
   it("[201 CREATED] 로그인 시, 스터디 생성 가능", async () => {
@@ -178,14 +178,14 @@ describe("statistics Api", () => {
     console.log(reviewStatistics);
     // then
     expect(status).toBe(HttpStatusCode.Ok);
-    expect(reviewStatistics.activenessScore / 20).toBe(request.activenessScore);
-    expect(reviewStatistics.communicationScore / 20).toBe(
+    expect(reviewStatistics.activeness / 20).toBe(request.activenessScore);
+    expect(reviewStatistics.communication / 20).toBe(
       request.communicationScore
     );
-    expect(reviewStatistics.professionalismScore / 20).toBe(
+    expect(reviewStatistics.professionalism / 20).toBe(
       request.professionalismScore
     );
-    expect(reviewStatistics.recommendScore / 20).toBe(request.recommendScore);
-    expect(reviewStatistics.togetherScore / 20).toBe(request.togetherScore);
+    expect(reviewStatistics.recommend / 20).toBe(request.recommendScore);
+    expect(reviewStatistics.together / 20).toBe(request.togetherScore);
   });
 });

@@ -7,10 +7,10 @@ public record StudyStatisticsResponse(
         Long id,
         UserResponse user,
         int totalTeammateCount,
-        // 진행 완료 스터디(진행도 100%)
-        int totalPerfectAttendanceStudies,
+        // 진행 완료 스터디
+        int totalFinishAttendanceStudies,
         // 완주 스터디(진행도 80% 이상)
-        int totalRequiredAttendanceStudies,
+        int totalPerfectAttendanceStudies,
         // 총 무단 탈주 스터디
         int totalLeftStudyCount,
         // 총 누적 출석
@@ -26,8 +26,8 @@ public record StudyStatisticsResponse(
                 statistics.getId(),
                 UserResponse.from(statistics.getUser()),
                 statistics.getTotalTeammateCount(),
+                statistics.getTotalFinishAttendanceStudies(),
                 statistics.getTotalPerfectAttendanceStudies(),
-                statistics.getTotalRequiredAttendanceStudies(),
                 statistics.getTotalLeftStudyCount(),
                 statistics.getTotalAttendance(),
                 statistics.getTotalValidAttendance(),

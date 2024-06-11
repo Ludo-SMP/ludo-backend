@@ -1,6 +1,7 @@
 import { ApiClient } from "../config/api-client";
 import {
   Applicant,
+  ApplicantWithReviewStatistics,
   CreateStudyRequest,
   Participant,
   Study,
@@ -14,7 +15,7 @@ export type CreateStudyResponse = {
 
 export async function createStudy(
   apiClient: ApiClient,
-  body: CreateStudyRequest
+  body: CreateStudyRequest,
 ) {
   return apiClient.post<CreateStudyResponse>("/studies", body);
 }
@@ -25,7 +26,7 @@ export type UpdateStudyResponse = CreateStudyResponse;
 export async function updateStudy(
   apiClient: ApiClient,
   studyId: number,
-  body: UpdateStudyRequest
+  body: UpdateStudyRequest,
 ) {
   return apiClient.put<UpdateStudyResponse>(`/studies/${studyId}`, body);
 }
@@ -39,20 +40,20 @@ export type ParticipantResponse = {
 export async function acceptApplicant(
   apiClient: ApiClient,
   studyId: number,
-  applicantUserId: number
+  applicantUserId: number,
 ) {
   return apiClient.post<ParticipantResponse>(
-    `/studies/${studyId}/apply-accept/${applicantUserId}`
+    `/studies/${studyId}/apply-accept/${applicantUserId}`,
   );
 }
 
 export async function refuseApplicant(
   apiClient: ApiClient,
   studyId: number,
-  applicantUserId: number
+  applicantUserId: number,
 ) {
   return apiClient.post<undefined>(
-    `/studies/${studyId}/apply-refuse/${applicantUserId}`
+    `/studies/${studyId}/apply-refuse/${applicantUserId}`,
   );
 }
 
@@ -62,17 +63,26 @@ export type StudyResponse = { study: Study };
 
 export async function findStudyDetailById(
   apiClient: ApiClient,
-  studyId: number
+  studyId: number,
 ) {
   return apiClient.get<StudyResponse>(`/studies/${studyId}`);
 }
 
 ///
 
-export type ApplicantStudyResponse = Pick<
-  Study,
-  "id" | "owner" | "status" | "participantLimit" | "participantCount"
-> & { applicants: Applicant[] };
+export type ApplicantStudyResponse =
+  & Pick<
+    Study,
+    "id" | "owner" | "status" | "participantLimit" | "participantCount"
+  >
+  & { applicants: Applicant[] };
+
+export type ApplicantStudyWithReviewStatisticsResponse =
+  & Pick<
+    Study,
+    "id" | "owner" | "status" | "participantLimit" | "participantCount"
+  >
+  & { applicants: ApplicantWithReviewStatistics[] };
 //  {
 //   id: number;
 //   owner: User;
@@ -84,12 +94,11 @@ export type ApplicantStudyResponse = Pick<
 // }
 export async function findApplicantsByStudyId(
   apiClient: ApiClient,
-  studyId: number
+  studyId: number,
 ) {
-  return apiClient.post<ApplicantStudyResponse>(
-    `/studies/${studyId}/applicants`
+  return apiClient.get<ApplicantStudyWithReviewStatisticsResponse>(
+    `/studies/${studyId}/applicants`,
   );
 }
 
 ///
-

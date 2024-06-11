@@ -9,10 +9,7 @@ import { fakeWriteReviewRequest } from "../fixtures/review-fixture";
 import { fakeCreateStudyRequest } from "../fixtures/study-fixture";
 import { login, signup } from "../helpers/auth-api-helper";
 import { utcNow } from "../helpers/datetime-helper";
-import {
-  applyRecruitment,
-  writeRecruitment,
-} from "../helpers/recruitment-api-helper";
+import { applyRecruitment, writeRecruitment } from "../helpers/recruitment-api-helper";
 import { getPeerReviews, writeReview } from "../helpers/review-api-helper";
 import { acceptApplicant, createStudy } from "../helpers/study-api-helper";
 import { updateStudyEndDateTime } from "../helpers/study-db-helper";
@@ -130,16 +127,16 @@ describe("리뷰 작성", () => {
     expect(status).toBe(HttpStatusCode.Ok);
     expect(reviews.length).toBeGreaterThan(0);
     expect(reviews[0].selfReview.activenessScore).toEqual(
-      request.activenessScore
+      request.activenessScore,
     );
     expect(reviews[0].selfReview.communicationScore).toEqual(
-      request.communicationScore
+      request.communicationScore,
     );
     expect(reviews[0].selfReview.professionalismScore).toEqual(
-      request.professionalismScore
+      request.professionalismScore,
     );
     expect(reviews[0].selfReview.recommendScore).toEqual(
-      request.recommendScore
+      request.recommendScore,
     );
     expect(reviews[0].selfReview.togetherScore).toEqual(request.togetherScore);
     expect(reviews[0].selfReview.reviewerId).toEqual(ownerId);
@@ -212,16 +209,16 @@ describe("리뷰 작성", () => {
     expect(status).toBe(HttpStatusCode.Ok);
     expect(reviews.length).toBeGreaterThan(0);
     expect(reviews[0].peerReview.activenessScore).toEqual(
-      request.activenessScore
+      request.activenessScore,
     );
     expect(reviews[0].peerReview.communicationScore).toEqual(
-      request.communicationScore
+      request.communicationScore,
     );
     expect(reviews[0].peerReview.professionalismScore).toEqual(
-      request.professionalismScore
+      request.professionalismScore,
     );
     expect(reviews[0].peerReview.recommendScore).toEqual(
-      request.recommendScore
+      request.recommendScore,
     );
     expect(reviews[0].peerReview.togetherScore).toEqual(request.togetherScore);
     expect(reviews[0].peerReview.reviewerId).toEqual(applicantUserId);
@@ -324,44 +321,44 @@ describe("리뷰 작성", () => {
     expect(status).toBe(HttpStatusCode.Ok);
     expect(latestReviews.length).toBe(1);
     expect(latestReviews[0].selfReview.activenessScore).toEqual(
-      lastestRequest.activenessScore
+      lastestRequest.activenessScore,
     );
     expect(latestReviews[0].selfReview.communicationScore).toEqual(
-      lastestRequest.communicationScore
+      lastestRequest.communicationScore,
     );
     expect(latestReviews[0].selfReview.professionalismScore).toEqual(
-      lastestRequest.professionalismScore
+      lastestRequest.professionalismScore,
     );
     expect(latestReviews[0].selfReview.recommendScore).toEqual(
-      lastestRequest.recommendScore
+      lastestRequest.recommendScore,
     );
     expect(latestReviews[0].selfReview.togetherScore).toEqual(
-      lastestRequest.togetherScore
+      lastestRequest.togetherScore,
     );
     expect(latestReviews[0].selfReview.reviewerId).toEqual(applicantUserId);
     expect(latestReviews[0].selfReview.revieweeId).toEqual(
-      lastestRequest.revieweeId
+      lastestRequest.revieweeId,
     );
     expect(latestReviews[0].peerReview).toBeNull();
 
     expect(prevReviews[0].selfReview.activenessScore).toEqual(
-      prevRequest.activenessScore
+      prevRequest.activenessScore,
     );
     expect(prevReviews[0].selfReview.communicationScore).toEqual(
-      prevRequest.communicationScore
+      prevRequest.communicationScore,
     );
     expect(prevReviews[0].selfReview.professionalismScore).toEqual(
-      prevRequest.professionalismScore
+      prevRequest.professionalismScore,
     );
     expect(prevReviews[0].selfReview.recommendScore).toEqual(
-      prevRequest.recommendScore
+      prevRequest.recommendScore,
     );
     expect(prevReviews[0].selfReview.togetherScore).toEqual(
-      prevRequest.togetherScore
+      prevRequest.togetherScore,
     );
     expect(prevReviews[0].selfReview.reviewerId).toEqual(applicantUserId);
     expect(prevReviews[0].selfReview.revieweeId).toEqual(
-      prevRequest.revieweeId
+      prevRequest.revieweeId,
     );
     expect(prevReviews[0].peerReview).toBeNull();
   });
@@ -470,40 +467,40 @@ describe("리뷰 작성", () => {
     expect(status).toBe(HttpStatusCode.Ok);
     expect(latestReview.length).toBe(1);
     expect(latestReview[0].peerReview.activenessScore).toEqual(
-      lastestRequest.activenessScore
+      lastestRequest.activenessScore,
     );
     expect(latestReview[0].peerReview.communicationScore).toEqual(
-      lastestRequest.communicationScore
+      lastestRequest.communicationScore,
     );
     expect(latestReview[0].peerReview.professionalismScore).toEqual(
-      lastestRequest.professionalismScore
+      lastestRequest.professionalismScore,
     );
     expect(latestReview[0].peerReview.recommendScore).toEqual(
-      lastestRequest.recommendScore
+      lastestRequest.recommendScore,
     );
     expect(latestReview[0].peerReview.togetherScore).toEqual(
-      lastestRequest.togetherScore
+      lastestRequest.togetherScore,
     );
     expect(latestReview[0].peerReview.reviewerId).toEqual(owner2Id);
     expect(latestReview[0].peerReview.revieweeId).toEqual(
-      lastestRequest.revieweeId
+      lastestRequest.revieweeId,
     );
     expect(latestReview[0].selfReview).toBeNull();
 
     expect(prevReview[0].peerReview.activenessScore).toEqual(
-      prevRequest.activenessScore
+      prevRequest.activenessScore,
     );
     expect(prevReview[0].peerReview.communicationScore).toEqual(
-      prevRequest.communicationScore
+      prevRequest.communicationScore,
     );
     expect(prevReview[0].peerReview.professionalismScore).toEqual(
-      prevRequest.professionalismScore
+      prevRequest.professionalismScore,
     );
     expect(prevReview[0].peerReview.recommendScore).toEqual(
-      prevRequest.recommendScore
+      prevRequest.recommendScore,
     );
     expect(prevReview[0].peerReview.togetherScore).toEqual(
-      prevRequest.togetherScore
+      prevRequest.togetherScore,
     );
     expect(prevReview[0].peerReview.reviewerId).toEqual(ownerId);
     expect(prevReview[0].peerReview.revieweeId).toEqual(prevRequest.revieweeId);
@@ -619,6 +616,7 @@ describe("리뷰 작성", () => {
     const prevPeerReview = prevReview[0].peerReview;
     const prevMyReview = prevReview[0].selfReview;
 
+    console.log(studies);
     // // then
     expect(status).toBe(HttpStatusCode.Ok);
 
@@ -627,54 +625,54 @@ describe("리뷰 작성", () => {
 
     // latesty Study peer review
     expect(latestPeerReview.activenessScore).toEqual(
-      lastestPeerRequest.activenessScore
+      lastestPeerRequest.activenessScore,
     );
     expect(latestPeerReview.communicationScore).toEqual(
-      lastestPeerRequest.communicationScore
+      lastestPeerRequest.communicationScore,
     );
     expect(latestPeerReview.professionalismScore).toEqual(
-      lastestPeerRequest.professionalismScore
+      lastestPeerRequest.professionalismScore,
     );
     expect(latestPeerReview.recommendScore).toEqual(
-      lastestPeerRequest.recommendScore
+      lastestPeerRequest.recommendScore,
     );
     expect(latestPeerReview.togetherScore).toEqual(
-      lastestPeerRequest.togetherScore
+      lastestPeerRequest.togetherScore,
     );
     expect(latestPeerReview.reviewerId).toEqual(owner2Id);
     expect(latestPeerReview.revieweeId).toEqual(applicantUserId);
 
     // latest study my review
     expect(latestMyReview.activenessScore).toEqual(
-      lastestMyRequest.activenessScore
+      lastestMyRequest.activenessScore,
     );
     expect(latestMyReview.communicationScore).toEqual(
-      lastestMyRequest.communicationScore
+      lastestMyRequest.communicationScore,
     );
     expect(latestMyReview.professionalismScore).toEqual(
-      lastestMyRequest.professionalismScore
+      lastestMyRequest.professionalismScore,
     );
     expect(latestMyReview.recommendScore).toEqual(
-      lastestMyRequest.recommendScore
+      lastestMyRequest.recommendScore,
     );
     expect(latestMyReview.togetherScore).toEqual(
-      lastestMyRequest.togetherScore
+      lastestMyRequest.togetherScore,
     );
     expect(latestMyReview.reviewerId).toEqual(applicantUserId);
     expect(latestMyReview.revieweeId).toEqual(owner2Id);
 
     // prev study peer review
     expect(prevPeerReview.activenessScore).toEqual(
-      prevPeerRequest.activenessScore
+      prevPeerRequest.activenessScore,
     );
     expect(prevPeerReview.communicationScore).toEqual(
-      prevPeerRequest.communicationScore
+      prevPeerRequest.communicationScore,
     );
     expect(prevPeerReview.professionalismScore).toEqual(
-      prevPeerRequest.professionalismScore
+      prevPeerRequest.professionalismScore,
     );
     expect(prevPeerReview.recommendScore).toEqual(
-      prevPeerRequest.recommendScore
+      prevPeerRequest.recommendScore,
     );
     expect(prevPeerReview.togetherScore).toEqual(prevPeerRequest.togetherScore);
     expect(prevPeerReview.reviewerId).toEqual(ownerId);
@@ -683,10 +681,10 @@ describe("리뷰 작성", () => {
     // prev study my review
     expect(prevMyReview.activenessScore).toEqual(prevMyRequest.activenessScore);
     expect(prevMyReview.communicationScore).toEqual(
-      prevMyRequest.communicationScore
+      prevMyRequest.communicationScore,
     );
     expect(prevMyReview.professionalismScore).toEqual(
-      prevMyRequest.professionalismScore
+      prevMyRequest.professionalismScore,
     );
     expect(prevMyReview.recommendScore).toEqual(prevMyRequest.recommendScore);
     expect(prevMyReview.togetherScore).toEqual(prevMyRequest.togetherScore);
@@ -795,7 +793,7 @@ describe("리뷰 작성", () => {
 
       expect(e.response?.status).toBe(HttpStatusCode.BadRequest);
       expect(e.response?.data.message).toEqual(
-        "리뷰 작성 기간이 지났습니다. 리뷰 작성은 스터디 완료 후 최대 14일까지 가능합니다."
+        "리뷰 작성 기간이 지났습니다. 리뷰 작성은 스터디 완료 후 최대 14일까지 가능합니다.",
       );
       expect(e.response?.data.data).toBeNull();
     }
@@ -857,7 +855,7 @@ describe("리뷰 작성", () => {
 
       expect(e.response?.status).toBe(HttpStatusCode.BadRequest);
       expect(e.response?.data.message).toEqual(
-        "자기 자신에게는 리뷰를 작성할 수 없습니다."
+        "자기 자신에게는 리뷰를 작성할 수 없습니다.",
       );
       expect(e.response?.data.data).toBeNull();
     }
@@ -906,7 +904,7 @@ describe("리뷰 작성", () => {
 
       expect(e.response?.status).toBe(HttpStatusCode.Forbidden);
       expect(e.response?.data.message).toEqual(
-        "참여 중인 스터디가 아닙니다. 리뷰를 작성할 수 없습니다."
+        "참여 중인 스터디가 아닙니다. 리뷰를 작성할 수 없습니다.",
       );
       expect(e.response?.data.data).toBeNull();
     }
@@ -954,7 +952,7 @@ describe("리뷰 작성", () => {
 
       expect(e.response?.status).toBe(HttpStatusCode.Forbidden);
       expect(e.response?.data.message).toEqual(
-        "참여 중인 스터디가 아닙니다. 리뷰를 작성할 수 없습니다."
+        "참여 중인 스터디가 아닙니다. 리뷰를 작성할 수 없습니다.",
       );
       expect(e.response?.data.data).toBeNull();
     }
@@ -985,7 +983,7 @@ describe("리뷰 작성", () => {
 
       expect(e.response?.status).toBe(HttpStatusCode.NotFound);
       expect(e.response?.data.message).toEqual(
-        "존재하지 않는 스터디입니다. 리뷰를 작성할 수 없습니다."
+        "존재하지 않는 스터디입니다. 리뷰를 작성할 수 없습니다.",
       );
       expect(e.response?.data.data).toBeNull();
     }

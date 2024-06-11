@@ -3,15 +3,13 @@ package com.ludo.study.studymatchingplatform.study.domain.study;
 import com.ludo.study.studymatchingplatform.common.entity.BaseEntity;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import static jakarta.persistence.FetchType.LAZY;
 
 @Entity
+@Getter
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
@@ -25,7 +23,7 @@ public class ReviewStatistics extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    // review count
+    // reviewStatistics count
     @Builder.Default
     private Long totalActivenessReviewCount = 0L;
 
