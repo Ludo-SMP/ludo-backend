@@ -22,6 +22,7 @@ import com.ludo.study.studymatchingplatform.notification.domain.keyword.Notifica
 import com.ludo.study.studymatchingplatform.notification.domain.keyword.NotificationKeywordStack;
 import com.ludo.study.studymatchingplatform.notification.domain.notification.RecruitmentNotification;
 import com.ludo.study.studymatchingplatform.notification.domain.notification.ReviewNotification;
+import com.ludo.study.studymatchingplatform.notification.domain.notification.StudyEndDateNotifyCond;
 import com.ludo.study.studymatchingplatform.notification.domain.notification.StudyNotification;
 import com.ludo.study.studymatchingplatform.notification.repository.config.GlobalNotificationUserConfigRepositoryImpl;
 import com.ludo.study.studymatchingplatform.notification.repository.dto.RecruitmentNotifierCond;
@@ -91,13 +92,15 @@ public class NotificationQueryService {
 	}
 
 	public List<Participant> findStudyEndDateNotifier() {
-		final long remainingPeriod = 5L;
-		final LocalDate endDate = utcDateTimePicker.now().toLocalDate().plusDays(remainingPeriod);
-		final LocalDateTime endDateStartOfDay = utcDateTimePicker.toMicroSeconds(endDate.atStartOfDay());
-		final LocalDateTime endDateEndOfDay = utcDateTimePicker.toMicroSeconds(endDate.atTime(LocalTime.MAX));
+		final LocalDate studyEndDate = StudyEndDateNotifyCond.remainingPeriod.getStudyEndDate(utcDateTimePicker);
+		final LocalDateTime studyEndDateStartOfDay = StudyEndDateNotifyCond.remainingPeriod.getStudyEndDateStartOfDay(
+				utcDateTimePicker, studyEndDate);
+		final LocalDateTime studyEndDateEndOfDay = StudyEndDateNotifyCond.remainingPeriod.getStudyEndDateEndOfDay(
+				utcDateTimePicker, studyEndDate);
 
 		final List<Participant> ownerParticipantsBetweenDateRange = participantRepository.findOwnerParticipantsBetweenDateRange(
-				new StudyEndDateNotifierCond(Role.OWNER, endDateStartOfDay, endDateEndOfDay));
+				new StudyEndDateNotifierCond(Role.OWNER, studyEndDateStartOfDay, studyEndDateEndOfDay));
+
 		log.info("ownerParticipantsBetweenDateRange = {}", ownerParticipantsBetweenDateRange);
 		return ownerParticipantsBetweenDateRange;
 	}
@@ -151,15 +154,15 @@ public class NotificationQueryService {
 
 		final List<NotificationResponse> notificationResponses = new ArrayList<>();
 		recruitmentNotifications.stream()
-				.map(NotificationResponse::new)
+				.map(NotificationResponse::from)
 				.forEach(notificationResponses::add);
 
 		studyNotifications.stream()
-				.map(NotificationResponse::new)
+				.map(NotificationResponse::from)
 				.forEach(notificationResponses::add);
 
 		reviewNotifications.stream()
-				.map(NotificationResponse::new)
+				.map(NotificationResponse::from)
 				.forEach(notificationResponses::add);
 
 		return notificationResponses;
