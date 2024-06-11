@@ -93,14 +93,14 @@ public class Participant extends BaseEntity {
         this.position = position;
     }
 
-    public boolean perfectAttendance() {
-        // TODO: total 스터디 일수를 가져오는 API 필요. 우선 임시 변수로 저장
-        int totalStudyDays = 100;
-        return attendance == totalStudyDays;
+    public boolean finishAttendance() {
+        // TODO:
+        return true;
     }
 
+
     // 출석 80% 이상
-    public boolean requiredAttendance() {
+    public boolean perfectAttendance() {
         // TODO: total 스터디 일수를 가져오는 API 필요. 우선 임시 변수로 저장
         int totalStudyDays = 100;
         return (attendance / totalStudyDays * 100) > 80;

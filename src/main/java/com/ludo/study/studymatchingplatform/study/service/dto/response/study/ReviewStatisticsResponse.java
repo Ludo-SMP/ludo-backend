@@ -1,18 +1,18 @@
-package com.ludo.study.studymatchingplatform.study.service.dto.response;
+package com.ludo.study.studymatchingplatform.study.service.dto.response.study;
 
 import com.ludo.study.studymatchingplatform.study.domain.study.ReviewStatistics;
 
 public record ReviewStatisticsResponse(
         // 적극성
-        double activenessScore,
+        double activeness,
         // 전문성
-        double professionalismScore,
+        double professionalism,
         // 의사소통
-        double communicationScore,
+        double communication,
         // 다시함께
-        double togetherScore,
+        double together,
         // 추천
-        double recommendScore
+        double recommend
 ) {
     public static ReviewStatisticsResponse from(final ReviewStatistics statistics) {
         return new ReviewStatisticsResponse(

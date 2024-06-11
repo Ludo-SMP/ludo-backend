@@ -6,7 +6,7 @@ import com.ludo.study.studymatchingplatform.study.domain.study.StudyStatus;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.recruitment.applicant.StudyApplicantDecisionRequest;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.study.StudyUpdateRequest;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.study.WriteStudyRequest;
-import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.applicant.ApplicantResponse;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.applicant.ApplicantWithReviewStatisticsResponse;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.study.StudyResponse;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.study.participant.ParticipantUserResponse;
 import com.ludo.study.studymatchingplatform.study.service.recruitment.applicant.StudyApplicantDecisionService;
@@ -115,10 +115,10 @@ public class StudyController {
     @ResponseStatus(HttpStatus.OK)
     @Operation(description = "스터디 지원자 정보")
     @ApiResponse(description = "스터디 지원자 정보 조회 성공", responseCode = "200", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
-    public ApplicantResponse findApplicantsInfo(
+    public ApplicantWithReviewStatisticsResponse findApplicantsWithReviewStatistics(
             @Parameter(hidden = true) @AuthUser final User user,
             @PathVariable("studyId") final Long studyId) {
-        return studyService.findApplicantsInfo(user, studyId);
+        return studyService.findApplicantsWithReviewStatistics(user, studyId);
     }
 
     @PutMapping("/{studyId}")

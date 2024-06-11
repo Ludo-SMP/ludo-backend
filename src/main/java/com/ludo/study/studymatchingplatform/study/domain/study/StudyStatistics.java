@@ -29,11 +29,11 @@ public class StudyStatistics extends BaseEntity {
 
     // 진행 완료 스터디(진행도 100%)
     @Builder.Default
-    private int totalPerfectAttendanceStudies = 0;
+    private int totalFinishAttendanceStudies = 0;
 
     // 완주 스터디(진행도 80% 이상)
     @Builder.Default
-    private int totalRequiredAttendanceStudies = 0;
+    private int totalPerfectAttendanceStudies = 0;
 
     // 총 무단 탈주 스터디
     @Builder.Default
@@ -68,11 +68,11 @@ public class StudyStatistics extends BaseEntity {
         totalAttendance += participant.getAttendance();
         totalValidAttendance += participant.getValidAttendance();
         totalTeammateCount += study.getParticipantCount() - 1;
+        if (participant.finishAttendance()) {
+            totalFinishAttendanceStudies++;
+        }
         if (participant.perfectAttendance()) {
             totalPerfectAttendanceStudies++;
-        }
-        if (participant.requiredAttendance()) {
-            totalRequiredAttendanceStudies++;
         }
     }
 

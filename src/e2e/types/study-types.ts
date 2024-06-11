@@ -1,4 +1,5 @@
 import { BaseDateTime } from "./base-types";
+import { ReviewStatistics } from "./statistics-types";
 import { User } from "./users-types";
 
 export type UpdateStudyRequest = CreateStudyRequest;
@@ -16,6 +17,7 @@ export interface CreateStudyRequest {
 
 export type Participant = User & { position: Position };
 export type Applicant = User & { position: Position };
+export type ApplicantWithReviewStatistics = Applicant & { reviewStatistics: ReviewStatistics };
 
 export type StudyStatus = "RECRUITING" | "RECRUITED" | "PROGRESS" | "COMPLETED";
 export type Platform = "GATHER" | "GOOGLE_MEET";

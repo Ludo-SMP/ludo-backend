@@ -7,8 +7,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public record PeerReviewsResponse(
-        ReviewResponse selfReview, // self wrote review
-        ReviewResponse peerReview,  // peer wrote review
+        ReviewResponse selfReview, // self wrote reviewStatistics
+        ReviewResponse peerReview,  // peer wrote reviewStatistics
         LocalDateTime updatedDateTime
 ) {
 

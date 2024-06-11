@@ -13,7 +13,7 @@ export async function writeReview(
     recommendScore,
     revieweeId,
     togetherScore,
-  }: WriteReviewRequest
+  }: WriteReviewRequest,
 ) {
   return apiClient.post<WriteReviewResponse>(`/studies/${studyId}/reviews`, {
     activenessScore,

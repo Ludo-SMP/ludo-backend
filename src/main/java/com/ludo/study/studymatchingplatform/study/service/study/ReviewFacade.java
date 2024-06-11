@@ -1,23 +1,21 @@
 package com.ludo.study.studymatchingplatform.study.service.study;
 
-import com.ludo.study.studymatchingplatform.study.repository.study.participant.ParticipantRepositoryImpl;
-import com.ludo.study.studymatchingplatform.study.service.dto.response.study.StudyPeerReviewResponse;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import com.ludo.study.studymatchingplatform.notification.service.NotificationService;
 import com.ludo.study.studymatchingplatform.common.exception.DataConflictException;
 import com.ludo.study.studymatchingplatform.common.exception.DataNotFoundException;
+import com.ludo.study.studymatchingplatform.notification.service.NotificationService;
 import com.ludo.study.studymatchingplatform.study.domain.study.Review;
 import com.ludo.study.studymatchingplatform.study.domain.study.Study;
 import com.ludo.study.studymatchingplatform.study.repository.study.ReviewRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.study.StudyRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.repository.study.participant.ParticipantRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.study.WriteReviewRequest;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.study.StudyPeerReviewResponse;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.study.WriteReviewResponse;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 import com.ludo.study.studymatchingplatform.user.repository.user.UserRepositoryImpl;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -51,13 +49,13 @@ public class ReviewFacade {
 //    }
 
     public List<StudyPeerReviewResponse> getStudyPeerReviews(final Long selfId) {
-        // 1. 가입한 studyId 모두 찾아온 뒤, 각 study 별 self,peer review 쌍 만들기
-        // 2. 스터디 상관 없이 특정 user에 대한 self, peer review 쌍 만들기
+        // 1. 가입한 studyId 모두 찾아온 뒤, 각 study 별 self,peer reviewStatistics 쌍 만들기
+        // 2. 스터디 상관 없이 특정 user에 대한 self, peer reviewStatistics 쌍 만들기
 
         final List<Review> allSelfReviews = reviewRepository.findAllSelfReviews(selfId);
         final List<Review> allPeerReviews = reviewRepository.findAllPeerReviews(selfId);
 
-        return StudyPeerReviewResponse.listFrom(allSelfReviews,allPeerReviews);
+        return StudyPeerReviewResponse.listFrom(allSelfReviews, allPeerReviews);
     }
 
     public WriteReviewResponse write(final WriteReviewRequest request, final Long studyId, final User reviewer) {
