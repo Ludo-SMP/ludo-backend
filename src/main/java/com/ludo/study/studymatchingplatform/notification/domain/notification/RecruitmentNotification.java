@@ -41,4 +41,8 @@ public class RecruitmentNotification extends Notification {
 		return new RecruitmentNotification(notificationEventType, createdOn, actor, notifier);
 	}
 
+	public Long getActorId() {
+		return actor.getId();
+	}
+
 }
