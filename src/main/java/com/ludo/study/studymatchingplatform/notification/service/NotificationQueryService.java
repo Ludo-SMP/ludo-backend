@@ -5,10 +5,10 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.stereotype.Service;
@@ -169,8 +169,7 @@ public class NotificationQueryService {
 	}
 
 	public NotificationConfigResponse readNotificationConfigAndKeywords(final User user) {
-		final GlobalNotificationUserConfig userConfig = findNotificationConfig(
-				user);
+		final GlobalNotificationUserConfig userConfig = findNotificationConfig(user);
 
 		final List<NotificationKeywordCategory> notificationKeywordCategories = notificationKeywordCategoryRepository
 				.findByUserId(user.getId());
@@ -194,34 +193,16 @@ public class NotificationQueryService {
 						String.format("id={%d} 사용자의 알림 설정이 등록되지 않았습니다.", user.getId())));
 	}
 
-	public Set<Long> readExistCategoryKeywordCategoryIds(final User user) {
-		final List<NotificationKeywordCategory> notificationKeywordCategories = notificationKeywordCategoryRepository
-				.findByUserId(user.getId());
-
-		return notificationKeywordCategories
-				.stream()
-				.map(NotificationKeywordCategory::getCategoryId)
-				.collect(Collectors.toSet());
+	public Set<NotificationKeywordPosition> readNotificationKeywordPositions(final User user) {
+		return new HashSet<>(notificationKeywordPositionRepository.findByUserId(user.getId()));
 	}
 
-	public Set<Long> readExistPositionKeywordPositionIds(final User user) {
-		final List<NotificationKeywordPosition> notificationKeywordPositions = notificationKeywordPositionRepository
-				.findByUserId(user.getId());
-
-		return notificationKeywordPositions
-				.stream()
-				.map(NotificationKeywordPosition::getPositionId)
-				.collect(Collectors.toSet());
+	public Set<NotificationKeywordStack> readNotificationKeywordStacks(final User user) {
+		return new HashSet<>(notificationKeywordStackRepository.findByUserId(user.getId()));
 	}
 
-	public Set<Long> readExistStackKeywordStackIds(final User user) {
-		final List<NotificationKeywordStack> notificationKeywordStacks = notificationKeywordStackRepository
-				.findByUserId(user.getId());
-
-		return notificationKeywordStacks
-				.stream()
-				.map(NotificationKeywordStack::getStackId)
-				.collect(Collectors.toSet());
+	public Set<NotificationKeywordCategory> readNotificationKeywordCategories(final User user) {
+		return new HashSet<>(notificationKeywordCategoryRepository.findByUserId(user.getId()));
 	}
 
 }
