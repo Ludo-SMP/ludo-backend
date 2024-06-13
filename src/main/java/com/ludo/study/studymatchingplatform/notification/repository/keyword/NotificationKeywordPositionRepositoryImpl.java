@@ -1,9 +1,9 @@
 package com.ludo.study.studymatchingplatform.notification.repository.keyword;
 
-import static com.ludo.study.studymatchingplatform.notification.domain.keyword.QNotificationKeywordCategory.*;
 import static com.ludo.study.studymatchingplatform.notification.domain.keyword.QNotificationKeywordPosition.*;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.stereotype.Repository;
 
@@ -26,7 +26,7 @@ public class NotificationKeywordPositionRepositoryImpl {
 	}
 
 	public List<NotificationKeywordPosition> saveAll(
-			final List<NotificationKeywordPosition> notificationKeywordPosition
+			final Set<NotificationKeywordPosition> notificationKeywordPosition
 	) {
 		return notificationKeywordPositionJpaRepository.saveAll(notificationKeywordPosition);
 	}
@@ -38,8 +38,16 @@ public class NotificationKeywordPositionRepositoryImpl {
 	}
 
 	public void deleteByUserId(final Long userId) {
-		q.delete(notificationKeywordCategory)
-				.where(notificationKeywordCategory.id.eq(userId))
+		q.delete(notificationKeywordPosition)
+				.where(notificationKeywordPosition.user.id.eq(userId))
+				.execute();
+		em.flush();
+		em.clear();
+	}
+
+	public void deleteByIn(final Set<NotificationKeywordPosition> keywordPositions) {
+		q.delete(notificationKeywordPosition)
+				.where(notificationKeywordPosition.in(keywordPositions))
 				.execute();
 		em.flush();
 		em.clear();
