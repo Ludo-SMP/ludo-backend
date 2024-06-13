@@ -2,6 +2,7 @@ package com.ludo.study.studymatchingplatform.notification.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -98,18 +99,40 @@ public class NotificationCommandService {
 	}
 
 	@Transactional
-	public void saveNotificationKeywordCategory(final NotificationKeywordCategory notificationKeywordCategory) {
-		notificationKeywordCategoryRepository.save(notificationKeywordCategory);
+	public void saveNotificationKeywordCategories(
+			final Set<NotificationKeywordCategory> notificationKeywordCategories) {
+		notificationKeywordCategoryRepository.saveAll(notificationKeywordCategories);
 	}
 
 	@Transactional
-	public void saveNotificationKeywordPosition(final NotificationKeywordPosition notificationKeywordPosition) {
-		notificationKeywordPositionRepository.save(notificationKeywordPosition);
+	public void saveNotificationKeywordPositions(final Set<NotificationKeywordPosition> notificationKeywordPositions) {
+		notificationKeywordPositionRepository.saveAll(notificationKeywordPositions);
 	}
 
 	@Transactional
-	public void saveNotificationKeywordStack(final NotificationKeywordStack notificationKeywordStack) {
-		notificationKeywordStackRepository.save(notificationKeywordStack);
+	public void saveNotificationKeywordStacks(final Set<NotificationKeywordStack> notificationKeywordStacks) {
+		notificationKeywordStackRepository.saveAll(notificationKeywordStacks);
+	}
+
+	@Transactional
+	public void deleteNotificationKeywordCategories(
+			final Set<NotificationKeywordCategory> notificationKeywordCategories
+	) {
+		notificationKeywordCategoryRepository.deleteByIn(notificationKeywordCategories);
+	}
+
+	@Transactional
+	public void deleteNotificationKeywordStacks(
+			final Set<NotificationKeywordStack> notificationKeywordStacks
+	) {
+		notificationKeywordStackRepository.deleteByIn(notificationKeywordStacks);
+	}
+
+	@Transactional
+	public void deleteNotificationKeywordPositions(
+			final Set<NotificationKeywordPosition> notificationKeywordPositions
+	) {
+		notificationKeywordPositionRepository.deleteByIn(notificationKeywordPositions);
 	}
 
 	@Transactional
