@@ -6,7 +6,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ludo.study.studymatchingplatform.auth.service.google.vo.GoogleOAuthToken;
 import com.ludo.study.studymatchingplatform.auth.service.google.vo.GoogleUserProfile;
 import com.ludo.study.studymatchingplatform.study.service.exception.DuplicatedSignUpException;
+import com.ludo.study.studymatchingplatform.user.domain.user.Details;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
+import com.ludo.study.studymatchingplatform.user.repository.user.DetailsRepositoryImpl;
 import com.ludo.study.studymatchingplatform.user.repository.user.UserRepositoryImpl;
 
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,7 @@ public class GoogleSignUpService {
 	private final GoogleOAuthTokenRequestService googleOAuthTokenRequestService;
 	private final GoogleProfileRequestService googleProfileRequestService;
 	private final UserRepositoryImpl userRepository;
+	private final DetailsRepositoryImpl detailsRepository;
 
 	@Transactional
 	public User googleSignUp(final String authorizationCode) {
@@ -40,7 +43,13 @@ public class GoogleSignUpService {
 	private User signup(final GoogleUserProfile userInfo) {
 		final User user = userRepository.save(userInfo.toUser());
 		user.setInitialDefaultNickname();
+		createDetails(user);
 		return user;
+	}
+
+	private void createDetails(final User user) {
+		final Details details = Details.from(user);
+		detailsRepository.save(details);
 	}
 
 }
