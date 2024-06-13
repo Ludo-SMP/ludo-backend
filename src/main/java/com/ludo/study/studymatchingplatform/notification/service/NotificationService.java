@@ -10,6 +10,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ludo.study.studymatchingplatform.notification.controller.dto.request.NotificationKeywordConfigRequest;
 import com.ludo.study.studymatchingplatform.notification.domain.config.GlobalNotificationUserConfig;
 import com.ludo.study.studymatchingplatform.notification.domain.config.NotificationConfigGroup;
 import com.ludo.study.studymatchingplatform.notification.domain.keyword.NotificationKeywordCategory;
@@ -220,8 +221,14 @@ public class NotificationService {
 	}
 
 	@Transactional
-	public void configNotificationCategoryKeywords(final User user,
-												   final List<Long> categoryIds
+	public void configNotificationKeywords(final User user, final NotificationKeywordConfigRequest configRequest) {
+		configNotificationCategoryKeywords(user, configRequest.categoryIds());
+		configNotificationPositionKeywords(user, configRequest.positionIds());
+		configNotificationStackKeywords(user, configRequest.stackIds());
+	}
+
+	private void configNotificationCategoryKeywords(final User user,
+													final List<Long> categoryIds
 	) {
 		if (validateKeywordConfigUpdatable(user)) {
 			return;
@@ -242,9 +249,8 @@ public class NotificationService {
 		saveAndDeleteKeywordCategories(keywordCategoriesToSave, keywordCategoriesToDelete);
 	}
 
-	@Transactional
-	public void configNotificationPositionKeywords(final User user,
-												   final List<Long> positionIds
+	private void configNotificationPositionKeywords(final User user,
+													final List<Long> positionIds
 	) {
 		if (validateKeywordConfigUpdatable(user)) {
 			return;
@@ -265,9 +271,8 @@ public class NotificationService {
 		saveAndDeleteKeywordPositions(keywordPositionsToSave, keywordPositionsToDelete);
 	}
 
-	@Transactional
-	public void configNotificationStackKeywords(final User user,
-												final List<Long> stackIds
+	private void configNotificationStackKeywords(final User user,
+												 final List<Long> stackIds
 	) {
 		if (validateKeywordConfigUpdatable(user)) {
 			return;
