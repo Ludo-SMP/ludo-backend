@@ -139,4 +139,14 @@ public class StudyController {
 		return studyUpdateService.update(user, studyId, request);
 	}
 
+	@PostMapping("/{studyId}/attendance")
+	@ResponseStatus(HttpStatus.OK)
+	@DataFieldName("study")
+	@Operation(description = "스터디 출석 체크")
+	@ApiResponse(description = "스터디 출석 체크 성공", responseCode = "200", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
+	public void attendance(@Parameter(hidden = true) @AuthUser final User user,
+						   @PathVariable final Long studyId) {
+		studyService.attendance(user, studyId);
+	}
+
 }

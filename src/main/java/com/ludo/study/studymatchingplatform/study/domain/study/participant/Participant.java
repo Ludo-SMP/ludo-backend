@@ -2,6 +2,7 @@ package com.ludo.study.studymatchingplatform.study.domain.study.participant;
 
 import static jakarta.persistence.FetchType.*;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 import com.ludo.study.studymatchingplatform.common.entity.BaseEntity;
@@ -56,12 +57,31 @@ public class Participant extends BaseEntity {
 	@JoinColumn(name = "position_id")
 	private Position position;
 
-	public static Participant from(final Study study, final User user, final Position position, final Role role) {
+	@Column(nullable = false)
+	private Integer totalAttendance;
+
+	@Column(nullable = false)
+	private Integer validAttendance;
+
+	@Column(nullable = true)
+	private LocalDateTime recentAttendanceDate;
+
+	@Column(nullable = false)
+	private LocalDateTime joiningDateTime; // 합류일
+
+	public static Participant from(final Study study,
+								   final User user,
+								   final Position position,
+								   final Role role,
+								   final LocalDateTime joiningDateTime) {
 		final Participant participant = new Participant();
 		participant.study = study;
 		participant.user = user;
 		participant.role = role;
 		participant.position = position;
+		participant.totalAttendance = 0;
+		participant.validAttendance = 0;
+		participant.joiningDateTime = joiningDateTime;
 		return participant;
 	}
 
@@ -87,6 +107,25 @@ public class Participant extends BaseEntity {
 
 	public void updatePosition(final Position position) {
 		this.position = position;
+	}
+
+	public void increaseTotalAttendance() {
+		this.totalAttendance++;
+	}
+
+	public void increaseValidAttendance() {
+		this.validAttendance++;
+	}
+
+	public void renewalAttendanceDate(final LocalDateTime now) {
+		this.recentAttendanceDate = now;
+	}
+
+	public boolean isFirstAttendance() {
+		if (this.recentAttendanceDate == null) { // 첫 번째 출석 체크인 경우
+			return Boolean.TRUE;
+		}
+		return Boolean.FALSE;
 	}
 
 }

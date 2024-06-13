@@ -1,6 +1,5 @@
 package com.ludo.study.studymatchingplatform.study.service.study;
 
-import java.time.LocalDateTime;
 import java.util.stream.Stream;
 
 import org.springframework.stereotype.Service;
@@ -42,16 +41,16 @@ public class StudyUpdateService {
 		final Study study = findStudyById(studyId);
 		study.ensureStudyEditable(owner);
 		study.update(request.title(), category, request.participantLimit(),
-				way, platform, request.platformUrl(),
+				request.attendanceDay(), way, platform, request.platformUrl(),
 				request.startDateTime(), request.endDateTime());
-
-		// 수정된 endDateTime이 현재 시간 이전일 경우 진행 완료 상태로 변경
-		final LocalDateTime now = LocalDateTime.now();
-		study.modifyStatusToCompleted(now);
 
 		final Position ownerPosition = findPositionById(request.positionId());
 		final Participant participant = findParticipantByIds(study.getId(), user.getId());
 		participant.updatePosition(ownerPosition);
+
+		// 수정된 endDateTime이 현재 시간 이전일 경우 진행 완료 상태로 변경
+		// final LocalDateTime now = LocalDateTime.now();
+		// study.modifyStatusToCompleted(now, participant);
 
 		studyRepository.save(study);
 		participantRepository.save(participant);

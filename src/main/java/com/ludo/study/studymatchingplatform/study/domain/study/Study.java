@@ -28,6 +28,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Transient;
 import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -90,6 +91,9 @@ public class Study extends BaseEntity {
 	// null 제거 필요
 	@Column(nullable = false)
 	private Integer participantCount;
+
+	@Transient // jpa 패키지에 위치, DB 테이블에 적용되지 않음.
+	private List<Integer> attendanceDay;
 
 	@Column(nullable = false)
 	private LocalDateTime startDateTime;
@@ -183,9 +187,9 @@ public class Study extends BaseEntity {
 		}
 	}
 
-	public void acceptApplicant(final User owner, final User applicantUser) {
+	public void acceptApplicant(final User owner, final User applicantUser, final LocalDateTime now) {
 		ensureAcceptApplicant(owner, applicantUser);
-		accept(applicantUser);
+		accept(applicantUser, now);
 		if (isMaxParticipantCount()) {
 			changeStatus(StudyStatus.RECRUITED);
 		}
@@ -231,10 +235,10 @@ public class Study extends BaseEntity {
 		}
 	}
 
-	private void accept(final User applicantUser) {
+	private void accept(final User applicantUser, final LocalDateTime now) {
 		recruitment.acceptApplicant(applicantUser);
 		final Applicant applicant = recruitment.getApplicant(applicantUser);
-		addParticipant(Participant.from(this, applicantUser, applicant.getPosition(), Role.MEMBER));
+		addParticipant(Participant.from(this, applicantUser, applicant.getPosition(), Role.MEMBER, now));
 	}
 
 	private Boolean isMaxParticipantCount() {
@@ -286,9 +290,7 @@ public class Study extends BaseEntity {
 	}
 
 	public void modifyStatusToCompleted(final LocalDateTime now) {
-		if (this.endDateTime.isBefore(now)) {
-			this.status = StudyStatus.COMPLETED;
-		}
+		this.status = StudyStatus.COMPLETED; // 스터디 진행완료
 	}
 
 	public void deactivateForRecruitment() {
@@ -307,8 +309,8 @@ public class Study extends BaseEntity {
 	}
 
 	public void update(final String title, final Category category, final Integer participantLimit,
-					   final Way way, final Platform platform, final String platformUrl,
-					   final LocalDateTime startDateTime, final LocalDateTime endDateTime) {
+					   final List<Integer> attendanceDay, final Way way, final Platform platform,
+					   final String platformUrl, final LocalDateTime startDateTime, final LocalDateTime endDateTime) {
 		if (title != null) {
 			this.title = title;
 		}
@@ -317,6 +319,9 @@ public class Study extends BaseEntity {
 		}
 		if (participantLimit != null) {
 			this.participantLimit = participantLimit;
+		}
+		if (attendanceDay != null) { // 출석일 추가
+			this.attendanceDay = attendanceDay;
 		}
 		if (way != null) {
 			this.way = way;

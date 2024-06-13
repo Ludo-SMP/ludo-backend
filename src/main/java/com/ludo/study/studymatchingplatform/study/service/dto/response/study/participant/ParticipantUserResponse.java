@@ -1,5 +1,7 @@
 package com.ludo.study.studymatchingplatform.study.service.dto.response.study.participant;
 
+import java.time.LocalDateTime;
+
 import com.ludo.study.studymatchingplatform.study.domain.study.participant.Participant;
 import com.ludo.study.studymatchingplatform.study.domain.study.participant.Role;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.position.PositionResponse;
@@ -14,7 +16,9 @@ public record ParticipantUserResponse(
 		String nickname,
 		String email,
 		Role role,
-		PositionResponse position
+		PositionResponse position,
+		Integer totalAttendance,
+		LocalDateTime recentAttendanceDate
 
 ) {
 
@@ -28,6 +32,8 @@ public record ParticipantUserResponse(
 				.email(user.getEmail())
 				.role(participant.getRole())
 				.position(response)
+				.totalAttendance(participant.getTotalAttendance())
+				.recentAttendanceDate(participant.getRecentAttendanceDate())
 				.build();
 	}
 

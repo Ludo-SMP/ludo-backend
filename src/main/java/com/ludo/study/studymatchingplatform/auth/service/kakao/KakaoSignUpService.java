@@ -7,8 +7,10 @@ import com.ludo.study.studymatchingplatform.auth.repository.InMemoryClientRegist
 import com.ludo.study.studymatchingplatform.auth.service.kakao.dto.KakaoOAuthToken;
 import com.ludo.study.studymatchingplatform.auth.service.kakao.dto.KakaoUserProfileDto;
 import com.ludo.study.studymatchingplatform.study.service.exception.DuplicatedSignUpException;
+import com.ludo.study.studymatchingplatform.user.domain.user.Details;
 import com.ludo.study.studymatchingplatform.user.domain.user.Social;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
+import com.ludo.study.studymatchingplatform.user.repository.user.DetailsRepositoryImpl;
 import com.ludo.study.studymatchingplatform.user.repository.user.UserRepositoryImpl;
 
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,7 @@ public class KakaoSignUpService {
 	private final KakaoOAuthTokenRequestService kakaoOAuthTokenRequestService;
 	private final KakaoProfileRequestService kakaoProfileRequestService;
 	private final UserRepositoryImpl userRepository;
+	private final DetailsRepositoryImpl detailsRepository;
 
 	@Transactional
 	public User kakaoSignUp(final String authorizationCode) {
@@ -45,7 +48,13 @@ public class KakaoSignUpService {
 	private User sinup(KakaoUserProfileDto kakaoUserProfileDto) {
 		final User user = userRepository.save(kakaoUserProfileDto.toUser());
 		user.setInitialDefaultNickname();
+		createDetails(user);
 		return user;
+	}
+
+	private void createDetails(final User user) {
+		final Details details = Details.from(user);
+		detailsRepository.save(details);
 	}
 
 }

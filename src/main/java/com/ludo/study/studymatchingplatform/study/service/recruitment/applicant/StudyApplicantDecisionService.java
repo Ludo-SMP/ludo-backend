@@ -1,5 +1,7 @@
 package com.ludo.study.studymatchingplatform.study.service.recruitment.applicant;
 
+import java.time.LocalDateTime;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,7 +31,8 @@ public class StudyApplicantDecisionService {
 		final Study study = findStudy(request.studyId());
 		final User applicantUser = findUser(request.applicantUserId());
 
-		study.acceptApplicant(owner, applicantUser);
+		final LocalDateTime now = LocalDateTime.now();
+		study.acceptApplicant(owner, applicantUser, now);
 		Participant participant = findParticipant(study, applicantUser);
 
 		return ParticipantUserResponse.from(participant);

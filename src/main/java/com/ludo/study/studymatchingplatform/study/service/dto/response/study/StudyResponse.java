@@ -3,6 +3,7 @@ package com.ludo.study.studymatchingplatform.study.service.dto.response.study;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
 import com.ludo.study.studymatchingplatform.study.domain.study.Platform;
 import com.ludo.study.studymatchingplatform.study.domain.study.Study;
 import com.ludo.study.studymatchingplatform.study.domain.study.StudyStatus;
@@ -25,6 +26,8 @@ public record StudyResponse(
 		Way way,
 		Integer participantLimit,
 		Integer participantCount,
+		Integer applicantCount,
+		List<Integer> attendanceDay,
 		LocalDateTime startDateTime,
 		LocalDateTime endDateTime,
 		CategoryResponse category,
@@ -44,6 +47,12 @@ public record StudyResponse(
 		final CategoryResponse category = CategoryResponse.from(study.getCategory());
 		final UserResponse owner = UserResponse.from(study.getOwner());
 
+		Integer applicantCount = 0; // 지원자 수
+		if (Boolean.TRUE.equals(study.ensureHasRecruitment())) {
+			final Recruitment recruitment = study.getRecruitment();
+			applicantCount = recruitment.getApplicantCount();
+		}
+
 		return StudyResponse.builder()
 				.id(study.getId())
 				.status(study.getStatus())
@@ -57,6 +66,8 @@ public record StudyResponse(
 				.way(study.getWay())
 				.participantLimit(study.getParticipantLimit())
 				.participantCount(study.getParticipantCount())
+				.applicantCount(applicantCount)
+				.attendanceDay(study.getAttendanceDay())
 				.startDateTime(study.getStartDateTime())
 				.endDateTime(study.getEndDateTime())
 				.createdDateTime(study.getCreatedDateTime())

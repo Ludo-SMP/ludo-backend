@@ -2,6 +2,8 @@ package com.ludo.study.studymatchingplatform.study.domain;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.time.LocalDateTime;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -39,7 +41,7 @@ class StudyTest {
 			Recruitment recruitment = RecruitmentFixture.createRecruitment(study, "모집공고", "내용", 0, null, null);
 
 			// when then
-			assertThatThrownBy(() -> study.acceptApplicant(notOwner, applicant))
+			assertThatThrownBy(() -> study.acceptApplicant(notOwner, applicant, LocalDateTime.now()))
 					.hasMessageContaining("스터디 장이 아닙니다.");
 		}
 
@@ -58,7 +60,7 @@ class StudyTest {
 			}
 
 			// when then
-			assertThatThrownBy(() -> study.acceptApplicant(owner, applicantUser))
+			assertThatThrownBy(() -> study.acceptApplicant(owner, applicantUser, LocalDateTime.now()))
 					.hasMessage("남아있는 자리가 없습니다.");
 		}
 
@@ -72,7 +74,7 @@ class StudyTest {
 			Study study = StudyFixture.createStudy(owner, "스터디 A", 5, studyStatus);
 
 			// when then
-			assertThatThrownBy(() -> study.acceptApplicant(owner, applicantUser))
+			assertThatThrownBy(() -> study.acceptApplicant(owner, applicantUser, LocalDateTime.now()))
 					.hasMessage("현재 모집 중인 스터디가 아닙니다.");
 		}
 
@@ -87,7 +89,7 @@ class StudyTest {
 			User notApplicantUser = UserFixture.createUser(Social.NAVER, "other", "other@gmail.com");
 
 			// when then
-			assertThatThrownBy(() -> study.acceptApplicant(owner, notApplicantUser))
+			assertThatThrownBy(() -> study.acceptApplicant(owner, notApplicantUser, LocalDateTime.now()))
 					.hasMessage("지원자 목록에 존재하지 않는 사용자입니다.");
 		}
 
@@ -100,7 +102,7 @@ class StudyTest {
 			Recruitment recruitment = RecruitmentFixture.createRecruitment(study, "모집공고", "내용", 5, null, null);
 
 			// when then
-			assertThatThrownBy(() -> study.acceptApplicant(owner, owner))
+			assertThatThrownBy(() -> study.acceptApplicant(owner, owner, LocalDateTime.now()))
 					.hasMessage("스터디 장과 지원자가 같습니다.");
 		}
 
@@ -123,7 +125,7 @@ class StudyTest {
 			assertThat(recruitment.getApplicants().get(0).getApplicantStatus()).isEqualTo(ApplicantStatus.UNCHECKED);
 
 			// then
-			assertThatCode(() -> study.acceptApplicant(owner, applicantUser))
+			assertThatCode(() -> study.acceptApplicant(owner, applicantUser, LocalDateTime.now()))
 					.doesNotThrowAnyException();
 			assertThat(study.getParticipantCount()).isEqualTo(1);
 			assertThat(recruitment.getApplicants().get(0).getApplicantStatus()).isEqualTo(ApplicantStatus.ACCEPTED);
@@ -148,7 +150,7 @@ class StudyTest {
 				User user = UserFixture.createUser(Social.NAVER, "닉네임", "email@google.com");
 				Applicant applicant = Applicant.of(recruitment, user, PositionFixture.createPosition("백엔드"));
 				recruitment.addApplicant(applicant);
-				study.acceptApplicant(owner, user);
+				study.acceptApplicant(owner, user, LocalDateTime.now());
 			}
 
 			User applicantUser = UserFixture.createUser(Social.NAVER, "other", "other@gmail.com");
@@ -156,7 +158,7 @@ class StudyTest {
 			recruitment.addApplicant(applicant);
 
 			// when
-			study.acceptApplicant(owner, applicantUser);
+			study.acceptApplicant(owner, applicantUser, LocalDateTime.now());
 
 			// then
 			assertThatThrownBy(study::ensureRecruiting).hasMessage("현재 모집 중인 스터디가 아닙니다.");
@@ -194,7 +196,7 @@ class StudyTest {
 			User notApplicantUser = UserFixture.createUser(Social.NAVER, "other", "other@gmail.com");
 
 			// when then
-			assertThatThrownBy(() -> study.acceptApplicant(owner, notApplicantUser))
+			assertThatThrownBy(() -> study.acceptApplicant(owner, notApplicantUser, LocalDateTime.now()))
 					.hasMessage("지원자 목록에 존재하지 않는 사용자입니다.");
 		}
 
