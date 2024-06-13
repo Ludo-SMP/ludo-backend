@@ -1,10 +1,15 @@
 package com.ludo.study.studymatchingplatform.notification.service;
 
+import static com.ludo.study.studymatchingplatform.notification.domain.config.NotificationConfigGroup.*;
+import static com.ludo.study.studymatchingplatform.study.fixture.recruitment.position.PositionFixture.*;
+import static com.ludo.study.studymatchingplatform.study.fixture.recruitment.stack.StackFixture.*;
+import static com.ludo.study.studymatchingplatform.study.fixture.study.category.CategoryFixture.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,12 +21,21 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ludo.study.studymatchingplatform.common.utils.UtcDateTimePicker;
+import com.ludo.study.studymatchingplatform.notification.domain.config.GlobalNotificationUserConfig;
+import com.ludo.study.studymatchingplatform.notification.domain.keyword.NotificationKeywordCategory;
+import com.ludo.study.studymatchingplatform.notification.domain.keyword.NotificationKeywordPosition;
+import com.ludo.study.studymatchingplatform.notification.domain.keyword.NotificationKeywordStack;
 import com.ludo.study.studymatchingplatform.notification.domain.notification.Notification;
 import com.ludo.study.studymatchingplatform.notification.domain.notification.NotificationEventType;
 import com.ludo.study.studymatchingplatform.notification.domain.notification.RecruitmentNotification;
 import com.ludo.study.studymatchingplatform.notification.domain.notification.ReviewNotification;
 import com.ludo.study.studymatchingplatform.notification.domain.notification.StudyNotification;
+import com.ludo.study.studymatchingplatform.notification.repository.config.GlobalNotificationUserConfigRepositoryImpl;
+import com.ludo.study.studymatchingplatform.notification.repository.keyword.NotificationKeywordCategoryRepositoryImpl;
+import com.ludo.study.studymatchingplatform.notification.repository.keyword.NotificationKeywordPositionRepositoryImpl;
+import com.ludo.study.studymatchingplatform.notification.repository.keyword.NotificationKeywordStackRepositoryImpl;
 import com.ludo.study.studymatchingplatform.notification.repository.notification.NotificationRepositoryImpl;
+import com.ludo.study.studymatchingplatform.notification.service.dto.request.NotificationConfigRequest;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Contact;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
 import com.ludo.study.studymatchingplatform.study.domain.study.Review;
@@ -159,4 +173,103 @@ class NotificationCommandServiceTest {
 		}
 
 	}
+
+	@Nested
+	@DisplayName("알림 설정을 업데이트하는 기능은")
+	class Describe_UpdateNotificationConfig {
+
+		@Autowired
+		GlobalNotificationUserConfigRepositoryImpl notificationUserConfigRepository;
+
+		@Autowired
+		NotificationKeywordStackRepositoryImpl notificationKeywordStackRepository;
+
+		@Autowired
+		NotificationKeywordCategoryRepositoryImpl notificationKeywordCategoryRepository;
+
+		@Autowired
+		NotificationKeywordPositionRepositoryImpl notificationKeywordPositionRepository;
+
+		@Test
+		@DisplayName("[Success] ALL_CONFIG가 false가 되면 모집공고 관심 키워드가 모두 삭제된다.")
+		@Transactional
+		void allConfigIsFalseThenKeywordIsEmpty() {
+			// given
+			GlobalNotificationUserConfig userConfig = setupAllConfigIsTrue();
+			setupBackendJavaProjectKeywords();
+
+			assertKeywordsAreNotEmpty();
+
+			// when
+			NotificationConfigRequest notificationConfigRequest = new NotificationConfigRequest(ALL_CONFIG, false);
+			notificationCommandService.updateNotificationConfig(user1, userConfig, notificationConfigRequest);
+
+			// then
+			assertKeywordsAreEmpty();
+		}
+
+		private void assertKeywordsAreEmpty() {
+			assertThat(notificationKeywordStackRepository.findByUserId(user1.getId())).isEmpty();
+			assertThat(notificationKeywordPositionRepository.findByUserId(user1.getId())).isEmpty();
+			assertThat(notificationKeywordCategoryRepository.findByUserId(user1.getId())).isEmpty();
+		}
+
+		private void assertKeywordsAreNotEmpty() {
+			assertThat(notificationKeywordStackRepository.findByUserId(user1.getId())).isNotEmpty();
+			assertThat(notificationKeywordPositionRepository.findByUserId(user1.getId())).isNotEmpty();
+			assertThat(notificationKeywordCategoryRepository.findByUserId(user1.getId())).isNotEmpty();
+		}
+
+		private GlobalNotificationUserConfig setupAllConfigIsTrue() {
+			GlobalNotificationUserConfig userConfig = GlobalNotificationUserConfig.ofNewSignUpUser(user1);
+			userConfig.updateConfig(ALL_CONFIG, true);
+			return notificationUserConfigRepository.save(userConfig);
+		}
+
+		private void setupBackendJavaProjectKeywords() {
+			NotificationKeywordPosition keywordPosition = NotificationKeywordPosition.of(user1, BACKEND);
+			NotificationKeywordStack keywordStack = NotificationKeywordStack.of(user1, JAVA);
+			NotificationKeywordCategory keywordCategory = NotificationKeywordCategory.of(user1, CATEGORY_PROJECT);
+			notificationCommandService.saveNotificationKeywordPositions(Set.of(keywordPosition));
+			notificationCommandService.saveNotificationKeywordStacks(Set.of(keywordStack));
+			notificationCommandService.saveNotificationKeywordCategories(Set.of(keywordCategory));
+		}
+
+		@Test
+		@DisplayName("[Success] 모집공고 설정이 false가 되면, 모집공고 관심 키워드가 모두 삭제된다.")
+		@Transactional
+		void recruitmentConfigIsFalseThenKeywordIsEmpty() {
+			// given
+			GlobalNotificationUserConfig userConfig = setupAllConfigIsTrue();
+			setupBackendJavaProjectKeywords();
+
+			// when
+			NotificationConfigRequest notificationConfigRequest = new NotificationConfigRequest(RECRUITMENT_CONFIG,
+					false);
+			notificationCommandService.updateNotificationConfig(user1, userConfig, notificationConfigRequest);
+
+			// then
+			assertKeywordsAreEmpty();
+		}
+
+		@Test
+		@DisplayName("[Success] 모집공고 설정이 false면, 모집공고 관심 키워드가 갱신되지 않는다.")
+		void recruitmentConfigIsFalseThenKeywordIsNotUpdate() {
+			// given
+			GlobalNotificationUserConfig userConfig = setupRecruitmentConfigIsFalse();
+			setupBackendJavaProjectKeywords();
+			// TODO
+			// when
+
+			// then
+		}
+
+		private GlobalNotificationUserConfig setupRecruitmentConfigIsFalse() {
+			GlobalNotificationUserConfig userConfig = GlobalNotificationUserConfig.ofNewSignUpUser(user1);
+			userConfig.updateConfig(RECRUITMENT_CONFIG, false);
+			return notificationUserConfigRepository.save(userConfig);
+		}
+
+	}
+
 }
