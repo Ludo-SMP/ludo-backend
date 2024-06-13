@@ -74,4 +74,5 @@ public class ParticipantRepositoryImpl {
 						study.endDateTime.between(condition.yesterdayStartOfDay(), condition.yesterdayEndOfDay()))
 				.fetch();
 	}
+
 }
