@@ -222,6 +222,10 @@ public class NotificationService {
 
 	@Transactional
 	public void configNotificationKeywords(final User user, final NotificationKeywordConfigRequest configRequest) {
+		if (validateKeywordConfigUpdatable(user)) {
+			return;
+		}
+
 		configNotificationCategoryKeywords(user, configRequest.categoryIds());
 		configNotificationPositionKeywords(user, configRequest.positionIds());
 		configNotificationStackKeywords(user, configRequest.stackIds());
@@ -230,10 +234,6 @@ public class NotificationService {
 	private void configNotificationCategoryKeywords(final User user,
 													final List<Long> categoryIds
 	) {
-		if (validateKeywordConfigUpdatable(user)) {
-			return;
-		}
-
 		final Set<NotificationKeywordCategory> requestedKeywordCategory =
 				createRequestedKeywordCategories(user, categoryIds);
 
@@ -252,10 +252,6 @@ public class NotificationService {
 	private void configNotificationPositionKeywords(final User user,
 													final List<Long> positionIds
 	) {
-		if (validateKeywordConfigUpdatable(user)) {
-			return;
-		}
-
 		final Set<NotificationKeywordPosition> requestedKeywordPositions =
 				createRequestedKeywordPositions(user, positionIds);
 
@@ -274,10 +270,6 @@ public class NotificationService {
 	private void configNotificationStackKeywords(final User user,
 												 final List<Long> stackIds
 	) {
-		if (validateKeywordConfigUpdatable(user)) {
-			return;
-		}
-
 		final Set<NotificationKeywordStack> requestedKeywordStacks =
 				createRequestedKeywordStacks(user, stackIds);
 
