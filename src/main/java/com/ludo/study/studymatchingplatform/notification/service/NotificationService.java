@@ -4,11 +4,13 @@ import static com.ludo.study.studymatchingplatform.notification.domain.notificat
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ludo.study.studymatchingplatform.notification.controller.dto.request.NotificationKeywordConfigRequest;
 import com.ludo.study.studymatchingplatform.notification.domain.config.GlobalNotificationUserConfig;
 import com.ludo.study.studymatchingplatform.notification.domain.config.NotificationConfigGroup;
 import com.ludo.study.studymatchingplatform.notification.domain.keyword.NotificationKeywordCategory;
@@ -219,59 +221,136 @@ public class NotificationService {
 	}
 
 	@Transactional
-	public void configNotificationCategoryKeywords(final User user,
-												   final List<Long> categoryIds
-	) {
-		// 이미 존재하는 카테고리 찾기
-		final Set<Long> existCategoryIds = notificationQueryService.readExistCategoryKeywordCategoryIds(user);
-
-		// 존재하지 않는 카테고리만 필터링
-		final List<Long> notExistCategoryIds = filterNotExistIds(categoryIds, existCategoryIds);
-
-		// 필터링된 카테고리에 대해 키워드 생성
-		for (Long newCategoryId : notExistCategoryIds) {
-			final Category category = categoryQueryService.readCategory(newCategoryId);
-			notificationCommandService.saveNotificationKeywordCategory(NotificationKeywordCategory.of(user, category));
+	public void configNotificationKeywords(final User user, final NotificationKeywordConfigRequest configRequest) {
+		if (validateKeywordConfigUpdatable(user)) {
+			return;
 		}
+
+		configNotificationCategoryKeywords(user, configRequest.categoryIds());
+		configNotificationPositionKeywords(user, configRequest.positionIds());
+		configNotificationStackKeywords(user, configRequest.stackIds());
 	}
 
-	@Transactional
-	public void configNotificationPositionKeywords(final User user,
-												   final List<Long> positionIds
+	private void configNotificationCategoryKeywords(final User user,
+													final List<Long> categoryIds
 	) {
-		// 이미 존재하는 포지션 찾기
-		final Set<Long> existPositionIds = notificationQueryService.readExistPositionKeywordPositionIds(user);
+		final Set<NotificationKeywordCategory> requestedKeywordCategory =
+				createRequestedKeywordCategories(user, categoryIds);
 
-		// 존재하지 않는 포지션만 필터링
-		final List<Long> notExistPositionIds = filterNotExistIds(positionIds, existPositionIds);
+		final Set<NotificationKeywordCategory> savedKeywordCategories =
+				notificationQueryService.readNotificationKeywordCategories(user);
 
-		for (Long notExistPositionId : notExistPositionIds) {
-			final Position position = positionQueryService.readPosition(notExistPositionId);
-			notificationCommandService.saveNotificationKeywordPosition(NotificationKeywordPosition.of(user, position));
-		}
+		final Set<NotificationKeywordCategory> keywordCategoriesToSave =
+				filterKeywordsToSave(requestedKeywordCategory, savedKeywordCategories);
+
+		final Set<NotificationKeywordCategory> keywordCategoriesToDelete =
+				filterKeywordsToDelete(savedKeywordCategories, requestedKeywordCategory);
+
+		saveAndDeleteKeywordCategories(keywordCategoriesToSave, keywordCategoriesToDelete);
 	}
 
-	@Transactional
-	public void configNotificationStackKeywords(final User user,
-												final List<Long> positionIds
+	private void configNotificationPositionKeywords(final User user,
+													final List<Long> positionIds
 	) {
-		// 이미 존재하는 스택 찾기
-		final Set<Long> existStackIds = notificationQueryService.readExistStackKeywordStackIds(user);
+		final Set<NotificationKeywordPosition> requestedKeywordPositions =
+				createRequestedKeywordPositions(user, positionIds);
 
-		// 존재하지 않는 스택만 필터링
-		final List<Long> notExistStackIds = filterNotExistIds(positionIds, existStackIds);
+		final Set<NotificationKeywordPosition> savedKeywordPositions =
+				notificationQueryService.readNotificationKeywordPositions(user);
 
-		for (Long notExistStackId : notExistStackIds) {
-			final Stack stack = stackQueryService.readStack(notExistStackId);
-			notificationCommandService.saveNotificationKeywordStack(NotificationKeywordStack.of(user, stack));
-		}
+		final Set<NotificationKeywordPosition> keywordPositionsToSave =
+				filterKeywordsToSave(requestedKeywordPositions, savedKeywordPositions);
+
+		final Set<NotificationKeywordPosition> keywordPositionsToDelete =
+				filterKeywordsToDelete(savedKeywordPositions, requestedKeywordPositions);
+
+		saveAndDeleteKeywordPositions(keywordPositionsToSave, keywordPositionsToDelete);
 	}
 
-	private List<Long> filterNotExistIds(final List<Long> target, final Set<Long> compare) {
-		return target
-				.stream()
-				.filter(categoryId -> !compare.contains(categoryId))
-				.toList();
+	private void configNotificationStackKeywords(final User user,
+												 final List<Long> stackIds
+	) {
+		final Set<NotificationKeywordStack> requestedKeywordStacks =
+				createRequestedKeywordStacks(user, stackIds);
+
+		final Set<NotificationKeywordStack> savedKeywordStacks =
+				notificationQueryService.readNotificationKeywordStacks(user);
+
+		final Set<NotificationKeywordStack> keywordStacksToSave =
+				filterKeywordsToSave(requestedKeywordStacks, savedKeywordStacks);
+
+		final Set<NotificationKeywordStack> keywordStacksToDelete =
+				filterKeywordsToDelete(savedKeywordStacks, requestedKeywordStacks);
+
+		saveAndDeleteKeywordStacks(keywordStacksToSave, keywordStacksToDelete);
+	}
+
+	private boolean validateKeywordConfigUpdatable(final User user) {
+		return !notificationQueryService.isNotificationConfigTrue(user, NotificationConfigGroup.RECRUITMENT_CONFIG);
+	}
+
+	private Set<NotificationKeywordCategory> createRequestedKeywordCategories(final User user,
+																			  final List<Long> categoryIds
+	) {
+		return categoryIds.stream()
+				.map(categoryId -> {
+					final Category category = categoryQueryService.readCategory(categoryId);
+					return NotificationKeywordCategory.of(user, category);
+				})
+				.collect(Collectors.toSet());
+	}
+
+	private Set<NotificationKeywordPosition> createRequestedKeywordPositions(final User user,
+																			 final List<Long> positionIds
+	) {
+		return positionIds.stream()
+				.map(positionId -> {
+					final Position position = positionQueryService.readPosition(positionId);
+					return NotificationKeywordPosition.of(user, position);
+				})
+				.collect(Collectors.toSet());
+	}
+
+	private Set<NotificationKeywordStack> createRequestedKeywordStacks(final User user, final List<Long> stackIds) {
+		return stackIds.stream()
+				.map(stackId -> {
+					final Stack stack = stackQueryService.readStack(stackId);
+					return NotificationKeywordStack.of(user, stack);
+				})
+				.collect(Collectors.toSet());
+	}
+
+	private <T> Set<T> filterKeywordsToDelete(final Set<T> savedKeywords, final Set<T> requestedKeywords) {
+		return savedKeywords.stream()
+				.filter(saved -> !requestedKeywords.contains(saved))
+				.collect(Collectors.toSet());
+	}
+
+	private <T> Set<T> filterKeywordsToSave(final Set<T> requestedKeywords, final Set<T> savedKeywords) {
+		return requestedKeywords.stream()
+				.filter(requested -> !savedKeywords.contains(requested))
+				.collect(Collectors.toSet());
+	}
+
+	private void saveAndDeleteKeywordCategories(final Set<NotificationKeywordCategory> keywordCategoriesToSave,
+												final Set<NotificationKeywordCategory> keywordCategoriesToDelete
+	) {
+		notificationCommandService.saveNotificationKeywordCategories(keywordCategoriesToSave);
+		notificationCommandService.deleteNotificationKeywordCategories(keywordCategoriesToDelete);
+	}
+
+	private void saveAndDeleteKeywordPositions(final Set<NotificationKeywordPosition> keywordPositionsToSave,
+											   final Set<NotificationKeywordPosition> keywordPositionsToDelete
+	) {
+		notificationCommandService.saveNotificationKeywordPositions(keywordPositionsToSave);
+		notificationCommandService.deleteNotificationKeywordPositions(keywordPositionsToDelete);
+	}
+
+	private void saveAndDeleteKeywordStacks(final Set<NotificationKeywordStack> keywordStacksToSave,
+											final Set<NotificationKeywordStack> keywordStacksToDelete
+	) {
+		notificationCommandService.saveNotificationKeywordStacks(keywordStacksToSave);
+		notificationCommandService.deleteNotificationKeywordStacks(keywordStacksToDelete);
 	}
 
 	public NotificationConfigResponse findNotificationConfig(final User user) {

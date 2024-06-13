@@ -33,20 +33,38 @@ public record NotificationConfigResponse(AllConfigResponse allConfig,
 															final List<NotificationKeywordStack> notificationKeywordStacks
 	) {
 
+		final AllConfigResponse allConfigResponse = new AllConfigResponse(
+				ALL_CONFIG.name(), userConfig.getAllConfig());
+
+		final StudyApplicantConfigResponse studyApplicantConfigResponse = new StudyApplicantConfigResponse(
+				STUDY_APPLICANT_CONFIG.name(), userConfig.getStudyApplicantConfig());
+
+		final StudyApplicantResultConfigResponse studyApplicantResultConfigResponse = new StudyApplicantResultConfigResponse(
+				STUDY_APPLICANT_RESULT_CONFIG.name(), userConfig.getStudyApplicantResultConfig());
+
+		final StudyEndDateConfigResponse studyEndDateConfig = new StudyEndDateConfigResponse(
+				STUDY_END_DATE_CONFIG.name(), userConfig.getStudyEndDateConfig());
+
+		final StudyParticipantLeaveConfigResponse studyParticipantLeaveConfig = new StudyParticipantLeaveConfigResponse(
+				STUDY_PARTICIPANT_LEAVE_CONFIG.name(), userConfig.getStudyParticipantLeaveConfig());
+
+		final ReviewConfigResponse reviewConfig = new ReviewConfigResponse(
+				REVIEW_CONFIG.name(), userConfig.getReviewConfig());
+
+		final RecruitmentConfigResponse recruitmentConfig = new RecruitmentConfigResponse(
+				RECRUITMENT_CONFIG.name(), userConfig.getRecruitmentConfig(),
+				mapToCategoryKeyword(notificationKeywordCategories),
+				mapToPositionKeyword(notificationKeywordPositions),
+				mapToStackKeyword(notificationKeywordStacks));
+
 		return new NotificationConfigResponse(
-				new AllConfigResponse(ALL_CONFIG.name(), userConfig.getAllConfig()),
-				new StudyApplicantConfigResponse(STUDY_APPLICANT_CONFIG.name(), userConfig.getStudyApplicantConfig()),
-				new StudyApplicantResultConfigResponse(STUDY_APPLICANT_CONFIG.name(),
-						userConfig.getStudyApplicantConfig()),
-				new StudyEndDateConfigResponse(STUDY_END_DATE_CONFIG.name(), userConfig.getStudyEndDateConfig()),
-				new StudyParticipantLeaveConfigResponse(STUDY_PARTICIPANT_LEAVE_CONFIG.name(),
-						userConfig.getStudyParticipantLeaveConfig()),
-				new ReviewConfigResponse(REVIEW_CONFIG.name(), userConfig.getReviewConfig()),
-				new RecruitmentConfigResponse(RECRUITMENT_CONFIG.name(),
-						userConfig.getRecruitmentConfig(),
-						mapToCategoryKeyword(notificationKeywordCategories),
-						mapToPositionKeyword(notificationKeywordPositions),
-						mapToStackKeyword(notificationKeywordStacks)));
+				allConfigResponse,
+				studyApplicantConfigResponse,
+				studyApplicantResultConfigResponse,
+				studyEndDateConfig,
+				studyParticipantLeaveConfig,
+				reviewConfig,
+				recruitmentConfig);
 	}
 
 	private static List<RecruitmentConfigResponse.CategoryKeyword> mapToCategoryKeyword(

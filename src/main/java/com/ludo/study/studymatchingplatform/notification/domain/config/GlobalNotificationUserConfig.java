@@ -68,13 +68,13 @@ public class GlobalNotificationUserConfig {
 	public static GlobalNotificationUserConfig ofNewSignUpUser(final User user) {
 		GlobalNotificationUserConfig globalNotificationUserConfig = new GlobalNotificationUserConfig();
 		globalNotificationUserConfig.user = user;
-		globalNotificationUserConfig.onAllConfig();
+		globalNotificationUserConfig.updateAllConfig(true);
 		return globalNotificationUserConfig;
 	}
 
 	public void updateConfig(final NotificationConfigGroup configGroup, final boolean enabled) {
 		switch (configGroup) {
-			case ALL_CONFIG -> onAllConfig();
+			case ALL_CONFIG -> updateAllConfig(enabled);
 			case RECRUITMENT_CONFIG -> updateRecruitmentConfig(enabled);
 			case STUDY_APPLICANT_CONFIG -> updateStudyApplicantConfig(enabled);
 			case STUDY_APPLICANT_RESULT_CONFIG -> updateStudyApplicantResultConfig(enabled);
@@ -84,14 +84,14 @@ public class GlobalNotificationUserConfig {
 		}
 	}
 
-	private void onAllConfig() {
-		this.allConfig = true;
-		this.recruitmentConfig = true;
-		this.studyApplicantConfig = true;
-		this.studyApplicantResultConfig = true;
-		this.studyEndDateConfig = true;
-		this.studyParticipantLeaveConfig = true;
-		this.reviewConfig = true;
+	private void updateAllConfig(boolean enabled) {
+		this.allConfig = enabled;
+		this.recruitmentConfig = enabled;
+		this.studyApplicantConfig = enabled;
+		this.studyApplicantResultConfig = enabled;
+		this.studyEndDateConfig = enabled;
+		this.studyParticipantLeaveConfig = enabled;
+		this.reviewConfig = enabled;
 	}
 
 	private void updateRecruitmentConfig(boolean enabled) {

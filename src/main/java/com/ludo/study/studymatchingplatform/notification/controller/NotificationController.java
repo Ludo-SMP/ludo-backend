@@ -70,9 +70,7 @@ public class NotificationController {
 	public ResponseEntity<Void> updateNotificationKeywordConfig(@AuthUser final User user,
 																@RequestBody final NotificationKeywordConfigRequest notificationKeywordConfigRequest
 	) {
-		notificationService.configNotificationCategoryKeywords(user, notificationKeywordConfigRequest.categoryIds());
-		notificationService.configNotificationPositionKeywords(user, notificationKeywordConfigRequest.positionIds());
-		notificationService.configNotificationStackKeywords(user, notificationKeywordConfigRequest.stackIds());
+		notificationService.configNotificationKeywords(user, notificationKeywordConfigRequest);
 
 		return ResponseEntity.ok().build();
 	}
