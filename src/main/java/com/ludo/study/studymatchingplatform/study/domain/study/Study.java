@@ -17,9 +17,26 @@ import com.ludo.study.studymatchingplatform.study.domain.study.category.Category
 import com.ludo.study.studymatchingplatform.study.domain.study.participant.Participant;
 import com.ludo.study.studymatchingplatform.study.domain.study.participant.Role;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
-import jakarta.persistence.*;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Transient;
 import jakarta.validation.constraints.Size;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
 
@@ -78,6 +95,9 @@ public class Study extends BaseEntity {
 	// null 제거 필요
 	@Column(nullable = false)
 	private Integer participantCount;
+
+	@Transient // jpa 패키지에 위치, DB 테이블에 적용되지 않음.
+	private List<Integer> attendanceDay;
 
 	@Column(nullable = false)
 	private LocalDateTime startDateTime;
@@ -227,7 +247,7 @@ public class Study extends BaseEntity {
 	private void accept(final User applicantUser, final LocalDateTime deletedDateTime) {
 		recruitment.acceptApplicant(applicantUser, deletedDateTime);
 		final Applicant applicant = recruitment.getApplicant(applicantUser);
-		addParticipant(Participant.from(this, applicantUser, applicant.getPosition(), Role.MEMBER));
+		addParticipant(Participant.from(this, applicantUser, applicant.getPosition(), Role.MEMBER, deletedDateTime));
 	}
 
 	private Boolean isMaxParticipantCount() {
@@ -334,8 +354,8 @@ public class Study extends BaseEntity {
 	}
 
 	public void update(final String title, final Category category, final Integer participantLimit,
-					   final Way way, final Platform platform, final String platformUrl,
-					   final LocalDateTime startDateTime, final LocalDateTime endDateTime) {
+					   final List<Integer> attendanceDay, final Way way, final Platform platform,
+					   final String platformUrl, final LocalDateTime startDateTime, final LocalDateTime endDateTime) {
 		if (title != null) {
 			this.title = title;
 		}
@@ -344,6 +364,9 @@ public class Study extends BaseEntity {
 		}
 		if (participantLimit != null) {
 			this.participantLimit = participantLimit;
+		}
+		if (attendanceDay != null) { // 출석일 추가
+			this.attendanceDay = attendanceDay;
 		}
 		if (way != null) {
 			this.way = way;
@@ -375,7 +398,7 @@ public class Study extends BaseEntity {
         }
 
   }
-  
+
 	private LocalDateTime getReviewAvailEndTime() {
 		return endDateTime.plusDays(14);
 	}

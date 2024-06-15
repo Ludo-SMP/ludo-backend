@@ -1,6 +1,7 @@
 package com.ludo.study.studymatchingplatform.study.service.dto.request.study;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.ludo.study.studymatchingplatform.study.domain.study.Platform;
 import com.ludo.study.studymatchingplatform.study.domain.study.Study;
@@ -21,6 +22,7 @@ public record WriteStudyRequest(
 		String platform,
 		String platformUrl,
 		Integer participantLimit,
+		List<Integer> attendanceDay,
 		LocalDateTime startDateTime,
 		LocalDateTime endDateTime
 
@@ -36,6 +38,7 @@ public record WriteStudyRequest(
 				.platformUrl(platformUrl)
 				.way(way)
 				.participantLimit(participantLimit)
+				.attendanceDay(attendanceDay)
 				.startDateTime(startDateTime)
 				.endDateTime(endDateTime)
 				.build();

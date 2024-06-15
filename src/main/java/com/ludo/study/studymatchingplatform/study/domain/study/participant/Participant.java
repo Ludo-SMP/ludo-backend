@@ -5,8 +5,21 @@ import com.ludo.study.studymatchingplatform.study.domain.id.ParticipantId;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.position.Position;
 import com.ludo.study.studymatchingplatform.study.domain.study.Study;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
-import jakarta.persistence.*;
-import lombok.*;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MapsId;
+import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
@@ -52,6 +65,9 @@ public class Participant extends BaseEntity {
     @Builder.Default
     private int validAttendance = 0;
 
+	@Column(nullable = true)
+	private LocalDateTime recentAttendanceDate;
+
     // 스터디 합류일
     @Builder.Default
     private LocalDateTime enrollmentDateTime = LocalDateTime.now();
@@ -92,6 +108,25 @@ public class Participant extends BaseEntity {
     public void updatePosition(final Position position) {
         this.position = position;
     }
+
+	public void increaseTotalAttendance() {
+		this.totalAttendance++;
+	}
+
+	public void increaseValidAttendance() {
+		this.validAttendance++;
+	}
+
+	public void renewalAttendanceDate(final LocalDateTime now) {
+		this.recentAttendanceDate = now;
+	}
+
+	public boolean isFirstAttendance() {
+		if (this.recentAttendanceDate == null) { // 첫 번째 출석 체크인 경우
+			return Boolean.TRUE;
+		}
+		return Boolean.FALSE;
+	}
 
     public boolean finishAttendance() {
         // TODO:

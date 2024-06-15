@@ -1,6 +1,7 @@
 package com.ludo.study.studymatchingplatform.study.service.dto.request.study;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import lombok.Builder;
 
@@ -14,6 +15,7 @@ public record StudyUpdateRequest(
 		String platform,
 		String platformUrl,
 		Integer participantLimit,
+		List<Integer> attendanceDay,
 		LocalDateTime startDateTime,
 		LocalDateTime endDateTime
 

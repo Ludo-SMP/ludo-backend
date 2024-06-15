@@ -23,10 +23,20 @@ import com.ludo.study.studymatchingplatform.study.repository.recruitment.applica
 import com.ludo.study.studymatchingplatform.study.repository.study.StudyRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.study.participant.ParticipantRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.position.PositionResponse;
+import com.ludo.study.studymatchingplatform.user.domain.user.Details;
 import com.ludo.study.studymatchingplatform.user.domain.user.Social;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
+import com.ludo.study.studymatchingplatform.user.fixture.user.DetailsFixture;
 import com.ludo.study.studymatchingplatform.user.fixture.user.UserFixture;
+import com.ludo.study.studymatchingplatform.user.repository.user.DetailsRepositoryImpl;
+import com.ludo.study.studymatchingplatform.user.service.dto.response.ApplicantRecruitmentResponse;
+import com.ludo.study.studymatchingplatform.user.service.dto.response.CompletedStudyResponse;
+import com.ludo.study.studymatchingplatform.user.service.dto.response.MyPageResponse;
+import com.ludo.study.studymatchingplatform.user.service.dto.response.ParticipateStudyResponse;
+import com.ludo.study.studymatchingplatform.user.service.dto.response.UserResponse;
+import com.ludo.study.studymatchingplatform.user.service.dto.response.UserTrustResponse;
 import com.ludo.study.studymatchingplatform.user.service.dto.response.*;
+
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,7 +49,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.BDDMockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class MyPageServiceTest {
@@ -53,24 +63,33 @@ class MyPageServiceTest {
     @Mock
     private ApplicantRepositoryImpl applicantRepository;
 
-    @Mock
-    private UtcDateTimePicker utcDateTimePicker;
+	@Mock
+	private DetailsRepositoryImpl detailsRepository;
 
-    @InjectMocks
-    private MyPageService myPageService;
+	@Mock
+	private UtcDateTimePicker utcDateTimePicker;
 
-    @DisplayName("[Success] 회원 가입 후 마이 페이지 조회시 해당 사용자의 정보와 비어있는 스터디 리스트를 반환한다.")
-    @Test
-    void retrieveMyPageInfoWithEmptyStudyList() {
-        // given
-        final User user = createUser(1L);
-        final LocalDateTime testDateTime = createTestDateTime();
-        // when
-        final MyPageResponse myPageResponse = myPageService.retrieveMyPage(user, testDateTime);
-        // then
-        final MyPageResponse expectedResponse = new MyPageResponse(
-                new UserResponse(1L, "닉네임", "이메일"),
-                List.of(), List.of(), List.of());
+	@InjectMocks
+	private MyPageService myPageService;
+
+	@DisplayName("[Success] 회원 가입 후 마이 페이지 조회시 해당 사용자의 정보와 비어있는 스터디 리스트를 반환한다.")
+	@Test
+	void retrieveMyPageInfoWithEmptyStudyList() {
+		// given
+		final User user = createUser(1L);
+		final LocalDateTime testDateTime = createTestDateTime();
+		final Details details = DetailsFixture.createDetails(user);
+
+		given(detailsRepository.findByUserId(user.getId()))
+				.willReturn(Optional.of(details));
+
+		// when
+		final MyPageResponse myPageResponse = myPageService.retrieveMyPage(user, testDateTime);
+		// then
+		final MyPageResponse expectedResponse = new MyPageResponse(
+				new UserResponse(1L, "닉네임", "이메일"),
+				new UserTrustResponse(1, 1, 1, 100.0, 1, 1, 1, 1, 1),
+				List.of(), List.of(), List.of());
 
         // 실제 객체와 expected 객체의 필드를 제귀적으로 비교한다.
         // 프로덕션 코드에 테스트를 위한 코드가 포함되지 않도록 만들 수 있음
@@ -79,33 +98,38 @@ class MyPageServiceTest {
                 .isEqualTo(expectedResponse);
     }
 
-    @DisplayName("[Success] 스터디 생성 후 마이 페이지 조회시 참여중인 스터디 리스트에 생성한 항목을 포함한다.")
-    @Test
-    void retrieveMyPageInfoWithParticipatedStudies() {
-        // given
-        final User owner = createUser(1L);
-        final Category category = createCategory(1L);
-        final Position position = createPosition(1L);
-        final Study study = createStudy(1L, owner, category,
-                LocalDateTime.of(2024, 3, 18, 11, 11),
-                LocalDateTime.of(2024, 3, 21, 11, 11));
-        final Participant participantOwner = createParticipant(study, owner, position, Role.OWNER);
-        study.addParticipant(participantOwner);
-        final List<Participant> participants = study.getParticipants();
+	@DisplayName("[Success] 스터디 생성 후 마이 페이지 조회시 참여중인 스터디 리스트에 생성한 항목을 포함한다.")
+	@Test
+	void retrieveMyPageInfoWithParticipatedStudies() {
+		// given
+		final User owner = createUser(1L);
+		final Category category = createCategory(1L);
+		final Position position = createPosition(1L);
+		final Study study = createStudy(1L, owner, category,
+				LocalDateTime.of(2024, 3, 18, 11, 11),
+				LocalDateTime.of(2024, 3, 21, 11, 11));
+		final Participant participantOwner = createParticipant(study, owner, position, Role.OWNER);
+		study.addParticipant(participantOwner);
+		final List<Participant> participants = study.getParticipants();
+		final Details details = DetailsFixture.createDetails(owner);
+
+		given(detailsRepository.findByUserId(owner.getId()))
+				.willReturn(Optional.of(details));
 
         // when
         when(participantRepository.findByUserId(anyLong()))
                 .thenReturn(participants);
         final MyPageResponse myPageResponse = myPageService.retrieveMyPage(owner, createTestDateTime());
 
-        // then
-        final MyPageResponse expectedResponse = new MyPageResponse(
-                new UserResponse(1L, "닉네임", "이메일"),
-                List.of(new ParticipateStudyResponse(1L, "타이틀",
-                        new PositionResponse(1L, "포지션"), StudyStatus.RECRUITING,
-                        LocalDateTime.of(2024, 3, 18, 11, 11),
-                        LocalDateTime.of(2024, 3, 21, 11, 11),
-                        1, Boolean.TRUE, Boolean.FALSE)), List.of(), List.of());
+		// then
+		final MyPageResponse expectedResponse = new MyPageResponse(
+				new UserResponse(1L, "닉네임", "이메일"),
+				new UserTrustResponse(1, 1, 1, 100.0, 1, 1, 1, 1, 1),
+				List.of(new ParticipateStudyResponse(1L, "타이틀",
+						new PositionResponse(1L, "포지션"), StudyStatus.RECRUITING,
+						LocalDateTime.of(2024, 3, 18, 11, 11),
+						LocalDateTime.of(2024, 3, 21, 11, 11),
+						1, Boolean.TRUE, Boolean.FALSE)), List.of(), List.of());
 
         Assertions.assertThat(myPageResponse)
                 .usingRecursiveComparison()
@@ -127,9 +151,13 @@ class MyPageServiceTest {
         study.addParticipant(participantOwner);
         study.registerRecruitment(recruitment);
 
-        final User member = createUser(2L);
-        final List<Applicant> applicants = createApplicants(recruitment, member, position);
-        recruitment.addApplicant(applicants.get(0));
+		final User member = createUser(2L);
+		final Details details = DetailsFixture.createDetails(member);
+		given(detailsRepository.findByUserId(member.getId()))
+				.willReturn(Optional.of(details));
+
+		final List<Applicant> applicants = createApplicants(recruitment, member, position);
+		recruitment.addApplicant(applicants.get(0));
 
         when(applicantRepository.findMyPageApplyRecruitmentInfoByUserId(anyLong()))
                 .thenReturn(applicants);
@@ -137,33 +165,39 @@ class MyPageServiceTest {
         // when
         final MyPageResponse myPageResponse = myPageService.retrieveMyPage(member, createTestDateTime());
 
-        // then
-        final MyPageResponse expectedResponse = new MyPageResponse(
-                new UserResponse(2L, "닉네임", "이메일"),
-                List.of(), List.of(new ApplicantRecruitmentResponse(1L, 1L, "모집 공고",
-                new PositionResponse(1L, "포지션"), ApplicantStatus.UNCHECKED)), List.of());
+		// then
+		final MyPageResponse expectedResponse = new MyPageResponse(
+				new UserResponse(2L, "닉네임", "이메일"),
+				new UserTrustResponse(1, 1, 1, 100.0, 1, 1, 1, 1, 1),
+				List.of(), List.of(new ApplicantRecruitmentResponse(1L, 1L, "모집 공고",
+				new PositionResponse(1L, "포지션"), ApplicantStatus.UNCHECKED)), List.of());
 
         Assertions.assertThat(myPageResponse)
                 .usingRecursiveComparison()
                 .isEqualTo(expectedResponse);
     }
 
-    @DisplayName("[Success] 참가한 스터디가 진행 완료된 경우 마이 페이지 조회시 진행 완료된 스터디 리스트로 항목을 이동한다.")
-    @Test
-    void retrieveMyPageInfoWithCompletedStudies() {
-        // given
-        final User owner = createUser(1L);
-        final Category category = createCategory(1L);
-        final Position position = createPosition(1L);
-        final Study study = createStudy(1L, owner, category,
-                LocalDateTime.of(2024, 3, 18, 11, 11),
-                LocalDateTime.of(2024, 3, 21, 11, 11));
-        final Participant participantOwner = createParticipant(study, owner, position, Role.OWNER);
-        study.addParticipant(participantOwner);
+	@DisplayName("[Success] 참가한 스터디가 진행 완료된 경우 마이 페이지 조회시 진행 완료된 스터디 리스트로 항목을 이동한다.")
+	@Test
+	void retrieveMyPageInfoWithCompletedStudies() {
+		// given
+		final User owner = createUser(1L);
+		final Details details = DetailsFixture.createDetails(owner);
+		final Category category = createCategory(1L);
+		final Position position = createPosition(1L);
+		final Study study = createStudy(1L, owner, category,
+				LocalDateTime.of(2024, 3, 18, 11, 11),
+				LocalDateTime.of(2024, 3, 21, 11, 11));
+		final Participant participantOwner = createParticipant(study, owner, position, Role.OWNER);
 
-        study.update("타이틀", category, 3, Way.ONLINE, Platform.GATHER, "www.gather.com",
-                LocalDateTime.of(2024, 3, 13, 11, 11),
-                LocalDateTime.of(2024, 3, 14, 11, 11));
+		given(detailsRepository.findByUserId(owner.getId()))
+				.willReturn(Optional.of(details));
+
+		study.addParticipant(participantOwner);
+
+		study.update("타이틀", category, 3, List.of(1, 2), Way.ONLINE, Platform.GATHER, "www.gather.com",
+				LocalDateTime.of(2024, 3, 13, 11, 11),
+				LocalDateTime.of(2024, 3, 14, 11, 11));
 
         final LocalDateTime testDateTime = createTestDateTime();
         study.modifyStatusToCompleted(testDateTime);
@@ -175,88 +209,99 @@ class MyPageServiceTest {
         // when
         final MyPageResponse myPageResponse = myPageService.retrieveMyPage(owner, testDateTime);
 
-        // then
-        final MyPageResponse expectedResponse = new MyPageResponse(
-                new UserResponse(1L, "닉네임", "이메일"),
-                List.of(), List.of(), List.of(new CompletedStudyResponse(1L, "타이틀",
-                new PositionResponse(1L, "포지션"), StudyStatus.COMPLETED,
-                LocalDateTime.of(2024, 3, 13, 11, 11),
-                LocalDateTime.of(2024, 3, 14, 11, 11),
-                1, Boolean.TRUE, Boolean.FALSE)));
+		// then
+		final MyPageResponse expectedResponse = new MyPageResponse(
+				new UserResponse(1L, "닉네임", "이메일"),
+				new UserTrustResponse(1, 1, 1, 100.0, 1, 1, 1, 1, 1),
+				List.of(), List.of(), List.of(new CompletedStudyResponse(1L, "타이틀",
+				new PositionResponse(1L, "포지션"), StudyStatus.COMPLETED,
+				LocalDateTime.of(2024, 3, 13, 11, 11),
+				LocalDateTime.of(2024, 3, 14, 11, 11),
+				1, Boolean.TRUE, Boolean.FALSE)));
 
         Assertions.assertThat(myPageResponse)
                 .usingRecursiveComparison()
                 .isEqualTo(expectedResponse);
     }
 
-    @DisplayName("[Success] 스터디가 진행 기간 이전 모집 마감 상태로 변경된 경우"
-            + " 마이 페이지 조회시 참여중인 스터디 리스트에 모집 마감 상태로 항목을 포함한다.")
-    @Test
-    void retrieveMyPageInfoWithParticipatedStudiesForRecruitedStatus() {
-        // given
-        final User owner = createUser(1L);
-        final Category category = createCategory(1L);
-        final Position position = createPosition(1L);
-        final Study study = createStudy(1L, owner, category,
-                LocalDateTime.of(2024, 3, 18, 11, 11),
-                LocalDateTime.of(2024, 3, 21, 11, 11));
-        final Participant participantOwner = createParticipant(study, owner, position, Role.OWNER);
-        study.addParticipant(participantOwner);
-        final LocalDateTime testDateTime = createTestDateTime();
-        study.modifyStatus(StudyStatus.RECRUITED, testDateTime);
-        final List<Participant> participants = study.getParticipants();
+	@DisplayName("[Success] 스터디가 진행 기간 이전 모집 마감 상태로 변경된 경우"
+			+ " 마이 페이지 조회시 참여중인 스터디 리스트에 모집 마감 상태로 항목을 포함한다.")
+	@Test
+	void retrieveMyPageInfoWithParticipatedStudiesForRecruitedStatus() {
+		// given
+		final User owner = createUser(1L);
+		final Category category = createCategory(1L);
+		final Position position = createPosition(1L);
+		final Details details = DetailsFixture.createDetails(owner);
+		final Study study = createStudy(1L, owner, category,
+				LocalDateTime.of(2024, 3, 18, 11, 11),
+				LocalDateTime.of(2024, 3, 21, 11, 11));
+		final Participant participantOwner = createParticipant(study, owner, position, Role.OWNER);
+		study.addParticipant(participantOwner);
+		final LocalDateTime testDateTime = createTestDateTime();
+		study.modifyStatus(StudyStatus.RECRUITED, testDateTime);
+		final List<Participant> participants = study.getParticipants();
 
-        when(participantRepository.findByUserId(anyLong()))
-                .thenReturn(participants);
+		given(detailsRepository.findByUserId(owner.getId()))
+				.willReturn(Optional.of(details));
 
-        // when
-        final MyPageResponse myPageResponse = myPageService.retrieveMyPage(owner, testDateTime);
+		// when
+		when(participantRepository.findByUserId(anyLong()))
+				.thenReturn(participants);
 
-        // then
-        final MyPageResponse expectedResponse = new MyPageResponse(
-                new UserResponse(1L, "닉네임", "이메일"),
-                List.of(new ParticipateStudyResponse(1L, "타이틀",
-                        new PositionResponse(1L, "포지션"), StudyStatus.RECRUITED,
-                        LocalDateTime.of(2024, 3, 18, 11, 11),
-                        LocalDateTime.of(2024, 3, 21, 11, 11),
-                        1, Boolean.TRUE, Boolean.FALSE)), List.of(), List.of());
+		final MyPageResponse myPageResponse = myPageService.retrieveMyPage(owner, testDateTime);
+
+		// then
+		final MyPageResponse expectedResponse = new MyPageResponse(
+				new UserResponse(1L, "닉네임", "이메일"),
+				new UserTrustResponse(1, 1, 1, 100.0, 1, 1, 1, 1, 1),
+				List.of(new ParticipateStudyResponse(1L, "타이틀",
+						new PositionResponse(1L, "포지션"), StudyStatus.RECRUITED,
+						LocalDateTime.of(2024, 3, 18, 11, 11),
+						LocalDateTime.of(2024, 3, 21, 11, 11),
+						1, Boolean.TRUE, Boolean.FALSE)), List.of(), List.of());
 
         Assertions.assertThat(myPageResponse)
                 .usingRecursiveComparison()
                 .isEqualTo(expectedResponse);
     }
 
-    @DisplayName("[Success] 스터디가 진행 기간 동안 모집 마감 상태로 변경된 경우"
-            + " 마이 페이지 조회시 참여중인 스터디 리스트에 진행중 상태로 항목을 포함한다.")
-    @Test
-    void retrieveMyPageInfoWithParticipatedStudiesForProgressStatus() {
-        // given
-        final User owner = createUser(1L);
-        final Category category = createCategory(1L);
-        final Position position = createPosition(1L);
-        final Study study = createStudy(1L, owner, category,
-                LocalDateTime.of(2024, 3, 15, 11, 11),
-                LocalDateTime.of(2024, 3, 21, 11, 11));
-        final Participant participantOwner = createParticipant(study, owner, position, Role.OWNER);
-        study.addParticipant(participantOwner);
-        final LocalDateTime testDateTime = createTestDateTime();
-        study.modifyStatus(StudyStatus.RECRUITED, testDateTime);
-        final List<Participant> participants = study.getParticipants();
+	@DisplayName("[Success] 스터디가 진행 기간 동안 모집 마감 상태로 변경된 경우"
+			+ " 마이 페이지 조회시 참여중인 스터디 리스트에 진행중 상태로 항목을 포함한다.")
+	@Test
+	void retrieveMyPageInfoWithParticipatedStudiesForProgressStatus() {
+		// given
+		final User owner = createUser(1L);
+		final Details details = DetailsFixture.createDetails(owner);
+		final Category category = createCategory(1L);
+		final Position position = createPosition(1L);
+		final Study study = createStudy(1L, owner, category,
+				LocalDateTime.of(2024, 3, 15, 11, 11),
+				LocalDateTime.of(2024, 3, 21, 11, 11));
+		final Participant participantOwner = createParticipant(study, owner, position, Role.OWNER);
+		study.addParticipant(participantOwner);
+		final LocalDateTime testDateTime = createTestDateTime();
+		study.modifyStatus(StudyStatus.RECRUITED, testDateTime);
+		final List<Participant> participants = study.getParticipants();
 
-        when(participantRepository.findByUserId(anyLong()))
-                .thenReturn(participants);
+		given(detailsRepository.findByUserId(owner.getId()))
+				.willReturn(Optional.of(details));
 
-        // when
+		// when
+		when(participantRepository.findByUserId(anyLong()))
+				.thenReturn(participants);
+
         final MyPageResponse myPageResponse = myPageService.retrieveMyPage(owner, testDateTime);
 
-        // then
-        final MyPageResponse expectedResponse = new MyPageResponse(
-                new UserResponse(1L, "닉네임", "이메일"),
-                List.of(new ParticipateStudyResponse(1L, "타이틀",
-                        new PositionResponse(1L, "포지션"), StudyStatus.PROGRESS,
-                        LocalDateTime.of(2024, 3, 15, 11, 11),
-                        LocalDateTime.of(2024, 3, 21, 11, 11),
-                        1, Boolean.TRUE, Boolean.FALSE)), List.of(), List.of());
+		// then
+		final MyPageResponse expectedResponse = new MyPageResponse(
+				new UserResponse(1L, "닉네임", "이메일"),
+				new UserTrustResponse(1, 1, 1, 100.0, 1, 1, 1, 1, 1),
+				List.of(new ParticipateStudyResponse(1L, "타이틀",
+						new PositionResponse(1L, "포지션"), StudyStatus.PROGRESS,
+						LocalDateTime.of(2024, 3, 15, 11, 11),
+						LocalDateTime.of(2024, 3, 21, 11, 11),
+						1, Boolean.TRUE, Boolean.FALSE)), List.of(), List.of());
 
         Assertions.assertThat(myPageResponse)
                 .usingRecursiveComparison()
@@ -278,9 +323,12 @@ class MyPageServiceTest {
         study.addParticipant(participantOwner);
         study.registerRecruitment(recruitment);
 
-        final User member = createUser(2L);
-        final List<Applicant> applicants = createApplicants(recruitment, member, position);
-        recruitment.addApplicant(applicants.get(0));
+		final User member = createUser(2L);
+		final Details details = DetailsFixture.createDetails(member);
+		given(detailsRepository.findByUserId(member.getId()))
+				.willReturn(Optional.of(details));
+		final List<Applicant> applicants = createApplicants(recruitment, member, position);
+		recruitment.addApplicant(applicants.get(0));
 
         when(applicantRepository.findMyPageApplyRecruitmentInfoByUserId(anyLong()))
                 .thenReturn(applicants);
@@ -294,10 +342,11 @@ class MyPageServiceTest {
         myPageService.deleteApplyHistory(member, 1L);
         final MyPageResponse myPageResponse = myPageService.retrieveMyPage(member, createTestDateTime());
 
-        // then
-        final MyPageResponse expectedResponse = new MyPageResponse(
-                new UserResponse(2L, "닉네임", "이메일"),
-                List.of(), List.of(), List.of());
+		// then
+		final MyPageResponse expectedResponse = new MyPageResponse(
+				new UserResponse(2L, "닉네임", "이메일"),
+				new UserTrustResponse(1, 1, 1, 100.0, 1, 1, 1, 1, 1),
+				List.of(), List.of(), List.of());
 
         Assertions.assertThat(myPageResponse)
                 .usingRecursiveComparison()

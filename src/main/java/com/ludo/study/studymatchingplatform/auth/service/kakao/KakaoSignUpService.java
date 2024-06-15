@@ -9,8 +9,10 @@ import com.ludo.study.studymatchingplatform.auth.service.kakao.dto.KakaoUserProf
 import com.ludo.study.studymatchingplatform.notification.domain.config.GlobalNotificationUserConfig;
 import com.ludo.study.studymatchingplatform.notification.repository.config.GlobalNotificationUserConfigRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.service.exception.DuplicatedSignUpException;
+import com.ludo.study.studymatchingplatform.user.domain.user.Details;
 import com.ludo.study.studymatchingplatform.user.domain.user.Social;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
+import com.ludo.study.studymatchingplatform.user.repository.user.DetailsRepositoryImpl;
 import com.ludo.study.studymatchingplatform.user.repository.user.UserRepositoryImpl;
 
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,7 @@ public class KakaoSignUpService {
 	private final KakaoOAuthTokenRequestService kakaoOAuthTokenRequestService;
 	private final KakaoProfileRequestService kakaoProfileRequestService;
 	private final UserRepositoryImpl userRepository;
+	private final DetailsRepositoryImpl detailsRepository;
 
 	private final GlobalNotificationUserConfigRepositoryImpl notificationUserConfigRepository;
 
@@ -50,7 +53,13 @@ public class KakaoSignUpService {
 		final User user = userRepository.save(kakaoUserProfileDto.toUser());
 		user.setInitialDefaultNickname();
 		notificationUserConfigRepository.save(GlobalNotificationUserConfig.ofNewSignUpUser(user));
+		createDetails(user);
 		return user;
+	}
+
+	private void createDetails(final User user) {
+		final Details details = Details.from(user);
+		detailsRepository.save(details);
 	}
 
 }

@@ -32,16 +32,16 @@ public class StudyUpdateService {
     private final ParticipantRepositoryImpl participantRepository;
     private final UserRepositoryImpl userRepository;
 
-    public StudyResponse update(final User user, final Long studyId, final StudyUpdateRequest request) {
-        final User owner = valifyExistUser(user.getId());
-        final Category category = findCategoryById(request.categoryId());
-        final Platform platform = valifyExistPlatform(request.platform());
-        final Way way = valifyExistWay(request.way());
-        final Study study = findStudyById(studyId);
-        study.ensureStudyEditable(owner);
-        study.update(request.title(), category, request.participantLimit(),
-                way, platform, request.platformUrl(),
-                request.startDateTime(), request.endDateTime());
+	public StudyResponse update(final User user, final Long studyId, final StudyUpdateRequest request) {
+		final User owner = valifyExistUser(user.getId());
+		final Category category = findCategoryById(request.categoryId());
+		final Platform platform = valifyExistPlatform(request.platform());
+		final Way way = valifyExistWay(request.way());
+		final Study study = findStudyById(studyId);
+		study.ensureStudyEditable(owner);
+		study.update(request.title(), category, request.participantLimit(),
+				request.attendanceDay(), way, platform, request.platformUrl(),
+				request.startDateTime(), request.endDateTime());
 
         // 수정된 endDateTime이 현재 시간 이전일 경우 진행 완료 상태로 변경
         final LocalDateTime now = LocalDateTime.now();

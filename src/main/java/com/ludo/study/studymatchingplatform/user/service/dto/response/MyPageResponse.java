@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant.Applicant;
 import com.ludo.study.studymatchingplatform.study.domain.study.participant.Participant;
+import com.ludo.study.studymatchingplatform.user.domain.user.Details;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 
 import lombok.Builder;
@@ -12,6 +13,7 @@ import lombok.Builder;
 public record MyPageResponse(
 
 		UserResponse user,
+		UserTrustResponse trust,
 		List<ParticipateStudyResponse> participateStudies,
 		List<ApplicantRecruitmentResponse> applicantRecruitments,
 		List<CompletedStudyResponse> completedStudies
@@ -19,12 +21,15 @@ public record MyPageResponse(
 ) {
 
 	public static MyPageResponse from(final User user,
+									  final Details details,
 									  final List<Participant> participants,
 									  final List<Applicant> applicants,
 									  final List<Participant> completedStudies) {
 		final UserResponse userResponse = UserResponse.from(user);
+		final UserTrustResponse userTrustResponse = UserTrustResponse.from(details);
 		return MyPageResponse.builder()
 				.user(userResponse)
+				.trust(userTrustResponse)
 				.participateStudies(makeParticipateStudies(user, participants))
 				.applicantRecruitments(makeApplicantRecruitments(applicants))
 				.completedStudies(makeCompletedStudies(user, completedStudies))

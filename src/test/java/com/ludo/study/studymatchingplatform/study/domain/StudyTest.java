@@ -80,15 +80,15 @@ class StudyTest {
                     .hasMessage("현재 모집 중인 스터디가 아닙니다.");
         }
 
-        @Test
-        @DisplayName("[Exception] 지원하지 않은 지원자의 경우 예외 발생")
-        void wrongApplicant() {
-            // given
-            User owner = UserFixture.createUser(Social.NAVER, "archa", "archa@gmail.com");
-            Study study = StudyFixture.createStudy(owner, "스터디 A", 5, StudyStatus.RECRUITING);
-            Recruitment recruitment = RecruitmentFixture.createRecruitment(study, "모집공고", "내용", 5, null, null);
-            study.registerRecruitment(recruitment);
-            User notApplicantUser = UserFixture.createUser(Social.NAVER, "other", "other@gmail.com");
+		@Test
+		@DisplayName("[Exception] 지원하지 않은 지원자의 경우 예외 발생")
+		void wrongApplicant() {
+			// given
+			User owner = UserFixture.createUser(Social.NAVER, "archa", "archa@gmail.com");
+			Study study = StudyFixture.createStudy(owner, "스터디 A", 5, StudyStatus.RECRUITING);
+			Recruitment recruitment = RecruitmentFixture.createRecruitment(study, "모집공고", "내용", 5, null, null);
+			study.registerRecruitment(recruitment);
+			User notApplicantUser = UserFixture.createUser(Social.NAVER, "other", "other@gmail.com");
 
             // when then
             assertThatThrownBy(() -> study.acceptApplicant(owner, notApplicantUser, utcDateTimePicker.now()))
@@ -225,12 +225,12 @@ class StudyTest {
 
             study.registerRecruitment(recruitment);
 
-            // when
-            User applicantUser = UserFixture.createUser(Social.NAVER, "other", "other@gmail.com");
-            Applicant applicant = Applicant.of(recruitment, applicantUser, PositionFixture.createPosition("백엔드"));
-            recruitment.addApplicant(applicant);
-            assertThat(recruitment.getApplicants()).isNotEmpty();
-            assertThat(recruitment.getApplicants().get(0).getApplicantStatus()).isEqualTo(ApplicantStatus.UNCHECKED);
+			// when
+			User applicantUser = UserFixture.createUser(Social.NAVER, "other", "other@gmail.com");
+			Applicant applicant = Applicant.of(recruitment, applicantUser, PositionFixture.createPosition("백엔드"));
+			recruitment.addApplicant(applicant);
+			assertThat(recruitment.getApplicants()).isNotEmpty();
+			assertThat(recruitment.getApplicants().get(0).getApplicantStatus()).isEqualTo(ApplicantStatus.UNCHECKED);
 
             // then
             assertThatCode(() -> study.rejectApplicant(owner, applicantUser))

@@ -1,6 +1,7 @@
 package com.ludo.study.studymatchingplatform.study.fixture.study;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.time.temporal.ChronoUnit;
 
 import com.ludo.study.studymatchingplatform.common.utils.UtcDateTimePicker;
@@ -115,6 +116,7 @@ public class StudyFixture {
 				.way(way)
 				.participantCount(participantCount)
 				.participantLimit(participantLimit)
+				.attendanceDay(List.of(1, 2))
 				.startDateTime(LocalDateTime.now())
 				.endDateTime(LocalDateTime.now())
 				.build();
