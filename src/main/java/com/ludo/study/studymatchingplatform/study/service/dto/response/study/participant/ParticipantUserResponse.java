@@ -32,7 +32,7 @@ public record ParticipantUserResponse(
 				.email(user.getEmail())
 				.role(participant.getRole())
 				.position(response)
-				.totalAttendance(participant.getTotalAttendance())
+				.totalAttendance(participant.getAttendance())
 				.recentAttendanceDate(participant.getRecentAttendanceDate())
 				.build();
 	}

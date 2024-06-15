@@ -1,7 +1,5 @@
 package com.ludo.study.studymatchingplatform.study.service.study.participant;
 
-import java.time.LocalDateTime;
-
 import org.springframework.stereotype.Service;
 
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.position.Position;
@@ -20,8 +18,7 @@ public class ParticipantService {
 	private final ParticipantRepositoryImpl participantRepository;
 
 	public void add(final Study study, final User user, final Position position, final Role role) {
-		final LocalDateTime now = LocalDateTime.now();
-		final Participant participant = Participant.from(study, user, position, role, now);
+		final Participant participant = Participant.from(study, user, position, role);
 		study.addParticipant(participantRepository.save(participant));
 	}
 

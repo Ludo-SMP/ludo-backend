@@ -1,5 +1,10 @@
 package com.ludo.study.studymatchingplatform.study.domain.study.participant;
 
+import static jakarta.persistence.FetchType.*;
+
+import java.time.LocalDateTime;
+import java.util.Objects;
+
 import com.ludo.study.studymatchingplatform.common.entity.BaseEntity;
 import com.ludo.study.studymatchingplatform.study.domain.id.ParticipantId;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.position.Position;
@@ -22,11 +27,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import java.time.LocalDateTime;
-import java.util.Objects;
-
-import static jakarta.persistence.FetchType.LAZY;
-
 @Entity
 @Getter
 @SuperBuilder
@@ -35,82 +35,82 @@ import static jakarta.persistence.FetchType.LAZY;
 @Table(name = "study_user_lnk")
 public class Participant extends BaseEntity {
 
-    @EmbeddedId
-    @Builder.Default
-    private ParticipantId id = new ParticipantId();
+	@EmbeddedId
+	@Builder.Default
+	private ParticipantId id = new ParticipantId();
 
-    @ManyToOne(fetch = LAZY)
-    @MapsId("studyId")
-    @JoinColumn(name = "study_id", nullable = false)
-    private Study study;
+	@ManyToOne(fetch = LAZY)
+	@MapsId("studyId")
+	@JoinColumn(name = "study_id", nullable = false)
+	private Study study;
 
-    @ManyToOne(fetch = LAZY)
-    @MapsId("userId")
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+	@ManyToOne(fetch = LAZY)
+	@MapsId("userId")
+	@JoinColumn(name = "user_id", nullable = false)
+	private User user;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, columnDefinition = "char(10)")
-    private Role role;
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false, columnDefinition = "char(10)")
+	private Role role;
 
-    @ManyToOne
-    @JoinColumn(name = "position_id")
-    private Position position;
+	@ManyToOne
+	@JoinColumn(name = "position_id")
+	private Position position;
 
-    // 누적 출석
-    @Builder.Default
-    private int attendance = 0;
+	// 누적 출석
+	@Builder.Default
+	private int attendance = 0;
 
-    // 누적 유효 출석
-    @Builder.Default
-    private int validAttendance = 0;
+	// 누적 유효 출석
+	@Builder.Default
+	private int validAttendance = 0;
 
 	@Column(nullable = true)
 	private LocalDateTime recentAttendanceDate;
 
-    // 스터디 합류일
-    @Builder.Default
-    private LocalDateTime enrollmentDateTime = LocalDateTime.now();
+	// 스터디 합류일
+	@Builder.Default
+	private LocalDateTime enrollmentDateTime = LocalDateTime.now();
 
-    public static Participant from(final Study study, final User user, final Position position, final Role role) {
-        final Participant participant = new Participant();
-        participant.study = study;
-        participant.user = user;
-        participant.role = role;
-        participant.position = position;
-        return participant;
-    }
+	public static Participant from(final Study study, final User user, final Position position, final Role role) {
+		final Participant participant = new Participant();
+		participant.study = study;
+		participant.user = user;
+		participant.role = role;
+		participant.position = position;
+		return participant;
+	}
 
-    public Role getRole() {
-        // TODO: Role spec not determined clearly
-        // TODO: First of all, I reflected it in my own way
-        if (study.isOwner(this)) {
-            return Role.OWNER;
-        }
-        return Role.MEMBER;
-    }
+	public Role getRole() {
+		// TODO: Role spec not determined clearly
+		// TODO: First of all, I reflected it in my own way
+		if (study.isOwner(this)) {
+			return Role.OWNER;
+		}
+		return Role.MEMBER;
+	}
 
-    public boolean matchesUser(final User user) {
-        return matchesUser(user.getId());
-    }
+	public boolean matchesUser(final User user) {
+		return matchesUser(user.getId());
+	}
 
-    public boolean matchesUser(final Long userId) {
-        final boolean isMatchesUser = Objects.equals(this.user.getId(), userId);
-        return isMatchesUser && !isDeleted();
-    }
+	public boolean matchesUser(final Long userId) {
+		final boolean isMatchesUser = Objects.equals(this.user.getId(), userId);
+		return isMatchesUser && !isDeleted();
+	}
 
-    public void leave(final Study study, final LocalDateTime deletedDateTime) {
-        study.removeParticipant(this);
-        this.study = null;
-        this.softDelete(deletedDateTime);
-    }
+	public void leave(final Study study, final LocalDateTime deletedDateTime) {
+		study.removeParticipant(this);
+		this.study = null;
+		this.softDelete(deletedDateTime);
+	}
 
-    public void updatePosition(final Position position) {
-        this.position = position;
-    }
+	public void updatePosition(final Position position) {
+		this.position = position;
+	}
 
 	public void increaseTotalAttendance() {
-		this.totalAttendance++;
+		this.attendance++;
 	}
 
 	public void increaseValidAttendance() {
@@ -128,17 +128,16 @@ public class Participant extends BaseEntity {
 		return Boolean.FALSE;
 	}
 
-    public boolean finishAttendance() {
-        // TODO:
-        return true;
-    }
+	public boolean finishAttendance() {
+		// TODO:
+		return true;
+	}
 
-
-    // 출석 80% 이상
-    public boolean perfectAttendance() {
-        // TODO: total 스터디 일수를 가져오는 API 필요. 우선 임시 변수로 저장
-        int totalStudyDays = 100;
-        return (attendance / totalStudyDays * 100) > 80;
-    }
+	// 출석 80% 이상
+	public boolean perfectAttendance() {
+		// TODO: total 스터디 일수를 가져오는 API 필요. 우선 임시 변수로 저장
+		int totalStudyDays = 100;
+		return (attendance / totalStudyDays * 100) > 80;
+	}
 
 }

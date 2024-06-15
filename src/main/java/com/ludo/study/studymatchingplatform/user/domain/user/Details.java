@@ -95,7 +95,7 @@ public class Details extends BaseEntity {
 	}
 
 	private void makeExistingMandatoryDayOfAttendance(final Participant participant, final List<Calender> calenders) {
-		final LocalDateTime joiningDateTime = participant.getJoiningDateTime();
+		final LocalDateTime joiningDateTime = participant.getEnrollmentDateTime();
 		final DayOfWeek joiningDateTimeOfWeek = joiningDateTime.getDayOfWeek();
 		final Integer joiningDateTimeOfWeekNumber = joiningDateTimeOfWeek.getValue();
 
