@@ -25,9 +25,7 @@ public class RecruitmentPreviewResponseMapper {
 	}
 
 	private RecruitmentPreviewResponse getRecruitmentPreviewResponse(final Recruitment recruitment) {
-		log.info("recruitment.getStudy() start");
 		final Study study = recruitment.getStudy();
-		log.info("recruitment.getStudy() end");
 		return new RecruitmentPreviewResponse(
 				recruitment.getId(),
 				recruitment.getTitle(),
@@ -45,43 +43,26 @@ public class RecruitmentPreviewResponseMapper {
 	}
 
 	private List<RecruitmentPreviewResponse.PositionDetail> mapToPositionDetail(Recruitment recruitment) {
-		log.info("mapToPositionDetail start");
-		log.info("recruitment.getPositions() start");
 		final List<Position> positions = recruitment.getPositions();
-		log.info("recruitment.getPositions() end");
-		final List<RecruitmentPreviewResponse.PositionDetail> result = positions
-				.stream()
+		return positions.stream()
 				.map(position -> new RecruitmentPreviewResponse.PositionDetail(position.getId(), position.getName()))
 				.toList();
-		log.info("mapToPositionDetail end");
-		return result;
 	}
 
 	private List<RecruitmentPreviewResponse.StackDetail> mapToStackDetail(Recruitment recruitment) {
-		log.info("mapToStackDetail start");
-		log.info("recruitment.getStacks() start");
 		final List<Stack> stacks = recruitment.getStacks();
-		log.info("recruitment.getStacks() end");
-		final List<RecruitmentPreviewResponse.StackDetail> result = stacks
-				.stream()
+		return stacks.stream()
 				.map(stack -> new RecruitmentPreviewResponse.StackDetail(
 						stack.getId(),
 						stack.getName(),
 						ResourcePath.STACK_IMAGE.getPath() + stack.getImageUrl()))
 				.toList();
-		log.info("mapToStackDetail end");
-		return result;
 	}
 
 	private RecruitmentPreviewResponse.CategoryDetail mapToCategoryDetail(Study study) {
-		log.info("mapToCategoryDetail start");
-		log.info("study.getCategory() start");
 		final Category category = study.getCategory();
-		log.info("study.getCategory() end");
-		final RecruitmentPreviewResponse.CategoryDetail result = new RecruitmentPreviewResponse.CategoryDetail(
+		return new RecruitmentPreviewResponse.CategoryDetail(
 				category.getId(), category.getName());
-		log.info("mapToCategoryDetail end");
-		return result;
 	}
 
 }
