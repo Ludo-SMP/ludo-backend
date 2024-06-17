@@ -1,6 +1,6 @@
 import { addDays } from "date-fns/addDays";
 import { localNow } from "../helpers/datetime-helper";
-import { CreateStudyRequest, UpdateStudyRequest } from "../types/study-types";
+import { ALL_DAYS, CreateStudyRequest, UpdateStudyRequest } from "../types/study-types";
 import { randCategoryId } from "./category-fixture";
 import { randOneOf, randPositionId, randUrl } from "./position-fixture";
 import { randInt, randStr } from "./rand-fixture";
@@ -30,6 +30,7 @@ export function fakeCreateStudyRequest({
     participantLimit: participantLimit ?? randInt(4, 8),
     startDateTime: startDateTime ?? now,
     endDateTime: endDateTime ?? addDays(now, 10).toISOString(),
+    attendanceDay: [randOneOf(...ALL_DAYS), randOneOf(...ALL_DAYS)],
   };
 }
 
@@ -55,5 +56,6 @@ export function fakeUpdateStudyRequest({
     participantLimit: participantLimit ?? randInt(4, 8),
     startDateTime: startDateTime ?? now,
     endDateTime: endDateTime ?? addDays(now, 10).toISOString(),
+    attendanceDay: [randOneOf(...ALL_DAYS), randOneOf(...ALL_DAYS)],
   };
 }
