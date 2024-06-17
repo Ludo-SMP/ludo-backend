@@ -1,5 +1,10 @@
 package com.ludo.study.studymatchingplatform.study.service.study;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
 import com.ludo.study.studymatchingplatform.study.domain.study.Study;
 import com.ludo.study.studymatchingplatform.study.domain.study.StudyStatus;
 import com.ludo.study.studymatchingplatform.study.domain.study.attendance.Calender;
@@ -15,24 +20,20 @@ import com.ludo.study.studymatchingplatform.user.domain.user.User;
 import com.ludo.study.studymatchingplatform.user.repository.user.DetailsRepositoryImpl;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
 public class StudyFetchService {
 
-    private final StudyRepositoryImpl studyRepository;
+	private final StudyRepositoryImpl studyRepository;
 	private final ParticipantRepositoryImpl participantRepository;
 	private final DetailsRepositoryImpl detailsRepository;
 	private final CalenderRepositoryImpl calenderRepository;
 	private final AttendanceRepositoryImpl attendanceRepository;
 
-    public StudyResponse getStudyDetails(final User user, final Long studyId) {
-        final Study study = studyRepository.findByIdWithParticipants(studyId)
-                .orElseThrow(() -> new SocialAccountNotFoundException("존재하지 않는 스터디입니다."));
+	public StudyResponse getStudyDetails(final User user, final Long studyId) {
+		final Study study = studyRepository.findByIdWithParticipants(studyId)
+				.orElseThrow(() -> new SocialAccountNotFoundException("존재하지 않는 스터디입니다."));
 
 		if (!study.isParticipating(user)) {
 			throw new IllegalArgumentException("스터디원만 조회 가능합니다.");
@@ -55,8 +56,9 @@ public class StudyFetchService {
 	}
 
 	private Participant findParticipantByUserIdAndStudyId(final Long userId, final Long studyId) {
-		return participantRepository.find(userId, studyId)
-				.orElseThrow(() -> new SocialAccountNotFoundException("유효하지 않은 참여자 입니다."));
+		return participantRepository.find(studyId, userId)
+				.orElseThrow(() -> new SocialAccountNotFoundException(
+						String.format("스터디(%d)에 참여하지 않은 참여자(%d)입니다.", studyId, userId)));
 	}
 
 	private Details findDetailsByUserId(final Long userId) {

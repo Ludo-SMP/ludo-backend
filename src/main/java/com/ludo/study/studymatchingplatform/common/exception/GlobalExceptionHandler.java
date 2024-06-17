@@ -28,27 +28,31 @@ public final class GlobalExceptionHandler {
 
 	@ExceptionHandler(value = Exception.class)
 	public ResponseEntity<CommonResponse> handleException(Exception e) {
-		return toResponseEntity(e, HttpStatus.INTERNAL_SERVER_ERROR);
+		return toResponseEntity(e, e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	@ExceptionHandler(value = AuthenticationException.class)
 	public ResponseEntity<CommonResponse> handleException(AuthenticationException e) {
+		log.info("AuthenticationException -> UNAUTHORIZED");
 		return toResponseEntity(e, HttpStatus.UNAUTHORIZED);
 	}
 
 	@ExceptionHandler(value = BusinessException.class)
 	public ResponseEntity<CommonResponse> handleException(BusinessException e) {
+		log.info("BusinessException -> BAD REQUEST");
 		return toResponseEntity(e, HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(value = IllegalStateException.class)
 	public ResponseEntity<CommonResponse> handleException(IllegalStateException e) {
+		log.info("IllegalStateException -> BAD REQUEST");
 		return toResponseEntity(e, HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(value = DuplicatedSignUpException.class)
 	public ResponseEntity<CommonResponse> duplicatedSignUp(DuplicatedSignUpException e,
 														   HttpServletResponse response) throws IOException {
+		log.info("DuplicatedSignUpException -> CONFLICT");
 		response.sendRedirect("https://ludoapi.store/signup/fail");
 		return toResponseEntity(e, HttpStatus.CONFLICT);
 	}
@@ -57,6 +61,7 @@ public final class GlobalExceptionHandler {
 	public ResponseEntity<CommonResponse> noSignUpInformation(ChangeSetPersister.NotFoundException e,
 															  HttpServletResponse response) throws IOException {
 		response.sendRedirect("https://ludoapi.store/login/fail");
+		log.info("NotFoundException -> NOT_FOUND");
 		return toResponseEntity(e, HttpStatus.NOT_FOUND);
 	}
 
@@ -64,36 +69,43 @@ public final class GlobalExceptionHandler {
 	public ResponseEntity<CommonResponse> handleException(HttpMessageNotReadableException e) {
 		log(e);
 		final String invalidJsonRequestMessage = "JSON 형식이 잘못되었습니다.";
-		return toResponseEntity(invalidJsonRequestMessage, HttpStatus.BAD_REQUEST);
+		log.info("HttpMessageNotReadableException -> BAD_REQUEST");
+		return toResponseEntity(e, invalidJsonRequestMessage, HttpStatus.BAD_REQUEST);
 	}
 
-	@ExceptionHandler(value = MustLoginException.class)
-	public ResponseEntity<CommonResponse> handleException(MustLoginException e) {
-		return toResponseEntity(e, HttpStatus.UNAUTHORIZED);
+	@ExceptionHandler(value = AccessTokenNotFoundException.class)
+	public ResponseEntity<CommonResponse> handleException(AccessTokenNotFoundException e) {
+		log.info("MustLoginException -> BAD_REQUEST");
+		return toResponseEntity(e, HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(value = IllegalArgumentException.class)
 	public ResponseEntity<CommonResponse> handleException(IllegalArgumentException e) {
+		log.info("IllegalArgumentException -> BAD_REQUEST");
 		return toResponseEntity(e, HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(value = DataNotFoundException.class)
 	public ResponseEntity<CommonResponse> handleException(DataNotFoundException e) {
+		log.info("DataNotFoundException -> NOT_FOUND");
 		return toResponseEntity(e, HttpStatus.NOT_FOUND);
 	}
 
 	@ExceptionHandler(value = DataForbiddenException.class)
 	public ResponseEntity<CommonResponse> handleException(DataForbiddenException e) {
+		log.info("DataForbiddenException -> FORBIDDEN");
 		return toResponseEntity(e, HttpStatus.FORBIDDEN);
 	}
 
 	@ExceptionHandler(value = UnauthorizedUserException.class)
 	public ResponseEntity<CommonResponse> handleException(UnauthorizedUserException e) {
+		log.info("UnauthorizedUserException -> UNAUTHORIZED");
 		return toResponseEntity(e, HttpStatus.UNAUTHORIZED);
 	}
 
 	@ExceptionHandler(value = DataConflictException.class)
 	public ResponseEntity<CommonResponse> handleException(DataConflictException e) {
+		log.info("DataConflictException -> DataConflictException");
 		return toResponseEntity(e, HttpStatus.CONFLICT);
 	}
 
@@ -101,11 +113,13 @@ public final class GlobalExceptionHandler {
 	public ResponseEntity<CommonResponse> noSignUpInformation(SocialAccountNotFoundException e,
 															  HttpServletResponse response) throws IOException {
 		response.sendRedirect("https://ludoapi.store/login/fail");
+		log.info("SocialAccountNotFoundException -> NOT_FOUND");
 		return toResponseEntity(e, HttpStatus.NOT_FOUND);
 	}
 
-	private ResponseEntity<CommonResponse> toResponseEntity(String errorMessage, HttpStatus status) {
+	private ResponseEntity<CommonResponse> toResponseEntity(Exception e, String errorMessage, HttpStatus status) {
 		final CommonResponse resp = CommonResponse.error(errorMessage);
+		log(e);
 		return new ResponseEntity<>(resp, status);
 	}
 

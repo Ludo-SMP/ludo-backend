@@ -1,18 +1,21 @@
 package com.ludo.study.studymatchingplatform.auth.common.resolver;
 
-import com.ludo.study.studymatchingplatform.auth.common.AuthUser;
-import com.ludo.study.studymatchingplatform.auth.common.AuthUserPayload;
-import com.ludo.study.studymatchingplatform.filter.JwtAuthenticationFilter;
-import com.ludo.study.studymatchingplatform.user.domain.user.User;
-import com.ludo.study.studymatchingplatform.user.repository.user.UserRepositoryImpl;
-import jakarta.servlet.http.HttpServletRequest;
-import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
+
+import com.ludo.study.studymatchingplatform.auth.common.AuthUser;
+import com.ludo.study.studymatchingplatform.auth.common.AuthUserPayload;
+import com.ludo.study.studymatchingplatform.filter.JwtAuthenticationFilter;
+import com.ludo.study.studymatchingplatform.user.domain.user.User;
+import com.ludo.study.studymatchingplatform.user.repository.user.UserRepositoryImpl;
+
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * handler에서 `@AuthUser` annotation과 함께 사용 시, Type이 `User`인 경우 `User` 객체를 추출하며,
@@ -23,26 +26,28 @@ import org.springframework.web.method.support.ModelAndViewContainer;
  */
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class AuthUserIdResolver implements HandlerMethodArgumentResolver {
 
-    private final UserRepositoryImpl userRepository;
+	private final UserRepositoryImpl userRepository;
 
-    @Override
-    public boolean supportsParameter(final MethodParameter parameter) {
-        final boolean hasAuthUserAnnotation = parameter.hasParameterAnnotation(AuthUser.class);
-        final boolean isLong = Long.class.isAssignableFrom(parameter.getParameterType());
-        return hasAuthUserAnnotation && isLong;
-    }
+	@Override
+	public boolean supportsParameter(final MethodParameter parameter) {
+		final boolean hasAuthUserAnnotation = parameter.hasParameterAnnotation(AuthUser.class);
+		final boolean isLong = Long.class.isAssignableFrom(parameter.getParameterType());
+		return hasAuthUserAnnotation && isLong;
+	}
 
-    @Override
-    public Long resolveArgument(final MethodParameter parameter, final ModelAndViewContainer mavContainer,
-                                final NativeWebRequest webRequest,
-                                final WebDataBinderFactory binderFactory) {
-        final HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
-        final AuthUserPayload payload = (AuthUserPayload) request.getAttribute(
-                JwtAuthenticationFilter.AUTH_USER_PAYLOAD);
-
-        final User user = userRepository.getById(payload.getId());
-        return user.getId();
-    }
+	@Override
+	public Long resolveArgument(final MethodParameter parameter, final ModelAndViewContainer mavContainer,
+								final NativeWebRequest webRequest,
+								final WebDataBinderFactory binderFactory) {
+		final HttpServletRequest request = (HttpServletRequest)webRequest.getNativeRequest();
+		final AuthUserPayload payload = (AuthUserPayload)request.getAttribute(
+				JwtAuthenticationFilter.AUTH_USER_PAYLOAD);
+		log.info("UserRepositoryImpl.findById start");
+		final User user = userRepository.getById(payload.getId());
+		log.info("UserRepositoryImpl.findById end");
+		return user.getId();
+	}
 }
