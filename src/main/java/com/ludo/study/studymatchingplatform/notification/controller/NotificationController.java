@@ -1,5 +1,6 @@
 package com.ludo.study.studymatchingplatform.notification.controller;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.http.MediaType;
@@ -14,11 +15,14 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.ludo.study.studymatchingplatform.auth.common.AuthUser;
 import com.ludo.study.studymatchingplatform.notification.controller.dto.request.NotificationKeywordConfigRequest;
+import com.ludo.study.studymatchingplatform.notification.domain.notification.NotificationEventType;
+import com.ludo.study.studymatchingplatform.notification.domain.notification.StudyNotification;
 import com.ludo.study.studymatchingplatform.notification.service.NotificationService;
 import com.ludo.study.studymatchingplatform.notification.service.SseEmitters;
 import com.ludo.study.studymatchingplatform.notification.service.dto.request.NotificationConfigRequest;
 import com.ludo.study.studymatchingplatform.notification.service.dto.response.NotificationResponse;
 import com.ludo.study.studymatchingplatform.notification.service.dto.response.config.NotificationConfigResponse;
+import com.ludo.study.studymatchingplatform.study.domain.study.Study;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -34,17 +38,13 @@ public class NotificationController {
 	private final NotificationService notificationService;
 	private final SseEmitters sseEmitters;
 
-	@GetMapping(value = "/subscribe")
+	@GetMapping(value = "/subscribe", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
 	public SseEmitter sseConnect(@AuthUser final User user, final HttpServletResponse response) {
-		setSseResponseHeaders(response);
 		SseEmitter connected = sseEmitters.connect(user);
+		response.setCharacterEncoding("utf-8");
+		response.addHeader("X-Accel-Buffering", "no");
 		log.info("connected = {}", connected);
 		return connected;
-	}
-
-	private void setSseResponseHeaders(final HttpServletResponse response) {
-		response.setContentType(MediaType.TEXT_EVENT_STREAM_VALUE);
-		response.setCharacterEncoding("utf-8");
 	}
 
 	@GetMapping
@@ -57,7 +57,7 @@ public class NotificationController {
 		return notificationService.findNotificationConfig(user);
 	}
 
-	@PutMapping("/settings")
+	@PostMapping("/settings")
 	public ResponseEntity<Void> updateNotificationConfig(@AuthUser final User user,
 														 @RequestBody final NotificationConfigRequest notificationConfigRequest
 	) {
@@ -66,7 +66,7 @@ public class NotificationController {
 		return ResponseEntity.ok().build();
 	}
 
-	@PutMapping("/settings/keyword")
+	@PutMapping("/settings/keywords")
 	public ResponseEntity<Void> updateNotificationKeywordConfig(@AuthUser final User user,
 																@RequestBody final NotificationKeywordConfigRequest notificationKeywordConfigRequest
 	) {
@@ -82,6 +82,15 @@ public class NotificationController {
 		notificationService.checkNotificationsAsRead(user, notificationCheckRequest.notificationIds());
 
 		return ResponseEntity.ok().build();
+	}
+
+	@PostMapping("/ping")
+	public void ping(@AuthUser final User user) {
+		log.info("===== ping START ===== ");
+		final Study study = Study.builder().title("스터디~!").owner(user).build();
+		sseEmitters.sendNotification(user, NotificationResponse.from(StudyNotification.of(
+				NotificationEventType.STUDY_APPLICANT, LocalDateTime.now(), study, user)));
+		log.info("===== ping END ===== ");
 	}
 
 }

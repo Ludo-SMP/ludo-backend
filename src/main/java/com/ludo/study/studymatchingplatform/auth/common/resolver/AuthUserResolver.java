@@ -15,9 +15,11 @@ import com.ludo.study.studymatchingplatform.user.repository.user.UserRepositoryI
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public final class AuthUserResolver implements HandlerMethodArgumentResolver {
 
 	private final UserRepositoryImpl userRepository;
@@ -36,7 +38,9 @@ public final class AuthUserResolver implements HandlerMethodArgumentResolver {
 		final HttpServletRequest request = (HttpServletRequest)webRequest.getNativeRequest();
 		final AuthUserPayload payload = (AuthUserPayload)request.getAttribute(
 				JwtAuthenticationFilter.AUTH_USER_PAYLOAD);
-
-		return userRepository.getById(payload.getId());
+		log.info("UserRepositoryImpl.findById start");
+		User userById = userRepository.getById(payload.getId());
+		log.info("UserRepositoryImpl.findById end");
+		return userById;
 	}
 }

@@ -40,14 +40,14 @@ public class NaverLoginController {
 	@GetMapping("/naver")
 	@ResponseStatus(HttpStatus.FOUND)
 	public String naverLogin(RedirectAttributes redirectAttributes) {
-
+		log.info("로그인 컨트롤러 start");
 		redirectAttributes.addAttribute(
 				"response_type", "code");
 		redirectAttributes.addAttribute(
 				"client_id", clientRegistrationAndProviderRepository.findClientId(Social.NAVER));
 		redirectAttributes.addAttribute(
 				"redirect_uri", clientRegistrationAndProviderRepository.findLoginRedirectUri(Social.NAVER));
-
+		log.info("로그인 컨트롤러 end");
 		return "redirect:" + clientRegistrationAndProviderRepository.findAuthorizationUri(Social.NAVER);
 	}
 
@@ -58,12 +58,13 @@ public class NaverLoginController {
 			@RequestParam(name = "code") final String authorizationCode,
 			final HttpServletRequest request,
 			final HttpServletResponse response) throws IOException {
-
+		log.info("로그인 컨트롤러 콜백 start");
 		final User user = naverLoginService.login(authorizationCode);
 		final String accessToken = jwtTokenProvider.createAccessToken(AuthUserPayload.from(user));
 		userDetailsService.createUserDetails(user, request);
 		cookieProvider.setAuthCookie(accessToken, response);
 		response.sendRedirect("https://ludoapi.store");
+		log.info("로그인 컨트롤러 콜백 end");
 	}
 
 }
