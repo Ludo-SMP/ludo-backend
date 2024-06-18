@@ -64,8 +64,8 @@ public class StudyStatistics extends BaseEntity {
 	// TODO: 동시에 여러 스터디를 진행하는 경우, 중복 count? 일수?
 	// 전체 스터디 기간은 디자인 레이아웃에서 사용되고 있지 않습니다.
 	// 전체 스터디 진행 기간
-	@Builder.Default
-	private Integer totalStudyDays = 0;
+	// @Builder.Default
+	// private Integer totalStudyDays = 0;
 
 	public static StudyStatistics of(final User user) {
 		return StudyStatistics.builder()
