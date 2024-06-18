@@ -11,9 +11,11 @@ import com.ludo.study.studymatchingplatform.common.exception.DataNotFoundExcepti
 import com.ludo.study.studymatchingplatform.common.exception.UnauthorizedUserException;
 import com.ludo.study.studymatchingplatform.notification.domain.config.GlobalNotificationUserConfig;
 import com.ludo.study.studymatchingplatform.notification.repository.config.GlobalNotificationUserConfigRepositoryImpl;
-import com.ludo.study.studymatchingplatform.user.domain.user.Details;
+import com.ludo.study.studymatchingplatform.study.domain.study.ReviewStatistics;
+import com.ludo.study.studymatchingplatform.study.domain.study.StudyStatistics;
+import com.ludo.study.studymatchingplatform.study.repository.study.ReviewStatisticsRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.repository.study.StudyStatisticsRepositoryImpl;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
-import com.ludo.study.studymatchingplatform.user.repository.user.DetailsRepositoryImpl;
 import com.ludo.study.studymatchingplatform.user.repository.user.UserRepositoryImpl;
 
 import lombok.RequiredArgsConstructor;
@@ -25,7 +27,8 @@ public class BasicAuthService {
 
 	private final UserRepositoryImpl userRepository;
 	private final BcryptService bcryptService;
-	private final DetailsRepositoryImpl detailsRepository;
+	private final StudyStatisticsRepositoryImpl studyStatisticsRepository;
+	private final ReviewStatisticsRepositoryImpl reviewStatisticsRepository;
 
 	private final GlobalNotificationUserConfigRepositoryImpl notificationUserConfigRepository;
 
@@ -41,7 +44,8 @@ public class BasicAuthService {
 		final String hashedPassword = bcryptService.hashPassword(request.password());
 		final User user = userRepository.save(request.toUser(hashedPassword));
 		notificationUserConfigRepository.save(GlobalNotificationUserConfig.ofNewSignUpUser(user));
-		createDetails(user);
+		createStudyStatistics(user); // 사용자 세부 정보 생성
+		createReviewStatistics(user); // 사용자 기본 리뷰 정보 생성
 		return user;
 	}
 
@@ -56,9 +60,14 @@ public class BasicAuthService {
 		return user;
 	}
 
-	private void createDetails(final User user) {
-		final Details details = Details.from(user);
-		detailsRepository.save(details);
+	private void createStudyStatistics(final User user) {
+		final StudyStatistics studyStatistics = StudyStatistics.of(user);
+		studyStatisticsRepository.save(studyStatistics);
+	}
+
+	private void createReviewStatistics(final User user) {
+		final ReviewStatistics reviewStatistics = ReviewStatistics.of(user);
+		reviewStatisticsRepository.save(reviewStatistics);
 	}
 
 }

@@ -1,7 +1,5 @@
 package com.ludo.study.studymatchingplatform.user.controller;
 
-import java.time.LocalDateTime;
-
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,8 +28,7 @@ public class MyPageController {
 	@ApiResponse(description = "조회 성공", responseCode = "200", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
 	public MyPageResponse retrieveMyPage(@CookieValue(name = "Authorization") final String auth,
 										 @Parameter(hidden = true) @AuthUser final User user) {
-		final LocalDateTime now = LocalDateTime.now();
-		return myPageService.retrieveMyPage(user, now);
+		return myPageService.retrieveMyPage(user);
 	}
 
 	@DeleteMapping("/users/recruitments/{recruitmentId}/apply-history")

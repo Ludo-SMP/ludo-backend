@@ -2,7 +2,6 @@ package com.ludo.study.studymatchingplatform.study.service.study;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -27,9 +26,7 @@ import com.ludo.study.studymatchingplatform.study.service.dto.request.study.Writ
 import com.ludo.study.studymatchingplatform.study.service.dto.response.study.StudyResponse;
 import com.ludo.study.studymatchingplatform.study.service.exception.BusinessException;
 import com.ludo.study.studymatchingplatform.study.service.exception.SocialAccountNotFoundException;
-import com.ludo.study.studymatchingplatform.user.domain.user.Details;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
-import com.ludo.study.studymatchingplatform.user.repository.user.DetailsRepositoryImpl;
 import com.ludo.study.studymatchingplatform.user.repository.user.UserRepositoryImpl;
 
 import jakarta.transaction.Transactional;
@@ -45,9 +42,9 @@ public class StudyCreateService {
 	private final PositionRepositoryImpl positionRepository;
 	private final ParticipantRepositoryImpl participantRepository;
 	private final UserRepositoryImpl userRepository;
-	private final DetailsRepositoryImpl detailsRepository;
 	private final CalenderRepositoryImpl calenderRepository;
 	private final UtcDateTimePicker utcDateTimePicker;
+	private final StudyStatusService studyStatusService;
 
 	@Transactional
 	public StudyResponse create(final WriteStudyRequest request, final User user) {
@@ -60,7 +57,6 @@ public class StudyCreateService {
 
 		// 생성된 스터디의 endDateTime 이 현재보다 이전일 경우 진행 완료 상태로 변경
 		final LocalDate now = utcDateTimePicker.now().toLocalDate();
-		final LocalDateTime nowDateTime = utcDateTimePicker.now();
 
 		final Participant participant = Participant.from(study, owner, ownerPosition, Role.OWNER);
 		study.addParticipant(participant);
@@ -72,15 +68,11 @@ public class StudyCreateService {
 		final List<Integer> attendanceDay = request.attendanceDay();
 		createCalender(study, attendanceDay); // 캘린더 만들기
 
-		final Details details = findDetailsByUserId(user);
 		final LocalDate endDate = study.getEndDateTime().toLocalDate();
 		// 생성된 스터디의 endDateTime 이 현재보다 이전일 경우 진행 완료 상태로 변경
 		if (study.getStatus() != StudyStatus.COMPLETED
 				&& endDate.isBefore(now)) { // 스터디 진행완료
-			study.modifyStatusToCompleted(nowDateTime);
-			final List<Calender> calenders = findCalendersByStudyId(study.getId());
-			details.makeAverageAttendanceRate(participant, calenders);
-			detailsRepository.save(details);
+			studyStatusService.end(user, study.getId());
 		}
 
 		return StudyResponse.from(study);
@@ -158,16 +150,6 @@ public class StudyCreateService {
 		if (participants.isEmpty()) {
 			throw new BusinessException("스터디 생성시 참여자 리스트는 비어있을 수 없습니다.");
 		}
-	}
-
-	private List<Calender> findCalendersByStudyId(final Long studyId) { // 리스트로 받아와야 함
-		return calenderRepository.findByStudyId(studyId)
-				.orElseThrow(() -> new SocialAccountNotFoundException("스터디에 일정표가 존재하지 않습니다."));
-	}
-
-	private Details findDetailsByUserId(final User user) {
-		return detailsRepository.findByUserId(user.getId())
-				.orElseThrow(() -> new SocialAccountNotFoundException("유효하지 않은 사용자 입니다."));
 	}
 
 }

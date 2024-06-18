@@ -1,8 +1,15 @@
 package com.ludo.study.studymatchingplatform.study.service.study;
 
+import java.time.LocalDateTime;
+import java.util.stream.Stream;
+
+import org.springframework.stereotype.Service;
+
+import com.ludo.study.studymatchingplatform.common.utils.UtcDateTimePicker;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.position.Position;
 import com.ludo.study.studymatchingplatform.study.domain.study.Platform;
 import com.ludo.study.studymatchingplatform.study.domain.study.Study;
+import com.ludo.study.studymatchingplatform.study.domain.study.StudyStatus;
 import com.ludo.study.studymatchingplatform.study.domain.study.Way;
 import com.ludo.study.studymatchingplatform.study.domain.study.category.Category;
 import com.ludo.study.studymatchingplatform.study.domain.study.participant.Participant;
@@ -15,22 +22,21 @@ import com.ludo.study.studymatchingplatform.study.service.dto.response.study.Stu
 import com.ludo.study.studymatchingplatform.study.service.exception.SocialAccountNotFoundException;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 import com.ludo.study.studymatchingplatform.user.repository.user.UserRepositoryImpl;
+
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
-import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
 public class StudyUpdateService {
 
-    private final StudyRepositoryImpl studyRepository;
-    private final CategoryRepositoryImpl categoryRepository;
-    private final PositionRepositoryImpl positionRepository;
-    private final ParticipantRepositoryImpl participantRepository;
-    private final UserRepositoryImpl userRepository;
+	private final StudyRepositoryImpl studyRepository;
+	private final CategoryRepositoryImpl categoryRepository;
+	private final PositionRepositoryImpl positionRepository;
+	private final ParticipantRepositoryImpl participantRepository;
+	private final UserRepositoryImpl userRepository;
+	private final UtcDateTimePicker utcDateTimePicker;
+	private final StudyStatusService studyStatusService;
 
 	public StudyResponse update(final User user, final Long studyId, final StudyUpdateRequest request) {
 		final User owner = valifyExistUser(user.getId());
@@ -43,57 +49,60 @@ public class StudyUpdateService {
 				request.attendanceDay(), way, platform, request.platformUrl(),
 				request.startDateTime(), request.endDateTime());
 
-        // 수정된 endDateTime이 현재 시간 이전일 경우 진행 완료 상태로 변경
-        final LocalDateTime now = LocalDateTime.now();
-        study.modifyStatusToCompleted(now);
+		// 수정된 endDateTime이 현재 시간 이전일 경우 진행 완료 상태로 변경
+		final LocalDateTime now = utcDateTimePicker.now();
+		if (study.getStatus() != StudyStatus.COMPLETED
+				&& study.getEndDateTime().isBefore(now)) { // 스터디 진행완료
+			studyStatusService.end(user, studyId);
+		}
 
-        final Position ownerPosition = findPositionById(request.positionId());
-        final Participant participant = findParticipantByIds(study.getId(), user.getId());
-        participant.updatePosition(ownerPosition);
+		final Position ownerPosition = findPositionById(request.positionId());
+		final Participant participant = findParticipantByIds(study.getId(), user.getId());
+		participant.updatePosition(ownerPosition);
 
-        studyRepository.save(study);
-        participantRepository.save(participant);
-        return StudyResponse.from(study);
-    }
+		studyRepository.save(study);
+		participantRepository.save(participant);
+		return StudyResponse.from(study);
+	}
 
-    private Study findStudyById(final Long studyId) {
-        return studyRepository.findById(studyId)
-                .orElseThrow(() -> new SocialAccountNotFoundException("존재하지 않는 스터디입니다."));
-    }
+	private Study findStudyById(final Long studyId) {
+		return studyRepository.findById(studyId)
+				.orElseThrow(() -> new SocialAccountNotFoundException("존재하지 않는 스터디입니다."));
+	}
 
-    private Position findPositionById(final Long positionId) {
-        return positionRepository.findById(positionId)
-                .orElseThrow(() -> new SocialAccountNotFoundException("존재하지 않는 포지션입니다."));
-    }
+	private Position findPositionById(final Long positionId) {
+		return positionRepository.findById(positionId)
+				.orElseThrow(() -> new SocialAccountNotFoundException("존재하지 않는 포지션입니다."));
+	}
 
-    private Category findCategoryById(final Long categoryId) {
-        return categoryRepository.findById(categoryId)
-                .orElseThrow(() ->
-                        new EntityNotFoundException("존재하지 않는 카테고리입니다"));
-    }
+	private Category findCategoryById(final Long categoryId) {
+		return categoryRepository.findById(categoryId)
+				.orElseThrow(() ->
+						new EntityNotFoundException("존재하지 않는 카테고리입니다"));
+	}
 
-    private Platform valifyExistPlatform(final String platform) {
-        return Stream.of(Platform.values())
-                .filter(p -> p.name().equals(platform))
-                .findFirst()
-                .orElseThrow(() -> new SocialAccountNotFoundException("존재하지 않는 플랫폼 입니다."));
-    }
+	private Platform valifyExistPlatform(final String platform) {
+		return Stream.of(Platform.values())
+				.filter(p -> p.name().equals(platform))
+				.findFirst()
+				.orElseThrow(() -> new SocialAccountNotFoundException("존재하지 않는 플랫폼 입니다."));
+	}
 
-    private Way valifyExistWay(final String way) {
-        return Stream.of(Way.values())
-                .filter(w -> w.name().equals(way))
-                .findFirst()
-                .orElseThrow(() -> new SocialAccountNotFoundException("존재하지 않는 진행 방식 입니다."));
-    }
+	private Way valifyExistWay(final String way) {
+		return Stream.of(Way.values())
+				.filter(w -> w.name().equals(way))
+				.findFirst()
+				.orElseThrow(() -> new SocialAccountNotFoundException("존재하지 않는 진행 방식 입니다."));
+	}
 
-    private User valifyExistUser(final Long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new SocialAccountNotFoundException("존재하지 않는 사용자 입니다."));
-    }
+	private User valifyExistUser(final Long userId) {
+		return userRepository.findById(userId)
+				.orElseThrow(() -> new SocialAccountNotFoundException("존재하지 않는 사용자 입니다."));
+	}
 
-    private Participant findParticipantByIds(final Long studyId, final Long userId) {
-        return participantRepository.find(studyId, userId)
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 참가자 입니다."));
-    }
+	private Participant findParticipantByIds(final Long studyId, final Long userId) {
+		return participantRepository.find(studyId, userId)
+				.orElseThrow(() -> new EntityNotFoundException("존재하지 않는 참가자 입니다."));
+	}
 
 }

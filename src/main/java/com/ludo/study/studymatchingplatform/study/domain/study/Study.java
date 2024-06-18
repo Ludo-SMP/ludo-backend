@@ -15,6 +15,7 @@ import com.ludo.study.studymatchingplatform.common.utils.UtcDateTimePicker;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant.Applicant;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.position.Position;
+import com.ludo.study.studymatchingplatform.study.domain.study.attendance.Calender;
 import com.ludo.study.studymatchingplatform.study.domain.study.category.Category;
 import com.ludo.study.studymatchingplatform.study.domain.study.participant.Participant;
 import com.ludo.study.studymatchingplatform.study.domain.study.participant.Role;
@@ -303,13 +304,14 @@ public class Study extends BaseEntity {
 	}
 
 	// 스터디 완료 처리 시에 [사용자 스터디 참여 정보]에 반영
-	public void end(final LocalDateTime now, final List<StudyStatistics> studyStatistics) {
+	public void end(final LocalDateTime now, final List<StudyStatistics> studyStatistics,
+					final List<Calender> calenders) {
 		// 추후 완료 조건이 추가될 수 있을듯
 
 		for (final StudyStatistics statistics : studyStatistics) {
 			final Participant participant = getParticipant(statistics.getUser());
 			// TODO: 출석일수 reflectStatusStatistics 추가
-			statistics.reflectStatistics(this, participant);
+			statistics.reflectStatistics(this, participant, calenders);
 		}
 
 		status = StudyStatus.COMPLETED;
