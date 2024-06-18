@@ -7,6 +7,7 @@ import java.util.stream.Stream;
 
 import org.springframework.stereotype.Service;
 
+import com.ludo.study.studymatchingplatform.common.utils.UtcDateTimePicker;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.position.Position;
 import com.ludo.study.studymatchingplatform.study.domain.study.Platform;
 import com.ludo.study.studymatchingplatform.study.domain.study.Study;
@@ -45,6 +46,7 @@ public class StudyCreateService {
 	private final UserRepositoryImpl userRepository;
 	private final DetailsRepositoryImpl detailsRepository;
 	private final CalenderRepositoryImpl calenderRepository;
+	private final UtcDateTimePicker utcDateTimePicker;
 
 	@Transactional
 	public StudyResponse create(final WriteStudyRequest request, final User user) {
@@ -56,7 +58,7 @@ public class StudyCreateService {
 		final Study study = request.toStudy(owner, category, way, platform);
 
 		// 생성된 스터디의 endDateTime 이 현재보다 이전일 경우 진행 완료 상태로 변경
-		final LocalDateTime now = LocalDateTime.now();
+		final LocalDateTime now = utcDateTimePicker.now();
 
 		final Participant participant = Participant.from(study, owner, ownerPosition, Role.OWNER);
 		study.addParticipant(participant);
