@@ -7,10 +7,12 @@ import com.ludo.study.studymatchingplatform.auth.service.naver.vo.NaverOAuthToke
 import com.ludo.study.studymatchingplatform.auth.service.naver.vo.NaverUserProfile;
 import com.ludo.study.studymatchingplatform.notification.domain.config.GlobalNotificationUserConfig;
 import com.ludo.study.studymatchingplatform.notification.repository.config.GlobalNotificationUserConfigRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.domain.study.ReviewStatistics;
+import com.ludo.study.studymatchingplatform.study.domain.study.StudyStatistics;
+import com.ludo.study.studymatchingplatform.study.repository.study.ReviewStatisticsRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.repository.study.StudyStatisticsRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.service.exception.DuplicatedSignUpException;
-import com.ludo.study.studymatchingplatform.user.domain.user.Details;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
-import com.ludo.study.studymatchingplatform.user.repository.user.DetailsRepositoryImpl;
 import com.ludo.study.studymatchingplatform.user.repository.user.UserRepositoryImpl;
 
 import lombok.RequiredArgsConstructor;
@@ -22,7 +24,8 @@ public class NaverSignUpService {
 	private final NaverOAuthTokenRequestService naverOAuthTokenRequestService;
 	private final NaverProfileRequestService naverProfileRequestService;
 	private final UserRepositoryImpl userRepository;
-	private final DetailsRepositoryImpl detailsRepository;
+	private final StudyStatisticsRepositoryImpl studyStatisticsRepository;
+	private final ReviewStatisticsRepositoryImpl reviewStatisticsRepository;
 
 	private final GlobalNotificationUserConfigRepositoryImpl notificationUserConfigRepository;
 
@@ -45,14 +48,20 @@ public class NaverSignUpService {
 	private User signup(final NaverUserProfile userProfile) {
 		User user = userRepository.save(userProfile.toUser());
 		user.setInitialDefaultNickname();
-		createDetails(user);
+		createStudyStatistics(user);
+		createReviewStatistics(user);
 		notificationUserConfigRepository.save(GlobalNotificationUserConfig.ofNewSignUpUser(user));
 		return user;
 	}
 
-	private void createDetails(final User user) {
-		final Details details = Details.from(user);
-		detailsRepository.save(details);
+	private void createStudyStatistics(final User user) {
+		final StudyStatistics statistics = StudyStatistics.of(user);
+		studyStatisticsRepository.save(statistics);
+	}
+
+	private void createReviewStatistics(final User user) {
+		final ReviewStatistics reviewStatistics = ReviewStatistics.of(user);
+		reviewStatisticsRepository.save(reviewStatistics);
 	}
 
 }

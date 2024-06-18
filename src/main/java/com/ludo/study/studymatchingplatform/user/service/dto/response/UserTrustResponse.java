@@ -1,6 +1,7 @@
 package com.ludo.study.studymatchingplatform.user.service.dto.response;
 
-import com.ludo.study.studymatchingplatform.user.domain.user.Details;
+import com.ludo.study.studymatchingplatform.study.domain.study.ReviewStatistics;
+import com.ludo.study.studymatchingplatform.study.domain.study.StudyStatistics;
 
 import lombok.Builder;
 
@@ -8,29 +9,28 @@ import lombok.Builder;
 public record UserTrustResponse(
 		Integer finishStudy,
 		Integer perfectStudy,
+		Integer leftStudyCount, // 탈주한 스터디 카운트
 		Integer accumulatedTeamMembers,
 		Double averageAttendanceRate,
-		Integer activeness,
-		Integer professionalism,
-		Integer communication,
-		Integer together,
-		Integer recommend
+		Double activeness,
+		Double professionalism,
+		Double communication,
+		Double together,
+		Double recommend
 ) {
 
-	// 추가 항목 작성 필요.
-	public static UserTrustResponse from(final Details details) {
-		final Double average =
-				(details.getExistingDayOfAttendance() / details.getExistingMandatoryDayOfAttendance()) * 100;
+	public static UserTrustResponse from(final StudyStatistics statistics, final ReviewStatistics reviewStatistics) {
 		return UserTrustResponse.builder()
-				.finishStudy(1)
-				.perfectStudy(1)
-				.accumulatedTeamMembers(1)
-				.averageAttendanceRate(average)
-				.activeness(1)
-				.professionalism(1)
-				.communication(1)
-				.together(1)
-				.recommend(1)
+				.finishStudy(statistics.getTotalFinishAttendanceStudies())
+				.perfectStudy(statistics.getTotalPerfectAttendanceStudies())
+				.leftStudyCount(statistics.getTotalLeftStudyCount())
+				.accumulatedTeamMembers(statistics.getTotalTeammateCount())
+				.averageAttendanceRate(statistics.getTotalAttendanceAverage())
+				.activeness(reviewStatistics.getActivenessPercentage())
+				.professionalism(reviewStatistics.getProfessionalismPercentage())
+				.communication(reviewStatistics.getCommunicationPercentage())
+				.together(reviewStatistics.getTogetherPercentage())
+				.recommend(reviewStatistics.getRecommendPercentage())
 				.build();
 	}
 

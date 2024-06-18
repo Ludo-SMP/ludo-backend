@@ -3,8 +3,9 @@ package com.ludo.study.studymatchingplatform.user.service.dto.response;
 import java.util.List;
 
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant.Applicant;
+import com.ludo.study.studymatchingplatform.study.domain.study.ReviewStatistics;
+import com.ludo.study.studymatchingplatform.study.domain.study.StudyStatistics;
 import com.ludo.study.studymatchingplatform.study.domain.study.participant.Participant;
-import com.ludo.study.studymatchingplatform.user.domain.user.Details;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 
 import lombok.Builder;
@@ -21,12 +22,13 @@ public record MyPageResponse(
 ) {
 
 	public static MyPageResponse from(final User user,
-									  final Details details,
+									  final StudyStatistics studyStatistics,
+									  final ReviewStatistics reviewStatistics,
 									  final List<Participant> participants,
 									  final List<Applicant> applicants,
 									  final List<Participant> completedStudies) {
 		final UserResponse userResponse = UserResponse.from(user);
-		final UserTrustResponse userTrustResponse = UserTrustResponse.from(details);
+		final UserTrustResponse userTrustResponse = UserTrustResponse.from(studyStatistics, reviewStatistics);
 		return MyPageResponse.builder()
 				.user(userResponse)
 				.trust(userTrustResponse)
