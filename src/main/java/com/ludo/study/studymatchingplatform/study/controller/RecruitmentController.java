@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ludo.study.studymatchingplatform.auth.common.AuthUser;
 import com.ludo.study.studymatchingplatform.common.annotation.DataFieldName;
-import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
 import com.ludo.study.studymatchingplatform.study.repository.dto.request.PopularRecruitmentCond;
 import com.ludo.study.studymatchingplatform.study.repository.dto.request.RecruitmentFindCond;
 import com.ludo.study.studymatchingplatform.study.repository.dto.request.RecruitmentFindCursor;
@@ -97,8 +96,7 @@ public class RecruitmentController {
 	public RecruitmentDetailsResponse write(@PathVariable("studyId") final Long studyId,
 											@RequestBody final WriteRecruitmentRequest request,
 											@Parameter(hidden = true) @AuthUser final User user) {
-		final Recruitment recruitment = recruitmentService.write(user, request, studyId);
-		return new RecruitmentDetailsResponse(recruitment, recruitment.getStudy());
+		return recruitmentService.write(user, request, studyId);
 	}
 
 	@GetMapping("/studies/{studyId}/recruitments")
@@ -125,8 +123,7 @@ public class RecruitmentController {
 										@PathVariable("studyId") final Long studyId,
 										@PathVariable("recruitmentId") final Long recruitmentId,
 										@RequestBody final EditRecruitmentRequest request) {
-		return EditRecruitmentResponse.from(recruitmentService.edit(user, recruitmentId, request));
-
+		return recruitmentService.edit(user, recruitmentId, request);
 	}
 
 	@PostMapping("/studies/{studyId}/recruitments/{recruitmentId}/apply")
@@ -136,7 +133,7 @@ public class RecruitmentController {
 	public ApplyRecruitmentResponse apply(@PathVariable("recruitmentId") final Long recruitmentId,
 										  @RequestBody final ApplyRecruitmentRequest request,
 										  @Parameter(hidden = true) @AuthUser final User user) {
-		return ApplyRecruitmentResponse.from(recruitmentService.apply(user, recruitmentId, request));
+		return recruitmentService.apply(user, recruitmentId, request);
 	}
 
 	@DeleteMapping("/studies/{studyId}/recruitments")

@@ -1,5 +1,11 @@
 package com.ludo.study.studymatchingplatform.user.service;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.ludo.study.studymatchingplatform.common.utils.UtcDateTimePicker;
 import com.ludo.study.studymatchingplatform.study.domain.id.ApplicantId;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant.Applicant;
@@ -9,16 +15,13 @@ import com.ludo.study.studymatchingplatform.study.domain.study.participant.Parti
 import com.ludo.study.studymatchingplatform.study.repository.recruitment.applicant.ApplicantRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.study.StudyRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.study.participant.ParticipantRepositoryImpl;
-import com.ludo.study.studymatchingplatform.user.domain.user.Details;
 import com.ludo.study.studymatchingplatform.study.service.exception.SocialAccountNotFoundException;
+import com.ludo.study.studymatchingplatform.user.domain.user.Details;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 import com.ludo.study.studymatchingplatform.user.repository.user.DetailsRepositoryImpl;
 import com.ludo.study.studymatchingplatform.user.service.dto.response.MyPageResponse;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -28,8 +31,9 @@ public class MyPageService {
 	private final ApplicantRepositoryImpl applicantRepository;
 	private final StudyRepositoryImpl studyRepository;
 	private final DetailsRepositoryImpl detailsRepository;
-    private final UtcDateTimePicker utcDateTimePicker;
+	private final UtcDateTimePicker utcDateTimePicker;
 
+	@Transactional
 	public MyPageResponse retrieveMyPage(final User user, final LocalDateTime now) {
 		ensureStudyStatusCompleted(user, now);
 		final List<Participant> participants = retrieveParticipantStudies(user);

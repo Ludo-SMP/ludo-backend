@@ -40,6 +40,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class NotificationService {
 
 	private final NotificationQueryService notificationQueryService;
@@ -52,17 +53,20 @@ public class NotificationService {
 	private final SseEmitters sseEmitters;
 
 	public void recruitmentNotice(final Recruitment recruitment) {
-
+		log.info("===== recruitmentNotice Start =====");
 		final List<User> recruitmentNotifiers = notificationQueryService.findRecruitmentNotifier(recruitment);
+		log.info("recruitmentNotifiers = {}", recruitmentNotifiers);
 
 		final List<RecruitmentNotification> recruitmentNotifications = notificationCommandService.saveRecruitmentNotifications(
 				recruitment, RECRUITMENT, recruitmentNotifiers);
+		log.info("recruitmentNotifications = {}", recruitmentNotifications);
 
 		recruitmentNotifications.forEach(recruitmentNotification -> {
 			final User notifier = recruitmentNotification.getNotifier();
 			final NotificationResponse notificationResponse = NotificationResponse.from(recruitmentNotification);
 			sseEmitters.sendNotification(notifier, notificationResponse);
 		});
+		log.info("===== recruitmentNotice End =====");
 	}
 
 	public void studyApplicantNotice(final Recruitment recruitment) {
@@ -212,7 +216,6 @@ public class NotificationService {
 		return notificationQueryService.findNotifications(user);
 	}
 
-	@Transactional
 	public void configGlobalNotificationUserConfig(final User user,
 												   final NotificationConfigRequest notificationConfigRequest
 	) {
@@ -220,7 +223,6 @@ public class NotificationService {
 		notificationCommandService.updateNotificationConfig(user, userConfig, notificationConfigRequest);
 	}
 
-	@Transactional
 	public void configNotificationKeywords(final User user, final NotificationKeywordConfigRequest configRequest) {
 		if (validateKeywordConfigUpdatable(user)) {
 			return;

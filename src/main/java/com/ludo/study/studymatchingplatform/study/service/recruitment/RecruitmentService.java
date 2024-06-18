@@ -21,7 +21,10 @@ import com.ludo.study.studymatchingplatform.study.repository.study.StudyReposito
 import com.ludo.study.studymatchingplatform.study.service.dto.request.recruitment.EditRecruitmentRequest;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.recruitment.WriteRecruitmentRequest;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.recruitment.applicant.ApplyRecruitmentRequest;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.EditRecruitmentResponse;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.RecruitmentDetailsResponse;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.WriteRecruitmentStudyInfoResponse;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.applicant.ApplyRecruitmentResponse;
 import com.ludo.study.studymatchingplatform.study.service.recruitment.position.RecruitmentPositionService;
 import com.ludo.study.studymatchingplatform.study.service.recruitment.stack.RecruitmentStackService;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
@@ -44,8 +47,8 @@ public class RecruitmentService {
 	private final NotificationService notificationService;
 
 	@Transactional
-	public Recruitment write(final User user, final WriteRecruitmentRequest request,
-							 final Long studyId) {
+	public RecruitmentDetailsResponse write(final User user, final WriteRecruitmentRequest request,
+											final Long studyId) {
 		final Study study = studyRepository.findByIdWithRecruitment(studyId)
 				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 스터디입니다."));
 		// 모집 마감을을 과거의 시간으로 설정할 경우 예외 발생
@@ -64,7 +67,7 @@ public class RecruitmentService {
 
 		// 모집 공고 알림 트리거
 		notificationService.recruitmentNotice(recruitment);
-		return recruitment;
+		return new RecruitmentDetailsResponse(recruitment, recruitment.getStudy());
 	}
 
 	public void validateRecruitmentEndDateTime(final LocalDateTime recruitmentEndDateTime) {
@@ -73,6 +76,7 @@ public class RecruitmentService {
 		}
 	}
 
+	@Transactional
 	public WriteRecruitmentStudyInfoResponse getStudyInfo(final User user, final Long studyId) {
 		final Study study = studyRepository.findByIdWithRecruitment(studyId)
 				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 스터디입니다."));
@@ -80,7 +84,8 @@ public class RecruitmentService {
 		return WriteRecruitmentStudyInfoResponse.from(study);
 	}
 
-	public Recruitment edit(final User user, final Long recruitmentId, final EditRecruitmentRequest request) {
+	public EditRecruitmentResponse edit(final User user, final Long recruitmentId,
+										final EditRecruitmentRequest request) {
 		final Recruitment recruitment = recruitmentRepository.findByIdWithStudy(recruitmentId)
 				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 모집 공고입니다."));
 
@@ -98,10 +103,11 @@ public class RecruitmentService {
 				request.getContent()
 		);
 
-		return recruitment;
+		return EditRecruitmentResponse.from(recruitment);
 	}
 
-	public Applicant apply(final User user, final Long recruitmentId, final ApplyRecruitmentRequest request) {
+	public ApplyRecruitmentResponse apply(final User user, final Long recruitmentId,
+										  final ApplyRecruitmentRequest request) {
 		final Recruitment recruitment = recruitmentRepository.findByIdWithStudy(recruitmentId)
 				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 모집 공고입니다."));
 		recruitment.ensureRecruiting();
@@ -119,13 +125,13 @@ public class RecruitmentService {
 			// 스터디 지원 현황 알림 트리거
 			notificationService.studyApplicantNotice(recruitment);
 
-			return savedApplicant;
+			return ApplyRecruitmentResponse.from(savedApplicant);
 		} else {
 			final Applicant reapplicant = applicant.get();
 			reapplicant.ensureApplicable();
 			// reapplicant.reapply();
 
-			return reapplicant;
+			return ApplyRecruitmentResponse.from(reapplicant);
 		}
 
 	}
