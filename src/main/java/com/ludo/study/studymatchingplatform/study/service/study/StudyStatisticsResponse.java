@@ -14,12 +14,12 @@ public record StudyStatisticsResponse(
 		// 총 무단 탈주 스터디
 		int totalLeftStudyCount,
 		// 총 누적 출석
-		int totalAttendance,
+		int totalMandatoryAttendance,
 		// 총 유효 출석
-		int totalValidAttendance,
+		int totalValidAttendance
 		// TODO: 동시에 여러 스터디를 진행하는 경우, 중복 count? 일수?
 		// 전체 스터디 진행 기간
-		int totalStudyDays
+		// int totalStudyDays
 ) {
 	public static StudyStatisticsResponse from(final StudyStatistics statistics) {
 		return new StudyStatisticsResponse(
@@ -30,8 +30,8 @@ public record StudyStatisticsResponse(
 				statistics.getTotalPerfectAttendanceStudies(),
 				statistics.getTotalLeftStudyCount(),
 				statistics.getTotalMandatoryAttendance(),
-				statistics.getTotalValidAttendance(),
-				statistics.getTotalStudyDays()
+				statistics.getTotalValidAttendance()
+				// statistics.getTotalStudyDays()
 		);
 	}
 }
