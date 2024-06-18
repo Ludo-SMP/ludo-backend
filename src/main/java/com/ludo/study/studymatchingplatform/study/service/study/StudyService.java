@@ -1,5 +1,12 @@
 package com.ludo.study.studymatchingplatform.study.service.study;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.stereotype.Service;
+
 import com.ludo.study.studymatchingplatform.common.utils.UtcDateTimePicker;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant.Applicant;
@@ -16,76 +23,71 @@ import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitme
 import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.applicant.ApplicantWithReviewStatisticsResponse;
 import com.ludo.study.studymatchingplatform.study.service.exception.SocialAccountNotFoundException;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
-import java.time.DayOfWeek;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class StudyService {
 
-    private final StudyRepositoryImpl studyRepository;
-    private final ApplicantRepositoryImpl applicantRepository;
-    private final UtcDateTimePicker utcDateTimePicker;
-    private final ReviewStatisticsService reviewStatisticsService;
+	private final StudyRepositoryImpl studyRepository;
+	private final ApplicantRepositoryImpl applicantRepository;
+	private final UtcDateTimePicker utcDateTimePicker;
+	private final ReviewStatisticsService reviewStatisticsService;
 	private final ParticipantRepositoryImpl participantRepository;
 	private final CalenderRepositoryImpl calenderRepository;
 	private final AttendanceRepositoryImpl attendanceRepository;
 
-    public void leave(final User user, final Long studyId) {
-        final Study study = studyRepository.findByIdWithRecruitment(studyId)
-                .orElseThrow(() -> new SocialAccountNotFoundException("존재하지 않는 스터디입니다."));
+	public void leave(final User user, final Long studyId) {
+		final Study study = studyRepository.findByIdWithRecruitment(studyId)
+				.orElseThrow(() -> new SocialAccountNotFoundException("존재하지 않는 스터디입니다."));
 
-        final Participant participant = study.getParticipant(user);
-        if (study.isOwner(participant)) {
-            throw new IllegalStateException("스터디장은 탈퇴가 불가능합니다.");
-        }
-        participant.leave(study, utcDateTimePicker.now());
-    }
+		final Participant participant = study.getParticipant(user);
+		if (study.isOwner(participant)) {
+			throw new IllegalStateException("스터디장은 탈퇴가 불가능합니다.");
+		}
+		participant.leave(study, utcDateTimePicker.now());
+	}
 
-    public ApplicantWithReviewStatisticsResponse findApplicantsWithReviewStatistics(final User user, final Long studyId) {
-        final Study study = findByIdWithRecruitment(studyId);
-        // 스터디 참여자 검증
-        study.getParticipant(user);
-        final Recruitment recruitment = study.getRecruitment();
-        final List<Applicant> applicants =
-                applicantRepository.findStudyApplicantInfoByRecruitmentId(recruitment.getId());
-        final List<Long> applicantsUserIds = applicants.stream()
-                .map(a -> a.getUser().getId()).toList();
+	public ApplicantWithReviewStatisticsResponse findApplicantsWithReviewStatistics(final User user,
+																					final Long studyId) {
+		final Study study = findByIdWithRecruitment(studyId);
+		// 스터디 참여자 검증
+		study.getParticipant(user);
+		final Recruitment recruitment = study.getRecruitment();
+		final List<Applicant> applicants =
+				applicantRepository.findStudyApplicantInfoByRecruitmentId(recruitment.getId());
+		final List<Long> applicantsUserIds = applicants.stream()
+				.map(a -> a.getUser().getId()).toList();
 
-        return ApplicantWithReviewStatisticsResponse.from(
-                study,
-                applicants,
-                reviewStatisticsService.findByUserIdsIn(applicantsUserIds)
-        );
-    }
+		return ApplicantWithReviewStatisticsResponse.from(
+				study,
+				applicants,
+				reviewStatisticsService.findByUserIdsIn(applicantsUserIds)
+		);
+	}
 
+	public ApplicantResponse findApplicantsInfo(final User user, final Long studyId) {
+		final Study study = findByIdWithRecruitment(studyId);
+		// 스터디 참여자 검증
+		study.getParticipant(user);
+		final Recruitment recruitment = study.getRecruitment();
+		final List<Applicant> applicants =
+				applicantRepository.findStudyApplicantInfoByRecruitmentId(recruitment.getId());
+		return ApplicantResponse.from(study, applicants);
+	}
 
-    public ApplicantResponse findApplicantsInfo(final User user, final Long studyId) {
-        final Study study = findByIdWithRecruitment(studyId);
-        // 스터디 참여자 검증
-        study.getParticipant(user);
-        final Recruitment recruitment = study.getRecruitment();
-        final List<Applicant> applicants =
-                applicantRepository.findStudyApplicantInfoByRecruitmentId(recruitment.getId());
-        return ApplicantResponse.from(study, applicants);
-    }
-
-    private Study findByIdWithRecruitment(final Long studyId) {
-        return studyRepository.findByIdWithRecruitment(studyId)
-                .orElseThrow(() -> new SocialAccountNotFoundException("존재하지 않는 스터디입니다."));
-    }
+	private Study findByIdWithRecruitment(final Long studyId) {
+		return studyRepository.findByIdWithRecruitment(studyId)
+				.orElseThrow(() -> new SocialAccountNotFoundException("존재하지 않는 스터디입니다."));
+	}
 
 	public void attendance(final User user, final Long studyId) {
-		final LocalDateTime now = LocalDateTime.now();
+		final LocalDate now = utcDateTimePicker.now().toLocalDate();
 		final Study study = findStudyById(studyId);
 		final Participant participant = findParticipantByStudyIdAndUserId(studyId, user.getId());
 		if (!participant.isFirstAttendance()) {
-			final LocalDateTime recentAttendanceDate = participant.getRecentAttendanceDate();
+			final LocalDate recentAttendanceDate = participant.getRecentAttendanceDate();
 			isDuplicateAttendance(recentAttendanceDate, now); // 중복 출석 체크
 		}
 		participant.renewalAttendanceDate(now); // 최근 출석일 갱신
@@ -105,7 +107,7 @@ public class StudyService {
 		participantRepository.save(participant);
 	}
 
-	private void isDuplicateAttendance(final LocalDateTime recentAttendanceDate, final LocalDateTime now) {
+	private void isDuplicateAttendance(final LocalDate recentAttendanceDate, final LocalDate now) {
 		if (recentAttendanceDate.getYear() == now.getYear() &&
 				recentAttendanceDate.getMonth() == now.getMonth() &&
 				recentAttendanceDate.getDayOfMonth() == now.getDayOfMonth()) {
@@ -118,7 +120,7 @@ public class StudyService {
 	}
 
 	private void isValidAttendance(final Calender calender,
-								   final LocalDateTime now,
+								   final LocalDate now,
 								   final Participant participant) {
 		final DayOfWeek nowOfWeek = now.getDayOfWeek();
 		final Integer nowOfWeekNumber = nowOfWeek.getValue();

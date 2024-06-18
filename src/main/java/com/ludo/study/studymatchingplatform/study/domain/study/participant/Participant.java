@@ -2,6 +2,7 @@ package com.ludo.study.studymatchingplatform.study.domain.study.participant;
 
 import static jakarta.persistence.FetchType.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -66,11 +67,11 @@ public class Participant extends BaseEntity {
 	private int validAttendance = 0;
 
 	@Column(nullable = true)
-	private LocalDateTime recentAttendanceDate;
+	private LocalDate recentAttendanceDate;
 
 	// 스터디 합류일
 	@Builder.Default
-	private LocalDateTime enrollmentDateTime = LocalDateTime.now();
+	private LocalDate enrollmentDateTime = LocalDateTime.now().toLocalDate();
 
 	public static Participant from(final Study study, final User user, final Position position, final Role role) {
 		final Participant participant = new Participant();
@@ -117,7 +118,7 @@ public class Participant extends BaseEntity {
 		this.validAttendance++;
 	}
 
-	public void renewalAttendanceDate(final LocalDateTime now) {
+	public void renewalAttendanceDate(final LocalDate now) {
 		this.recentAttendanceDate = now;
 	}
 

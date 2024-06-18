@@ -1,6 +1,7 @@
 package com.ludo.study.studymatchingplatform.study.service.study;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Stream;
@@ -58,7 +59,8 @@ public class StudyCreateService {
 		final Study study = request.toStudy(owner, category, way, platform);
 
 		// 생성된 스터디의 endDateTime 이 현재보다 이전일 경우 진행 완료 상태로 변경
-		final LocalDateTime now = utcDateTimePicker.now();
+		final LocalDate now = utcDateTimePicker.now().toLocalDate();
+		final LocalDateTime nowDateTime = utcDateTimePicker.now();
 
 		final Participant participant = Participant.from(study, owner, ownerPosition, Role.OWNER);
 		study.addParticipant(participant);
@@ -71,10 +73,11 @@ public class StudyCreateService {
 		createCalender(study, attendanceDay); // 캘린더 만들기
 
 		final Details details = findDetailsByUserId(user);
+		final LocalDate endDate = study.getEndDateTime().toLocalDate();
 		// 생성된 스터디의 endDateTime 이 현재보다 이전일 경우 진행 완료 상태로 변경
 		if (study.getStatus() != StudyStatus.COMPLETED
-				&& study.getEndDateTime().isBefore(now)) { // 스터디 진행완료
-			study.modifyStatusToCompleted(now);
+				&& endDate.isBefore(now)) { // 스터디 진행완료
+			study.modifyStatusToCompleted(nowDateTime);
 			final List<Calender> calenders = findCalendersByStudyId(study.getId());
 			details.makeAverageAttendanceRate(participant, calenders);
 			detailsRepository.save(details);
@@ -84,9 +87,9 @@ public class StudyCreateService {
 	}
 
 	private void createCalender(final Study study, final List<Integer> attendanceDay) {
-		LocalDateTime calenderStartDateTime = settingTheCalenderStartDate(study.getStartDateTime());
-		final LocalDateTime calenderEndDateTime = settingTheCalenderEndDate(study.getEndDateTime());
-		LocalDateTime temporaryEndDateTime = calenderStartDateTime.plusDays(6);
+		LocalDate calenderStartDateTime = settingTheCalenderStartDate(study.getStartDateTime().toLocalDate());
+		final LocalDate calenderEndDateTime = settingTheCalenderEndDate(study.getEndDateTime().toLocalDate());
+		LocalDate temporaryEndDateTime = calenderStartDateTime.plusDays(6);
 		while (!temporaryEndDateTime.isEqual(calenderEndDateTime.plusDays(7))) { // 날짜가 같지 않을때 까지
 			final Calender calender = Calender.from(study, calenderStartDateTime, temporaryEndDateTime);
 
@@ -98,7 +101,7 @@ public class StudyCreateService {
 		}
 	}
 
-	private LocalDateTime settingTheCalenderStartDate(LocalDateTime startDateTime) {
+	private LocalDate settingTheCalenderStartDate(LocalDate startDateTime) {
 		final DayOfWeek startDayOfWeek = startDateTime.getDayOfWeek();
 		final Integer startDayOfWeekNumber = startDayOfWeek.getValue();
 		if (startDayOfWeekNumber > 1) { // 월요일 보다 클 경우
@@ -107,7 +110,7 @@ public class StudyCreateService {
 		return startDateTime;
 	}
 
-	private LocalDateTime settingTheCalenderEndDate(LocalDateTime endDateTime) {
+	private LocalDate settingTheCalenderEndDate(LocalDate endDateTime) {
 		final DayOfWeek endDayOfWeek = endDateTime.getDayOfWeek();
 		final Integer endDayOfWeekNumber = endDayOfWeek.getValue();
 		if (endDayOfWeekNumber < 7) { // 일요일 보다 작을 경우

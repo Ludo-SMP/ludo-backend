@@ -1,6 +1,6 @@
 package com.ludo.study.studymatchingplatform.study.service.dto.response.study.participant;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import com.ludo.study.studymatchingplatform.study.domain.study.participant.Participant;
 import com.ludo.study.studymatchingplatform.study.domain.study.participant.Role;
@@ -18,7 +18,7 @@ public record ParticipantUserResponse(
 		Role role,
 		PositionResponse position,
 		Integer totalAttendance,
-		LocalDateTime recentAttendanceDate
+		LocalDate recentAttendanceDate
 
 ) {
 
