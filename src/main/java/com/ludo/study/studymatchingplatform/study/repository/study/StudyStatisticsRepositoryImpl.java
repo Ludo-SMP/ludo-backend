@@ -1,5 +1,7 @@
 package com.ludo.study.studymatchingplatform.study.repository.study;
 
+import static com.ludo.study.studymatchingplatform.study.domain.study.QStudyStatistics.*;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -23,7 +25,10 @@ public class StudyStatisticsRepositoryImpl {
 	}
 
 	public Optional<StudyStatistics> findByUserId(final Long userId) {
-		return studyStatisticsJpaRepository.findById(userId);
+		return Optional.ofNullable(
+				q.selectFrom(studyStatistics)
+						.where(studyStatistics.user.id.eq(userId))
+						.fetchFirst());
 	}
 
 	public StudyStatistics save(final StudyStatistics statistics) {
