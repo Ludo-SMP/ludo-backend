@@ -129,7 +129,7 @@ public class Participant extends BaseEntity {
 	}
 
 	public boolean finishAttendance() {
-		// TODO:
+		// TODO: 각 study에 대한 valid attendance, perfectattendance 가져오기 추가
 		return true;
 	}
 

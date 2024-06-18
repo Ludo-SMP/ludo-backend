@@ -308,6 +308,7 @@ public class Study extends BaseEntity {
 
 		for (final StudyStatistics statistics : studyStatistics) {
 			final Participant participant = getParticipant(statistics.getUser());
+			// TODO: 출석일수 reflectStatusStatistics 추가
 			statistics.reflectStatistics(this, participant);
 		}
 
