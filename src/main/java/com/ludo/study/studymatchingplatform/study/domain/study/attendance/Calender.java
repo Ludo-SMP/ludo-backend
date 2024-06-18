@@ -2,7 +2,7 @@ package com.ludo.study.studymatchingplatform.study.domain.study.attendance;
 
 import static jakarta.persistence.FetchType.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 import com.ludo.study.studymatchingplatform.common.entity.BaseEntity;
@@ -39,10 +39,10 @@ public class Calender extends BaseEntity {
 	private Study study;
 
 	@Column(nullable = false)
-	private LocalDateTime calenderStartDateTime;
+	private LocalDate calenderStartDateTime;
 
 	@Column(nullable = false)
-	private LocalDateTime calenderEndDateTime;
+	private LocalDate calenderEndDateTime;
 
 	// 초기값 false 설정
 	@Column(nullable = false)
@@ -67,8 +67,8 @@ public class Calender extends BaseEntity {
 	private Boolean sunday = false;
 
 	public static Calender from(final Study study,
-								final LocalDateTime calenderStartDateTime,
-								final LocalDateTime calenderEndDateTime) {
+								final LocalDate calenderStartDateTime,
+								final LocalDate calenderEndDateTime) {
 		final Calender calender = new Calender();
 		calender.study = study;
 		calender.calenderStartDateTime = calenderStartDateTime;

@@ -2,7 +2,7 @@ package com.ludo.study.studymatchingplatform.study.domain.study.attendance;
 
 import static jakarta.persistence.FetchType.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import com.ludo.study.studymatchingplatform.common.entity.BaseEntity;
 import com.ludo.study.studymatchingplatform.study.domain.study.Study;
@@ -42,11 +42,11 @@ public class Attendance extends BaseEntity {
 	private User user;
 
 	@Column(name = "date", nullable = false)
-	private LocalDateTime date;
+	private LocalDate date;
 
 	public static Attendance from(final Study study,
 								  final User user,
-								  final LocalDateTime date) {
+								  final LocalDate date) {
 		final Attendance attendance = new Attendance();
 		attendance.study = study;
 		attendance.user = user;

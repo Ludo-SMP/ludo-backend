@@ -3,7 +3,7 @@ package com.ludo.study.studymatchingplatform.user.domain.user;
 import static jakarta.persistence.FetchType.*;
 
 import java.time.DayOfWeek;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 import com.ludo.study.studymatchingplatform.common.entity.BaseEntity;
@@ -95,7 +95,7 @@ public class Details extends BaseEntity {
 	}
 
 	private void makeExistingMandatoryDayOfAttendance(final Participant participant, final List<Calender> calenders) {
-		final LocalDateTime joiningDateTime = participant.getEnrollmentDateTime();
+		final LocalDate joiningDateTime = participant.getEnrollmentDateTime();
 		final DayOfWeek joiningDateTimeOfWeek = joiningDateTime.getDayOfWeek();
 		final Integer joiningDateTimeOfWeekNumber = joiningDateTimeOfWeek.getValue();
 
