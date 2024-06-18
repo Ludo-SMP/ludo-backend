@@ -3,6 +3,7 @@ package com.ludo.study.studymatchingplatform.study.service.study;
 import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ludo.study.studymatchingplatform.common.utils.UtcDateTimePicker;
 import com.ludo.study.studymatchingplatform.study.domain.study.Study;
@@ -22,6 +23,7 @@ public class StudyFetchService {
 	private final UtcDateTimePicker utcDateTimePicker;
 	private final StudyStatusService studyStatusService;
 
+	@Transactional
 	public StudyResponse getStudyDetails(final User user, final Long studyId) {
 		final Study study = studyRepository.findByIdWithParticipants(studyId)
 				.orElseThrow(() -> new SocialAccountNotFoundException("존재하지 않는 스터디입니다."));
