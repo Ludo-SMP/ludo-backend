@@ -11,11 +11,14 @@ import com.ludo.study.studymatchingplatform.common.utils.UtcDateTimePicker;
 import com.ludo.study.studymatchingplatform.study.domain.study.Study;
 import com.ludo.study.studymatchingplatform.study.domain.study.StudyStatistics;
 import com.ludo.study.studymatchingplatform.study.domain.study.StudyStatus;
+import com.ludo.study.studymatchingplatform.study.domain.study.attendance.Calender;
 import com.ludo.study.studymatchingplatform.study.domain.study.participant.Participant;
 import com.ludo.study.studymatchingplatform.study.repository.recruitment.RecruitmentRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.study.StudyRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.repository.study.attendance.CalenderRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.study.StudyResponse;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.study.StudyStatisticsService;
+import com.ludo.study.studymatchingplatform.study.service.exception.SocialAccountNotFoundException;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 
 import lombok.RequiredArgsConstructor;
@@ -28,6 +31,7 @@ public class StudyStatusService {
 	private final StudyRepositoryImpl studyRepository;
 	private final UtcDateTimePicker utcDateTimePicker;
 	private final StudyStatisticsService studyStatisticsService;
+	private final CalenderRepositoryImpl calenderRepository;
 
 	@Transactional
 	public StudyResponse changeStatus(final Long studyId, final StudyStatus status, final User user) {
@@ -64,10 +68,17 @@ public class StudyStatusService {
 				.map(Participant::getUser)
 				.toList();
 		final List<StudyStatistics> statistics = studyStatisticsService.findOrCreateByUsers(users);
+		final List<Calender> calenders = findCalendersByStudyId(study.getId());
 
 		// TODO: 스터디 출석 일수 end에 추가
-		study.end(utcDateTimePicker.now(), statistics);
+		study.end(utcDateTimePicker.now(), statistics, calenders);
 
 		return StudyResponse.from(study);
 	}
+
+	private List<Calender> findCalendersByStudyId(final Long studyId) { // 리스트로 받아와야 함
+		return calenderRepository.findByStudyId(studyId)
+				.orElseThrow(() -> new SocialAccountNotFoundException("스터디에 일정표가 존재하지 않습니다."));
+	}
+
 }
