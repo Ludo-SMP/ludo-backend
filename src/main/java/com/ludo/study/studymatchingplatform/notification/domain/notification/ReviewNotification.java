@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 public class ReviewNotification extends Notification {
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "id", nullable = false)
+	@JoinColumn(name = "review_id", nullable = false)
 	private Review actor;
 
 	private ReviewNotification(final NotificationEventType notificationEventType,

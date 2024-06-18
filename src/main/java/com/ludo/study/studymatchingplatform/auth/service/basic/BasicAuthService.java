@@ -11,7 +11,9 @@ import com.ludo.study.studymatchingplatform.common.exception.DataNotFoundExcepti
 import com.ludo.study.studymatchingplatform.common.exception.UnauthorizedUserException;
 import com.ludo.study.studymatchingplatform.notification.domain.config.GlobalNotificationUserConfig;
 import com.ludo.study.studymatchingplatform.notification.repository.config.GlobalNotificationUserConfigRepositoryImpl;
+import com.ludo.study.studymatchingplatform.user.domain.user.Details;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
+import com.ludo.study.studymatchingplatform.user.repository.user.DetailsRepositoryImpl;
 import com.ludo.study.studymatchingplatform.user.repository.user.UserRepositoryImpl;
 
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,8 @@ public class BasicAuthService {
 
 	private final UserRepositoryImpl userRepository;
 	private final BcryptService bcryptService;
+	private final DetailsRepositoryImpl detailsRepository;
+
 	private final GlobalNotificationUserConfigRepositoryImpl notificationUserConfigRepository;
 
 	public User signup(final BasicSignupRequest request) {
@@ -37,6 +41,7 @@ public class BasicAuthService {
 		final String hashedPassword = bcryptService.hashPassword(request.password());
 		final User user = userRepository.save(request.toUser(hashedPassword));
 		notificationUserConfigRepository.save(GlobalNotificationUserConfig.ofNewSignUpUser(user));
+		createDetails(user);
 		return user;
 	}
 
@@ -49,6 +54,11 @@ public class BasicAuthService {
 		}
 
 		return user;
+	}
+
+	private void createDetails(final User user) {
+		final Details details = Details.from(user);
+		detailsRepository.save(details);
 	}
 
 }

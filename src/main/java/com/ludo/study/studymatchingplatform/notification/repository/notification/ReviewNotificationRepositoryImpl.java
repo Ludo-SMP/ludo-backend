@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ReviewNotificationRepositoryImpl {
 
-	private JPAQueryFactory q;
+	private final JPAQueryFactory q;
 	private final ReviewNotificationJpaRepository reviewNotificationJpaRepository;
 
 	public ReviewNotification save(final ReviewNotification reviewNotifications) {

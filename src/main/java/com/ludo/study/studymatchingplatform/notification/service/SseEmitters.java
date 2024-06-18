@@ -7,7 +7,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import com.ludo.study.studymatchingplatform.notification.exception.NotExistSseEmitterException;
 import com.ludo.study.studymatchingplatform.notification.service.dto.response.NotificationResponse;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 
@@ -16,19 +15,19 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @Slf4j
 public class SseEmitters {
-	private static final Long DEFAULT_TIME_OUT = 60 * 1000L;
+	private static final Long DEFAULT_TIME_OUT = 30 * 60 * 1000L;
 	private final Map<Long, SseEmitter> sseEmitters = new ConcurrentHashMap<>();
 
 	public SseEmitter connect(final User user) {
 		final Long emitterId = createSseEmitterId(user);
-		final SseEmitter emitter = createSseEmitter();
+		final SseEmitter emitter = new SseEmitter(DEFAULT_TIME_OUT);
 
 		registerActionsOnCompletion(emitter);
 		registerActionsOnTimeOut(emitter, emitterId);
 		registerActionsOnError(emitter, emitterId);
 
 		saveSseEmitter(emitter, emitterId);
-		send(emitter, "publish", "SSE 연결 성공");
+		send(emitter, "publish", "SSE publish success");
 
 		return emitter;
 	}
@@ -47,6 +46,7 @@ public class SseEmitters {
 			sseEmitter.send(SseEmitter.event()
 					.name(eventName)
 					.data(eventData));
+			log.info("===== Sse Emitter Send Data 종료 =====");
 		} catch (IOException e) {
 			sseEmitter.completeWithError(e);
 		}
@@ -55,10 +55,6 @@ public class SseEmitters {
 	private Long createSseEmitterId(final User user) {
 		final Long sseEmitterId = user.getId();
 		return sseEmitterId;
-	}
-
-	public SseEmitter createSseEmitter() {
-		return new SseEmitter(DEFAULT_TIME_OUT);
 	}
 
 	private void registerActionsOnCompletion(final SseEmitter emitter) {
@@ -102,8 +98,8 @@ public class SseEmitters {
 			return sseEmitters.get(sseEmitterId);
 		}
 		return null;
-//		throw new NotExistSseEmitterException(
-//				String.format("id = %d 에 해당하는 SseEmitter가 존재하지 않습니다.", sseEmitterId));
+		//		throw new NotExistSseEmitterException(
+		//				String.format("id = %d 에 해당하는 SseEmitter가 존재하지 않습니다.", sseEmitterId));
 	}
 
 	public SseEmitter findSseEmitter(final User user) {

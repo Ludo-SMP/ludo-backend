@@ -57,7 +57,10 @@ public class UserController {
 	@ApiResponse(description = "조회 성공", responseCode = "200", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
 	@DataFieldName("user")
 	public UserResponse getMe(@Parameter(hidden = true) @AuthUser final User user) {
-		return UserResponse.from(user);
+		log.info("/users/me endpoint start");
+		UserResponse from = UserResponse.from(user);
+		log.info("/users/me endpoint end");
+		return from;
 	}
 
 	@PostMapping("/users/me/nickname")

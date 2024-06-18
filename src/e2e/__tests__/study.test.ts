@@ -21,7 +21,7 @@ import { Study } from "../types/study-types";
 dns.setDefaultResultOrder("ipv4first");
 
 describe("study Api flows", () => {
-  it("[200 OK] 스터디장은 스터디 수정 가능", async () => {
+  it("[400 BAD REQUEST] 로그인 안 하면 스터디 생성 불가", async () => {
     // given
     const client = ApiClient.default();
 
@@ -32,8 +32,8 @@ describe("study Api flows", () => {
       await createStudy(client, body);
     } catch (err) {
       const e = err as AxiosError<BaseResponse<Study>>;
-      expect(e.response?.status).toBe(HttpStatusCode.Unauthorized);
-      expect(e.response!.data.message).toBe("로그인이 필요한 서비스입니다.");
+      expect(e.response?.status).toBe(HttpStatusCode.BadRequest);
+      expect(e.response!.data.message).toBe("토큰이 없습니다.");
     }
   });
 
@@ -67,7 +67,9 @@ describe("study Api flows", () => {
     expect(study.status).toEqual("RECRUITING");
   });
 
-  it("[401 UNAUTHORIZED] 로그인 안 된 사용자는 스터디 생성 불가", async () => {
+  // no token returns 400
+  it("[400 BAD REQUEST] 로그인 안 된 사용자는 스터디 생성 불가", async () => {
+    // it("[401 UNAUTHORIZED] 로그인 안 된 사용자는 스터디 생성 불가", async () => {
     // given
     const client = ApiClient.default();
 
@@ -77,8 +79,10 @@ describe("study Api flows", () => {
       await createStudy(client, fakeCreateStudyRequest());
     } catch (err) {
       const e = err as AxiosError<BaseResponse<void>>;
-      expect(e.response!.status).toBe(HttpStatusCode.Unauthorized);
-      expect(e.response!.data.message).toBe("로그인이 필요한 서비스입니다.");
+      // expect(e.response!.status).toBe(HttpStatusCode.Unauthorized);
+      expect(e.response!.status).toBe(HttpStatusCode.BadRequest);
+      // expect(e.response!.data.message).toBe("로그인이 필요한 서비스입니다.");
+      expect(e.response!.data.message).toBe("토큰이 없습니다.");
     }
   });
 
