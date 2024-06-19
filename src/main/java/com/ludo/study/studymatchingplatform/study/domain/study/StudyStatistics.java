@@ -11,6 +11,7 @@ import com.ludo.study.studymatchingplatform.study.domain.study.attendance.Calend
 import com.ludo.study.studymatchingplatform.study.domain.study.participant.Participant;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -32,6 +33,7 @@ import lombok.experimental.SuperBuilder;
 public class StudyStatistics extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "study_statistics_id")
 	private Long id;
 
 	@OneToOne(fetch = LAZY)
