@@ -110,7 +110,7 @@ public class RecruitmentController {
 		return recruitmentService.getStudyInfo(user, studyId);
 	}
 
-	@PutMapping("/studies/{studyId}/recruitments")
+	@PutMapping("/studies/{studyId}/recruitments/{recruitmentId}")
 	@ResponseStatus(HttpStatus.OK)
 	@DataFieldName("recruitment")
 	@Operation(description = "모집 공고 수정")

@@ -30,7 +30,7 @@ public final class EditRecruitmentRequest {
 	private final Set<Long> positionIds;
 
 	@Schema(description = "수정할 모집 최대 인원", requiredMode = REQUIRED)
-	private final Integer applicantCount;
+	private final Integer applicantLimit;
 
 	@Schema(description = "수정할 모집 공고 마감 날짜", requiredMode = REQUIRED)
 	private final LocalDateTime recruitmentEndDateTime;
