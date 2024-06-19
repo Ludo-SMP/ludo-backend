@@ -12,7 +12,7 @@ public record RecruitmentDetailsResponse(RecruitmentDetail recruitment,
 										 StudyDetail study
 ) {
 
-	public record RecruitmentDetail(Long id, Integer applicantCount,
+	public record RecruitmentDetail(Long id, Integer applicantCount, Integer applicantLimit,
 									List<PositionDetail> positions, List<StackDetail> stacks,
 									Contact contact, String callUrl, String title, String content,
 									LocalDateTime endDateTime,
@@ -39,9 +39,11 @@ public record RecruitmentDetailsResponse(RecruitmentDetail recruitment,
 	public RecruitmentDetailsResponse(final Recruitment recruitment, final Study study) {
 		this(new RecruitmentDetail(
 						recruitment.getId(),
-						recruitment.getApplicantsCount(), recruitment.getPositions().stream()
-						.map(position -> new PositionDetail(position.getId(), position.getName()))
-						.toList(),
+						recruitment.getApplicantsCount(),
+						recruitment.getApplicantLimit(),
+						recruitment.getPositions().stream()
+								.map(position -> new PositionDetail(position.getId(), position.getName()))
+								.toList(),
 						recruitment.getStacks().stream()
 								.map(stack -> new StackDetail(stack.getId(), stack.getName(),
 										ResourcePath.STACK_IMAGE.getPath() + stack.getImageUrl()))

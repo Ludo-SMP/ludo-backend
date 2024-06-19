@@ -98,7 +98,7 @@ public class RecruitmentService {
 				request.getTitle(),
 				request.getContact(),
 				request.getCallUrl(),
-				request.getApplicantCount(),
+				request.getApplicantLimit(),
 				request.getRecruitmentEndDateTime(),
 				request.getContent()
 		);

@@ -50,7 +50,7 @@ public record StudyResponse(
 		Integer applicantCount = 0; // 지원자 수
 		if (Boolean.TRUE.equals(study.ensureHasRecruitment())) {
 			final Recruitment recruitment = study.getRecruitment();
-			applicantCount = recruitment.getApplicantCount();
+			applicantCount = recruitment.getApplicantsCount();
 		}
 
 		return StudyResponse.builder()

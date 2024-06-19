@@ -973,7 +973,7 @@ class RecruitmentServiceTest {
 				.title("edited text")
 				.contact(Contact.KAKAO)
 				.callUrl("edited callUrl")
-				.applicantCount(3)
+				.applicantLimit(3)
 				.recruitmentEndDateTime(editedRecruitmentEndDateTime)
 				.content("edited content")
 				.build();
@@ -1001,7 +1001,7 @@ class RecruitmentServiceTest {
 				.title("edited text")
 				.contact(Contact.KAKAO)
 				.callUrl("edited callUrl")
-				.applicantCount(3)
+				.applicantLimit(3)
 				.recruitmentEndDateTime(editedRecruitmentEndDateTime)
 				.content("edited content")
 				.build();

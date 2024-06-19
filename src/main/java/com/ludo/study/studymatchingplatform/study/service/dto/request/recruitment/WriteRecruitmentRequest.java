@@ -27,7 +27,7 @@ public final class WriteRecruitmentRequest {
 	private final Set<Long> positionIds;
 
 	@Schema(description = "모집 공고 최대 인원", requiredMode = REQUIRED)
-	private final Integer applicantCount;
+	private final Integer applicantLimit;
 
 	@Schema(description = "모집 공고 마감 ISOString", requiredMode = REQUIRED)
 	private final LocalDateTime recruitmentEndDateTime;
@@ -44,7 +44,7 @@ public final class WriteRecruitmentRequest {
 		return Recruitment.builder()
 				.title(title)
 				.content(content)
-				.applicantCount(applicantCount)
+				.applicantLimit(applicantLimit)
 				.recruitmentEndDateTime(recruitmentEndDateTime)
 				.study(study)
 				.contact(contact)
