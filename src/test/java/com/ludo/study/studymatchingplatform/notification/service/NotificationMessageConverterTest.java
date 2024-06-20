@@ -25,13 +25,12 @@ class NotificationMessageConverterTest {
 	@DisplayName("관심 모집공고 알림 메시지")
 	void recruitmentMessage() {
 		// given
-		RecruitmentNotification recruitmentNotification = RecruitmentNotification.of(RECRUITMENT, null, null, null);
+		RecruitmentNotification notification = RecruitmentNotification.of(RECRUITMENT, null, null, null);
 		String expectedTitle = "[루도가 알려요] 관심 항목에 해당하는 모집공고가 나왔습니다.";
 		String expectedContent = "해당 항목으로 검색된 스터디원 모집 공고를 확인하시려면 클릭헤주세요.";
 
 		// when
-		NotificationMessage notificationMessage = notificationMessageConverter.convertRecruitmentNotifyMessage(
-				recruitmentNotification);
+		NotificationMessage notificationMessage = notificationMessageConverter.convertNotifyMessage(notification);
 
 		// then
 		assertEqualsNotificationMessage(notificationMessage, expectedTitle, expectedContent);
@@ -43,14 +42,13 @@ class NotificationMessageConverterTest {
 		// given
 		Study study = Study.builder().title(STUDY_TITLE).build();
 		User user = User.builder().build();
-		StudyNotification studyNotification = StudyNotification.of(STUDY_APPLICANT, null, study, user);
+		StudyNotification notification = StudyNotification.of(STUDY_APPLICANT, null, study, user);
 
 		String expectedTitle = "[스터디원 모집] %s 스터디에 새로운 지원자가 생겼어요.".formatted(STUDY_TITLE);
 		String expectedContent = "해당 지원자를 보려면 클릭해주세요.";
 
 		// when
-		NotificationMessage notificationMessage = notificationMessageConverter
-				.convertStudyApplicantNotifyMessage(studyNotification);
+		NotificationMessage notificationMessage = notificationMessageConverter.convertNotifyMessage(notification);
 
 		// then
 		assertEqualsNotificationMessage(notificationMessage, expectedTitle, expectedContent);
@@ -61,7 +59,7 @@ class NotificationMessageConverterTest {
 	void studyApplicantAcceptMessage() {
 		// given
 		Study study = Study.builder().title(STUDY_TITLE).build();
-		StudyNotification studyNotification = StudyNotification.of(STUDY_APPLICANT_ACCEPT, null, study, null);
+		StudyNotification notification = StudyNotification.of(STUDY_APPLICANT_ACCEPT, null, study, null);
 
 		String expectedTitle = "[스터디 지원] 지원한 %s 스터디에 합류됐습니다.".formatted(STUDY_TITLE);
 		String expectedContent = """
@@ -69,8 +67,7 @@ class NotificationMessageConverterTest {
 				해당 알림을 클릭하면 스터디로 이동합니다.""".formatted(STUDY_TITLE);
 
 		// when
-		NotificationMessage notificationMessage = notificationMessageConverter.convertStudyApplicantAcceptNotifyMessage(
-				studyNotification);
+		NotificationMessage notificationMessage = notificationMessageConverter.convertNotifyMessage(notification);
 
 		// then
 		assertEqualsNotificationMessage(notificationMessage, expectedTitle, expectedContent);
@@ -81,7 +78,7 @@ class NotificationMessageConverterTest {
 	void studyApplicantRejectMessage() {
 		// given
 		Study study = Study.builder().title(STUDY_TITLE).build();
-		StudyNotification studyNotification = StudyNotification.of(STUDY_APPLICANT_REJECT, null, study, null);
+		StudyNotification notification = StudyNotification.of(STUDY_APPLICANT_REJECT, null, study, null);
 
 		String expectedTitle = "[스터디 지원] 지원한 %s 스터디에서 거절됐습니다.".formatted(STUDY_TITLE);
 		String expectedContent = """
@@ -89,8 +86,7 @@ class NotificationMessageConverterTest {
 				스터디에 지원해주셔서 감사합니다.""".formatted(STUDY_TITLE);
 
 		// when
-		NotificationMessage notificationMessage = notificationMessageConverter.convertStudyApplicantRejectNotifyMessage(
-				studyNotification);
+		NotificationMessage notificationMessage = notificationMessageConverter.convertNotifyMessage(notification);
 
 		// then
 		assertEqualsNotificationMessage(notificationMessage, expectedTitle, expectedContent);
@@ -101,7 +97,7 @@ class NotificationMessageConverterTest {
 	void studyEndDateMessage() {
 		// given
 		Study study = Study.builder().title(STUDY_TITLE).build();
-		StudyNotification studyNotification = StudyNotification.of(STUDY_END_DATE, null, study, null);
+		StudyNotification notification = StudyNotification.of(STUDY_END_DATE, null, study, null);
 		Long period = StudyEndDateNotifyCond.remainingPeriod.getPeriod();
 
 		String expectedTitle = String.format("[스터디 마감 임박] %s 스터디 마감 기한이 %d일 남았습니다!", STUDY_TITLE,
@@ -111,8 +107,7 @@ class NotificationMessageConverterTest {
 				해당 알림을 클릭하면 해당 스터디 페이지로 이동합니다.""".formatted(period);
 
 		// when
-		NotificationMessage notificationMessage = notificationMessageConverter.convertStudyEndDateNotifyMessage(
-				studyNotification);
+		NotificationMessage notificationMessage = notificationMessageConverter.convertNotifyMessage(notification);
 
 		// then
 		assertEqualsNotificationMessage(notificationMessage, expectedTitle, expectedContent);
@@ -123,7 +118,7 @@ class NotificationMessageConverterTest {
 	void studyLeaveMessage() {
 		// given
 		Study study = Study.builder().title(STUDY_TITLE).build();
-		StudyNotification studyNotification = StudyNotification.of(STUDY_PARTICIPANT_LEAVE, null, study, null);
+		StudyNotification notification = StudyNotification.of(STUDY_PARTICIPANT_LEAVE, null, study, null);
 		String leaverName = "열공러";
 		User studyLeaver = User.builder().nickname(leaverName).build();
 
@@ -131,8 +126,8 @@ class NotificationMessageConverterTest {
 		String expectedContent = "%s 스터디에서 %s님이 탈퇴했습니다.".formatted(STUDY_TITLE, leaverName);
 
 		// when
-		NotificationMessage notificationMessage = notificationMessageConverter.convertStudyParticipantLeaveNotifyMessage(
-				studyNotification, studyLeaver);
+		// TODO: 스터디 탈퇴 마무리되면 알림 기능 마무리 예정
+		NotificationMessage notificationMessage = notificationMessageConverter.convertNotifyMessage(notification);
 
 		// then
 		assertEqualsNotificationMessage(notificationMessage, expectedTitle, expectedContent);
@@ -143,7 +138,7 @@ class NotificationMessageConverterTest {
 	void studyLeaveApplyMessage() {
 		// given
 		Study study = Study.builder().title(STUDY_TITLE).build();
-		StudyNotification studyNotification = StudyNotification.of(STUDY_PARTICIPANT_LEAVE_APPLY, null, study, null);
+		StudyNotification notification = StudyNotification.of(STUDY_PARTICIPANT_LEAVE_APPLY, null, study, null);
 		String leaverName = "열공러";
 		User studyLeaveApplier = User.builder().nickname(leaverName).build();
 
@@ -151,8 +146,8 @@ class NotificationMessageConverterTest {
 		String expectedContent = "%s님의 탈퇴 요청에 답하시려면 클릭해주세요.".formatted(leaverName);
 
 		// when
-		NotificationMessage notificationMessage = notificationMessageConverter.convertStudyParticipantLeaveApplyNotifyMessage(
-				studyNotification, studyLeaveApplier);
+		// TODO: 스터디 탈퇴 마무리되면 알림 기능 마무리 예정
+		NotificationMessage notificationMessage = notificationMessageConverter.convertNotifyMessage(notification);
 
 		// then
 		assertEqualsNotificationMessage(notificationMessage, expectedTitle, expectedContent);
@@ -163,14 +158,13 @@ class NotificationMessageConverterTest {
 	void studyReviewStartMessage() {
 		// given
 		Study study = Study.builder().title(STUDY_TITLE).build();
-		StudyNotification studyNotification = StudyNotification.of(STUDY_REVIEW_START, null, study, null);
+		StudyNotification notification = StudyNotification.of(STUDY_REVIEW_START, null, study, null);
 
 		String expectedTitle = "[스터디원 리뷰] %s 스터디를 완주했습니다! 함께 했던 스터디원들에게 리뷰를 남겨주세요.".formatted(STUDY_TITLE);
 		String expectedContent = "해당 스터디원들의 리뷰를 작성하시려면 클릭해주세요.";
 
 		// when
-		NotificationMessage notificationMessage = notificationMessageConverter.convertStudyReviewStartNotifyMessage(
-				studyNotification);
+		NotificationMessage notificationMessage = notificationMessageConverter.convertNotifyMessage(notification);
 
 		// then
 		assertEqualsNotificationMessage(notificationMessage, expectedTitle, expectedContent);
@@ -187,15 +181,14 @@ class NotificationMessageConverterTest {
 
 		Study study = Study.builder().title(STUDY_TITLE).build();
 		Review review = Review.builder().study(study).reviewer(reviewer).reviewee(reviewee).build();
-		ReviewNotification reviewNotification = ReviewNotification.of(REVIEW_RECEIVE, null, review, reviewee);
+		ReviewNotification notification = ReviewNotification.of(REVIEW_RECEIVE, null, review, reviewee);
 
 		String expectedTitle = "[스터디원 리뷰] 진행 완료된 %s 스터디에서 %s님이 회원님에 대한 리뷰를 작성했습니다.".formatted(STUDY_TITLE,
 				reviewerName);
 		String expectedContent = "해당 스터디원에 대한 리뷰를 작성하시려면 클릭해주세요.";
 
 		// when
-		NotificationMessage notificationMessage = notificationMessageConverter.convertReviewReceiveNotifyMessage(
-				reviewNotification);
+		NotificationMessage notificationMessage = notificationMessageConverter.convertNotifyMessage(notification);
 
 		// then
 		assertEqualsNotificationMessage(notificationMessage, expectedTitle, expectedContent);
@@ -212,15 +205,14 @@ class NotificationMessageConverterTest {
 
 		Study study = Study.builder().title(STUDY_TITLE).build();
 		Review review = Review.builder().study(study).reviewer(reviewer).reviewee(reviewee).build();
-		ReviewNotification reviewNotification = ReviewNotification.of(REVIEW_PEER_FINISH, null, review, reviewee);
+		ReviewNotification notification = ReviewNotification.of(REVIEW_PEER_FINISH, null, review, reviewee);
 
 		String expectedTitle = "[스터디원 리뷰] 진행 완료된 %s 스터디에서 %s님과 주고 받은 리뷰가 업로드 되었습니다.".formatted(STUDY_TITLE,
 				reviewerName);
 		String expectedContent = "해당 리뷰를 보시려면 클릭해주세요.";
 
 		// when
-		NotificationMessage notificationMessage = notificationMessageConverter.convertReviewPeerFinishNotifyMessage(
-				reviewNotification);
+		NotificationMessage notificationMessage = notificationMessageConverter.convertNotifyMessage(notification);
 
 		// then
 		assertEqualsNotificationMessage(notificationMessage, expectedTitle, expectedContent);
