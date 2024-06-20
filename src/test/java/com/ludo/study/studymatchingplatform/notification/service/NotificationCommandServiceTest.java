@@ -137,7 +137,7 @@ class NotificationCommandServiceTest {
 					.callUrl("callUrl")
 					.title("모집공고1 제목")
 					.content("모집공고1 내용")
-					.applicantCount(5)
+					.applicantLimit(5)
 					.recruitmentEndDateTime(LocalDateTime.now().plusDays(10).truncatedTo(ChronoUnit.MICROS))
 					.hits(1)
 					.build();

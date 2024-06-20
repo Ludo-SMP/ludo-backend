@@ -23,10 +23,12 @@ import com.ludo.study.studymatchingplatform.study.domain.study.category.Category
 import com.ludo.study.studymatchingplatform.study.fixture.recruitment.position.PositionFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.study.StudyFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.study.category.CategoryFixture;
+import com.ludo.study.studymatchingplatform.study.repository.recruitment.RecruitmentRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.recruitment.position.PositionRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.study.StudyRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.study.category.CategoryRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.recruitment.WriteRecruitmentRequest;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.RecruitmentDetailsResponse;
 import com.ludo.study.studymatchingplatform.study.service.recruitment.RecruitmentService;
 import com.ludo.study.studymatchingplatform.user.domain.user.Social;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
@@ -39,6 +41,9 @@ class RecruitmentPositionServiceTest {
 
 	@Autowired
 	private StudyRepositoryImpl studyRepository;
+
+	@Autowired
+	private RecruitmentRepositoryImpl recruitmentRepository;
 
 	@Autowired
 	private UserRepositoryImpl userRepository;
@@ -86,13 +91,18 @@ class RecruitmentPositionServiceTest {
 				.content("I want to study")
 				.stackIds(Set.of())
 				.positionIds(Set.of())
-				.applicantCount(4)
+				.applicantLimit(4)
 				.contact(Contact.KAKAO)
 				.callUrl("x.com")
 				.recruitmentEndDateTime(LocalDateTime.now().plusMonths(3))
 				.build();
 
-		final Recruitment recruitment = recruitmentService.write(owner, request, study.getId());
+		final RecruitmentDetailsResponse recruitmentDetailsResponse = recruitmentService
+				.write(owner, request, study.getId());
+
+		// final Recruitment recruitment = (Recruitment)write;
+		final Recruitment recruitment = recruitmentRepository
+				.findById(recruitmentDetailsResponse.recruitment().id()).orElseThrow();
 
 		final Position position1 = positionRepository.save(PositionFixture.createPosition("position1"));
 		final Position position2 = positionRepository.save(PositionFixture.createPosition("position2"));
@@ -142,13 +152,16 @@ class RecruitmentPositionServiceTest {
 				.content("I want to study")
 				.stackIds(Set.of())
 				.positionIds(Set.of(position1.getId()))
-				.applicantCount(4)
+				.applicantLimit(4)
 				.contact(Contact.KAKAO)
 				.callUrl("x.com")
 				.recruitmentEndDateTime(LocalDateTime.now().plusMonths(3))
 				.build();
 
-		final Recruitment recruitment = recruitmentService.write(owner, request, study.getId());
+		final RecruitmentDetailsResponse recruitmentDetailsResponse = recruitmentService
+				.write(owner, request, study.getId());
+		final Recruitment recruitment = recruitmentRepository.findById(recruitmentDetailsResponse.recruitment().id())
+				.orElseThrow();
 
 		// when
 		// then
@@ -194,13 +207,16 @@ class RecruitmentPositionServiceTest {
 				.content("I want to study")
 				.stackIds(Set.of())
 				.positionIds(Set.of())
-				.applicantCount(4)
+				.applicantLimit(4)
 				.contact(Contact.KAKAO)
 				.callUrl("x.com")
 				.recruitmentEndDateTime(LocalDateTime.now().plusMonths(3))
 				.build();
 
-		final Recruitment recruitment = recruitmentService.write(owner, request, study.getId());
+		final RecruitmentDetailsResponse recruitmentDetailsResponse = recruitmentService
+				.write(owner, request, study.getId());
+		final Recruitment recruitment = recruitmentRepository.findById(recruitmentDetailsResponse.recruitment().id())
+				.orElseThrow();
 
 		// when
 		recruitmentPositionService.update(recruitment, Set.of(position1.getId(), position2.getId(), position3.getId()));
@@ -247,13 +263,16 @@ class RecruitmentPositionServiceTest {
 				.content("I want to study")
 				.stackIds(Set.of())
 				.positionIds(Set.of(position1.getId(), position2.getId(), position3.getId()))
-				.applicantCount(4)
+				.applicantLimit(4)
 				.contact(Contact.KAKAO)
 				.callUrl("x.com")
 				.recruitmentEndDateTime(LocalDateTime.now().plusMonths(3))
 				.build();
 
-		final Recruitment recruitment = recruitmentService.write(owner, request, study.getId());
+		final RecruitmentDetailsResponse recruitmentDetailsResponse = recruitmentService.write(owner, request,
+				study.getId());
+		final Recruitment recruitment = recruitmentRepository.findById(recruitmentDetailsResponse.recruitment().id())
+				.orElseThrow();
 
 		// when
 		recruitmentPositionService.update(recruitment, Set.of());
@@ -296,13 +315,16 @@ class RecruitmentPositionServiceTest {
 				.content("I want to study")
 				.stackIds(Set.of())
 				.positionIds(Set.of(position1.getId()))
-				.applicantCount(4)
+				.applicantLimit(4)
 				.contact(Contact.KAKAO)
 				.callUrl("x.com")
 				.recruitmentEndDateTime(LocalDateTime.now().plusMonths(3))
 				.build();
 
-		final Recruitment recruitment = recruitmentService.write(owner, request, study.getId());
+		final RecruitmentDetailsResponse recruitmentDetailsResponse = recruitmentService.write(owner, request,
+				study.getId());
+		final Recruitment recruitment = recruitmentRepository.findById(recruitmentDetailsResponse.recruitment().id())
+				.orElseThrow();
 
 		// when
 		recruitmentPositionService.update(recruitment, Set.of(position1.getId()));
