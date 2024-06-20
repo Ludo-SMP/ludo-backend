@@ -36,12 +36,9 @@ import com.ludo.study.studymatchingplatform.study.repository.study.participant.P
 import com.ludo.study.studymatchingplatform.study.service.dto.request.study.WriteStudyRequest;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.study.StudyResponse;
 import com.ludo.study.studymatchingplatform.study.service.exception.SocialAccountNotFoundException;
-import com.ludo.study.studymatchingplatform.user.domain.user.Details;
 import com.ludo.study.studymatchingplatform.user.domain.user.Social;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
-import com.ludo.study.studymatchingplatform.user.fixture.user.DetailsFixture;
 import com.ludo.study.studymatchingplatform.user.fixture.user.UserFixture;
-import com.ludo.study.studymatchingplatform.user.repository.user.DetailsRepositoryImpl;
 import com.ludo.study.studymatchingplatform.user.repository.user.UserRepositoryImpl;
 
 @ExtendWith(MockitoExtension.class)
@@ -65,8 +62,8 @@ class CreateStudyServiceTest {
 	@Mock
 	private CalenderRepositoryImpl calenderRepository;
 
-	@Mock
-	private DetailsRepositoryImpl detailsRepository;
+	// @Mock
+	// private DetailsRepositoryImpl detailsRepository;	// FIXME: Compile error
 
 	@InjectMocks
 	private StudyCreateService studyCreateService;
@@ -74,14 +71,15 @@ class CreateStudyServiceTest {
 	private static User owner;
 	private static Category category;
 	private static Position position;
-	private static Details details;
+
+	// private static Details details;	// FIXME: Compile error
 
 	@BeforeAll
 	static void setUp() {
 		owner = UserFixture.createUserWithId(1L, Social.KAKAO, "닉네임", "이메일");
 		category = CategoryFixture.createCategory(1L, "카테고리");
 		position = PositionFixture.createPosition(1L, "포지션");
-		details = DetailsFixture.createDetails(owner);
+		// details = DetailsFixture.createDetails(owner);	// FIXME: Compile error
 	}
 
 	@DisplayName("[Success] 사용자는 스터디를 생성할 수 있다.")
@@ -99,8 +97,8 @@ class CreateStudyServiceTest {
 				.willReturn(Optional.of(category));
 		given(positionRepository.findById(any()))
 				.willReturn(Optional.of(position));
-		given(detailsRepository.findByUserId(owner.getId()))
-				.willReturn(Optional.of(details));
+		// given(detailsRepository.findByUserId(owner.getId()))
+		// 		.willReturn(Optional.of(details));	// FIXME: Compile error
 		given(calenderRepository.findByStudyId(study.getId()))
 				.willReturn(Optional.of(calendars));
 
@@ -242,8 +240,8 @@ class CreateStudyServiceTest {
 				.willReturn(study);
 		given(participantRepository.save(any()))
 				.willReturn(participant);
-		given(detailsRepository.findByUserId(owner.getId()))
-				.willReturn(Optional.of(details));
+		// given(detailsRepository.findByUserId(owner.getId()))
+		// 		.willReturn(Optional.of(details));	// FIXME: Compile error
 		given(calenderRepository.findByStudyId(study.getId()))
 				.willReturn(Optional.of(calendars));
 

@@ -14,7 +14,7 @@ public class AttendanceFixture {
 		return Attendance.builder()
 				.study(study)
 				.user(user)
-				.date(date)
+				// .date(date)	// FIXME: Compile error
 				.build();
 	}
 
