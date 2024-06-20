@@ -53,14 +53,14 @@ public final class GlobalExceptionHandler {
 	public ResponseEntity<CommonResponse> duplicatedSignUp(DuplicatedSignUpException e,
 														   HttpServletResponse response) throws IOException {
 		log.info("DuplicatedSignUpException -> CONFLICT");
-		response.sendRedirect("https://ludoapi.store/signup/fail");
+		response.sendRedirect("https://ludo.study/signup/fail");
 		return toResponseEntity(e, HttpStatus.CONFLICT);
 	}
 
 	@ExceptionHandler(value = ChangeSetPersister.NotFoundException.class)
 	public ResponseEntity<CommonResponse> noSignUpInformation(ChangeSetPersister.NotFoundException e,
 															  HttpServletResponse response) throws IOException {
-		response.sendRedirect("https://ludoapi.store/login/fail");
+		response.sendRedirect("https://ludo.study/login/fail");
 		log.info("NotFoundException -> NOT_FOUND");
 		return toResponseEntity(e, HttpStatus.NOT_FOUND);
 	}
@@ -112,7 +112,7 @@ public final class GlobalExceptionHandler {
 	@ExceptionHandler(value = SocialAccountNotFoundException.class)
 	public ResponseEntity<CommonResponse> noSignUpInformation(SocialAccountNotFoundException e,
 															  HttpServletResponse response) throws IOException {
-		response.sendRedirect("https://ludoapi.store/login/fail");
+		response.sendRedirect("https://ludo.study/login/fail");
 		log.info("SocialAccountNotFoundException -> NOT_FOUND");
 		return toResponseEntity(e, HttpStatus.NOT_FOUND);
 	}

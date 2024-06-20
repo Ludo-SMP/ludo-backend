@@ -18,6 +18,7 @@ import com.ludo.study.studymatchingplatform.auth.common.service.UserDetailsServi
 import com.ludo.study.studymatchingplatform.auth.repository.InMemoryClientRegistrationAndProviderRepository;
 import com.ludo.study.studymatchingplatform.auth.service.kakao.KakaoSignUpService;
 import com.ludo.study.studymatchingplatform.common.annotation.DataFieldName;
+import com.ludo.study.studymatchingplatform.common.properties.ClientProperties;
 import com.ludo.study.studymatchingplatform.user.domain.user.Social;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 
@@ -33,9 +34,12 @@ import lombok.extern.slf4j.Slf4j;
 public class KakaoSignUpController {
 
 	private final InMemoryClientRegistrationAndProviderRepository clientRegistrationAndProviderRepository;
-	private final KakaoSignUpService kakaoSignUpService;
+	private final ClientProperties clientProperties;
+
 	private final JwtTokenProvider jwtTokenProvider;
 	private final CookieProvider cookieProvider;
+
+	private final KakaoSignUpService kakaoSignUpService;
 	private final UserDetailsService userDetailsService;
 
 	@GetMapping("/kakao")
@@ -62,7 +66,7 @@ public class KakaoSignUpController {
 		final String accessToken = jwtTokenProvider.createAccessToken(AuthUserPayload.from(user));
 		userDetailsService.createUserDetails(user, request);
 		cookieProvider.setAuthCookie(accessToken, response);
-		response.sendRedirect("https://ludoapi.store");
+		response.sendRedirect(clientProperties.getUrl());
 	}
 
 }

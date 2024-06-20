@@ -58,13 +58,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 				// NotFoundException - 만료된 사용자 정보 검증 추가
 			} catch (final AccessTokenNotFoundException e) {    // 400
 				// 액세스 토큰이 없을 경우 400 Error를 반환한다.
-				log.info("JstAuthenticationFilter AccessTokenNotFoundException Catch!");
+				log.info("[AccessTokenNotFoundException] - {}", e.getMessage());
 				cookieProvider.clearAuthCookie(response);
 				jwtExceptionHandler(response, HttpStatus.BAD_REQUEST, e.getMessage());
 				return;
 			} catch (final UnauthorizedUserException e) {    // 401
 				// 액세스 토큰이 만료되거나 잘못된 토큰일 경우 401 Error를 반환한다.
-				log.info("JstAuthenticationFilter UnauthorizedUserException Catch!");
+				log.info("[UnauthorizedUserException] - {}", e.getMessage());
 				cookieProvider.clearAuthCookie(response);
 				jwtExceptionHandler(response, HttpStatus.UNAUTHORIZED, e.getMessage());
 				return;
