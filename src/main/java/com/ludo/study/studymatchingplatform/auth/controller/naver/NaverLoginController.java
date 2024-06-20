@@ -17,6 +17,7 @@ import com.ludo.study.studymatchingplatform.auth.common.service.UserDetailsServi
 import com.ludo.study.studymatchingplatform.auth.repository.InMemoryClientRegistrationAndProviderRepository;
 import com.ludo.study.studymatchingplatform.auth.service.naver.NaverLoginService;
 import com.ludo.study.studymatchingplatform.common.annotation.DataFieldName;
+import com.ludo.study.studymatchingplatform.common.properties.ClientProperties;
 import com.ludo.study.studymatchingplatform.user.domain.user.Social;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 
@@ -32,9 +33,12 @@ import lombok.extern.slf4j.Slf4j;
 public class NaverLoginController {
 
 	private final InMemoryClientRegistrationAndProviderRepository clientRegistrationAndProviderRepository;
-	private final NaverLoginService naverLoginService;
+	private final ClientProperties clientProperties;
+
 	private final JwtTokenProvider jwtTokenProvider;
 	private final CookieProvider cookieProvider;
+
+	private final NaverLoginService naverLoginService;
 	private final UserDetailsService userDetailsService;
 
 	@GetMapping("/naver")
@@ -63,7 +67,7 @@ public class NaverLoginController {
 		final String accessToken = jwtTokenProvider.createAccessToken(AuthUserPayload.from(user));
 		userDetailsService.createUserDetails(user, request);
 		cookieProvider.setAuthCookie(accessToken, response);
-		response.sendRedirect("https://ludoapi.store");
+		response.sendRedirect(clientProperties.getUrl());
 		log.info("로그인 컨트롤러 콜백 end");
 	}
 
