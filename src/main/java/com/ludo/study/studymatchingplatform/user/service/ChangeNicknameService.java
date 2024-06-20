@@ -23,7 +23,7 @@ public class ChangeNicknameService {
 	public ChangeUserNicknameResponse changeUserNickname(final User user, final String changeNickname) {
 		validateChangeNickname(user, changeNickname);
 		user.changeNickname(changeNickname);
-
+		userRepository.save(user);
 		return new ChangeUserNicknameResponse(user);
 	}
 
