@@ -1,6 +1,5 @@
 package com.ludo.study.studymatchingplatform.notification.controller;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.http.MediaType;
@@ -15,14 +14,11 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.ludo.study.studymatchingplatform.auth.common.AuthUser;
 import com.ludo.study.studymatchingplatform.notification.controller.dto.request.NotificationKeywordConfigRequest;
-import com.ludo.study.studymatchingplatform.notification.domain.notification.NotificationEventType;
-import com.ludo.study.studymatchingplatform.notification.domain.notification.StudyNotification;
 import com.ludo.study.studymatchingplatform.notification.service.NotificationService;
 import com.ludo.study.studymatchingplatform.notification.service.SseEmitters;
 import com.ludo.study.studymatchingplatform.notification.service.dto.request.NotificationConfigRequest;
 import com.ludo.study.studymatchingplatform.notification.service.dto.response.NotificationResponse;
 import com.ludo.study.studymatchingplatform.notification.service.dto.response.config.NotificationConfigResponse;
-import com.ludo.study.studymatchingplatform.study.domain.study.Study;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -82,15 +78,6 @@ public class NotificationController {
 		notificationService.checkNotificationsAsRead(user, notificationCheckRequest.notificationIds());
 
 		return ResponseEntity.ok().build();
-	}
-
-	@PostMapping("/ping")
-	public void ping(@AuthUser final User user) {
-		log.info("===== ping START ===== ");
-		final Study study = Study.builder().title("스터디~!").owner(user).build();
-		sseEmitters.sendNotification(user, NotificationResponse.from(StudyNotification.of(
-				NotificationEventType.STUDY_APPLICANT, LocalDateTime.now(), study, user)));
-		log.info("===== ping END ===== ");
 	}
 
 }
