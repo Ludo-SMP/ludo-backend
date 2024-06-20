@@ -108,6 +108,15 @@ public class StudyController {
 		studyService.approvedLeave(user, studyId);
 	}
 
+	@PostMapping("/{studyId}/participants/rejected")
+	@ResponseStatus(HttpStatus.OK)
+	@Operation(description = "스터디 탈퇴 거절")
+	@ApiResponse(description = "스터디 탈퇴 거절 성공", responseCode = "200", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
+	public void rejectedLeave(@Parameter(hidden = true) @AuthUser final User user,
+							  @PathVariable("studyId") final Long studyId) {
+		studyService.rejectedLeave(user, studyId);
+	}
+
 	@GetMapping("/{studyId}")
 	@ResponseStatus(HttpStatus.OK)
 	@DataFieldName("study")
