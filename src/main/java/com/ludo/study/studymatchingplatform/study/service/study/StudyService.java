@@ -64,7 +64,6 @@ public class StudyService {
 		}
 
 		participant.approvedStudyWithdrawalRequest(); // 보류중으로 상태 변경 승인시 탈퇴 처리
-
 		participantRepository.save(participant);
 	}
 
@@ -80,6 +79,20 @@ public class StudyService {
 		// 승인된 탈퇴시 신뢰도 하락등 별도의 액션 없음
 
 		participant.leave(study, utcDateTimePicker.now());
+	}
+
+	// 알림 기능 반영 필요
+	public void rejectedLeave(final User user, final Long studyId) {
+		final Study study = studyRepository.findByIdWithRecruitment(studyId)
+				.orElseThrow(() -> new SocialAccountNotFoundException("존재하지 않는 스터디입니다."));
+
+		final Participant participant = study.getParticipant(user);
+		if (study.isOwner(participant)) {
+			throw new IllegalStateException("스터디장은 탈퇴가 불가능합니다.");
+		}
+
+		participant.rejectedStudyWithdrawalRequest(); // 보류중으로 상태 변경 승인시 탈퇴 처리
+		participantRepository.save(participant);
 	}
 
 	public ApplicantWithReviewStatisticsResponse findApplicantsWithReviewStatistics(final User user,
