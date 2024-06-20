@@ -33,20 +33,23 @@ public class SseEmitters {
 	}
 
 	public void sendNotification(final User notifier, final NotificationResponse response) {
+		log.info("================= sendNotification =================");
 		final SseEmitter sseEmitter = getSseEmitter(createSseEmitterId(notifier));
 		// TODO:
 		// sseEmitter가 존재하는 경우에만 알림 발송
 		if (sseEmitter != null) {
+			log.info("사용자 = {} 에 대한 SseEmitter = {} 가 존재합니다.", notifier, sseEmitter);
 			send(sseEmitter, "notification", response);
 		}
 	}
 
 	private void send(final SseEmitter sseEmitter, final String eventName, final Object eventData) {
 		try {
+			log.info("================= Sse Emitter Send Data 시작 =================");
 			sseEmitter.send(SseEmitter.event()
 					.name(eventName)
 					.data(eventData));
-			log.info("===== Sse Emitter Send Data 종료 =====");
+			log.info("================= Sse Emitter Send Data 종료 =================");
 		} catch (IOException e) {
 			sseEmitter.completeWithError(e);
 		}
@@ -59,35 +62,35 @@ public class SseEmitters {
 
 	private void registerActionsOnCompletion(final SseEmitter emitter) {
 		emitter.onCompletion(() -> {
-			log.info("server sent event onCompletion");
+			log.info("[SSE onCompletion] server sent event onCompletion");
 			emitter.complete();
 		});
 	}
 
 	private void registerActionsOnTimeOut(final SseEmitter emitter, final Long sseEmitterId) {
 		emitter.onTimeout(() -> {
-			log.info("server sent event timeout occurred: id={}", sseEmitterId);
+			log.info("[SSE onTimeout] SSE 시간초과: emitter={}, sseEmitterId={}", emitter, sseEmitterId);
 			removeSseEmitter(sseEmitterId);
 		});
 	}
 
 	private void registerActionsOnError(final SseEmitter emitter, final Long sseEmitterId) {
 		emitter.onError(exception -> {
-			log.info("server sent event error occurred: id={}, message={}", sseEmitterId, exception.getMessage());
+			log.info("[SSE OnError] SSE 에러발생: sseEmitter={}, sseEmitterId={}, errorMsg={}",
+					emitter, sseEmitterId, exception.getMessage());
 			removeSseEmitter(sseEmitterId);
 		});
 	}
 
 	private void saveSseEmitter(final SseEmitter emitter, final Long sseEmitterId) {
 		this.sseEmitters.put(sseEmitterId, emitter);
-		log.info("new emitter added: {}", emitter);
-		log.info("emitter list size: {}", sseEmitters.size());
+		log.info("[SSE Save] new sseEmitter added: {}, emitter list size: {}", emitter, sseEmitters.size());
 	}
 
 	private void removeSseEmitter(final Long sseEmitterId) {
 		if (this.sseEmitters.containsKey(sseEmitterId)) {
 			SseEmitter remove = this.sseEmitters.remove(sseEmitterId);
-			log.info("SseEmitter remove complete: id={}, SseEmitter={}", sseEmitterId, remove);
+			log.info("[SSE Remove] sseEmitter 삭제 완료: sseEmitter={}, sseEmitterId={}", remove, sseEmitterId);
 		}
 	}
 
@@ -95,8 +98,11 @@ public class SseEmitters {
 		// TODO:
 		// 존재하지 않는 경우 null 반환
 		if (this.sseEmitters.containsKey(sseEmitterId)) {
-			return sseEmitters.get(sseEmitterId);
+			SseEmitter sseEmitter = sseEmitters.get(sseEmitterId);
+			log.info("sseEmitter={}, sseEmitterId={}", sseEmitter, sseEmitterId);
+			return sseEmitter;
 		}
+		log.info("sseEmitterId={} 에 해당하는 SseEmitter 가 없습니다.", sseEmitterId);
 		return null;
 		//		throw new NotExistSseEmitterException(
 		//				String.format("id = %d 에 해당하는 SseEmitter가 존재하지 않습니다.", sseEmitterId));
