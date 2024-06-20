@@ -69,12 +69,14 @@ public class Study extends BaseEntity {
 	private User owner;
 
 	@Enumerated(EnumType.STRING)
-	@Column(nullable = false, columnDefinition = "char(20)")
-	private Platform platform;
+	@Column(nullable = true, columnDefinition = "char(20)")
+	@Builder.Default
+	private Platform platform = null;
 
 	@Column(nullable = true, length = 2048)
 	@Size(max = 2048)
-	private String platformUrl;
+	@Builder.Default
+	private String platformUrl = null;
 
 	@Column(nullable = false, length = 50)
 	private String title;
