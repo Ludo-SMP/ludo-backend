@@ -46,7 +46,6 @@ public class RecruitmentService {
 
 	private final NotificationService notificationService;
 
-	@Transactional
 	public RecruitmentDetailsResponse write(final User user, final WriteRecruitmentRequest request,
 											final Long studyId) {
 		final Study study = studyRepository.findByIdWithRecruitment(studyId)
@@ -76,7 +75,6 @@ public class RecruitmentService {
 		}
 	}
 
-	@Transactional
 	public WriteRecruitmentStudyInfoResponse getStudyInfo(final User user, final Long studyId) {
 		final Study study = studyRepository.findByIdWithRecruitment(studyId)
 				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 스터디입니다."));
