@@ -36,6 +36,7 @@ import com.ludo.study.studymatchingplatform.notification.repository.notification
 import com.ludo.study.studymatchingplatform.notification.repository.notification.StudyNotificationRepositoryImpl;
 import com.ludo.study.studymatchingplatform.notification.service.dto.response.NotificationResponse;
 import com.ludo.study.studymatchingplatform.notification.service.dto.response.config.NotificationConfigResponse;
+import com.ludo.study.studymatchingplatform.notification.service.dto.response.message.NotificationMessage;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
 import com.ludo.study.studymatchingplatform.study.domain.study.Review;
 import com.ludo.study.studymatchingplatform.study.domain.study.Study;
@@ -66,6 +67,8 @@ public class NotificationQueryService {
 	private final NotificationKeywordCategoryRepositoryImpl notificationKeywordCategoryRepository;
 	private final NotificationKeywordPositionRepositoryImpl notificationKeywordPositionRepository;
 	private final NotificationKeywordStackRepositoryImpl notificationKeywordStackRepository;
+
+	private final NotificationMessageConverter notificationMessageConverter;
 
 	private final UtcDateTimePicker utcDateTimePicker;
 
@@ -154,16 +157,27 @@ public class NotificationQueryService {
 
 		final List<NotificationResponse> notificationResponses = new ArrayList<>();
 		recruitmentNotifications.stream()
-				.map(NotificationResponse::from)
+				.map(recruitmentNotification -> {
+					final NotificationMessage notificationMessage =
+							notificationMessageConverter.convertNotifyMessage(recruitmentNotification);
+					return NotificationResponse.from(recruitmentNotification, notificationMessage);
+				})
 				.forEach(notificationResponses::add);
 
 		studyNotifications.stream()
-				.map(NotificationResponse::from)
+				.map(studyNotification -> {
+					final NotificationMessage notificationMessage =
+							notificationMessageConverter.convertNotifyMessage(studyNotification);
+					return NotificationResponse.from(studyNotification, notificationMessage);
+				})
 				.forEach(notificationResponses::add);
 
 		reviewNotifications.stream()
-				.map(NotificationResponse::from)
-				.forEach(notificationResponses::add);
+				.map(reviewNotification -> {
+					final NotificationMessage notificationMessage =
+							notificationMessageConverter.convertNotifyMessage(reviewNotification);
+					return NotificationResponse.from(reviewNotification, notificationMessage);
+				}).forEach(notificationResponses::add);
 
 		return notificationResponses;
 	}

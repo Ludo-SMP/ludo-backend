@@ -2,6 +2,7 @@ package com.ludo.study.studymatchingplatform.notification.service;
 
 import org.springframework.stereotype.Component;
 
+import com.ludo.study.studymatchingplatform.notification.domain.notification.Notification;
 import com.ludo.study.studymatchingplatform.notification.domain.notification.NotificationEventType;
 import com.ludo.study.studymatchingplatform.notification.domain.notification.RecruitmentNotification;
 import com.ludo.study.studymatchingplatform.notification.domain.notification.ReviewNotification;
@@ -15,7 +16,28 @@ import com.ludo.study.studymatchingplatform.user.domain.user.User;
 @Component
 public class NotificationMessageConverter {
 
-	public NotificationMessage convertRecruitmentNotifyMessage(final RecruitmentNotification recruitmentNotification) {
+	public NotificationMessage convertNotifyMessage(final Notification notification) {
+		final NotificationEventType notificationEventType = notification.getNotificationEventType();
+
+		return switch (notificationEventType) {
+			case RECRUITMENT -> convertRecruitmentNotifyMessage((RecruitmentNotification)notification);
+
+			case STUDY_APPLICANT -> convertStudyApplicantNotifyMessage((StudyNotification)notification);
+			case STUDY_APPLICANT_ACCEPT -> convertStudyApplicantAcceptNotifyMessage((StudyNotification)notification);
+			case STUDY_APPLICANT_REJECT -> convertStudyApplicantRejectNotifyMessage((StudyNotification)notification);
+			case STUDY_END_DATE -> convertStudyEndDateNotifyMessage((StudyNotification)notification);
+			case STUDY_PARTICIPANT_LEAVE ->
+					convertStudyParticipantLeaveNotifyMessage((StudyNotification)notification, null);    // TODO
+			case STUDY_PARTICIPANT_LEAVE_APPLY ->
+					convertStudyParticipantLeaveApplyNotifyMessage((StudyNotification)notification, null);    // TODO
+			case STUDY_REVIEW_START -> convertStudyReviewStartNotifyMessage((StudyNotification)notification);
+
+			case REVIEW_RECEIVE -> convertReviewReceiveNotifyMessage((ReviewNotification)notification);
+			case REVIEW_PEER_FINISH -> convertReviewPeerFinishNotifyMessage((ReviewNotification)notification);
+		};
+	}
+
+	private NotificationMessage convertRecruitmentNotifyMessage(final RecruitmentNotification recruitmentNotification) {
 		final NotificationEventType notificationEventType = recruitmentNotification.getNotificationEventType();
 
 		final String titleFormat = notificationEventType.getTitleFormat();
@@ -24,7 +46,7 @@ public class NotificationMessageConverter {
 		return new NotificationMessage(titleFormat, contentFormat);
 	}
 
-	public NotificationMessage convertStudyApplicantNotifyMessage(final StudyNotification studyNotification) {
+	private NotificationMessage convertStudyApplicantNotifyMessage(final StudyNotification studyNotification) {
 		final NotificationEventType notificationEventType = studyNotification.getNotificationEventType();
 
 		final Study actor = studyNotification.getActor();
@@ -35,7 +57,7 @@ public class NotificationMessageConverter {
 		return new NotificationMessage(title, contentFormat);
 	}
 
-	public NotificationMessage convertStudyApplicantAcceptNotifyMessage(final StudyNotification studyNotification) {
+	private NotificationMessage convertStudyApplicantAcceptNotifyMessage(final StudyNotification studyNotification) {
 		final NotificationEventType notificationEventType = studyNotification.getNotificationEventType();
 
 		final Study actor = studyNotification.getActor();
@@ -47,7 +69,7 @@ public class NotificationMessageConverter {
 		return new NotificationMessage(title, content);
 	}
 
-	public NotificationMessage convertStudyApplicantRejectNotifyMessage(final StudyNotification studyNotification) {
+	private NotificationMessage convertStudyApplicantRejectNotifyMessage(final StudyNotification studyNotification) {
 		final NotificationEventType notificationEventType = studyNotification.getNotificationEventType();
 
 		final Study actor = studyNotification.getActor();
@@ -59,7 +81,7 @@ public class NotificationMessageConverter {
 		return new NotificationMessage(title, content);
 	}
 
-	public NotificationMessage convertStudyEndDateNotifyMessage(final StudyNotification studyNotification) {
+	private NotificationMessage convertStudyEndDateNotifyMessage(final StudyNotification studyNotification) {
 		final NotificationEventType notificationEventType = studyNotification.getNotificationEventType();
 
 		final Study actor = studyNotification.getActor();
@@ -73,8 +95,8 @@ public class NotificationMessageConverter {
 		return new NotificationMessage(title, content);
 	}
 
-	public NotificationMessage convertStudyParticipantLeaveNotifyMessage(final StudyNotification studyNotification,
-																		 final User studyLeaver
+	private NotificationMessage convertStudyParticipantLeaveNotifyMessage(final StudyNotification studyNotification,
+																		  final User studyLeaver
 	) {
 		final NotificationEventType notificationEventType = studyNotification.getNotificationEventType();
 
@@ -88,8 +110,9 @@ public class NotificationMessageConverter {
 		return new NotificationMessage(title, content);
 	}
 
-	public NotificationMessage convertStudyParticipantLeaveApplyNotifyMessage(final StudyNotification studyNotification,
-																			  final User studyLeaveApplier
+	private NotificationMessage convertStudyParticipantLeaveApplyNotifyMessage(
+			final StudyNotification studyNotification,
+			final User studyLeaveApplier
 	) {
 		final NotificationEventType notificationEventType = studyNotification.getNotificationEventType();
 
@@ -103,7 +126,7 @@ public class NotificationMessageConverter {
 		return new NotificationMessage(title, content);
 	}
 
-	public NotificationMessage convertStudyReviewStartNotifyMessage(final StudyNotification studyNotification) {
+	private NotificationMessage convertStudyReviewStartNotifyMessage(final StudyNotification studyNotification) {
 		final NotificationEventType notificationEventType = studyNotification.getNotificationEventType();
 
 		final Study actor = studyNotification.getActor();
@@ -115,11 +138,11 @@ public class NotificationMessageConverter {
 		return new NotificationMessage(title, contentFormat);
 	}
 
-	public NotificationMessage convertReviewReceiveNotifyMessage(final ReviewNotification reviewNotification) {
+	private NotificationMessage convertReviewReceiveNotifyMessage(final ReviewNotification reviewNotification) {
 		return convertReviewNotifyMessage(reviewNotification);
 	}
 
-	public NotificationMessage convertReviewPeerFinishNotifyMessage(final ReviewNotification reviewNotification) {
+	private NotificationMessage convertReviewPeerFinishNotifyMessage(final ReviewNotification reviewNotification) {
 		return convertReviewNotifyMessage(reviewNotification);
 	}
 

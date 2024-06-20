@@ -22,6 +22,7 @@ import com.ludo.study.studymatchingplatform.notification.domain.notification.Stu
 import com.ludo.study.studymatchingplatform.notification.service.dto.request.NotificationConfigRequest;
 import com.ludo.study.studymatchingplatform.notification.service.dto.response.NotificationResponse;
 import com.ludo.study.studymatchingplatform.notification.service.dto.response.config.NotificationConfigResponse;
+import com.ludo.study.studymatchingplatform.notification.service.dto.response.message.NotificationMessage;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.position.Position;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.stack.Stack;
@@ -49,6 +50,8 @@ public class NotificationService {
 	private final PositionQueryService positionQueryService;
 	private final StackQueryService stackQueryService;
 
+	private final NotificationMessageConverter notificationMessageConverter;
+
 	// for notification server sent events
 	private final SseEmitters sseEmitters;
 
@@ -63,7 +66,11 @@ public class NotificationService {
 
 		recruitmentNotifications.forEach(recruitmentNotification -> {
 			final User notifier = recruitmentNotification.getNotifier();
-			final NotificationResponse notificationResponse = NotificationResponse.from(recruitmentNotification);
+			final NotificationMessage notificationMessage =
+					notificationMessageConverter.convertNotifyMessage(recruitmentNotification);
+			final NotificationResponse notificationResponse =
+					NotificationResponse.from(recruitmentNotification, notificationMessage);
+
 			sseEmitters.sendNotification(notifier, notificationResponse);
 		});
 		log.info("===== recruitmentNotice End =====");
@@ -79,7 +86,11 @@ public class NotificationService {
 
 		studyNotifications.forEach(studyNotification -> {
 			final User notifier = studyNotification.getNotifier();
-			final NotificationResponse notificationResponse = NotificationResponse.from(studyNotification);
+			final NotificationMessage notificationMessage =
+					notificationMessageConverter.convertNotifyMessage(studyNotification);
+			final NotificationResponse notificationResponse =
+					NotificationResponse.from(studyNotification, notificationMessage);
+
 			sseEmitters.sendNotification(notifier, notificationResponse);
 		});
 	}
@@ -94,7 +105,11 @@ public class NotificationService {
 
 		studyNotifications.forEach(studyNotification -> {
 			final User notifier = studyNotification.getNotifier();
-			final NotificationResponse notificationResponse = NotificationResponse.from(studyNotification);
+			final NotificationMessage notificationMessage =
+					notificationMessageConverter.convertNotifyMessage(studyNotification);
+			final NotificationResponse notificationResponse =
+					NotificationResponse.from(studyNotification, notificationMessage);
+
 			sseEmitters.sendNotification(notifier, notificationResponse);
 		});
 	}
@@ -110,7 +125,11 @@ public class NotificationService {
 
 		studyNotifications.forEach(studyNotification -> {
 			final User notifier = studyNotification.getNotifier();
-			final NotificationResponse notificationResponse = NotificationResponse.from(studyNotification);
+			final NotificationMessage notificationMessage =
+					notificationMessageConverter.convertNotifyMessage(studyNotification);
+			final NotificationResponse notificationResponse =
+					NotificationResponse.from(studyNotification, notificationMessage);
+
 			sseEmitters.sendNotification(notifier, notificationResponse);
 		});
 	}
@@ -125,7 +144,11 @@ public class NotificationService {
 
 		studyNotifications.forEach(studyNotification -> {
 			final User notifier = studyNotification.getNotifier();
-			final NotificationResponse notificationResponse = NotificationResponse.from(studyNotification);
+			final NotificationMessage notificationMessage =
+					notificationMessageConverter.convertNotifyMessage(studyNotification); // TODO
+			final NotificationResponse notificationResponse =
+					NotificationResponse.from(studyNotification, notificationMessage);
+
 			sseEmitters.sendNotification(notifier, notificationResponse);
 		});
 	}
@@ -140,7 +163,11 @@ public class NotificationService {
 
 		studyNotifications.forEach(studyNotification -> {
 			final User notifier = studyNotification.getNotifier();
-			final NotificationResponse notificationResponse = NotificationResponse.from(studyNotification);
+			final NotificationMessage notificationMessage =
+					notificationMessageConverter.convertNotifyMessage(studyNotification); // TODO
+			final NotificationResponse notificationResponse =
+					NotificationResponse.from(studyNotification, notificationMessage);
+
 			sseEmitters.sendNotification(notifier, notificationResponse);
 		});
 	}
@@ -155,7 +182,11 @@ public class NotificationService {
 
 		studyNotifications.forEach(studyNotification -> {
 			final User notifier = studyNotification.getNotifier();
-			final NotificationResponse notificationResponse = NotificationResponse.from(studyNotification);
+			final NotificationMessage notificationMessage =
+					notificationMessageConverter.convertNotifyMessage(studyNotification);
+			final NotificationResponse notificationResponse =
+					NotificationResponse.from(studyNotification, notificationMessage);
+
 			sseEmitters.sendNotification(notifier, notificationResponse);
 		});
 	}
@@ -170,7 +201,11 @@ public class NotificationService {
 
 		studyNotifications.forEach(studyNotification -> {
 			final User notifier = studyNotification.getNotifier();
-			final NotificationResponse notificationResponse = NotificationResponse.from(studyNotification);
+			final NotificationMessage notificationMessage =
+					notificationMessageConverter.convertNotifyMessage(studyNotification);
+			final NotificationResponse notificationResponse =
+					NotificationResponse.from(studyNotification, notificationMessage);
+
 			sseEmitters.sendNotification(notifier, notificationResponse);
 		});
 	}
@@ -187,14 +222,13 @@ public class NotificationService {
 
 		reviewNotifications.forEach(reviewNotification -> {
 			final User notifier = reviewNotification.getNotifier();
-			final NotificationResponse notificationResponse = NotificationResponse.from(reviewNotification);
+			final NotificationMessage notificationMessage =
+					notificationMessageConverter.convertNotifyMessage(reviewNotification);
+			final NotificationResponse notificationResponse =
+					NotificationResponse.from(reviewNotification, notificationMessage);
+
 			sseEmitters.sendNotification(notifier, notificationResponse);
 		});
-	}
-
-	private boolean checkNotificationConfigFalse(final User notifier, final NotificationConfigGroup reviewConfig) {
-		boolean notificationConfig = notificationQueryService.isNotificationConfigTrue(notifier, reviewConfig);
-		return Boolean.FALSE.equals(notificationConfig);
 	}
 
 	public void reviewPeerFinishNotice(final Study study, final Review review) {
@@ -207,9 +241,18 @@ public class NotificationService {
 
 		reviewNotifications.forEach(reviewNotification -> {
 			final User notifier = reviewNotification.getNotifier();
-			final NotificationResponse notificationResponse = NotificationResponse.from(reviewNotification);
+			final NotificationMessage notificationMessage =
+					notificationMessageConverter.convertNotifyMessage(reviewNotification);
+			final NotificationResponse notificationResponse =
+					NotificationResponse.from(reviewNotification, notificationMessage);
+
 			sseEmitters.sendNotification(notifier, notificationResponse);
 		});
+	}
+
+	private boolean checkNotificationConfigFalse(final User notifier, final NotificationConfigGroup reviewConfig) {
+		boolean notificationConfig = notificationQueryService.isNotificationConfigTrue(notifier, reviewConfig);
+		return Boolean.FALSE.equals(notificationConfig);
 	}
 
 	public List<NotificationResponse> findNotifications(final User user) {

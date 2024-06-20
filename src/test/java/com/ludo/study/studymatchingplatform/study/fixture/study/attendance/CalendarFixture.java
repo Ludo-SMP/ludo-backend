@@ -19,8 +19,8 @@ public class CalendarFixture {
 										   final Boolean sunday) {
 		return Calender.builder()
 				.study(study)
-				.calenderStartDateTime(calenderStartDateTime)
-				.calenderEndDateTime(calenderEndDateTime)
+				// .calenderStartDateTime(calenderStartDateTime) //FIXME: Compile error
+				// .calenderEndDateTime(calenderEndDateTime)	// FIXME: Compile error
 				.monday(monday)
 				.tuesday(tuesday)
 				.wednesday(wednesday)
