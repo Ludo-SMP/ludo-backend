@@ -20,6 +20,7 @@ import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitme
 import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.applicant.ApplicantWithReviewStatisticsResponse;
 import com.ludo.study.studymatchingplatform.study.service.exception.SocialAccountNotFoundException;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
+import com.ludo.study.studymatchingplatform.user.repository.user.UserRepositoryImpl;
 
 import lombok.RequiredArgsConstructor;
 
@@ -34,6 +35,7 @@ public class StudyService {
 	private final ReviewStatisticsService reviewStatisticsService;
 	private final StudyStatisticsRepositoryImpl studyStatisticsRepository;
 	private final ReviewStatisticsRepositoryImpl reviewStatisticsRepository;
+	private final UserRepositoryImpl userRepository;
 
 	public void leave(final User user, final Long studyId) {
 		final Study study = studyRepository.findByIdWithRecruitment(studyId)
@@ -67,11 +69,12 @@ public class StudyService {
 		participantRepository.save(participant);
 	}
 
-	public void approvedLeave(final User user, final Long studyId) {
+	public void approvedLeave(final Long studyId, final Long userId) {
 		final Study study = studyRepository.findByIdWithRecruitment(studyId)
 				.orElseThrow(() -> new SocialAccountNotFoundException("존재하지 않는 스터디입니다."));
 
-		final Participant participant = study.getParticipant(user);
+		final User member = findUserById(userId);
+		final Participant participant = study.getParticipant(member);
 		if (study.isOwner(participant)) {
 			throw new IllegalStateException("스터디장은 탈퇴가 불가능합니다.");
 		}
@@ -82,11 +85,12 @@ public class StudyService {
 	}
 
 	// 알림 기능 반영 필요
-	public void rejectedLeave(final User user, final Long studyId) {
+	public void rejectedLeave(final Long studyId, final Long userId) {
 		final Study study = studyRepository.findByIdWithRecruitment(studyId)
 				.orElseThrow(() -> new SocialAccountNotFoundException("존재하지 않는 스터디입니다."));
 
-		final Participant participant = study.getParticipant(user);
+		final User member = findUserById(userId);
+		final Participant participant = study.getParticipant(member);
 		if (study.isOwner(participant)) {
 			throw new IllegalStateException("스터디장은 탈퇴가 불가능합니다.");
 		}
@@ -136,6 +140,11 @@ public class StudyService {
 	private ReviewStatistics findReviewStatisticsByUserId(final Long userId) {
 		return reviewStatisticsRepository.findByUserId(userId)
 				.orElseThrow(() -> new SocialAccountNotFoundException("존재하지 않는 사용자 리뷰 기록 입니다."));
+	}
+
+	private User findUserById(final Long userId) {
+		return userRepository.findById(userId)
+				.orElseThrow(() -> new SocialAccountNotFoundException("존재하지 않는 사용자 입니다."));
 	}
 
 }

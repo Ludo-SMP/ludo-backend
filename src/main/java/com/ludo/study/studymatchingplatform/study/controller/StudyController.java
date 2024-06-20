@@ -99,22 +99,24 @@ public class StudyController {
 		studyService.approvedLeaveRequest(user, studyId);
 	}
 
-	@DeleteMapping("/{studyId}/participants/approved")
+	@DeleteMapping("/{studyId}/participants/{userId}/approved")
 	@ResponseStatus(HttpStatus.OK)
-	@Operation(description = "승인된 스터디 탈퇴")
-	@ApiResponse(description = "승인된 스터디 탈퇴 성공", responseCode = "200", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
+	@Operation(description = "스터디 탈퇴 승인")
+	@ApiResponse(description = "스터디 탈퇴 승인 성공", responseCode = "200", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
 	public void approvedLeave(@Parameter(hidden = true) @AuthUser final User user,
-							  @PathVariable("studyId") final Long studyId) {
-		studyService.approvedLeave(user, studyId);
+							  @PathVariable("studyId") final Long studyId,
+							  @PathVariable("userId") final Long userId) {
+		studyService.approvedLeave(studyId, userId);
 	}
 
-	@PostMapping("/{studyId}/participants/rejected")
+	@PostMapping("/{studyId}/participants/{userId}/rejected")
 	@ResponseStatus(HttpStatus.OK)
 	@Operation(description = "스터디 탈퇴 거절")
 	@ApiResponse(description = "스터디 탈퇴 거절 성공", responseCode = "200", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
 	public void rejectedLeave(@Parameter(hidden = true) @AuthUser final User user,
-							  @PathVariable("studyId") final Long studyId) {
-		studyService.rejectedLeave(user, studyId);
+							  @PathVariable("studyId") final Long studyId,
+							  @PathVariable("userId") final Long userId) {
+		studyService.rejectedLeave(studyId, userId);
 	}
 
 	@GetMapping("/{studyId}")
