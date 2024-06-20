@@ -30,6 +30,7 @@ import com.ludo.study.studymatchingplatform.study.fixture.recruitment.stack.Stac
 import com.ludo.study.studymatchingplatform.study.fixture.study.StudyFixture;
 import com.ludo.study.studymatchingplatform.study.fixture.study.category.CategoryFixture;
 import com.ludo.study.studymatchingplatform.study.repository.recruitment.RecruitmentRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.repository.recruitment.applicant.ApplicantRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.recruitment.position.PositionRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.recruitment.stack.StackCategoryRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.recruitment.stack.StackRepositoryImpl;
@@ -39,6 +40,9 @@ import com.ludo.study.studymatchingplatform.study.service.dto.request.recruitmen
 import com.ludo.study.studymatchingplatform.study.service.dto.request.recruitment.WriteRecruitmentRequest;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.recruitment.applicant.ApplyRecruitmentRequest;
 import com.ludo.study.studymatchingplatform.study.service.dto.request.recruitment.applicant.StudyApplicantDecisionRequest;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.EditRecruitmentResponse;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.RecruitmentDetailsResponse;
+import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.applicant.ApplyRecruitmentResponse;
 import com.ludo.study.studymatchingplatform.study.service.recruitment.applicant.StudyApplicantDecisionService;
 import com.ludo.study.studymatchingplatform.user.domain.user.Social;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
@@ -77,6 +81,9 @@ class RecruitmentServiceTest {
 
 	@Autowired
 	private StudyApplicantDecisionService studyApplicantDecisionService;
+
+	@Autowired
+	private ApplicantRepositoryImpl applicantRepository;
 
 	@Autowired
 	private EntityManager em;
@@ -121,7 +128,10 @@ class RecruitmentServiceTest {
 		final WriteRecruitmentRequest request = getWriteRecruitmentRequest(stack, position);
 
 		// when
-		final Recruitment recruitment = recruitmentService.write(owner, request, study.getId());
+		final RecruitmentDetailsResponse recruitmentDetailsResponse = recruitmentService.write(owner, request,
+				study.getId());
+		final Recruitment recruitment = recruitmentRepository.findById(recruitmentDetailsResponse.recruitment().id())
+				.orElseThrow();
 
 		// then
 		assertThat(recruitment.getTitle()).isEqualTo("recruitment");
@@ -222,7 +232,10 @@ class RecruitmentServiceTest {
 
 		final WriteRecruitmentRequest request = getWriteRecruitmentRequest(stack, position);
 
-		final Recruitment recruitment = recruitmentService.write(owner, request, study.getId());
+		final RecruitmentDetailsResponse recruitmentDetailsResponse = recruitmentService.write(owner, request,
+				study.getId());
+		final Recruitment recruitment = recruitmentRepository.findById(recruitmentDetailsResponse.recruitment().id())
+				.orElseThrow();
 		study.registerRecruitment(recruitment);
 
 		// when
@@ -314,7 +327,10 @@ class RecruitmentServiceTest {
 		final ApplyRecruitmentRequest request = createRequest();
 
 		// when
-		final Applicant applicant = recruitmentService.apply(applier, recruitment.getId(), request);
+		final ApplyRecruitmentResponse applyRecruitmentResponse = recruitmentService
+				.apply(applier, recruitment.getId(), request);
+
+		Applicant applicant = applicantRepository.find(recruitment.getId(), owner.getId()).orElseThrow();
 
 		// then
 		assertThat(applicant.getUser()).isEqualTo(applier);
@@ -549,7 +565,11 @@ class RecruitmentServiceTest {
 		final Position position1 = createPosition();
 		final ApplyRecruitmentRequest request = createRequest();
 
-		final Applicant applicant = recruitmentService.apply(applier, recruitment.getId(), request);
+		// final Applicant applicant = recruitmentService.apply(applier, recruitment.getId(), request);
+		final ApplyRecruitmentResponse applyRecruitmentResponse = recruitmentService
+				.apply(applier, recruitment.getId(), request);
+
+		Applicant applicant = applicantRepository.find(recruitment.getId(), owner.getId()).orElseThrow();
 
 		// when
 		// then
@@ -610,7 +630,11 @@ class RecruitmentServiceTest {
 		final Position position1 = createPosition();
 		final ApplyRecruitmentRequest request = createRequest();
 
-		final Applicant applicant = recruitmentService.apply(applier, recruitment.getId(), request);
+		// final Applicant applicant = recruitmentService.apply(applier, recruitment.getId(), request);
+		final ApplyRecruitmentResponse applyRecruitmentResponse = recruitmentService
+				.apply(applier, recruitment.getId(), request);
+
+		Applicant applicant = applicantRepository.find(recruitment.getId(), owner.getId()).orElseThrow();
 
 		// when
 		// then
@@ -672,7 +696,11 @@ class RecruitmentServiceTest {
 		final Position position1 = createPosition();
 		final ApplyRecruitmentRequest request = createRequest();
 
-		final Applicant applicant = recruitmentService.apply(applier, recruitment.getId(), request);
+		// final Applicant applicant = recruitmentService.apply(applier, recruitment.getId(), request);
+		final ApplyRecruitmentResponse applyRecruitmentResponse = recruitmentService
+				.apply(applier, recruitment.getId(), request);
+
+		Applicant applicant = applicantRepository.find(recruitment.getId(), owner.getId()).orElseThrow();
 
 		// when
 		// then
@@ -733,7 +761,11 @@ class RecruitmentServiceTest {
 		final Position position1 = createPosition();
 		final ApplyRecruitmentRequest request = createRequest();
 
-		final Applicant applicant = recruitmentService.apply(applier, recruitment.getId(), request);
+		// final Applicant applicant = recruitmentService.apply(applier, recruitment.getId(), request);
+		final ApplyRecruitmentResponse applyRecruitmentResponse = recruitmentService
+				.apply(applier, recruitment.getId(), request);
+
+		Applicant applicant = applicantRepository.find(recruitment.getId(), owner.getId()).orElseThrow();
 
 		study.changeStatus(StudyStatus.RECRUITED);
 
@@ -812,7 +844,11 @@ class RecruitmentServiceTest {
 		final Position position1 = createPosition();
 		final ApplyRecruitmentRequest request = createRequest();
 
-		final Applicant applicant = recruitmentService.apply(applier, recruitment.getId(), request);
+		// final Applicant applicant = recruitmentService.apply(applier, recruitment.getId(), request);
+		final ApplyRecruitmentResponse applyRecruitmentResponse = recruitmentService
+				.apply(applier, recruitment.getId(), request);
+
+		Applicant applicant = applicantRepository.find(recruitment.getId(), owner.getId()).orElseThrow();
 
 		// when
 		// then
@@ -868,7 +904,10 @@ class RecruitmentServiceTest {
 				.callUrl("edited callUrl")
 				.recruitmentEndDateTime(editedRecruitmentEndDateTime)
 				.build();
-		final Recruitment editedRecruitment = recruitmentService.edit(owner, recruitment.getId(), request);
+		// final Recruitment editedRecruitment = recruitmentService.edit(owner, recruitment.getId(), request);
+		// Recruitment editRecruitment = recruitmentService.edit(owner, recruitment.getId(), request);
+		EditRecruitmentResponse editRecruitmentResponse = recruitmentService.edit(owner, recruitment.getId(), request);
+		Recruitment editedRecruitment = recruitmentRepository.findById(editRecruitmentResponse.id()).orElseThrow();
 
 		// edited states
 		assertThat(editedRecruitment.getTitle()).isEqualTo("edited text");
@@ -1010,7 +1049,9 @@ class RecruitmentServiceTest {
 		em.clear();
 
 		// when
-		Recruitment editRecruitment = recruitmentService.edit(owner, recruitment.getId(), request);
+		// Recruitment editRecruitment = recruitmentService.edit(owner, recruitment.getId(), request);
+		EditRecruitmentResponse editRecruitmentResponse = recruitmentService.edit(owner, recruitment.getId(), request);
+		Recruitment editRecruitment = recruitmentRepository.findById(editRecruitmentResponse.id()).orElseThrow();
 
 		// then
 		assertModifiedDateChange(editRecruitment, recruitment);
@@ -1029,7 +1070,10 @@ class RecruitmentServiceTest {
 		final WriteRecruitmentRequest request = getWriteRecruitmentRequest(stack, position);
 
 		// when
-		final Recruitment recruitment = recruitmentService.write(owner, request, study.getId());
+		// final Recruitment recruitment = recruitmentService.write(owner, request, study.getId());
+		RecruitmentDetailsResponse recruitmentDetailsResponse = recruitmentService.write(owner, request, study.getId());
+		Recruitment recruitment = recruitmentRepository.findById(recruitmentDetailsResponse.recruitment().id())
+				.orElseThrow();
 
 		// then
 		assertThat(recruitment.getModifiedDateTime()).isAfterOrEqualTo(recruitment.getCreatedDateTime());
@@ -1080,7 +1124,11 @@ class RecruitmentServiceTest {
 
 		final ApplyRecruitmentRequest request = createRequest();
 
-		final Applicant applicant = recruitmentService.apply(applier, recruitment.getId(), request);
+		// final Applicant applicant = recruitmentService.apply(applier, recruitment.getId(), request);
+		final ApplyRecruitmentResponse applyRecruitmentResponse = recruitmentService
+				.apply(applier, recruitment.getId(), request);
+
+		Applicant applicant = applicantRepository.find(recruitment.getId(), owner.getId()).orElseThrow();
 
 		final StudyApplicantDecisionRequest applicantDecisionRequest =
 				new StudyApplicantDecisionRequest(study.getId(), applier.getId());
@@ -1158,7 +1206,7 @@ class RecruitmentServiceTest {
 				.content("I want to study")
 				.stackIds(Set.of(stack.getId()))
 				.positionIds(Set.of(position.getId()))
-				.applicantCount(4)
+				.applicantLimit(4)
 				.contact(Contact.KAKAO)
 				.callUrl("x.com")
 				.recruitmentEndDateTime(LocalDateTime.now().plusMonths(3))
