@@ -30,7 +30,9 @@ public class UserDetailsService {
 		final String clientIp = WebUtils.getClientIp(request);
 		final UserDetails userDetails =
 				new UserDetails(user.getId(), userAgent, clientIp, Long.parseLong(refreshExpiresIn));
+		log.info("userDetails = {}", userDetails);
 		userDetailsRepository.save(userDetails);
+		log.info("UserDetailsService.createUserDetails start");
 	}
 
 	public void verifyUserDetails(final Long userId, final HttpServletRequest request) {
@@ -39,10 +41,18 @@ public class UserDetailsService {
 		final String clientIp = WebUtils.getClientIp(request);
 		final UserDetails userDetails = userDetailsRepository.findById(userId)
 				.orElseThrow(() -> new SocialAccountNotFoundException("만료된 사용자 정보 입니다."));
+		log.info("saved userAgent = {}", userDetails.getUserAgent());
+		log.info("saved clientIp = {}", userDetails.getClientIp());
+		log.info("requested userAgent = {}", userAgent);
+		log.info("requested clientIp = {}", clientIp);
+		validateUserDetails(userDetails, userAgent, clientIp);
+		log.info("UserDetailsService.verifyUserDetails end");
+	}
+
+	private void validateUserDetails(UserDetails userDetails, String userAgent, String clientIp) {
 		if (!userDetails.getUserAgent().equals(userAgent) || !userDetails.getClientIp().equals(clientIp)) {
 			throw new AuthenticationException("검증되지 않은 사용자 입니다.");
 		}
-		log.info("UserDetailsService.verifyUserDetails end");
 	}
 
 }
