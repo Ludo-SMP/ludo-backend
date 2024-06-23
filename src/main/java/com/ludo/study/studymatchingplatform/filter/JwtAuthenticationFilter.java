@@ -51,7 +51,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 				Claims claims = jwtTokenProvider.verifyAuthTokenOrThrow(authToken.get());
 				final AuthUserPayload payload = AuthUserPayload.from(claims);
 				// 사용자 agent / ip 검증
-				userDetailsService.verifyUserDetails(payload.getId(), request);
+				// TODO: CloudFlare DNS 로 변경함에 따라, IP 기반 사용자 세부 인증이 힘든 구조임
+				//  CloudFlare 는 CDN 을 분산하여 여러대로 관리하기 때문
+				//  이에 대한 사용자 세부 인증 논의 필요
+				// userDetailsService.verifyUserDetails(payload.getId(), request);
 				request.setAttribute(AUTH_USER_PAYLOAD, payload);
 				// 토큰 갱신
 				accessTokenRefresh(payload.getId(), response);
