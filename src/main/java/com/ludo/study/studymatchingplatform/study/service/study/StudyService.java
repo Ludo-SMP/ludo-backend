@@ -13,12 +13,14 @@ import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant.Applicant;
 import com.ludo.study.studymatchingplatform.study.domain.study.ReviewStatistics;
 import com.ludo.study.studymatchingplatform.study.domain.study.Study;
+import com.ludo.study.studymatchingplatform.study.domain.study.StudyStatistics;
 import com.ludo.study.studymatchingplatform.study.domain.study.attendance.Attendance;
 import com.ludo.study.studymatchingplatform.study.domain.study.attendance.Calender;
 import com.ludo.study.studymatchingplatform.study.domain.study.participant.Participant;
 import com.ludo.study.studymatchingplatform.study.repository.recruitment.applicant.ApplicantRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.study.ReviewStatisticsRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.study.StudyRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.repository.study.StudyStatisticsRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.study.attendance.AttendanceRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.study.attendance.CalenderRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.study.participant.ParticipantRepositoryImpl;
@@ -26,6 +28,7 @@ import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitme
 import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.applicant.ApplicantWithReviewStatisticsResponse;
 import com.ludo.study.studymatchingplatform.study.service.exception.SocialAccountNotFoundException;
 import com.ludo.study.studymatchingplatform.user.domain.user.User;
+import com.ludo.study.studymatchingplatform.user.repository.user.UserRepositoryImpl;
 
 import lombok.RequiredArgsConstructor;
 
@@ -65,9 +68,6 @@ public class StudyService {
 	}
 
 	public void approvedLeaveRequest(final User user, final Long studyId) {
-		final Study study = studyRepository.findByIdWithRecruitment(studyId)
-				.orElseThrow(() -> new SocialAccountNotFoundException("존재하지 않는 스터디입니다."));
-	public void leave(final User user, final Long studyId) {
 		final Study study = studyRepository.findByIdWithRecruitment(studyId)
 				.orElseThrow(() -> new SocialAccountNotFoundException("존재하지 않는 스터디입니다."));
 
@@ -180,9 +180,7 @@ public class StudyService {
 		return attendanceRepository.findMaxIdByStudyIdAndUserId(studyId, userId);
 	}
 
-	private void isValidAttendance(final Calender calender,
-								   final LocalDate now,
-								   final Participant participant) {
+	private void isValidAttendance(final Calender calender, final LocalDate now, final Participant participant) {
 		final DayOfWeek nowOfWeek = now.getDayOfWeek();
 		final Integer nowOfWeekNumber = nowOfWeek.getValue();
 		switch (nowOfWeekNumber) {
