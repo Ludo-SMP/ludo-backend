@@ -11,11 +11,13 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ludo.study.studymatchingplatform.common.utils.UtcDateTimePicker;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.applicant.Applicant;
+import com.ludo.study.studymatchingplatform.study.domain.study.ReviewStatistics;
 import com.ludo.study.studymatchingplatform.study.domain.study.Study;
 import com.ludo.study.studymatchingplatform.study.domain.study.attendance.Attendance;
 import com.ludo.study.studymatchingplatform.study.domain.study.attendance.Calender;
 import com.ludo.study.studymatchingplatform.study.domain.study.participant.Participant;
 import com.ludo.study.studymatchingplatform.study.repository.recruitment.applicant.ApplicantRepositoryImpl;
+import com.ludo.study.studymatchingplatform.study.repository.study.ReviewStatisticsRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.study.StudyRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.study.attendance.AttendanceRepositoryImpl;
 import com.ludo.study.studymatchingplatform.study.repository.study.attendance.CalenderRepositoryImpl;
@@ -34,9 +36,12 @@ public class StudyService {
 
 	private final StudyRepositoryImpl studyRepository;
 	private final ApplicantRepositoryImpl applicantRepository;
+	private final ParticipantRepositoryImpl participantRepository;
 	private final UtcDateTimePicker utcDateTimePicker;
 	private final ReviewStatisticsService reviewStatisticsService;
-	private final ParticipantRepositoryImpl participantRepository;
+	private final StudyStatisticsRepositoryImpl studyStatisticsRepository;
+	private final ReviewStatisticsRepositoryImpl reviewStatisticsRepository;
+	private final UserRepositoryImpl userRepository;
 	private final CalenderRepositoryImpl calenderRepository;
 	private final AttendanceRepositoryImpl attendanceRepository;
 
@@ -48,7 +53,61 @@ public class StudyService {
 		if (study.isOwner(participant)) {
 			throw new IllegalStateException("스터디장은 탈퇴가 불가능합니다.");
 		}
+
+		// 무단 탈퇴 신뢰도 반영 코드
+		final StudyStatistics studyStatistics = findStudyStatisticsByUserId(user.getId());
+		studyStatistics.increaseTotalLeftStudyCount(); // 무단 스터디 탈퇴 카운트
+
+		final ReviewStatistics reviewStatistics = findReviewStatisticsByUserId(user.getId());
+		reviewStatistics.decreaseTotalActivenessScore(); // 적극성 약 12% 하락
+
 		participant.leave(study, utcDateTimePicker.now());
+	}
+
+	public void approvedLeaveRequest(final User user, final Long studyId) {
+		final Study study = studyRepository.findByIdWithRecruitment(studyId)
+				.orElseThrow(() -> new SocialAccountNotFoundException("존재하지 않는 스터디입니다."));
+	public void leave(final User user, final Long studyId) {
+		final Study study = studyRepository.findByIdWithRecruitment(studyId)
+				.orElseThrow(() -> new SocialAccountNotFoundException("존재하지 않는 스터디입니다."));
+
+		final Participant participant = study.getParticipant(user);
+		if (study.isOwner(participant)) {
+			throw new IllegalStateException("스터디장은 탈퇴가 불가능합니다.");
+		}
+
+		participant.approvedStudyWithdrawalRequest(); // 보류중으로 상태 변경 승인시 탈퇴 처리
+		participantRepository.save(participant);
+	}
+
+	public void approvedLeave(final Long studyId, final Long userId) {
+		final Study study = studyRepository.findByIdWithRecruitment(studyId)
+				.orElseThrow(() -> new SocialAccountNotFoundException("존재하지 않는 스터디입니다."));
+
+		final User member = findUserById(userId);
+		final Participant participant = study.getParticipant(member);
+		if (study.isOwner(participant)) {
+			throw new IllegalStateException("스터디장은 탈퇴가 불가능합니다.");
+		}
+
+		// 승인된 탈퇴시 신뢰도 하락등 별도의 액션 없음
+
+		participant.leave(study, utcDateTimePicker.now());
+	}
+
+	// 알림 기능 반영 필요
+	public void rejectedLeave(final Long studyId, final Long userId) {
+		final Study study = studyRepository.findByIdWithRecruitment(studyId)
+				.orElseThrow(() -> new SocialAccountNotFoundException("존재하지 않는 스터디입니다."));
+
+		final User member = findUserById(userId);
+		final Participant participant = study.getParticipant(member);
+		if (study.isOwner(participant)) {
+			throw new IllegalStateException("스터디장은 탈퇴가 불가능합니다.");
+		}
+
+		participant.rejectedStudyWithdrawalRequest(); // 보류중으로 상태 변경 승인시 탈퇴 처리
+		participantRepository.save(participant);
 	}
 
 	public ApplicantWithReviewStatisticsResponse findApplicantsWithReviewStatistics(final User user,
@@ -178,6 +237,21 @@ public class StudyService {
 	private List<Calender> findCalenderByStudyId(final Long studyId) { // 리스트로 받아와야 함
 		return calenderRepository.findByStudyId(studyId)
 				.orElseThrow(() -> new SocialAccountNotFoundException("스터디에 일정표가 존재하지 않습니다."));
+	}
+
+	private StudyStatistics findStudyStatisticsByUserId(final Long userId) {
+		return studyStatisticsRepository.findByUserId(userId)
+				.orElseThrow(() -> new SocialAccountNotFoundException("존재하지 않는 사용자 기록 입니다."));
+	}
+
+	private ReviewStatistics findReviewStatisticsByUserId(final Long userId) {
+		return reviewStatisticsRepository.findByUserId(userId)
+				.orElseThrow(() -> new SocialAccountNotFoundException("존재하지 않는 사용자 리뷰 기록 입니다."));
+	}
+
+	private User findUserById(final Long userId) {
+		return userRepository.findById(userId)
+				.orElseThrow(() -> new SocialAccountNotFoundException("존재하지 않는 사용자 입니다."));
 	}
 
 }

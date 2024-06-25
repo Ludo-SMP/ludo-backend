@@ -103,6 +103,13 @@ public class ReviewStatistics extends BaseEntity {
 		return (totalScore / (reviewCount * 5.0)) * 100;
 	}
 
+	public void decreaseTotalActivenessScore() {
+		if (totalActivenessScore == 0L) {
+			return;
+		}
+		totalActivenessScore -= (totalActivenessScore / 8); // 12% 하락
+	}
+
 	public void update(final Review review) {
 		totalActivenessScore += review.getActivenessScore();
 		totalRecommendScore += review.getRecommendScore();

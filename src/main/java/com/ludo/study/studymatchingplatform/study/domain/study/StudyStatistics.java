@@ -5,6 +5,7 @@ import static jakarta.persistence.FetchType.*;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
+import static jakarta.persistence.FetchType.*;
 
 import com.ludo.study.studymatchingplatform.common.entity.BaseEntity;
 import com.ludo.study.studymatchingplatform.study.domain.study.attendance.Calender;
@@ -170,6 +171,10 @@ public class StudyStatistics extends BaseEntity {
 					break;
 			}
 		}
+	}
+
+	public void increaseTotalLeftStudyCount() {
+		this.totalLeftStudyCount++;
 	}
 
 }

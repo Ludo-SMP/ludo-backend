@@ -141,4 +141,12 @@ public class Participant extends BaseEntity {
 		return (attendance / totalStudyDays * 100) > 80;
 	}
 
+	public void approvedStudyWithdrawalRequest() { // 보류중으로 상태 변경
+		this.role = Role.PENDING;
+	}
+
+	public void rejectedStudyWithdrawalRequest() { // 맴버로 상태 변경
+		this.role = Role.MEMBER;
+	}
+
 }
