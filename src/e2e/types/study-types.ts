@@ -44,7 +44,13 @@ export type Platform = "GATHER" | "GOOGLE_MEET";
 export type Way = "ONLINE" | "OFFLINE";
 export type Role = "OWNER" | "MEMBER";
 
-export interface Study extends BaseDateTime {
+export interface StudyWithReviewedParticipant extends BaseStudy {
+  participants: ParticipantUser[];
+}
+export interface Study extends BaseStudy {
+  participants: ParticipantUser[];
+}
+interface BaseStudy extends BaseDateTime {
   id: number;
   status: StudyStatus;
   hasRecruitment: boolean;
@@ -58,7 +64,6 @@ export interface Study extends BaseDateTime {
   endDateTime: string;
   category: Category;
   owner: User;
-  participants: ParticipantUser[];
 }
 
 export interface Category {
@@ -72,8 +77,11 @@ export interface ParticipantUser {
   email: string;
   role: Role;
   position: Position;
+  totalAttendance: number;
+  recentAttendanceDate: Date;
 }
 
+export type ParticipantUserWithReviewedParticipant = ParticipantUser & { isReviewedParticipant: boolean };
 export interface Position {
   id: number;
   name: string;

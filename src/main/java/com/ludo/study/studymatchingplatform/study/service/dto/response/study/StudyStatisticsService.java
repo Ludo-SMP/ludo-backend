@@ -35,9 +35,10 @@ public class StudyStatisticsService {
 
 		final List<StudyStatistics> studyStatistics = studyStatisticsRepository.findByUserIdsIn(userIds);
 		for (final User user : users) {
-			final boolean notExists = studyStatistics.stream().noneMatch(s -> s.getUser() == user);
-			if (notExists) {
+			final boolean notExists = studyStatistics.stream()
+					.noneMatch(s -> s.getUser() == user);
 
+			if (notExists) {
 				final StudyStatistics newStatistics = StudyStatistics.builder()
 						.user(user)
 						.build();

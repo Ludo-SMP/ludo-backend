@@ -1,13 +1,17 @@
 import { AxiosError, HttpStatusCode } from "axios";
+import { addDays, subDays } from "date-fns";
 import dns from "node:dns";
 import { describe } from "node:test";
 import { ApiClient } from "../config/api-client";
 import { fakeSignupBody } from "../fixtures/auth-fixture";
 import { randPositionId } from "../fixtures/position-fixture";
 import { fakeWriteRecruitmentRequest } from "../fixtures/recruitment-fixture";
+import { fakeWriteReviewRequest } from "../fixtures/review-fixture";
 import { fakeCreateStudyRequest } from "../fixtures/study-fixture";
 import { login, signup } from "../helpers/auth-api-helper";
+import { utcNow } from "../helpers/datetime-helper";
 import { applyRecruitment, writeRecruitment } from "../helpers/recruitment-api-helper";
+import { writeReview } from "../helpers/review-api-helper";
 import {
   acceptApplicant,
   createStudy,
@@ -16,6 +20,7 @@ import {
   refuseApplicant,
   updateStudy,
 } from "../helpers/study-api-helper";
+import { updateStudyEndDateTime } from "../helpers/study-db-helper";
 import { BaseResponse } from "../types/base-types";
 import { Study } from "../types/study-types";
 dns.setDefaultResultOrder("ipv4first");
@@ -35,6 +40,199 @@ describe("study Api flows", () => {
       expect(e.response?.status).toBe(HttpStatusCode.BadRequest);
       expect(e.response!.data.message).toBe("토큰이 없습니다.");
     }
+  });
+  it("[200 OK] 로그인 시, 스터디 조회 가능", async () => {
+    // given
+    const client = ApiClient.default();
+    const owner = fakeSignupBody();
+    await signup(client, owner);
+
+    // when
+    const body = fakeCreateStudyRequest();
+    const {
+      data: {
+        data: { study },
+      },
+    } = await createStudy(client, body);
+    const {
+      data: {
+        data: {
+          study: { id: studyId },
+        },
+      },
+    } = await createStudy(client, fakeCreateStudyRequest());
+
+    const { data: writeRecruitmentData } = await writeRecruitment(
+      client,
+      studyId,
+      fakeWriteRecruitmentRequest(),
+    );
+    const recruitmentId = writeRecruitmentData.data.recruitment.id;
+
+    await signup(client, fakeSignupBody());
+    const {
+      data: {
+        data: { user: applicant1 },
+      },
+    } = await signup(client, fakeSignupBody());
+    await applyRecruitment(client, studyId, recruitmentId, {
+      positionId: randPositionId(),
+    });
+
+    await signup(client, fakeSignupBody());
+    const {
+      data: {
+        data: { user: applicant2 },
+      },
+    } = await signup(client, fakeSignupBody());
+    await applyRecruitment(client, studyId, recruitmentId, {
+      positionId: randPositionId(),
+    });
+
+    await signup(client, fakeSignupBody());
+    const {
+      data: {
+        data: { user: applicant3 },
+      },
+    } = await signup(client, fakeSignupBody());
+    await applyRecruitment(client, studyId, recruitmentId, {
+      positionId: randPositionId(),
+    });
+
+    // when
+    await login(client, owner);
+    await acceptApplicant(client, studyId, applicant1.id);
+    await acceptApplicant(client, studyId, applicant2.id);
+    await acceptApplicant(client, studyId, applicant3.id);
+
+    const { status, data: { data: { study: foundStudy } } } = await findStudyDetailById(client, studyId);
+    console.log(foundStudy);
+
+    // then
+    expect(status).toBe(HttpStatusCode.Ok);
+    expect(study.id).toBeDefined();
+    expect(study.title).toEqual(body.title);
+    expect(study.category.id).toEqual(body.categoryId);
+    expect(study.platform).toEqual(body.platform);
+    expect(study.platformUrl).toEqual(body.platformUrl);
+    expect(study.owner.email).toEqual(owner.email);
+    expect(study.way).toEqual(body.way);
+    expect(study.hasRecruitment).toEqual(false);
+    expect(study.createdDateTime).toEqual(study.updatedDateTime);
+    expect(study.createdDateTime).toEqual(study.updatedDateTime);
+    expect(study.status).toEqual("RECRUITING");
+  });
+
+  it.only("[200 OK] 내가 리뷰를 작성한 스터디원을 확인할 수 있다.", async () => {
+    // given
+    const client = ApiClient.default();
+    const owner = fakeSignupBody();
+    await signup(client, owner);
+
+    // when
+    const body = fakeCreateStudyRequest();
+    const {
+      data: {
+        data: { study },
+      },
+    } = await createStudy(client, body);
+    const {
+      data: {
+        data: {
+          study: { id: studyId },
+        },
+      },
+    } = await createStudy(
+      client,
+      fakeCreateStudyRequest({
+        endDateTime: addDays(utcNow(), 1).toISOString(),
+      }),
+    );
+
+    const { data: writeRecruitmentData } = await writeRecruitment(
+      client,
+      studyId,
+      fakeWriteRecruitmentRequest(),
+    );
+    const recruitmentId = writeRecruitmentData.data.recruitment.id;
+
+    await signup(client, fakeSignupBody());
+    const {
+      data: {
+        data: { user: applicant1 },
+      },
+    } = await signup(client, fakeSignupBody());
+    await applyRecruitment(client, studyId, recruitmentId, {
+      positionId: randPositionId(),
+    });
+
+    await signup(client, fakeSignupBody());
+    const {
+      data: {
+        data: { user: applicant2 },
+      },
+    } = await signup(client, fakeSignupBody());
+    await applyRecruitment(client, studyId, recruitmentId, {
+      positionId: randPositionId(),
+    });
+
+    await signup(client, fakeSignupBody());
+    const {
+      data: {
+        data: { user: applicant3 },
+      },
+    } = await signup(client, fakeSignupBody());
+    await applyRecruitment(client, studyId, recruitmentId, {
+      positionId: randPositionId(),
+    });
+
+    // when
+    await login(client, owner);
+    await acceptApplicant(client, studyId, applicant1.id);
+    await acceptApplicant(client, studyId, applicant2.id);
+    await acceptApplicant(client, studyId, applicant3.id);
+    // end study
+    await updateStudyEndDateTime(subDays(utcNow(), 10));
+
+    // write reviews
+    await writeReview(
+      client,
+      studyId,
+      fakeWriteReviewRequest({
+        revieweeId: applicant1.id,
+      }),
+    );
+    await writeReview(
+      client,
+      studyId,
+      fakeWriteReviewRequest({
+        revieweeId: applicant2.id,
+      }),
+    );
+    // await writeReview(
+    //   client,
+    //   studyId,
+    //   fakeWriteReviewRequest({
+    //     revieweeId: applicant3.id,
+    //   }),
+    // );
+
+    const { status, data: { data: { study: foundStudy } } } = await findStudyDetailById(client, studyId);
+    console.log(foundStudy);
+
+    // then
+    expect(status).toBe(HttpStatusCode.Ok);
+    expect(study.id).toBeDefined();
+    expect(study.title).toEqual(body.title);
+    expect(study.category.id).toEqual(body.categoryId);
+    expect(study.platform).toEqual(body.platform);
+    expect(study.platformUrl).toEqual(body.platformUrl);
+    expect(study.owner.email).toEqual(owner.email);
+    expect(study.way).toEqual(body.way);
+    expect(study.hasRecruitment).toEqual(false);
+    expect(study.createdDateTime).toEqual(study.updatedDateTime);
+    expect(study.createdDateTime).toEqual(study.updatedDateTime);
+    expect(study.status).toEqual("RECRUITING");
   });
 
   it("[201 CREATED] 로그인 시, 스터디 생성 가능", async () => {

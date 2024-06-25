@@ -20,8 +20,9 @@ public class StudyStatisticsRepositoryImpl {
 	private final StudyStatisticsJpaRepository studyStatisticsJpaRepository;
 
 	public List<StudyStatistics> findByUserIdsIn(final List<Long> userIds) {
-		//        return q.selectFrom();
-		return null;
+		return q.selectFrom(studyStatistics)
+				.where(studyStatistics.user.id.in(userIds))
+				.fetch();
 	}
 
 	public Optional<StudyStatistics> findByUserId(final Long userId) {

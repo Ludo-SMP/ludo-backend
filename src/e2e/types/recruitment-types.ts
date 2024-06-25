@@ -16,7 +16,7 @@ export interface WriteRecruitmentRequest {
   title: string;
   stackIds: number[];
   positionIds: number[];
-  applicantCount: number;
+  applicantLimit: number;
   content: string;
   contact?: Contact;
   recruitmentEndDateTime: string;
@@ -30,7 +30,7 @@ export interface RecruitmentDetailsResponse {
 
 export interface RecruitmentDetail extends BaseDateTime {
   id: string;
-  applicantCount: number;
+  applicantLimit: number;
   positions: Position[];
   stacks: Stack[];
   contact: Contact;

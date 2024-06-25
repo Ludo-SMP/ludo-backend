@@ -41,6 +41,7 @@ public final class WriteRecruitmentRequest {
 	private final String callUrl;
 
 	public Recruitment toRecruitment(final Study study) {
+
 		return Recruitment.builder()
 				.title(title)
 				.content(content)
