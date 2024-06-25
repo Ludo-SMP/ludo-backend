@@ -17,6 +17,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -46,24 +47,31 @@ public class Calender extends BaseEntity {
 
 	// 초기값 false 설정
 	@Column(nullable = false)
+	@Builder.Default
 	private Boolean monday = false;
 
 	@Column(nullable = false)
+	@Builder.Default
 	private Boolean tuesday = false;
 
 	@Column(nullable = false)
+	@Builder.Default
 	private Boolean wednesday = false;
 
 	@Column(nullable = false)
+	@Builder.Default
 	private Boolean thursday = false;
 
 	@Column(nullable = false)
+	@Builder.Default
 	private Boolean friday = false;
 
 	@Column(nullable = false)
+	@Builder.Default
 	private Boolean saturday = false;
 
 	@Column(nullable = false)
+	@Builder.Default
 	private Boolean sunday = false;
 
 	public static Calender from(final Study study,
