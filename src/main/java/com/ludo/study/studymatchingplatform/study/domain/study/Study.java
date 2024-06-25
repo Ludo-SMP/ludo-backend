@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import com.ludo.study.studymatchingplatform.common.converter.IntegerListConverter;
 import com.ludo.study.studymatchingplatform.common.entity.BaseEntity;
 import com.ludo.study.studymatchingplatform.common.utils.UtcDateTimePicker;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
@@ -23,6 +24,7 @@ import com.ludo.study.studymatchingplatform.user.domain.user.User;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -33,7 +35,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
-import jakarta.persistence.Transient;
 import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -99,7 +100,8 @@ public class Study extends BaseEntity {
 	@Column(nullable = false)
 	private Integer participantCount;
 
-	@Transient // jpa 패키지에 위치, DB 테이블에 적용되지 않음.
+	// @Transient // jpa 패키지에 위치, DB 테이블에 적용되지 않음.
+	@Convert(converter = IntegerListConverter.class)
 	private List<Integer> attendanceDay;
 
 	@Column(nullable = false)
