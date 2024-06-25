@@ -60,9 +60,9 @@ public class StudyStatusService {
 		final Study study = studyRepository.findById(studyId)
 				.orElseThrow(() -> new DataNotFoundException("존재하지 않는 스터디입니다."));
 
-		if (study.isOwner(user)) {
-			throw new DataForbiddenException("스터디를 종료할 권한이 없습니다.");
-		}
+		//	if (!study.isOwner(user)) {
+		//		throw new DataForbiddenException("스터디를 종료할 권한이 없습니다.");
+		//	}
 
 		final List<User> users = study.getParticipants().stream()
 				.map(Participant::getUser)

@@ -11,19 +11,18 @@ export function fakeWriteRecruitmentRequest({
   title,
   stackIds,
   positionIds,
-  applicantCount,
+  applicantLimit,
   recruitmentEndDateTime,
   content,
   contact,
   callUrl,
 }: FakeWriteRecruitmentRequestArgs = {}): WriteRecruitmentRequest {
   return {
-    applicantCount: applicantCount ?? randInt(4, 10),
+    applicantLimit: applicantLimit ?? randInt(4, 10),
     callUrl: callUrl ?? randUrl(),
     content: content ?? randParagraph(),
     positionIds: positionIds ?? randPositionIds(),
-    recruitmentEndDateTime:
-      recruitmentEndDateTime ?? addDays(localNow(), 10).toISOString(),
+    recruitmentEndDateTime: recruitmentEndDateTime ?? addDays(localNow(), 10).toISOString(),
     stackIds: stackIds ?? randStackIds(),
     title: title ?? randText(),
     contact: contact ?? randOneOf("EMAIL", "KAKAO"),

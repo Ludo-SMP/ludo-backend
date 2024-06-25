@@ -2,6 +2,8 @@ package com.ludo.study.studymatchingplatform.study.service.dto.response.study.pa
 
 import java.time.LocalDate;
 
+import com.ludo.study.studymatchingplatform.study.domain.study.Review;
+import com.ludo.study.studymatchingplatform.study.domain.study.ReviewStatistics;
 import com.ludo.study.studymatchingplatform.study.domain.study.participant.Participant;
 import com.ludo.study.studymatchingplatform.study.domain.study.participant.Role;
 import com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment.position.PositionResponse;
@@ -11,7 +13,6 @@ import lombok.Builder;
 
 @Builder
 public record ParticipantUserResponse(
-
 		Long id,
 		String nickname,
 		String email,
@@ -19,7 +20,6 @@ public record ParticipantUserResponse(
 		PositionResponse position,
 		Integer totalAttendance,
 		LocalDate recentAttendanceDate
-
 ) {
 
 	public static ParticipantUserResponse from(final Participant participant) {
@@ -36,5 +36,6 @@ public record ParticipantUserResponse(
 				.recentAttendanceDate(participant.getRecentAttendanceDate())
 				.build();
 	}
+
 
 }

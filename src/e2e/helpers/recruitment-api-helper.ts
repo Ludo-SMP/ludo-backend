@@ -8,10 +8,10 @@ import {
 
 export async function findRecruitmentById(
   apiClient: ApiClient,
-  recruitmentId: string
+  recruitmentId: string,
 ) {
   return apiClient.get<RecruitmentDetailsResponse>(
-    `/recruitments/${recruitmentId}`
+    `/recruitments/${recruitmentId}`,
   );
 }
 
@@ -19,7 +19,7 @@ export async function writeRecruitment(
   apiClient: ApiClient,
   studyId: number,
   {
-    applicantCount,
+    applicantLimit,
     callUrl,
     content,
     positionIds,
@@ -27,12 +27,12 @@ export async function writeRecruitment(
     stackIds,
     title,
     contact,
-  }: WriteRecruitmentRequest
+  }: WriteRecruitmentRequest,
 ) {
   return apiClient.post<RecruitmentDetailsResponse>(
     `/studies/${studyId}/recruitments`,
     {
-      applicantCount,
+      applicantLimit,
       callUrl,
       content,
       positionIds,
@@ -40,7 +40,7 @@ export async function writeRecruitment(
       stackIds,
       title,
       contact,
-    }
+    },
   );
 }
 
@@ -48,10 +48,10 @@ export async function applyRecruitment(
   apiClient: ApiClient,
   studyId: number,
   recruitmentId: string,
-  { positionId }: ApplyRecruitmentRequest
+  { positionId }: ApplyRecruitmentRequest,
 ) {
   return apiClient.post<ApplyRecruitmentResponse>(
     `/studies/${studyId}/recruitments/${recruitmentId}/apply`,
-    { positionId }
+    { positionId },
   );
 }

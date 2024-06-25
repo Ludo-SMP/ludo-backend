@@ -72,7 +72,6 @@ dependencies {
 
 }
 
-
 tasks.named('test') {
     useJUnitPlatform()
 }
@@ -89,7 +88,17 @@ tasks.withType(Test) {
     useJUnitPlatform()
 }
 
+sourceSets {
+    main {
+        java {
+            srcDir querydslSrcDir
+        }
+    }
+}
+
 testSets {
+    test
+    e2e
     integrationTest
 }
 

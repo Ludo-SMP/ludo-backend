@@ -1,5 +1,6 @@
 package com.ludo.study.studymatchingplatform.study.controller;
 
+import com.ludo.study.studymatchingplatform.study.service.dto.response.study.StudyWithReviewedParticipantResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -124,8 +125,8 @@ public class StudyController {
 	@DataFieldName("study")
 	@Operation(description = "스터디 상세 정보 조회")
 	@ApiResponse(description = "스터디 조회 성공", responseCode = "200", useReturnTypeSchema = true, content = @Content(mediaType = "application/json"))
-	public StudyResponse getStudyDetails(@Parameter(hidden = true) @AuthUser final User user,
-										 @PathVariable("studyId") final Long studyId) {
+	public StudyWithReviewedParticipantResponse getStudyDetails(@Parameter(hidden = true) @AuthUser final User user,
+																@PathVariable("studyId") final Long studyId) {
 		return studyFetchService.getStudyDetails(user, studyId);
 	}
 
