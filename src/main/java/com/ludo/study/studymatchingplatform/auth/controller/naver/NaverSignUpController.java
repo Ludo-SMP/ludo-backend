@@ -64,7 +64,7 @@ public class NaverSignUpController {
 
 		final User user = naverSignUpService.naverSignUp(authorizationCode);
 		final String accessToken = jwtTokenProvider.createAccessToken(AuthUserPayload.from(user));
-		userDetailsService.createUserDetails(user, request);
+		// userDetailsService.createUserDetails(user, request);
 		cookieProvider.setAuthCookie(accessToken, response);
 		response.sendRedirect(clientProperties.getUrl());
 	}

@@ -65,7 +65,7 @@ public class NaverLoginController {
 		log.info("로그인 컨트롤러 콜백 start");
 		final User user = naverLoginService.login(authorizationCode);
 		final String accessToken = jwtTokenProvider.createAccessToken(AuthUserPayload.from(user));
-		userDetailsService.createUserDetails(user, request);
+		// userDetailsService.createUserDetails(user, request);
 		cookieProvider.setAuthCookie(accessToken, response);
 		response.sendRedirect(clientProperties.getUrl());
 		log.info("로그인 컨트롤러 콜백 end");

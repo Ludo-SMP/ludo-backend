@@ -66,7 +66,7 @@ public class GoogleLoginController {
 			final HttpServletResponse response) throws IOException {
 		final User user = googleLoginService.login(authorizationCode);
 		final String accessToken = jwtTokenProvider.createAccessToken(AuthUserPayload.from(user));
-		userDetailsService.createUserDetails(user, request);
+		// userDetailsService.createUserDetails(user, request);
 		cookieProvider.setAuthCookie(accessToken, response);
 		response.sendRedirect(clientProperties.getUrl());
 	}
