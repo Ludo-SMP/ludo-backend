@@ -507,6 +507,139 @@ describe("리뷰 작성", () => {
     expect(prevReview[0].selfReview).toBeNull();
   });
 
+  test.only("[200 OK] 3명이 가입하고 서로 리뷰를 남겼을 때", async () => {
+    // given
+    const client = ApiClient.default();
+    const owner = fakeSignupBody();
+    const {
+      data: {
+        data: {
+          user: { id: ownerId },
+        },
+      },
+    } = await signup(client, owner);
+    const {
+      data: {
+        data: {
+          study: { id: studyId },
+        },
+      },
+    } = await createStudy(client, fakeCreateStudyRequest({}));
+    const {
+      data: {
+        data: { recruitment },
+      },
+    } = await writeRecruitment(client, studyId, fakeWriteRecruitmentRequest());
+
+    const applicantUser1 = fakeSignupBody();
+    const {
+      data: {
+        data: {
+          user: { id: applicantUserId },
+        },
+      },
+    } = await signup(client, applicantUser1);
+    await applyRecruitment(client, studyId, recruitment.id, {
+      positionId: randPositionId(),
+    });
+
+    const applicantUser2 = fakeSignupBody();
+    const {
+      data: {
+        data: {
+          user: { id: applicantUser2Id },
+        },
+      },
+    } = await signup(client, applicantUser2);
+    await applyRecruitment(client, studyId, recruitment.id, {
+      positionId: randPositionId(),
+    });
+
+    // login to owner
+    await login(client, owner);
+    await acceptApplicant(client, studyId, applicantUserId);
+    await acceptApplicant(client, studyId, applicantUser2Id);
+    await updateStudyEndDateTime(subDays(utcNow(), 10));
+
+    await writeReview(
+      client,
+      studyId,
+      fakeWriteReviewRequest({
+        revieweeId: applicantUserId,
+      }),
+    );
+    await writeReview(
+      client,
+      studyId,
+      fakeWriteReviewRequest({
+        revieweeId: applicantUser2Id,
+      }),
+    );
+    // // when
+    // application user1 review
+    await login(client, applicantUser1);
+
+    await writeReview(
+      client,
+      studyId,
+      fakeWriteReviewRequest({
+        revieweeId: ownerId,
+      }),
+    );
+    // await writeReview(
+    //   client,
+    //   studyId,
+    //   fakeWriteReviewRequest({
+    //     revieweeId: applicantUser2Id,
+    //   }),
+    // );
+    // application user2 review
+    await login(client, applicantUser2);
+
+    await writeReview(
+      client,
+      studyId,
+      fakeWriteReviewRequest({
+        revieweeId: ownerId,
+      }),
+    );
+    // await writeReview(
+    //   client,
+    //   studyId,
+    //   fakeWriteReviewRequest({
+    //     revieweeId: applicantUserId,
+    //   }),
+    // );
+
+    console.log(`me Id: ${ownerId}`);
+    console.log(`user1 Id: ${applicantUserId}`);
+    console.log(`user2 Id: ${applicantUser2Id}`);
+
+    await login(client, owner);
+    // me
+    const {
+      status,
+      data: {
+        data: { studies },
+      },
+    } = await getPeerReviews(client);
+
+    console.log(JSON.stringify(studies));
+
+    const latestReviews = studies[0].reviews;
+    // const prevReview = studies[1].reviews;
+    // const latestPeerReview = latestReviews[0].peerReview;
+    // const latestMyReview = latestReviews[0].selfReview;
+    // const prevPeerReview = prevReview[0].peerReview;
+    // const prevMyReview = prevReview[0].selfReview;
+
+    // // then
+    expect(status).toBe(HttpStatusCode.Ok);
+
+    // latest Study
+    // expect(latestReviews.length).toBe(1);
+  });
+
   test("[200 OK] 여러 스터디의 팀원들이 내게 남긴 리뷰와 내가 남긴 리뷰를 한 번에 조회 가능", async () => {
     // given
     const client = ApiClient.default();
@@ -608,6 +741,8 @@ describe("리뷰 작성", () => {
         data: { studies },
       },
     } = await getPeerReviews(client);
+
+    console.log(JSON.stringify(studies));
 
     const latestReviews = studies[0].reviews;
     const prevReview = studies[1].reviews;

@@ -25,7 +25,10 @@ public record StudyPeerReviewResponse(
         for (final Study study : studySet) {
             final Long studyId = study.getId();
             final List<PeerReviewsResponse> peerReviewsResponses = PeerReviewsResponse.listFrom(selfReviewsMap.getOrDefault(studyId, new ArrayList<>()), peerReviewsMap.getOrDefault(studyId, new ArrayList<>()));
-            final LocalDateTime latestUpdatedDateTime = extractLatestUpdatedDateTime(selfReviewsMap.getOrDefault(studyId, new ArrayList<>()), peerReviewsMap.getOrDefault(studyId, new ArrayList<>()));
+            final LocalDateTime latestUpdatedDateTime = extractLatestUpdatedDateTime(
+                    selfReviewsMap.getOrDefault(studyId, new ArrayList<>()),
+                    peerReviewsMap.getOrDefault(studyId, new ArrayList<>())
+            );
             studyPeerReviewResponses.add(new StudyPeerReviewResponse(study.getId(), study.getTitle(), peerReviewsResponses, latestUpdatedDateTime));
         }
         // Sort by updatedDateTime in descending order
