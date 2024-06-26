@@ -12,10 +12,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
 
@@ -69,6 +66,10 @@ public class Review extends BaseEntity {
 
 	public Long getReviewerId() {
 		return reviewer.getId();
+	}
+
+	public Long getRevieweeId() {
+		return reviewee.getId();
 	}
 
 }

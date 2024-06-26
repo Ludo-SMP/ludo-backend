@@ -20,7 +20,6 @@ public record PeerReviewsResponse(
             updatedDateTime = peerReview.getUpdatedDateTime();
         } else if (peerReview == null) {
             updatedDateTime = selfReview.getUpdatedDateTime();
-
         }
         return new PeerReviewsResponse(
                 selfReview == null ? null : ReviewResponse.from(selfReview),
@@ -32,17 +31,17 @@ public record PeerReviewsResponse(
     public static List<PeerReviewsResponse> listFrom(final List<Review> selfReviews, final List<Review> peerReviews) {
         final List<PeerReviewsResponse> responses = new ArrayList<>();
         final Map<Long, Review> selfReviewMap = selfReviews.stream()
-                .collect(Collectors.toMap(r -> r.getReviewer().getId(), r -> r));
-        final Map<Long, Review> peerReviewMap = peerReviews.stream()
                 .collect(Collectors.toMap(r -> r.getReviewee().getId(), r -> r));
+        final Map<Long, Review> peerReviewMap = peerReviews.stream()
+                .collect(Collectors.toMap(r -> r.getReviewer().getId(), r -> r));
 
         final Set<Long> allReviewerIds = new HashSet<>();
         allReviewerIds.addAll(selfReviewMap.keySet());
         allReviewerIds.addAll(peerReviewMap.keySet());
 
-        for (Long reviewerId : allReviewerIds) {
-            final Review selfReview = selfReviewMap.get(reviewerId);
-            final Review peerReview = peerReviewMap.get(reviewerId);
+        for (final Long peerId : allReviewerIds) {
+            final Review selfReview = selfReviewMap.get(peerId);
+            final Review peerReview = peerReviewMap.get(peerId);
             responses.add(PeerReviewsResponse.of(selfReview, peerReview));
         }
 
