@@ -34,6 +34,7 @@ public class WebConfig implements WebMvcConfigurer {
 						"https://ludo.study",
 						"https://ludoapi.store",
 						"https://local.ludoapi.store:3000",
+						"https://local.ludo.study:3000",
 						"http://localhost:3000"
 				)
 				.allowedMethods("*")
