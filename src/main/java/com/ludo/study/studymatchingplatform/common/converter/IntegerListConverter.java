@@ -1,5 +1,6 @@
 package com.ludo.study.studymatchingplatform.common.converter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -15,6 +16,9 @@ public class IntegerListConverter implements AttributeConverter<List<Integer>, S
 
 	@Override
 	public String convertToDatabaseColumn(List<Integer> attribute) {
+		if (attribute == null) {
+			return null;
+		}
 		try {
 			return objectMapper.writeValueAsString(attribute);
 		} catch (Exception e) {
@@ -24,6 +28,9 @@ public class IntegerListConverter implements AttributeConverter<List<Integer>, S
 
 	@Override
 	public List<Integer> convertToEntityAttribute(String dbData) {
+		if (dbData == null || dbData.isEmpty()) {
+			return new ArrayList<>();
+		}
 		try {
 			return objectMapper.readValue(dbData, new TypeReference<List<Integer>>() {
 			});

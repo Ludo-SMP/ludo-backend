@@ -132,6 +132,9 @@ public class StudyCreateService {
 	}
 
 	private Platform valifyExistPlatform(final String platform) {
+		if (platform == null) {
+			return null;
+		}
 		return Stream.of(Platform.values())
 				.filter(p -> p.name().equals(platform))
 				.findFirst()

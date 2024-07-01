@@ -37,7 +37,7 @@ public class ParticipantRepositoryImpl {
 		return Optional.ofNullable(q.selectFrom(participant)
 				.where(participant.study.id.eq(studyId))
 				.where(participant.user.id.eq(userId))
-				.fetchOne());
+				.fetchFirst());
 	}
 
 	public List<Participant> findByUserId(final Long id) {
@@ -73,6 +73,13 @@ public class ParticipantRepositoryImpl {
 				.where(globalNotificationUserConfig.reviewConfig.isTrue(),
 						study.endDateTime.between(condition.yesterdayStartOfDay(), condition.yesterdayEndOfDay()))
 				.fetch();
+	}
+
+	public Optional<List<Participant>> findByStudyId(final Long id) {
+		return Optional.ofNullable(q.selectFrom(participant)
+				.where(participant.study.id.eq(id))
+				.where(participant.deletedDateTime.isNull())
+				.fetch());
 	}
 
 }

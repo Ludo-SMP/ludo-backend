@@ -30,4 +30,8 @@ public class CalenderRepositoryImpl {
 				.fetch());
 	}
 
+	public void deleteExistingCalendars(final List<Calender> calenders) {
+		calenderJpaRepository.deleteAll(calenders);
+	}
+
 }
