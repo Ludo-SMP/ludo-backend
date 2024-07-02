@@ -2,6 +2,7 @@ package com.ludo.study.studymatchingplatform.common.exception;
 
 import java.io.IOException;
 
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +30,11 @@ public final class GlobalExceptionHandler {
 	@ExceptionHandler(value = Exception.class)
 	public ResponseEntity<CommonResponse> handleException(Exception e) {
 		return toResponseEntity(e, e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
+	@ExceptionHandler(value = Exception.class)
+	public ResponseEntity<CommonResponse> handleException(ConstraintViolationException e) {
+		return toResponseEntity(e, e.getMessage(), HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(value = AuthenticationException.class)
