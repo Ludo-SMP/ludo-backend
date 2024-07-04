@@ -2,7 +2,6 @@ package com.ludo.study.studymatchingplatform.common.exception;
 
 import java.io.IOException;
 
-import jakarta.validation.ConstraintViolationException;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +17,7 @@ import com.ludo.study.studymatchingplatform.study.service.exception.DuplicatedSi
 import com.ludo.study.studymatchingplatform.study.service.exception.SocialAccountNotFoundException;
 
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -32,7 +32,7 @@ public final class GlobalExceptionHandler {
 		return toResponseEntity(e, e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
-	@ExceptionHandler(value = Exception.class)
+	@ExceptionHandler(value = ConstraintViolationException.class)
 	public ResponseEntity<CommonResponse> handleException(ConstraintViolationException e) {
 		return toResponseEntity(e, e.getMessage(), HttpStatus.BAD_REQUEST);
 	}
