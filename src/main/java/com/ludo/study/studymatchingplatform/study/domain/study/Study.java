@@ -319,7 +319,7 @@ public class Study extends BaseEntity {
 		}
 
 		status = StudyStatus.COMPLETED;
-		this.endDateTime = now;
+		// this.endDateTime = now; // 진행 완료 후 현재 상태로 바뀌는 부분 주석 처리
 	}
 
 	public void modifyStatusToRecruiting() {
