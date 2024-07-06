@@ -135,10 +135,10 @@ public class Participant extends BaseEntity {
 	}
 
 	// 출석 80% 이상
-	public boolean perfectAttendance() {
+	public boolean perfectAttendance(final Integer currentStudyMandatoryAttendance) {
 		// TODO: total 스터디 일수를 가져오는 API 필요. 우선 임시 변수로 저장
-		int totalStudyDays = 100;
-		return (attendance / totalStudyDays * 100) > 80;
+		// 해결 완료.
+		return (validAttendance / currentStudyMandatoryAttendance * 100) > 80;
 	}
 
 	public void approvedStudyWithdrawalRequest() { // 보류중으로 상태 변경
