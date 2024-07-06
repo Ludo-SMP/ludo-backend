@@ -6,6 +6,7 @@ import java.util.List;
 import com.ludo.study.studymatchingplatform.common.ResourcePath;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Contact;
 import com.ludo.study.studymatchingplatform.study.domain.recruitment.Recruitment;
+import com.ludo.study.studymatchingplatform.study.domain.study.Platform;
 import com.ludo.study.studymatchingplatform.study.domain.study.Study;
 
 public record RecruitmentDetailsResponse(RecruitmentDetail recruitment,
@@ -25,7 +26,7 @@ public record RecruitmentDetailsResponse(RecruitmentDetail recruitment,
 	public record StackDetail(Long id, String name, String imageUrl) {
 	}
 
-	public record StudyDetail(Long id, String title, OwnerDetail owner, String platform, String way,
+	public record StudyDetail(Long id, String title, OwnerDetail owner, Platform platform, String way,
 							  Integer participantLimit, LocalDateTime startDateTime, LocalDateTime endDateTime,
 							  CategoryDetail category) {
 	}
@@ -60,7 +61,7 @@ public record RecruitmentDetailsResponse(RecruitmentDetail recruitment,
 						study.getId(),
 						study.getTitle(),
 						new OwnerDetail(study.getOwnerId(), study.getOwnerNickname(), study.getOwnerEmail()),
-						study.getPlatform().toString(),
+						study.getPlatform(), // 오프라인 스터디 생성시 모집공고 생성 안되는 이슈 해결 목적
 						study.getWay().toString(),
 						study.getParticipantLimit(),
 						study.getStartDateTime(),
