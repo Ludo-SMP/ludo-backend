@@ -28,7 +28,7 @@ public record RecruitmentDetailsResponse(RecruitmentDetail recruitment,
 
 	public record StudyDetail(Long id, String title, OwnerDetail owner, Platform platform, String way,
 							  Integer participantLimit, LocalDateTime startDateTime, LocalDateTime endDateTime,
-							  CategoryDetail category) {
+							  CategoryDetail category, List<Integer> attendanceDay) {
 	}
 
 	public record OwnerDetail(Long id, String nickname, String email) {
@@ -66,7 +66,8 @@ public record RecruitmentDetailsResponse(RecruitmentDetail recruitment,
 						study.getParticipantLimit(),
 						study.getStartDateTime(),
 						study.getEndDateTime(),
-						new CategoryDetail(study.getCategoryId(), study.getCategoryName())
+						new CategoryDetail(study.getCategoryId(), study.getCategoryName()),
+						study.getAttendanceDay()
 				));
 	}
 
