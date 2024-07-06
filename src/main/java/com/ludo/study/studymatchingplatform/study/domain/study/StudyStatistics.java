@@ -5,7 +5,6 @@ import static jakarta.persistence.FetchType.*;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
-import static jakarta.persistence.FetchType.*;
 
 import com.ludo.study.studymatchingplatform.common.entity.BaseEntity;
 import com.ludo.study.studymatchingplatform.study.domain.study.attendance.Calender;
@@ -86,7 +85,8 @@ public class StudyStatistics extends BaseEntity {
 		// totalAttendance += participant.getAttendance(); // 의무 출석기간 되어야 함
 		// totalValidAttendance += participant.getValidAttendance();
 
-		makeExistingMandatoryDayOfAttendance(participant, calenders); // 스터디 합류일 기준 의무 출석일 산출
+		// 진행 완료된 스터디 합류일 기준 의무 출석일 산출
+		final Integer currentStudyMandatoryAttendance = makeExistingMandatoryDayOfAttendance(participant, calenders);
 		makeExistingDayOfAttendance(participant); // 유효 출석일 산출
 
 		totalTeammateCount += study.getParticipantCount() - 1;
@@ -94,7 +94,7 @@ public class StudyStatistics extends BaseEntity {
 			totalFinishAttendanceStudies++;
 		}
 		// 80퍼센트 이상 출석시
-		if (participant.perfectAttendance()) {
+		if (participant.perfectAttendance(currentStudyMandatoryAttendance)) {
 			totalPerfectAttendanceStudies++;
 		}
 	}
@@ -115,62 +115,68 @@ public class StudyStatistics extends BaseEntity {
 	}
 
 	// 의무 출석 기간 산출
-	private void makeExistingMandatoryDayOfAttendance(final Participant participant, final List<Calender> calenders) {
+	private Integer makeExistingMandatoryDayOfAttendance(final Participant participant,
+														 final List<Calender> calenders) {
 		final LocalDate joiningDateTime = participant.getEnrollmentDateTime();
 		final DayOfWeek joiningDateTimeOfWeek = joiningDateTime.getDayOfWeek();
 		final Integer joiningDateTimeOfWeekNumber = joiningDateTimeOfWeek.getValue();
 
+		Integer currentStudyMandatoryAttendance = 0;
 		for (Calender calender : calenders) {
 			if (joiningDateTime.isAfter(calender.getCalenderStartDateTime())
 					&& joiningDateTime.isBefore(calender.getCalenderEndDateTime())) { // 첫번째 카운트
 				makeExistingMandatoryDayOfAttendanceCount(calender, joiningDateTimeOfWeekNumber);
 				continue;
 			}
-			makeExistingMandatoryDayOfAttendanceCount(calender, 1); // 두번째 부터 카운트
+			currentStudyMandatoryAttendance += makeExistingMandatoryDayOfAttendanceCount(calender, 1); // 두번째 부터 카운트
 		}
+		this.totalMandatoryAttendance += currentStudyMandatoryAttendance; // 총 누적 의무 출석 기간 갱신
+		return currentStudyMandatoryAttendance;
 	}
 
-	private void makeExistingMandatoryDayOfAttendanceCount(final Calender calender,
-														   final Integer DateTimeOfWeekNumber) {
+	private Integer makeExistingMandatoryDayOfAttendanceCount(final Calender calender,
+															  final Integer DateTimeOfWeekNumber) {
+		Integer mandatoryAttendance = 0; // 진행 완료된 스터디의 의무 출석일 산출
 		for (int i = DateTimeOfWeekNumber; i <= 7; i++) {
 			switch (i) {
 				case 1: // 월요일
 					if (Boolean.TRUE.equals(calender.getMonday())) {
-						this.totalMandatoryAttendance++;
+						mandatoryAttendance++;
 					}
 					break;
 				case 2: // 화요일
 					if (Boolean.TRUE.equals(calender.getTuesday())) {
-						this.totalMandatoryAttendance++;
+						mandatoryAttendance++;
 					}
 					break;
 				case 3: // 수요일
 					if (Boolean.TRUE.equals(calender.getWednesday())) {
-						this.totalMandatoryAttendance++;
+						mandatoryAttendance++;
 					}
 					break;
 				case 4: // 목요일
 					if (Boolean.TRUE.equals(calender.getThursday())) {
-						this.totalMandatoryAttendance++;
+						mandatoryAttendance++;
 					}
 					break;
 				case 5: // 금요일
 					if (Boolean.TRUE.equals(calender.getFriday())) {
-						this.totalMandatoryAttendance++;
+						mandatoryAttendance++;
 					}
 					break;
 				case 6: // 토요일
 					if (Boolean.TRUE.equals(calender.getSaturday())) {
-						this.totalMandatoryAttendance++;
+						mandatoryAttendance++;
 					}
 					break;
 				case 7: // 일요일
 					if (Boolean.TRUE.equals(calender.getSunday())) {
-						this.totalMandatoryAttendance++;
+						mandatoryAttendance++;
 					}
 					break;
 			}
 		}
+		return mandatoryAttendance;
 	}
 
 	public void increaseTotalLeftStudyCount() {
