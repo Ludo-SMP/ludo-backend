@@ -1,6 +1,7 @@
 package com.ludo.study.studymatchingplatform.study.service.dto.response.recruitment;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.ludo.study.studymatchingplatform.study.domain.study.Platform;
 import com.ludo.study.studymatchingplatform.study.domain.study.Study;
@@ -15,14 +16,15 @@ public record WriteRecruitmentStudyInfoResponse(
 		Integer participantLimit,
 		LocalDateTime startDateTime,
 		LocalDateTime endDateTime,
-		CategoryResponse category
+		CategoryResponse category,
+		List<Integer> attendanceDay
 ) {
 
 	public static WriteRecruitmentStudyInfoResponse from(final Study study) {
 		final CategoryResponse categoryResponse = CategoryResponse.from(study.getCategory());
 		return new WriteRecruitmentStudyInfoResponse(
 				study.getId(), study.getTitle(), study.getPlatform(), study.getWay(), study.getParticipantLimit(),
-				study.getStartDateTime(), study.getEndDateTime(), categoryResponse);
+				study.getStartDateTime(), study.getEndDateTime(), categoryResponse, study.getAttendanceDay());
 	}
 
 }
