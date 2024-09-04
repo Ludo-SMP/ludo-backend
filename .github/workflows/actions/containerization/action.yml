@@ -1,0 +1,51 @@
+name: Containerize
+description: build container image
+
+inputs:
+  env:
+    required: true
+  dockerhub-username:
+    required: true
+  dockerhub-token:
+    required: true
+  artifact-name:
+    required: true
+  artifact-build-path:
+    required: true
+  app-name:
+    required: true
+  commit-hash:
+    required: true
+          
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/checkout@v4
+    - name: download artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: ${{ inputs.artifact-name }}
+        path: ${{ inputs.artifact-build-path }}
+
+    - name: log in to dockerhub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ inputs.dockerhub-username }}
+        password: ${{ inputs.dockerhub-token }}
+    # - name: set docker image name with tag
+    #   shell: bash
+    #   run: |
+    #     ARTIFACT_WITH_TAG=$(echo ${{ inputs.artifact-name }} | sed 's/-/:/' )
+    #     ARTIFACT_WITH_TAG=${ARTIFACT_WITH_TAG%.*}
+    #     echo "CONTAINER_IMAGE_PATH=${{ inputs.dockerhub-username }}/$ARTIFACT_WITH_TAG" >> $GITHUB_ENV
+    #     echo "docker image name:tag will be `$CONTAINER_IMAGE_PATH`"
+
+    - name: push docker container image
+      uses: docker/build-push-action@v4
+      with:
+        context: .
+        push: true
+        tags: |
+          ${{ inputs.dockerhub-username }}/${{ inputs.app-name }}:${{ inputs.commit-hash }}
+          ${{ inputs.dockerhub-username }}/${{ inputs.app-name }}:latest

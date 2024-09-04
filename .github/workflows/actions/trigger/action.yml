@@ -1,0 +1,89 @@
+name: trigger workflow to Github Repository
+description: Send a workflow trigger event to another GitHub repository
+
+inputs:
+  pat:
+    required: true
+  event-type:
+    required: true
+  repository:
+    required: true
+  action-file:
+    required: true
+
+outputs:
+  verification-token:
+    description: generated verification token
+    value: ${{ steps.infra.outputs.token }}
+  conclusion:
+    description: triggered workflow conclusion(success or failure)
+    value: ${{ steps.conclusion.outputs.conclusion }}
+
+runs:
+  using: composite
+
+  steps:
+    - uses: actions/checkout@v4
+    - name: generate token
+      id: infra
+      shell: bash
+      run: echo "token=$(openssl rand -hex 16)" >> $GITHUB_OUTPUT
+
+    - name: dispatch event to a specific Github repository
+      uses: peter-evans/repository-dispatch@v2
+      with:
+        # secrets.GITHUB_TOKEN doesn't have access permission to other repositories
+        # so use pat
+        token: ${{ inputs.pat }}
+        repository: ${{ inputs.repository }}
+        event-type: ${{ inputs.event-type }}
+        client-payload: |
+          {
+            "trigger_repo": "${{ github.repository }}",
+            "trigger_sha": "${{ github.sha }}",
+            "verification_token": "${{ steps.infra.outputs.token }}"
+          }
+
+    - name: fetch RUN_ID
+      env:
+        GH_TOKEN: ${{ inputs.pat }}
+      shell: bash
+      run: |
+        RUN_ID=$(gh run list -R ${{ inputs.repository }} -w ${{ inputs.action-file }} -L 1 --json databaseId -q '.[0].databaseId')
+        echo "Triggered workflow RUN_ID: $RUN_ID"
+        echo "RUN_ID=$RUN_ID" >> $GITHUB_ENV
+
+    - name: wait for completion
+      env:
+        GH_TOKEN: ${{ inputs.pat }}
+      shell: bash
+      run: |
+        START_TIME=$(date +%s)
+        TIMEOUT=3600
+
+        while true; do
+            CURRENT_TIME=$(date +%s)
+            ELASPED=$((CURRENT_TIME - START_TIME))
+            if [ $ELASPED -ge $TIMEOUT ]; then
+                echo "Timeout reached. Workflow did not complete within an hour."
+                break
+            fi
+            STATUS=$(gh run view ${{ env.RUN_ID }} -R ${{ inputs.repository }} --json status -q '.status')
+            if [ "$STATUS" = "completed" ]; then
+                break
+            fi
+            sleep 2
+        done
+
+    - name: evaluate conclusion
+      id: conclusion
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.pat }}
+      run: |
+        CONCLUSION=$(gh run view ${{ env.RUN_ID}} -R ${{ inputs.repository }} --json conclusion -q '.conclusion')
+        if [ "$CONCLUSION" = "success" ]; then
+            echo "conclusion=success" >> $GITHUB_OUTPUT
+        else
+            echo "conclusion=failure" >> $GITHUB_OUTPUT
+        fi

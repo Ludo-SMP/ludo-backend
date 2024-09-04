@@ -1,0 +1,37 @@
+name: Build Spring Application and upload the artifact
+
+inputs:
+  env:
+    required: true
+  pat:
+    required: true
+  artifact-build-path:
+    required: true
+  artifact-name:
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: checkout code and submodules
+      uses: ./.github/workflows/actions/setup
+      with:
+        pat: ${{ inputs.pat }}
+
+    - name: Update submodules to main branch
+      shell: bash
+      run: |
+        git submodule foreach 'git checkout main || :'
+        git submodule foreach 'git pull origin main || :'
+
+    - name: build with gradle
+      shell: bash
+      run: |
+        ARTIFACT_FULL_PATH="${{ inputs.artifact-build-path }}/${{ inputs.artifact-name }}.jar"
+        ./gradlew build -x test -Dspring.profiles.action=${{ inputs.env }} -ParchiveName=$ARTIFACT_FULL_PATH
+
+    - name: upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: "${{ inputs.artifact-name }}"
+        path: ${{ inputs.artifact-build-path }}
