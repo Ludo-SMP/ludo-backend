@@ -26,3 +26,10 @@ export async function login(
     password,
   });
 }
+
+// not typed!!!!!!!!!!!!!!! for temporal test
+export async function myPage(
+    apiClient: ApiClient,
+) {
+ return apiClient.get('/users/mypage');
+}

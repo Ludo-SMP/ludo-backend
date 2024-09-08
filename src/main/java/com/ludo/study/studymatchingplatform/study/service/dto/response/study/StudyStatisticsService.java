@@ -3,6 +3,7 @@ package com.ludo.study.studymatchingplatform.study.service.dto.response.study;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ludo.study.studymatchingplatform.common.exception.DataNotFoundException;
 import com.ludo.study.studymatchingplatform.study.domain.study.StudyStatistics;
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class StudyStatisticsService {
 
 	private final StudyStatisticsRepositoryImpl studyStatisticsRepository;

@@ -14,6 +14,8 @@ import lombok.Builder;
 public record ParticipateStudyResponse(
 
 		Long studyId,
+		// added
+		Long recruitmentId,
 		String title,
 		PositionResponse position,
 		StudyStatus status,
@@ -29,6 +31,7 @@ public record ParticipateStudyResponse(
 		final PositionResponse positionResponse = PositionResponse.from(pos);
 		return ParticipateStudyResponse.builder()
 				.studyId(study.getId())
+				.recruitmentId(study.getRecruitment().getId())
 				.title(study.getTitle())
 				.position(positionResponse)
 				.status(study.getStatus())

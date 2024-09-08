@@ -1,529 +1,577 @@
-import { AxiosError, HttpStatusCode } from "axios";
-import { addDays, subDays } from "date-fns";
+import {AxiosError, HttpStatusCode} from "axios";
+import {addDays, subDays} from "date-fns";
 import dns from "node:dns";
-import { describe } from "node:test";
-import { ApiClient } from "../config/api-client";
-import { fakeSignupBody } from "../fixtures/auth-fixture";
-import { randPositionId } from "../fixtures/position-fixture";
-import { fakeWriteRecruitmentRequest } from "../fixtures/recruitment-fixture";
-import { fakeWriteReviewRequest } from "../fixtures/review-fixture";
-import { fakeCreateStudyRequest } from "../fixtures/study-fixture";
-import { login, signup } from "../helpers/auth-api-helper";
-import { utcNow } from "../helpers/datetime-helper";
-import { applyRecruitment, writeRecruitment } from "../helpers/recruitment-api-helper";
-import { writeReview } from "../helpers/review-api-helper";
+import {describe} from "node:test";
+import {ApiClient} from "../config/api-client";
+import {fakeSignupBody} from "../fixtures/auth-fixture";
+import {randPositionId} from "../fixtures/position-fixture";
+import {fakeWriteRecruitmentRequest} from "../fixtures/recruitment-fixture";
+import {fakeWriteReviewRequest} from "../fixtures/review-fixture";
+import {fakeCreateStudyRequest} from "../fixtures/study-fixture";
+import {login, myPage, signup} from "../helpers/auth-api-helper";
+import {utcNow} from "../helpers/datetime-helper";
+import {applyRecruitment, writeRecruitment} from "../helpers/recruitment-api-helper";
+import {writeReview} from "../helpers/review-api-helper";
 import {
-  acceptApplicant,
-  createStudy,
-  findApplicantsByStudyId,
-  findStudyDetailById,
-  refuseApplicant,
-  updateStudy,
+    acceptApplicant,
+    createStudy,
+    findApplicantsByStudyId,
+    findStudyDetailById,
+    refuseApplicant,
+    updateStudy,
 } from "../helpers/study-api-helper";
-import { updateStudyEndDateTime } from "../helpers/study-db-helper";
-import { BaseResponse } from "../types/base-types";
-import { Study } from "../types/study-types";
+import {updateStudyEndDateTime} from "../helpers/study-db-helper";
+import {BaseResponse} from "../types/base-types";
+import {Study} from "../types/study-types";
+
 dns.setDefaultResultOrder("ipv4first");
 
 describe("study Api flows", () => {
-  it("[400 BAD REQUEST] 로그인 안 하면 스터디 생성 불가", async () => {
-    // given
-    const client = ApiClient.default();
+    it("[400 BAD REQUEST] 로그인 안 하면 스터디 생성 불가", async () => {
+        // given
+        const client = ApiClient.default();
 
-    // when
-    // then
-    try {
-      const body = fakeCreateStudyRequest();
-      await createStudy(client, body);
-    } catch (err) {
-      const e = err as AxiosError<BaseResponse<Study>>;
-      expect(e.response?.status).toBe(HttpStatusCode.BadRequest);
-      expect(e.response!.data.message).toBe("토큰이 없습니다.");
-    }
-  });
-  it("[200 OK] 로그인 시, 스터디 조회 가능", async () => {
-    // given
-    const client = ApiClient.default();
-    const owner = fakeSignupBody();
-    await signup(client, owner);
+        // when
+        // then
+        try {
+            const body = fakeCreateStudyRequest();
+            await createStudy(client, body);
+        } catch (err) {
+            const e = err as AxiosError<BaseResponse<Study>>;
+            expect(e.response?.status).toBe(HttpStatusCode.BadRequest);
+            expect(e.response!.data.message).toBe("토큰이 없습니다.");
+        }
+    });
+    it("[200 OK] 로그인 시, 스터디 조회 가능", async () => {
+        // given
+        const client = ApiClient.default();
+        const owner = fakeSignupBody();
+        await signup(client, owner);
 
-    // when
-    const body = fakeCreateStudyRequest();
-    const {
-      data: {
-        data: { study },
-      },
-    } = await createStudy(client, body);
-    const {
-      data: {
-        data: {
-          study: { id: studyId },
-        },
-      },
-    } = await createStudy(client, fakeCreateStudyRequest());
+        // when
+        const body = fakeCreateStudyRequest();
+        const {
+            data: {
+                data: {study},
+            },
+        } = await createStudy(client, body);
+        const {
+            data: {
+                data: {
+                    study: {id: studyId},
+                },
+            },
+        } = await createStudy(client, fakeCreateStudyRequest());
 
-    const { data: writeRecruitmentData } = await writeRecruitment(
-      client,
-      studyId,
-      fakeWriteRecruitmentRequest(),
-    );
-    const recruitmentId = writeRecruitmentData.data.recruitment.id;
+        const {data: writeRecruitmentData} = await writeRecruitment(
+            client,
+            studyId,
+            fakeWriteRecruitmentRequest(),
+        );
+        const recruitmentId = writeRecruitmentData.data.recruitment.id;
 
-    await signup(client, fakeSignupBody());
-    const {
-      data: {
-        data: { user: applicant1 },
-      },
-    } = await signup(client, fakeSignupBody());
-    await applyRecruitment(client, studyId, recruitmentId, {
-      positionId: randPositionId(),
+        await signup(client, fakeSignupBody());
+        const {
+            data: {
+                data: {user: applicant1},
+            },
+        } = await signup(client, fakeSignupBody());
+        await applyRecruitment(client, studyId, recruitmentId, {
+            positionId: randPositionId(),
+        });
+
+        await signup(client, fakeSignupBody());
+        const {
+            data: {
+                data: {user: applicant2},
+            },
+        } = await signup(client, fakeSignupBody());
+        await applyRecruitment(client, studyId, recruitmentId, {
+            positionId: randPositionId(),
+        });
+
+        await signup(client, fakeSignupBody());
+        const {
+            data: {
+                data: {user: applicant3},
+            },
+        } = await signup(client, fakeSignupBody());
+        await applyRecruitment(client, studyId, recruitmentId, {
+            positionId: randPositionId(),
+        });
+
+        // when
+        await login(client, owner);
+        await acceptApplicant(client, studyId, applicant1.id);
+        await acceptApplicant(client, studyId, applicant2.id);
+        await acceptApplicant(client, studyId, applicant3.id);
+
+        const {status, data: {data: {study: foundStudy}}} = await findStudyDetailById(client, studyId);
+        console.log(foundStudy);
+
+        // then
+        expect(status).toBe(HttpStatusCode.Ok);
+        expect(study.id).toBeDefined();
+        expect(study.title).toEqual(body.title);
+        expect(study.category.id).toEqual(body.categoryId);
+        expect(study.platform).toEqual(body.platform);
+        expect(study.platformUrl).toEqual(body.platformUrl);
+        expect(study.owner.email).toEqual(owner.email);
+        expect(study.way).toEqual(body.way);
+        expect(study.hasRecruitment).toEqual(false);
+        expect(study.createdDateTime).toEqual(study.updatedDateTime);
+        expect(study.createdDateTime).toEqual(study.updatedDateTime);
+        expect(study.status).toEqual("RECRUITING");
     });
 
-    await signup(client, fakeSignupBody());
-    const {
-      data: {
-        data: { user: applicant2 },
-      },
-    } = await signup(client, fakeSignupBody());
-    await applyRecruitment(client, studyId, recruitmentId, {
-      positionId: randPositionId(),
+    it("[200 OK] 내가 리뷰를 작성한 스터디원을 확인할 수 있다.", async () => {
+        // given
+        const client = ApiClient.default();
+        const owner = fakeSignupBody();
+        await signup(client, owner);
+
+        // when
+        const body = fakeCreateStudyRequest();
+        const {
+            data: {
+                data: {study},
+            },
+        } = await createStudy(client, body);
+        const {
+            data: {
+                data: {
+                    study: {id: studyId},
+                },
+            },
+        } = await createStudy(
+            client,
+            fakeCreateStudyRequest({
+                endDateTime: addDays(utcNow(), 1).toISOString(),
+            }),
+        );
+
+        const {data: writeRecruitmentData} = await writeRecruitment(
+            client,
+            studyId,
+            fakeWriteRecruitmentRequest(),
+        );
+        const recruitmentId = writeRecruitmentData.data.recruitment.id;
+
+        await signup(client, fakeSignupBody());
+        const {
+            data: {
+                data: {user: applicant1},
+            },
+        } = await signup(client, fakeSignupBody());
+        await applyRecruitment(client, studyId, recruitmentId, {
+            positionId: randPositionId(),
+        });
+
+        await signup(client, fakeSignupBody());
+        const {
+            data: {
+                data: {user: applicant2},
+            },
+        } = await signup(client, fakeSignupBody());
+        await applyRecruitment(client, studyId, recruitmentId, {
+            positionId: randPositionId(),
+        });
+
+        await signup(client, fakeSignupBody());
+        const {
+            data: {
+                data: {user: applicant3},
+            },
+        } = await signup(client, fakeSignupBody());
+        await applyRecruitment(client, studyId, recruitmentId, {
+            positionId: randPositionId(),
+        });
+
+        // when
+        await login(client, owner);
+        await acceptApplicant(client, studyId, applicant1.id);
+        await acceptApplicant(client, studyId, applicant2.id);
+        await acceptApplicant(client, studyId, applicant3.id);
+        // end study
+        await updateStudyEndDateTime(subDays(utcNow(), 10));
+
+        // write reviews
+        await writeReview(
+            client,
+            studyId,
+            fakeWriteReviewRequest({
+                revieweeId: applicant1.id,
+            }),
+        );
+        await writeReview(
+            client,
+            studyId,
+            fakeWriteReviewRequest({
+                revieweeId: applicant2.id,
+            }),
+        );
+        // await writeReview(
+        //   client,
+        //   studyId,
+        //   fakeWriteReviewRequest({
+        //     revieweeId: applicant3.id,
+        //   }),
+        // );
+
+        const {status, data: {data: {study: foundStudy}}} = await findStudyDetailById(client, studyId);
+        console.log(foundStudy);
+
+        // then
+        expect(status).toBe(HttpStatusCode.Ok);
+        expect(study.id).toBeDefined();
+        expect(study.title).toEqual(body.title);
+        expect(study.category.id).toEqual(body.categoryId);
+        expect(study.platform).toEqual(body.platform);
+        expect(study.platformUrl).toEqual(body.platformUrl);
+        expect(study.owner.email).toEqual(owner.email);
+        expect(study.way).toEqual(body.way);
+        expect(study.hasRecruitment).toEqual(false);
+        expect(study.createdDateTime).toEqual(study.updatedDateTime);
+        expect(study.createdDateTime).toEqual(study.updatedDateTime);
+        expect(study.status).toEqual("RECRUITING");
     });
 
-    await signup(client, fakeSignupBody());
-    const {
-      data: {
-        data: { user: applicant3 },
-      },
-    } = await signup(client, fakeSignupBody());
-    await applyRecruitment(client, studyId, recruitmentId, {
-      positionId: randPositionId(),
+    it("[201 CREATED] 로그인 시, 스터디 생성 가능", async () => {
+        // given
+        const client = ApiClient.default();
+        const me = fakeSignupBody();
+        await signup(client, me);
+
+        // when
+        const body = fakeCreateStudyRequest();
+        const {
+            status,
+            data: {
+                data: {study},
+            },
+        } = await createStudy(client, body);
+
+        // then
+        expect(status).toBe(HttpStatusCode.Created);
+        expect(study.id).toBeDefined();
+        expect(study.title).toEqual(body.title);
+        expect(study.category.id).toEqual(body.categoryId);
+        expect(study.platform).toEqual(body.platform);
+        expect(study.platformUrl).toEqual(body.platformUrl);
+        expect(study.owner.email).toEqual(me.email);
+        expect(study.way).toEqual(body.way);
+        expect(study.hasRecruitment).toEqual(false);
+        expect(study.createdDateTime).toEqual(study.updatedDateTime);
+        expect(study.createdDateTime).toEqual(study.updatedDateTime);
+        expect(study.status).toEqual("RECRUITING");
     });
 
-    // when
-    await login(client, owner);
-    await acceptApplicant(client, studyId, applicant1.id);
-    await acceptApplicant(client, studyId, applicant2.id);
-    await acceptApplicant(client, studyId, applicant3.id);
+    // no token returns 400
+    it("[400 BAD REQUEST] 로그인 안 된 사용자는 스터디 생성 불가", async () => {
+        // it("[401 UNAUTHORIZED] 로그인 안 된 사용자는 스터디 생성 불가", async () => {
+        // given
+        const client = ApiClient.default();
 
-    const { status, data: { data: { study: foundStudy } } } = await findStudyDetailById(client, studyId);
-    console.log(foundStudy);
-
-    // then
-    expect(status).toBe(HttpStatusCode.Ok);
-    expect(study.id).toBeDefined();
-    expect(study.title).toEqual(body.title);
-    expect(study.category.id).toEqual(body.categoryId);
-    expect(study.platform).toEqual(body.platform);
-    expect(study.platformUrl).toEqual(body.platformUrl);
-    expect(study.owner.email).toEqual(owner.email);
-    expect(study.way).toEqual(body.way);
-    expect(study.hasRecruitment).toEqual(false);
-    expect(study.createdDateTime).toEqual(study.updatedDateTime);
-    expect(study.createdDateTime).toEqual(study.updatedDateTime);
-    expect(study.status).toEqual("RECRUITING");
-  });
-
-  it.only("[200 OK] 내가 리뷰를 작성한 스터디원을 확인할 수 있다.", async () => {
-    // given
-    const client = ApiClient.default();
-    const owner = fakeSignupBody();
-    await signup(client, owner);
-
-    // when
-    const body = fakeCreateStudyRequest();
-    const {
-      data: {
-        data: { study },
-      },
-    } = await createStudy(client, body);
-    const {
-      data: {
-        data: {
-          study: { id: studyId },
-        },
-      },
-    } = await createStudy(
-      client,
-      fakeCreateStudyRequest({
-        endDateTime: addDays(utcNow(), 1).toISOString(),
-      }),
-    );
-
-    const { data: writeRecruitmentData } = await writeRecruitment(
-      client,
-      studyId,
-      fakeWriteRecruitmentRequest(),
-    );
-    const recruitmentId = writeRecruitmentData.data.recruitment.id;
-
-    await signup(client, fakeSignupBody());
-    const {
-      data: {
-        data: { user: applicant1 },
-      },
-    } = await signup(client, fakeSignupBody());
-    await applyRecruitment(client, studyId, recruitmentId, {
-      positionId: randPositionId(),
+        // when
+        // then
+        try {
+            await createStudy(client, fakeCreateStudyRequest());
+        } catch (err) {
+            const e = err as AxiosError<BaseResponse<void>>;
+            // expect(e.response!.status).toBe(HttpStatusCode.Unauthorized);
+            expect(e.response!.status).toBe(HttpStatusCode.BadRequest);
+            // expect(e.response!.data.message).toBe("로그인이 필요한 서비스입니다.");
+            expect(e.response!.data.message).toBe("토큰이 없습니다.");
+        }
     });
 
-    await signup(client, fakeSignupBody());
-    const {
-      data: {
-        data: { user: applicant2 },
-      },
-    } = await signup(client, fakeSignupBody());
-    await applyRecruitment(client, studyId, recruitmentId, {
-      positionId: randPositionId(),
+    it("should a new study if user logged in", async () => {
+        // given
+        const client = ApiClient.default();
+        const me = fakeSignupBody();
+        await signup(client, me);
+
+        // when
+        const body = fakeCreateStudyRequest();
+        const {
+            data: {
+                data: {
+                    study: {id: studyId},
+                },
+            },
+        } = await createStudy(client, body);
+        const {
+            status,
+            data: {
+                data: {study: updatedStudy},
+            },
+        } = await updateStudy(client, studyId, {
+            ...body,
+            title: "updated title",
+        });
+
+        // then
+        expect(status).toBe(HttpStatusCode.Ok);
+        expect(updatedStudy.id).toEqual(studyId);
+        expect(updatedStudy.title).toEqual("updated title");
     });
 
-    await signup(client, fakeSignupBody());
-    const {
-      data: {
-        data: { user: applicant3 },
-      },
-    } = await signup(client, fakeSignupBody());
-    await applyRecruitment(client, studyId, recruitmentId, {
-      positionId: randPositionId(),
+    describe("스터디 지원/수락", () => {
+        it("[200 OK] 스터디장은 지원자 수락 가능", async () => {
+            // given
+            const client = ApiClient.default();
+            const owner = fakeSignupBody();
+            await signup(client, owner);
+            const {
+                data: {
+                    data: {
+                        study: {id: studyId},
+                    },
+                },
+            } = await createStudy(client, fakeCreateStudyRequest());
+            const {data: writeRecruitmentData} = await writeRecruitment(
+                client,
+                studyId,
+                fakeWriteRecruitmentRequest(),
+            );
+            const recruitmentId = writeRecruitmentData.data.recruitment.id;
+            const {
+                data: {
+                    data: {user: applicant},
+                },
+            } = await signup(client, fakeSignupBody());
+            await applyRecruitment(client, studyId, recruitmentId, {
+                positionId: randPositionId(),
+            });
+
+            // when
+            await login(client, owner);
+            const {
+                status,
+                data: {
+                    data: {participant},
+                },
+            } = await acceptApplicant(client, studyId, applicant.id);
+
+            // then
+            expect(status).toEqual(HttpStatusCode.Ok);
+            expect(participant.email).toEqual(applicant.email);
+            expect(participant.nickname).toEqual(applicant.nickname);
+        });
     });
 
-    // when
-    await login(client, owner);
-    await acceptApplicant(client, studyId, applicant1.id);
-    await acceptApplicant(client, studyId, applicant2.id);
-    await acceptApplicant(client, studyId, applicant3.id);
-    // end study
-    await updateStudyEndDateTime(subDays(utcNow(), 10));
+    test("[200 OK] 스터디장은 지원자 수락 및 거절 가능", async () => {
+        // given
+        const client = ApiClient.default();
+        const owner = fakeSignupBody();
+        await signup(client, owner);
+        const {
+            data: {
+                data: {
+                    study: {id: studyId},
+                },
+            },
+        } = await createStudy(client, fakeCreateStudyRequest());
+        const {
+            data: {
+                data: {recruitment},
+            },
+        } = await writeRecruitment(client, studyId, fakeWriteRecruitmentRequest());
 
-    // write reviews
-    await writeReview(
-      client,
-      studyId,
-      fakeWriteReviewRequest({
-        revieweeId: applicant1.id,
-      }),
-    );
-    await writeReview(
-      client,
-      studyId,
-      fakeWriteReviewRequest({
-        revieweeId: applicant2.id,
-      }),
-    );
-    // await writeReview(
-    //   client,
-    //   studyId,
-    //   fakeWriteReviewRequest({
-    //     revieweeId: applicant3.id,
-    //   }),
-    // );
+        // applicantUser1
+        const applicantUser1 = fakeSignupBody();
+        const {
+            data: {
+                data: {
+                    user: {id: applicantUser1Id},
+                },
+            },
+        } = await signup(client, applicantUser1);
+        await applyRecruitment(client, studyId, recruitment.id, {
+            positionId: randPositionId(),
+        });
+        // // applicantUser2
+        const applicantUser2 = fakeSignupBody();
+        const {
+            data: {
+                data: {
+                    user: {id: applicantUser2Id},
+                },
+            },
+        } = await signup(client, applicantUser2);
+        await applyRecruitment(client, studyId, recruitment.id, {
+            positionId: randPositionId(),
+        });
 
-    const { status, data: { data: { study: foundStudy } } } = await findStudyDetailById(client, studyId);
-    console.log(foundStudy);
+        // login to owner
+        await login(client, owner);
 
-    // then
-    expect(status).toBe(HttpStatusCode.Ok);
-    expect(study.id).toBeDefined();
-    expect(study.title).toEqual(body.title);
-    expect(study.category.id).toEqual(body.categoryId);
-    expect(study.platform).toEqual(body.platform);
-    expect(study.platformUrl).toEqual(body.platformUrl);
-    expect(study.owner.email).toEqual(owner.email);
-    expect(study.way).toEqual(body.way);
-    expect(study.hasRecruitment).toEqual(false);
-    expect(study.createdDateTime).toEqual(study.updatedDateTime);
-    expect(study.createdDateTime).toEqual(study.updatedDateTime);
-    expect(study.status).toEqual("RECRUITING");
-  });
+        // when accepted
+        const {
+            status: acceptedStatus,
+            data: {
+                data: {participant: acceptedParticipant},
+            },
+        } = await acceptApplicant(client, studyId, applicantUser1Id);
 
-  it("[201 CREATED] 로그인 시, 스터디 생성 가능", async () => {
-    // given
-    const client = ApiClient.default();
-    const me = fakeSignupBody();
-    await signup(client, me);
+        // then
+        expect(acceptedStatus).toBe(HttpStatusCode.Ok);
+        expect(acceptedParticipant.id).toBeDefined();
+        expect(acceptedParticipant.email).toEqual(applicantUser1.email);
+        expect(acceptedParticipant.nickname).toEqual(applicantUser1.nickname);
 
-    // when
-    const body = fakeCreateStudyRequest();
-    const {
-      status,
-      data: {
-        data: { study },
-      },
-    } = await createStudy(client, body);
+        const {
+            status: acceptedStudyStatus,
+            data: {
+                data: {study: acceptedStudy},
+            },
+        } = await findStudyDetailById(client, studyId);
 
-    // then
-    expect(status).toBe(HttpStatusCode.Created);
-    expect(study.id).toBeDefined();
-    expect(study.title).toEqual(body.title);
-    expect(study.category.id).toEqual(body.categoryId);
-    expect(study.platform).toEqual(body.platform);
-    expect(study.platformUrl).toEqual(body.platformUrl);
-    expect(study.owner.email).toEqual(me.email);
-    expect(study.way).toEqual(body.way);
-    expect(study.hasRecruitment).toEqual(false);
-    expect(study.createdDateTime).toEqual(study.updatedDateTime);
-    expect(study.createdDateTime).toEqual(study.updatedDateTime);
-    expect(study.status).toEqual("RECRUITING");
-  });
+        expect(acceptedStudyStatus).toBe(HttpStatusCode.Ok);
+        expect(acceptedStudy.participantCount).toEqual(2);
+        const filteredParticipant = acceptedStudy.participants.filter(
+            (p) => p.id === applicantUser1Id,
+        )[0];
+        expect(filteredParticipant.id).toEqual(applicantUser1Id);
 
-  // no token returns 400
-  it("[400 BAD REQUEST] 로그인 안 된 사용자는 스터디 생성 불가", async () => {
-    // it("[401 UNAUTHORIZED] 로그인 안 된 사용자는 스터디 생성 불가", async () => {
-    // given
-    const client = ApiClient.default();
+        // when refused
+        const {status: refusedStudyStatus} = await refuseApplicant(
+            client,
+            studyId,
+            applicantUser2Id,
+        );
 
-    // when
-    // then
-    try {
-      await createStudy(client, fakeCreateStudyRequest());
-    } catch (err) {
-      const e = err as AxiosError<BaseResponse<void>>;
-      // expect(e.response!.status).toBe(HttpStatusCode.Unauthorized);
-      expect(e.response!.status).toBe(HttpStatusCode.BadRequest);
-      // expect(e.response!.data.message).toBe("로그인이 필요한 서비스입니다.");
-      expect(e.response!.data.message).toBe("토큰이 없습니다.");
-    }
-  });
+        // then
+        expect(refusedStudyStatus).toBe(HttpStatusCode.Ok);
 
-  it("should a new study if user logged in", async () => {
-    // given
-    const client = ApiClient.default();
-    const me = fakeSignupBody();
-    await signup(client, me);
+        const {
+            status: findStudyStatus,
+            data: {
+                data: {study},
+            },
+        } = await findStudyDetailById(client, studyId);
 
-    // when
-    const body = fakeCreateStudyRequest();
-    const {
-      data: {
-        data: {
-          study: { id: studyId },
-        },
-      },
-    } = await createStudy(client, body);
-    const {
-      status,
-      data: {
-        data: { study: updatedStudy },
-      },
-    } = await updateStudy(client, studyId, {
-      ...body,
-      title: "updated title",
+        expect(findStudyStatus).toBe(HttpStatusCode.Ok);
+        expect(study.participantCount).toEqual(2);
+        const participated = study.participants.find(
+            (p) => p.id === applicantUser2Id,
+        );
+        expect(participated).toBeUndefined();
     });
 
-    // then
-    expect(status).toBe(HttpStatusCode.Ok);
-    expect(updatedStudy.id).toEqual(studyId);
-    expect(updatedStudy.title).toEqual("updated title");
-  });
+    test("[200 OK] 스터디장이 지원자들의 정보를 확인할 때, Review 통계 조회 가능", async () => {
+        // given
+        const client = ApiClient.default();
+        const owner = fakeSignupBody();
+        const {
+            data: {
+                data: {
+                    user: {id: ownerId},
+                },
+            },
+        } = await signup(client, owner);
+        const {
+            data: {
+                data: {
+                    study: {id: studyId},
+                },
+            },
+        } = await createStudy(client, fakeCreateStudyRequest({}));
+        const {
+            data: {
+                data: {recruitment},
+            },
+        } = await writeRecruitment(client, studyId, fakeWriteRecruitmentRequest());
 
-  describe("스터디 지원/수락", () => {
-    it("[200 OK] 스터디장은 지원자 수락 가능", async () => {
-      // given
-      const client = ApiClient.default();
-      const owner = fakeSignupBody();
-      await signup(client, owner);
-      const {
-        data: {
-          data: {
-            study: { id: studyId },
-          },
-        },
-      } = await createStudy(client, fakeCreateStudyRequest());
-      const { data: writeRecruitmentData } = await writeRecruitment(
-        client,
-        studyId,
-        fakeWriteRecruitmentRequest(),
-      );
-      const recruitmentId = writeRecruitmentData.data.recruitment.id;
-      const {
-        data: {
-          data: { user: applicant },
-        },
-      } = await signup(client, fakeSignupBody());
-      await applyRecruitment(client, studyId, recruitmentId, {
-        positionId: randPositionId(),
-      });
+        const applicantUser1 = fakeSignupBody();
+        const {
+            data: {
+                data: {
+                    user: {id: applicantUser1Id},
+                },
+            },
+        } = await signup(client, applicantUser1);
+        await applyRecruitment(client, studyId, recruitment.id, {
+            positionId: randPositionId(),
+        });
 
-      // when
-      await login(client, owner);
-      const {
-        status,
-        data: {
-          data: { participant },
-        },
-      } = await acceptApplicant(client, studyId, applicant.id);
+        const applicantUser2 = fakeSignupBody();
+        const {
+            data: {
+                data: {
+                    user: {id: applicantUser2Id},
+                },
+            },
+        } = await signup(client, applicantUser2);
+        await applyRecruitment(client, studyId, recruitment.id, {
+            positionId: randPositionId(),
+        });
 
-      // then
-      expect(status).toEqual(HttpStatusCode.Ok);
-      expect(participant.email).toEqual(applicant.email);
-      expect(participant.nickname).toEqual(applicant.nickname);
-    });
-  });
+        const applicantUser3 = fakeSignupBody();
+        const {
+            data: {
+                data: {
+                    user: {id: applicantUser3Id},
+                },
+            },
+        } = await signup(client, applicantUser3);
+        await applyRecruitment(client, studyId, recruitment.id, {
+            positionId: randPositionId(),
+        });
 
-  test("[200 OK] 스터디장은 지원자 수락 및 거절 가능", async () => {
-    // given
-    const client = ApiClient.default();
-    const owner = fakeSignupBody();
-    await signup(client, owner);
-    const {
-      data: {
-        data: {
-          study: { id: studyId },
-        },
-      },
-    } = await createStudy(client, fakeCreateStudyRequest());
-    const {
-      data: {
-        data: { recruitment },
-      },
-    } = await writeRecruitment(client, studyId, fakeWriteRecruitmentRequest());
+        // login to owner
+        await login(client, owner);
+        const {status, data: {data: {applicants}}} = await findApplicantsByStudyId(client, studyId);
 
-    // applicantUser1
-    const applicantUser1 = fakeSignupBody();
-    const {
-      data: {
-        data: {
-          user: { id: applicantUser1Id },
-        },
-      },
-    } = await signup(client, applicantUser1);
-    await applyRecruitment(client, studyId, recruitment.id, {
-      positionId: randPositionId(),
-    });
-    // // applicantUser2
-    const applicantUser2 = fakeSignupBody();
-    const {
-      data: {
-        data: {
-          user: { id: applicantUser2Id },
-        },
-      },
-    } = await signup(client, applicantUser2);
-    await applyRecruitment(client, studyId, recruitment.id, {
-      positionId: randPositionId(),
+        //
+        expect(status).toBe(HttpStatusCode.Ok);
+        expect(applicants.length).toBe(3);
     });
 
-    // login to owner
-    await login(client, owner);
+    // --------------------------- MYPAGE TEST ------------------------------
+    describe("mypage test", () => {
+        it.only("mypage test", async () => {
+            // given
+            const client = ApiClient.default();
+            const me = fakeSignupBody();
+            const owner1 = fakeSignupBody();
+            await signup(client, owner1);
+            const {
+                data: {
+                    data: {
+                        study: {id: studyId},
+                    },
+                },
+            } = await createStudy(client, fakeCreateStudyRequest());
+            const {data: writeRecruitmentData} = await writeRecruitment(
+                client,
+                studyId,
+                fakeWriteRecruitmentRequest(),
+            );
+            const recruitmentId = writeRecruitmentData.data.recruitment.id;
+            const {
+                data: {
+                    data: {user: applicant},
+                },
+            } = await signup(client, me);
+            await applyRecruitment(client, studyId, recruitmentId, {
+                positionId: randPositionId(),
+            });
 
-    // when accepted
-    const {
-      status: acceptedStatus,
-      data: {
-        data: { participant: acceptedParticipant },
-      },
-    } = await acceptApplicant(client, studyId, applicantUser1Id);
+            // when
+            await login(client, owner1);
+            const {
+                status,
+                data: {
+                    data: {participant},
+                },
+            } = await acceptApplicant(client, studyId, applicant.id);
 
-    // then
-    expect(acceptedStatus).toBe(HttpStatusCode.Ok);
-    expect(acceptedParticipant.id).toBeDefined();
-    expect(acceptedParticipant.email).toEqual(applicantUser1.email);
-    expect(acceptedParticipant.nickname).toEqual(applicantUser1.nickname);
-
-    const {
-      status: acceptedStudyStatus,
-      data: {
-        data: { study: acceptedStudy },
-      },
-    } = await findStudyDetailById(client, studyId);
-
-    expect(acceptedStudyStatus).toBe(HttpStatusCode.Ok);
-    expect(acceptedStudy.participantCount).toEqual(2);
-    const filteredParticipant = acceptedStudy.participants.filter(
-      (p) => p.id === applicantUser1Id,
-    )[0];
-    expect(filteredParticipant.id).toEqual(applicantUser1Id);
-
-    // when refused
-    const { status: refusedStudyStatus } = await refuseApplicant(
-      client,
-      studyId,
-      applicantUser2Id,
-    );
-
-    // then
-    expect(refusedStudyStatus).toBe(HttpStatusCode.Ok);
-
-    const {
-      status: findStudyStatus,
-      data: {
-        data: { study },
-      },
-    } = await findStudyDetailById(client, studyId);
-
-    expect(findStudyStatus).toBe(HttpStatusCode.Ok);
-    expect(study.participantCount).toEqual(2);
-    const participated = study.participants.find(
-      (p) => p.id === applicantUser2Id,
-    );
-    expect(participated).toBeUndefined();
-  });
-
-  test("[200 OK] 스터디장이 지원자들의 정보를 확인할 때, Review 통계 조회 가능", async () => {
-    // given
-    const client = ApiClient.default();
-    const owner = fakeSignupBody();
-    const {
-      data: {
-        data: {
-          user: { id: ownerId },
-        },
-      },
-    } = await signup(client, owner);
-    const {
-      data: {
-        data: {
-          study: { id: studyId },
-        },
-      },
-    } = await createStudy(client, fakeCreateStudyRequest({}));
-    const {
-      data: {
-        data: { recruitment },
-      },
-    } = await writeRecruitment(client, studyId, fakeWriteRecruitmentRequest());
-
-    const applicantUser1 = fakeSignupBody();
-    const {
-      data: {
-        data: {
-          user: { id: applicantUser1Id },
-        },
-      },
-    } = await signup(client, applicantUser1);
-    await applyRecruitment(client, studyId, recruitment.id, {
-      positionId: randPositionId(),
+            // then
+            await login(client, {email: me.email, password:me.password});
+            const {data} = await myPage(client);
+            console.log(JSON.stringify(data))
+        });
     });
 
-    const applicantUser2 = fakeSignupBody();
-    const {
-      data: {
-        data: {
-          user: { id: applicantUser2Id },
-        },
-      },
-    } = await signup(client, applicantUser2);
-    await applyRecruitment(client, studyId, recruitment.id, {
-      positionId: randPositionId(),
-    });
-
-    const applicantUser3 = fakeSignupBody();
-    const {
-      data: {
-        data: {
-          user: { id: applicantUser3Id },
-        },
-      },
-    } = await signup(client, applicantUser3);
-    await applyRecruitment(client, studyId, recruitment.id, {
-      positionId: randPositionId(),
-    });
-
-    // login to owner
-    await login(client, owner);
-    const { status, data: { data: { applicants } } } = await findApplicantsByStudyId(client, studyId);
-
-    //
-    expect(status).toBe(HttpStatusCode.Ok);
-    expect(applicants.length).toBe(3);
-  });
 });
