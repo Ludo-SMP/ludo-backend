@@ -570,9 +570,7 @@ describe("study Api flows", () => {
             // then
             await login(client, {email: me.email, password:me.password});
             const {data} = await myPage(client);
-            console.log('--------------------')
             console.log(JSON.stringify(data))
-            console.log('--------------------')
         });
     });
 
